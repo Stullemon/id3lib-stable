@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.37 2000/07/04 21:44:43 eldamitri Exp $
+// $Id: tag.h,v 1.38 2000/07/07 23:05:20 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -44,8 +44,8 @@ struct ID3_Elem
  **
  ** \sa #ID3V1_Tag
  **/
-//const char STR_V1_COMMENT_DESC[] = "ID3v1_Comment";
-const char STR_V1_COMMENT_DESC[] = "";
+const char STR_V1_COMMENT_DESC[] = "ID3v1 Comment";
+//const char STR_V1_COMMENT_DESC[] = "";
 
 class ID3_Tag : public ID3_Speccable
 {
@@ -72,7 +72,7 @@ public:
   size_t     Render(uchar*, ID3_TagType = ID3TT_ID3V2) const;
   
   size_t     Link(const char *fileInfo, flags_t = (flags_t) ID3TT_ALL);
-  flags_t    Update(flags_t = (flags_t) ID3TT_ID3V2);
+  flags_t    Update(flags_t = (flags_t) ID3TT_ALL);
   flags_t    Strip(flags_t = (flags_t) ID3TT_ALL);
   
   size_t     GetPrependedBytes() const { return __prepended_bytes; }
