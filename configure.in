@@ -1,4 +1,4 @@
-# $Id: configure.in,v 1.42 2000/08/27 22:40:41 eldamitri Exp $
+# $Id: configure.in,v 1.43 2000/09/15 00:03:02 eldamitri Exp $
 
 # Copyright 1999, 2000 Scott Thomas Haug <eldamitri@users.sourceforge.net>
 #  
@@ -33,7 +33,7 @@ AC_DIVERT_PUSH(AC_DIVERSION_NOTICE)dnl
 #
 ID3LIB_MAJOR_VERSION=3
 ID3LIB_MINOR_VERSION=7
-ID3LIB_PATCH_VERSION=12
+ID3LIB_PATCH_VERSION=13
 ID3LIB_INTERFACE_AGE=0
 ID3LIB_BINARY_AGE=0
 ID3LIB_VERSION=$ID3LIB_MAJOR_VERSION.$ID3LIB_MINOR_VERSION.$ID3LIB_PATCH_VERSION
@@ -72,7 +72,7 @@ VERSION=$ID3LIB_VERSION
 PACKAGE=$ID3LIB_NAME
 
 dnl This is a hack to get the release date using cvs checkin macros
-ID3LIB_DATE="$Date: 2000/08/27 22:40:41 $ID3LIB_UNDEFINED"
+ID3LIB_DATE="$Date: 2000/09/15 00:03:02 $ID3LIB_UNDEFINED"
 ID3LIB_FULLNAME=$ID3LIB_NAME-$ID3LIB_VERSION
 
 AC_SUBST(ID3LIB_DATE)
@@ -143,7 +143,7 @@ AC_HAVE_HEADERS(                \
 )
 AC_LANG_SAVE
 AC_LANG_CPLUSPLUS
-AC_CHECK_HEADER(iostream.h)
+AC_CHECK_HEADER(iostream.h iomanip.h)
 
 dnl Check for functions.
 AC_FUNC_MEMCMP
@@ -168,6 +168,10 @@ dnl Provides a --with-warnings option to the configure script that turns on
 dnl compiler warnings.  Must be used AFTER configuring ALL compilers.
 LF_SET_WARNINGS
 
+dnl Provides a --honor-std option to the configure script that honors the
+dnl std namespace.  Must be used AFTER configuring ALL compilers.
+LF_HONOR_STD
+
 dnl ACCONFIG TEMPLATE
 dnl 
 dnl /* config.h defines these preprocesser symbols to be used by id3lib for
@@ -175,29 +179,29 @@ dnl  * determining internal versioning information.  The intent is that these
 dnl  * macros will be made available in the library via constants, functions,
 dnl  * or static methods.
 dnl  */
-dnl #undef __ID3LIB_NAME
-dnl #undef __ID3LIB_DATE
-dnl #undef __ID3LIB_VERSION
-dnl #undef __ID3LIB_FULLNAME
-dnl #undef __ID3LIB_MAJOR_VERSION
-dnl #undef __ID3LIB_MINOR_VERSION
-dnl #undef __ID3LIB_PATCH_VERSION
-dnl #undef __ID3LIB_INTERFACE_AGE
-dnl #undef __ID3LIB_BINARY_AGE
-dnl #undef __ID3_COMPILED_WITH_DEBUGGING
+dnl #undef _ID3LIB_NAME
+dnl #undef _ID3LIB_DATE
+dnl #undef _ID3LIB_VERSION
+dnl #undef _ID3LIB_FULLNAME
+dnl #undef _ID3LIB_MAJOR_VERSION
+dnl #undef _ID3LIB_MINOR_VERSION
+dnl #undef _ID3LIB_PATCH_VERSION
+dnl #undef _ID3LIB_INTERFACE_AGE
+dnl #undef _ID3LIB_BINARY_AGE
+dnl #undef _ID3_COMPILED_WITH_DEBUGGING
 dnl /* */
 dnl END ACCONFIG
 
-AC_DEFINE_UNQUOTED(__ID3LIB_NAME,                 "$ID3LIB_NAME")
-AC_DEFINE_UNQUOTED(__ID3LIB_DATE,                 "$ID3LIB_DATE")
-AC_DEFINE_UNQUOTED(__ID3LIB_VERSION,              "$ID3LIB_VERSION")
-AC_DEFINE_UNQUOTED(__ID3LIB_FULLNAME,             "$ID3LIB_FULLNAME")
-AC_DEFINE_UNQUOTED(__ID3LIB_MAJOR_VERSION,         $ID3LIB_MAJOR_VERSION)
-AC_DEFINE_UNQUOTED(__ID3LIB_MINOR_VERSION,         $ID3LIB_MINOR_VERSION)
-AC_DEFINE_UNQUOTED(__ID3LIB_PATCH_VERSION,         $ID3LIB_PATCH_VERSION)
-AC_DEFINE_UNQUOTED(__ID3LIB_INTERFACE_AGE,         $ID3LIB_INTERFACE_AGE)
-AC_DEFINE_UNQUOTED(__ID3LIB_BINARY_AGE,            $ID3LIB_BINARY_AGE)
-AC_DEFINE_UNQUOTED(__ID3_COMPILED_WITH_DEBUGGING, "${enable_debug}")
+AC_DEFINE_UNQUOTED(_ID3LIB_NAME,                 "$ID3LIB_NAME")
+AC_DEFINE_UNQUOTED(_ID3LIB_DATE,                 "$ID3LIB_DATE")
+AC_DEFINE_UNQUOTED(_ID3LIB_VERSION,              "$ID3LIB_VERSION")
+AC_DEFINE_UNQUOTED(_ID3LIB_FULLNAME,             "$ID3LIB_FULLNAME")
+AC_DEFINE_UNQUOTED(_ID3LIB_MAJOR_VERSION,         $ID3LIB_MAJOR_VERSION)
+AC_DEFINE_UNQUOTED(_ID3LIB_MINOR_VERSION,         $ID3LIB_MINOR_VERSION)
+AC_DEFINE_UNQUOTED(_ID3LIB_PATCH_VERSION,         $ID3LIB_PATCH_VERSION)
+AC_DEFINE_UNQUOTED(_ID3LIB_INTERFACE_AGE,         $ID3LIB_INTERFACE_AGE)
+AC_DEFINE_UNQUOTED(_ID3LIB_BINARY_AGE,            $ID3LIB_BINARY_AGE)
+AC_DEFINE_UNQUOTED(_ID3_COMPILED_WITH_DEBUGGING, "${enable_debug}")
 
 CONDITIONAL_SUBDIRS=
 if test "x$ac_cv_lib_popt_poptGetContext" = "xno"; then

@@ -1,4 +1,26 @@
-$Id: NEWS,v 1.21 2000/07/07 23:49:57 eldamitri Exp $
+$Id: NEWS,v 1.22 2000/09/15 00:03:02 eldamitri Exp $
+
+2000-09-07 Version 3.7.13
+
+* Complete reimplementation of ID3_Field: cleaner, safer, faster, clearer, more
+  efficient
+* Much more robust MusicMatch parsing
+* Improved conversion from ID3v2 to ID3v1
+* Cleaner implementation of file processing
+* Examples now use popt for command-line processing
+* Improved portability for Macintosh
+* Improved build process for platforms without popt or zlib
+* New documentation about the MusicMatch tagging format
+* Minor updates to ID3_Field interface
+* New interface behavior: 
+    // copies entire string (same for unicode_t*)
+    size_t ID3_Field::Get(const uchar*, size_t) 
+    // for lists, copies a specific item in string (0-based)
+    size_t ID3_Field::Get(const uchar*, size_t, index_t);
+    // returns the size in characters for strings, in bytes for all else
+    size_t ID3_Field::Size() cosnt;
+    // returns the rendered size of the field
+    size_t ID3_Field::BinSize() cosnt;
 
 2000-07-07 Version 3.7.12
 
