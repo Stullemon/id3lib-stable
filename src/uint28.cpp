@@ -1,5 +1,5 @@
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
-// $Id: uint28.cpp,v 1.6 2000/08/28 13:41:41 eldamitri Exp $
+// $Id: uint28.cpp,v 1.7 2000/09/14 23:54:56 eldamitri Exp $
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -23,10 +23,13 @@
 // http://download.sourceforge.net/id3lib/
 
 #include "uint28.h"
-#include <iomanip.h>
 
 #if defined HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
+#endif
+
+#if defined HAVE_IOMANIP_H
+#  include "iomanip.h"
 #endif
 
 // values are initialized here
