@@ -10,7 +10,6 @@
 
 SUBDIRS = html latex man texinfo
 EXTRA_DIST =            \
-  ChangeLog             \
   bugreport.txt         \
   id3guide.html         \
   id3v2-3.00.txt        \

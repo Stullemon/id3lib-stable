@@ -16,7 +16,6 @@ id3info_SOURCES = demo_info.cpp
 id3convert_SOURCES = demo_convert.cpp
 
 EXTRA_DIST =            \
-  ChangeLog             \
   demo_main.cpp         \
   jules.mp3             \
   jules-badtag.mp3      \

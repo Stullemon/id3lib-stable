@@ -89,12 +89,12 @@ lt_rev = @lt_rev@
 lt_ver = @lt_ver@
 
 SUBDIRS = html latex man texinfo
-EXTRA_DIST =    ChangeLog               bugreport.txt           id3guide.html           id3v2-3.00.txt          id3v2.gif               id3v2.ico               id3v2.png               logo.txt                software.txt
+EXTRA_DIST =    bugreport.txt           id3guide.html           id3v2-3.00.txt          id3v2.gif               id3v2.ico               id3v2.png               logo.txt                software.txt
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-DIST_COMMON =  ChangeLog Makefile.am Makefile.in
+DIST_COMMON =  Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
