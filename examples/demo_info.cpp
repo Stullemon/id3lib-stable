@@ -14,7 +14,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.9 2000/05/08 13:55:04 eldamitri Exp $
+// $Id: demo_info.cpp,v 1.10 2000/05/10 14:45:24 eldamitri Exp $
 
 #include <iostream.h>
 #include <id3/tag.h>
@@ -145,7 +145,6 @@ void PrintInformation(const ID3_Tag &myTag)
         }
         case ID3FID_INVOLVEDPEOPLE:
         {
-          // This isn't the right way to do it---will only get first person
           size_t nItems = myFrame->Field(ID3FN_TEXT).GetNumTextItems();
           for (size_t nIndex = 1; nIndex <= nItems; nIndex++)
           {
