@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.10 1999/12/01 22:22:52 scott Exp $
+// $Id: tag_render.cpp,v 1.11 1999/12/06 06:46:25 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -21,6 +21,7 @@
 #include "tag.h"
 #include "misc_support.h"
 #include <stdlib.h>
+#include <fstream.h>
 
 luint ID3_Tag::Render(uchar *buffer)
 {
@@ -290,30 +291,32 @@ void ID3_Tag::RenderV2ToHandle(void)
     // this new file to the old file's name and update the __fFileHandle
             
     uchar buffer2[BUFF_SIZE];
-    FILE *tempOut = tmpfile();
-    if (NULL == tempOut)
+    char sTempFile[] = "temp.XXXXXX";
+    int fd = mkstemp(sTempFile);
+    if (fd < 0)
+    {
       ID3_THROW(ID3E_ReadOnly);
+    }
 
-    fwrite(buffer, 1, size, tempOut);
-                
+    ofstream tmpOut(sTempFile);
+    if (!tmpOut.is_open())
+    {
+      remove(sTempFile);
+      ID3_THROW(ID3E_ReadOnly);
+    }
+    tmpOut.write(buffer, size);
     fseek(__fFileHandle, __ulOldTagSize, SEEK_SET);
       
     while (! feof(__fFileHandle))
     {
       size_t nBytes = fread(buffer2, 1, BUFF_SIZE, __fFileHandle);
-      fwrite(buffer2, 1, nBytes, tempOut);
+      tmpOut.write(buffer2, nBytes);
     }
       
-    rewind(tempOut);
-    freopen(__sFileName, "w+", __fFileHandle);
-
-    while (!feof(tempOut))
-    {
-      size_t nBytes = fread(buffer2, 1, BUFF_SIZE, tempOut);
-      fwrite(buffer2, 1, nBytes, __fFileHandle);
-    }
-
-    fclose(tempOut);
+    tmpOut.close();
+    fclose(__fFileHandle);
+    remove(__sFileName);
+    rename(sTempFile, __sFileName);
     
     __ulOldTagSize = size;
   }
@@ -363,6 +366,11 @@ luint ID3_Tag::PaddingSize(luint curSize) const
 
 
 // $Log: tag_render.cpp,v $
+// Revision 1.11  1999/12/06 06:46:25  scott
+// (RenderV2ToHandle): Use mkstemp instead of tmpfile for creating a
+// temporary file, enabling only a single copy for rendering new id3v2
+// tag.  Used an fstream for the temporary file.
+//
 // Revision 1.10  1999/12/01 22:22:52  scott
 // (RenderV1ToHandle): Removed reference to tagV1---not used.  Other
 // minor windows-compatibility fixes.  (thanks elrod)
