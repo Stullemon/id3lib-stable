@@ -1,4 +1,4 @@
-// $Id: field.h,v 1.14 2000/04/20 03:43:09 eldamitri Exp $
+// $Id: field.h,v 1.15 2000/04/23 17:37:10 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -29,33 +29,6 @@
 
 #include <stdlib.h>
 #include "error.h"
-
-// field flags
-enum ID3_FieldFlags 
-{
-  ID3FF_NONE       =      0,
-  ID3FF_NULL       = 1 << 0,
-  ID3FF_NULLDIVIDE = 1 << 1,
-  ID3FF_ADJUSTENC  = 1 << 2,
-  ID3FF_ADJUSTEDBY = 1 << 3
-};
-
-// Enumeration of the types of field types
-enum ID3_FieldType
-{
-  ID3FTY_INTEGER        = 0,
-  ID3FTY_BITFIELD,
-  ID3FTY_BINARY,
-  ID3FTY_ASCIISTRING,
-  ID3FTY_UNICODESTRING
-};
-
-// Used for version control
-enum ID3_VerCtl
-{
-  ID3VC_HIGHER  = 0,
-  ID3VC_LOWER
-};
 
 struct ID3_FieldDef
 {
@@ -136,7 +109,7 @@ struct ID3_FrameDef
  ** if you only plan to generate 3.0 tags.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: field.h,v 1.14 2000/04/20 03:43:09 eldamitri Exp $
+ ** @version $Id: field.h,v 1.15 2000/04/23 17:37:10 eldamitri Exp $
  ** \sa ID3_Tag
  ** \sa ID3_Frame
  ** \sa ID3_Err 
