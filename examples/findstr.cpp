@@ -1,9 +1,19 @@
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include <id3/debug.h>
+
 #include <iostream.h>
 #include <id3/tag.h>
 #include <id3/misc_support.h>
 
-main(unsigned argc, char* argv[])
+int main(unsigned argc, char* argv[])
 {
+  ID3D_INIT_DOUT();
+  ID3D_INIT_WARNING();
+  ID3D_INIT_NOTICE();
+
   if (argc != 2)
   {
     cout << "Usage: findstr <tagfile>" << endl;
@@ -11,7 +21,7 @@ main(unsigned argc, char* argv[])
   }
   ID3_Tag tag(argv[1]);
   ID3_Frame* first = NULL, *frame = NULL;
-  while(frame = tag.Find(ID3FID_COMMENT, ID3FN_DESCRIPTION, ""))
+  while(NULL != (frame = tag.Find(ID3FID_COMMENT, ID3FN_DESCRIPTION, "")))
   {
     if (frame == first)
     {
@@ -25,5 +35,5 @@ main(unsigned argc, char* argv[])
     cout << "*** Found comment w/o description: " << comment << endl;
     delete [] comment;
   }
-  exit(0);
+  return 0;
 }

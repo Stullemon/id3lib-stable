@@ -1,9 +1,19 @@
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include <id3/debug.h>
+
 #include <iostream.h>
 #include <id3/tag.h>
 #include <id3/misc_support.h>
 
-main(unsigned argc, char* argv[])
+int main(unsigned argc, char* argv[])
 {
+  ID3D_INIT_DOUT();
+  ID3D_INIT_WARNING();
+  ID3D_INIT_NOTICE();
+
   if (argc != 2)
   {
     cout << "Usage: findeng <tagfile>" << endl;
@@ -21,5 +31,5 @@ main(unsigned argc, char* argv[])
   {
     cout << "*** No english comment to be found." << endl;
   }
-  exit(0);
+  return 0;
 }
