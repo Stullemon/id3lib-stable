@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.47 2002/11/03 00:41:27 t1mpy Exp $
+// $Id: field.cpp,v 1.48 2004/04/11 18:23:07 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -877,7 +877,7 @@ static  ID3_FrameDef ID3_FrameDefs[] =
  ** if you only plan to generate 3.0 tags.
  **
  ** @author Dirk Mahoney
- ** @version $Id: field.cpp,v 1.47 2002/11/03 00:41:27 t1mpy Exp $
+ ** @version $Id: field.cpp,v 1.48 2004/04/11 18:23:07 t1mpy Exp $
  ** \sa ID3_Tag
  ** \sa ID3_Frame
  ** \sa ID3_Err
@@ -1009,7 +1009,7 @@ size_t ID3_FieldImpl::BinSize() const
     }
     if (enc == ID3TE_UNICODE)
     {
-      size *= 2;
+      size *= 2; // FIXME: I guess this is wrong
     }
   }
   return size;
@@ -1139,6 +1139,12 @@ void ID3_FieldImpl::Render(ID3_Writer& writer) const
   }
 }
 
+
+/** Copies the content of one field to another.
+ *  WOW, this is another strange conditional function.
+ *  It copies the content BUT only if the types match from the start.
+ *  Strange (Ralf)
+ */
 ID3_Field &
 ID3_FieldImpl::operator=( const ID3_Field &rhs )
 {
@@ -1172,6 +1178,12 @@ ID3_FieldImpl::operator=( const ID3_Field &rhs )
   return *this;
 }
 
+
+/** Sets the encoding of the underlaying text.
+ *  Please note that the id3-spec does not allow size-limited texts with encodings other than ASCII.
+ *  Also note that you should set the matching encoding field or because write operations are made
+ *  with the TEXT_ENC field value.
+ */
 bool ID3_FieldImpl::SetEncoding(ID3_TextEnc enc)
 {
   bool changed = this->IsEncodable() && (enc != this->GetEncoding()) &&
@@ -1235,7 +1247,7 @@ bool ID3_FieldImpl::SetEncoding(ID3_TextEnc enc)
  ** \endcode
  **
  ** @author Cedric Tefft
- ** @version $Id: field.cpp,v 1.47 2002/11/03 00:41:27 t1mpy Exp $
+ ** @version $Id: field.cpp,v 1.48 2004/04/11 18:23:07 t1mpy Exp $
  **/
 
 
