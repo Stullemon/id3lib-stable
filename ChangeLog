@@ -1,5 +1,28 @@
 2000-04-26  Scott Haug  <scott@id3.org>
 
+	* NEWS 
+	* THANKS
+	* configure.in
+	* id3lib.spec.in: 
+	Updated for 3.7.4 release
+
+	* Makefile.am: 
+	Updated release directive to clean up windows distribution of unneeded
+	files/directories.
+
+	* include/id3.h: 
+	Every function declaration was prepended with ID3_C_EXPORT so they will
+	compile correctly under windows.
+
+	* include/id3/globals.h: 
+	Fixed ID3_C_EXPORT and ID3_C_VAR defs so windows funcs are exported 
+	correctly
+
+	* id3com/id3com.dsp: 
+	* libprj/id3lib.dsp: 
+	* prj/id3lib.dsp: 
+	Fixed to work with most current release
+
 	* Makefile.am: 
 	Copy windows projects over manually
 
@@ -39,7 +62,7 @@
 	- Changed license to LGPL to match rest of library
 
 	* include/id3/globals.h: 
-	Fixed ID3_C_VAR and ID#_C_EXPORT definitions, thanks to John Adcock
+	Fixed ID3_C_VAR and ID3_C_EXPORT definitions, thanks to John Adcock
 
 	* include/id3/frame.h: 
 	ID3_Frame now inherits from ID3_Speccable, SetSpec's parameter is now
@@ -75,7 +98,7 @@
 2000-04-25  Scott Haug  <scott@id3.org>
 
 	* include/id3/field.h: 
-	- ID3_VerCtl enumeration deprecated in favor of using two ID3_V2Spec
+	- ID3_VerCtl enumeration removed in favor of using two ID3_V2Spec
 	  enums to denote field scope
 	- Deprecated (private) SetVersion in favor of SetSpec
 	- Replaced version/revision uchar combination with ID3_V2Spec enums
@@ -122,7 +145,7 @@
 	* src/frame_render.cpp
 	* src/header.cpp 
 	* src/header_tag.cpp
-	* src/tag.cpp: 
+	* src/tag.cpp 
 	* src/tag_parse.cpp 
 	* src/tag_render.cpp: 
 	- Replaced version/revision uchar combination with ID3_V2Spec enums
