@@ -1,4 +1,4 @@
-// $Id: field_binary.cpp,v 1.3 2000/04/24 14:47:50 eldamitri Exp $
+// $Id: field_binary.cpp,v 1.4 2000/04/27 15:51:26 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -44,8 +44,15 @@ void ID3_Field::Set(const uchar *newData, const luint newSize)
     {
       ID3_THROW(ID3E_NoMemory);
     }
-      
-    memcpy(__sData, newData, newSize);
+    
+    if (newData != NULL)
+    {
+      memcpy(__sData, newData, newSize);
+    }
+    else
+    {
+      memset(__sData, 0, newSize);
+    }
     __ulSize = newSize;
     
     __eType = ID3FTY_BINARY;
@@ -166,6 +173,9 @@ ID3_Field::RenderBinary(uchar *buffer)
 
 
 // $Log: field_binary.cpp,v $
+// Revision 1.4  2000/04/27 15:51:26  eldamitri
+// (Set): Now handles the case when null data is passed in (thanks John Adcock)
+//
 // Revision 1.3  2000/04/24 14:47:50  eldamitri
 // __lFixedLength changed to __ulFixedLength.  A fixed length of 0, rather
 // than -1, represents a variable-length field, since we should never have
