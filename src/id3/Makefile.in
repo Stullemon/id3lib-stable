@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.9 1999/12/01 18:03:28 scott Exp $
+# $Id: Makefile.in,v 1.10 1999/12/01 19:11:56 scott Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -398,7 +398,10 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 # $Log: Makefile.in,v $
-# Revision 1.9  1999/12/01 18:03:28  scott
+# Revision 1.10  1999/12/01 19:11:56  scott
+# *** empty log message ***
+#
+# Revision 1.7  1999/12/01 18:03:28  scott
 # (INCLUDES): Now points to new, toplevel include directory.
 # (the_headers, id3includedir, id3include_HEADERS): Removed.  Headers are
 # no longer in this directory.
