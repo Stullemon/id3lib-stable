@@ -1,4 +1,4 @@
-// $Id: test_io.cpp,v 1.5 2002/06/29 17:25:36 t1mpy Exp $
+// $Id: test_io.cpp,v 1.6 2003/03/02 15:17:21 t1mpy Exp $
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -10,6 +10,10 @@
 #include <id3/io_helpers.h>
 #include <id3/io_strings.h>
 #include <id3/utils.h>
+
+using std::cout;
+using std::endl;
+using std::cerr;
 
 using namespace dami;
 

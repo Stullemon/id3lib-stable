@@ -1,4 +1,4 @@
-// $Id: test_remove.cpp,v 1.12 2002/06/29 17:26:06 t1mpy Exp $
+// $Id: test_remove.cpp,v 1.13 2003/03/02 15:17:21 t1mpy Exp $
 
 #if defined(HAVE_CONFIG_H)
 # include "config.h"
@@ -8,6 +8,10 @@
 #include "id3/tag.h"
 #include "id3/misc_support.h"
 #include "id3/id3lib_strings.h"
+
+using std::cout;
+using std::endl;
+using std::cerr;
 
 using namespace dami;
 
