@@ -1,4 +1,15 @@
-$Id: NEWS,v 1.20 2000/07/06 12:26:21 eldamitri Exp $
+$Id: NEWS,v 1.21 2000/07/07 23:49:57 eldamitri Exp $
+
+2000-07-07 Version 3.7.12
+
+* Removed debugging output left over from 3.7.11
+* Update() now updates all tag types by default, not just ID3v2
+* Added a second, optional parameter to ID3_GetComment to find a comment with
+  a specific description
+* Converting an ID3v1 comment to an ID3v2 COMM frame now has the description
+  "ID3v1 Comment"
+* An ID3v2 COMM frame will only be converted to an ID3v1 comment if it has a
+  description of "ID3v1 Comment"
 
 2000-07-05 Version 3.7.11
 
