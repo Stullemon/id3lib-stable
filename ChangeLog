@@ -1,3 +1,30 @@
+2000-07-07  Scott Haug  <scott@id3.org>
+
+	* src/tag_render.cpp 
+	(RenderV1): Renders comments in the id3v1 tag with a description of
+	STR_V1_COMMENT_DESC
+
+	* src/tag_file.cpp 
+	(RenderV2ToHandle): Removed debugging output
+
+	* src/misc_support.cpp 
+	(ID3_GetComment): Now a second, optional parameter to find a comment 
+	with a specific description.  Default value is NULL, which will find
+	the next comment in the tag, regardless of its description.
+
+	* include/id3/tag.h: 
+	(STR_V1_COMMENT_DESC): Now has the value "ID3v1 Comment"
+	(ID3_Tag): Update()'s default parameter changed from ID3TT_ID3V2 to
+	ID3TT_ALL
+
+	* include/id3/misc_support.h: 
+	Added a secondary optional parameter ID3_GetComment to find a comment
+	with a specific description.
+
+	* examples/test_remove.cpp 
+	(main): If a file is given on the command-line, just remove the 
+	description-less comments.
+
 2000-07-06  Scott Haug  <scott@id3.org>
 
 	* NEWS: 
