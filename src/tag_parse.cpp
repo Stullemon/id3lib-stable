@@ -1,4 +1,4 @@
-// $Id: tag_parse.cpp,v 1.31 2000/10/12 22:35:32 eldamitri Exp $
+// $Id: tag_parse.cpp,v 1.32 2000/10/13 18:21:39 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -154,6 +154,8 @@ bool id3::v2::parse(ID3_TagImpl& tag, ID3_Reader& reader)
     ID3D_NOTICE( "id3::v2::parse(): parsing header failes" );
     return false;
   }
+  
+  tag.SetSpec(hdr.GetSpec());
 
   size_t dataSize = hdr.GetDataSize();
   ID3D_NOTICE( "ID3_TagImpl::Parse(ID3_Reader&): dataSize = " << dataSize);
