@@ -1,4 +1,4 @@
-// $Id: field_integer.cpp,v 1.10 1999/12/17 16:13:04 scott Exp $
+// $Id: field_integer.cpp,v 1.11 1999/12/26 15:10:58 scott Exp $
 // 
 // This program is free software; you can distribute it and/or modify it under
 // the terms discussed in the COPYING file, which should have been included
@@ -17,6 +17,7 @@
 #endif
 
 #include "field.h"
+#include "misc_support.h"
 
 ID3_Field& ID3_Field::operator=(luint newData)
 {
@@ -45,32 +46,24 @@ luint ID3_Field::Get(void) const
 }
 
 
-luint ID3_Field::ParseInteger(const uchar *buffer, const luint posn, const luint buffSize)
+size_t ID3_Field::ParseInteger(const uchar *buffer, luint posn, size_t nSize)
 {
-  luint bytesUsed = 0;
+  size_t nBytes = 0;
 
-  if (buffer != NULL && buffSize > 0)
+  if (buffer != NULL && nSize > 0)
   {
-    luint i;
-    luint temp = 0;
-    
-    bytesUsed = 4;
+    nBytes = sizeof(uint32);
     
     if (__lFixedLength != -1)
     {
-      bytesUsed = MIN(__lFixedLength, bytesUsed);
+      nBytes = MIN(__lFixedLength, nBytes);
     }
 
-    for (i = 0; i < bytesUsed; i++)
-    {
-      temp |= (buffer[posn + i] << (((bytesUsed - i) - 1) * 8));
-    }
-      
-    Set(temp);
+    Set(ParseNumber(&buffer[posn], nBytes));
     __bHasChanged = false;
   }
   
-  return bytesUsed;
+  return nBytes;
 }
 
 
@@ -78,9 +71,8 @@ luint ID3_Field::RenderInteger(uchar *buffer)
 {
   luint bytesUsed = 0;
   luint length = BinSize();
-  
-  for(luint i = 0; i < length; i++)
-    buffer[i] = (uchar)((((luint) __sData) >> (((length - i) - 1) * 8)) & 0xFF);
+
+  RenderNumber(buffer, (uint32) __sData, length);
     
   bytesUsed = length;
   __bHasChanged = false;
@@ -89,6 +81,10 @@ luint ID3_Field::RenderInteger(uchar *buffer)
 }
 
 // $Log: field_integer.cpp,v $
+// Revision 1.11  1999/12/26 15:10:58  scott
+// (ParseInteger): Now uses ParseNumber, defined in misc_support.
+// (RenderInteger): Now uses RenderNumber, defined in misc_support.
+//
 // Revision 1.10  1999/12/17 16:13:04  scott
 // Updated opening comment block.
 //
