@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.24 2000/10/09 04:28:41 eldamitri Exp $
+// $Id: misc_support.cpp,v 1.25 2000/10/14 19:24:38 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -598,7 +598,7 @@ size_t ID3_GetGenreNum(const ID3_Tag *tag)
     if (*pCur == ')')
     {
       // if the genre number is greater than 255, its invalid.
-      ulGenre = MIN(0xFF, atoi(&sGenre[1]));
+      ulGenre = min(0xFF, atoi(&sGenre[1]));
     }
   }
 
@@ -920,8 +920,7 @@ ID3_Frame *ID3_GetSyncLyrics(const ID3_Tag *tag, const char *lang,
   }
   
   // get the lyrics size
-  size_t datasize = frmExist->GetField(ID3FN_DATA)->Size();
-  size = MIN(size, datasize);
+  size = min(size, frmExist->GetField(ID3FN_DATA)->Size());
 
   // get the lyrics data
   pData = frmExist->GetField (ID3FN_DATA)->GetBinary();

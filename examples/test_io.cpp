@@ -1,4 +1,4 @@
-// $Id: test_io.cpp,v 1.1 2000/10/08 20:32:52 eldamitri Exp $
+// $Id: test_io.cpp,v 1.2 2000/10/14 19:24:38 eldamitri Exp $
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -7,11 +7,10 @@
 #include <id3/debug.h>
 
 #include <id3/readers.h>
-#include <id3/reader_decorators.h>
 #include <id3/writers.h>
-#include <id3/writer_decorators.h>
-#include <id3/writers_compressed.h>
-#include <id3/readers_compressed.h>
+#include <id3/io_decorators.h>
+#include <id3/io_helpers.h>
+#include <id3/io_strings.h>
 
 using namespace dami;
 
@@ -23,14 +22,8 @@ main(size_t argc, const char** argv)
   ID3D_INIT_NOTICE();
 
   ID3_IStreamReader isr(cin);
-  BString orig;
-
-  {
-    io::BinaryReader br(isr);
+  BString orig = io::readAllBinary(isr);
     
-    orig = br.readBinary();
-    
-  }
   cout << "input size:    " << orig.size() << endl;
   
   cout << endl;
@@ -39,11 +32,10 @@ main(size_t argc, const char** argv)
   BString synced;
 
   {
-    io::StringReader sr(orig);
+    io::BStringReader sr(orig);
     io::UnsyncedReader ur(sr);
-    io::BinaryReader br(ur);
 
-    synced = br.readBinary();
+    synced = io::readAllBinary(ur);
   }
 
   cout << "synced size:   " << synced.size() << endl;
@@ -51,11 +43,10 @@ main(size_t argc, const char** argv)
   BString unsynced;
 
   {
-    io::StringWriter sw(unsynced);
+    io::BStringWriter sw(unsynced);
     io::UnsyncedWriter uw(sw);
 
-    uw.writeChars((unsigned const char*)synced.data(), synced.size());
-
+    uw.writeChars(synced.data(), synced.size());
   }
   
   cout << "unsynced size: " << unsynced.size() << endl;
@@ -63,11 +54,10 @@ main(size_t argc, const char** argv)
   BString resynced;
 
   {
-    io::StringReader sr(unsynced);
+    io::BStringReader sr(unsynced);
     io::UnsyncedReader ur(sr);
-    io::BinaryReader br(ur);
 
-    resynced = br.readBinary();
+    resynced = io::readAllBinary(ur);
   }
 
   cout << "resynced size: " << resynced.size() << endl;
@@ -93,10 +83,10 @@ main(size_t argc, const char** argv)
   cout << "=== Testing Trailing Spaces ===" << endl;
 
   String text;
+
   {
     io::StringWriter sw(text);
-    io::TrailingSpacesWriter tsw(sw);
-    tsw.writeString("hello, world", 50);
+    io::writeTrailingSpaces (sw, "hello, world", 50);
   }
 
   cout << "new text  = \"" << text << "\"" << endl;
@@ -105,8 +95,7 @@ main(size_t argc, const char** argv)
 
   {
     io::StringReader sr(text);
-    io::TrailingSpacesReader tsr(sr);
-    origText = tsr.readString(100);
+    origText = io::readTrailingSpaces(sr, 100);
   }
 
   cout << "orig text = \"" << origText << "\"" << endl;
@@ -118,8 +107,7 @@ main(size_t argc, const char** argv)
 
   {
     io::StringWriter sw(number);
-    io::BinaryNumberWriter bnw(sw);
-    bnw.writeNumber(1234567890, 4);
+    io::writeBENumber(sw, 1234567890, 4);
   }
 
   cout << "binary number:";
@@ -133,8 +121,7 @@ main(size_t argc, const char** argv)
 
   {
     io::StringReader sr(number);
-    io::BinaryNumberReader bnr(sr);
-    val = bnr.readNumber(4);
+    val = io::readBENumber(sr, 4);
   }
 
   cout << "orig number: " << val << endl;
@@ -161,7 +148,7 @@ main(size_t argc, const char** argv)
 
   cout << "compressed size = " << compressed.size() << endl;
 
-  String uncompressed;
+  BString uncompressed;
   
   if (origSize == 0)
   {
@@ -171,9 +158,8 @@ main(size_t argc, const char** argv)
   {
     io::StringReader sr(compressed);
     io::CompressedReader cr(sr, origSize);
-    io::BinaryReader br(cr);
 
-    uncompressed = br.readBinary();
+    uncompressed = io::readAllBinary(cr);
     cout << "uncompressed size = " << uncompressed.size() << endl;
   }
 

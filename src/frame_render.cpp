@@ -1,4 +1,4 @@
-// $Id: frame_render.cpp,v 1.17 2000/10/09 04:27:38 eldamitri Exp $
+// $Id: frame_render.cpp,v 1.18 2000/10/14 19:24:38 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -37,8 +37,9 @@
 #include "tag.h"
 #include "utils.h"
 #include "frame_impl.h"
-#include "writer_decorators.h"
-#include "writers_compressed.h"
+#include "io_decorators.h"
+#include "io_strings.h"
+#include "io_helpers.h"
 
 using namespace dami;
 
@@ -133,8 +134,7 @@ void ID3_FrameImpl::Render(ID3_Writer& writer) const
   // No-man's land!  Not part of the header, not part of the data
   if (hdr.GetCompression())
   {
-    io::BinaryNumberWriter bnr(writer);
-    bnr.writeNumber(origSize, sizeof(uint32));
+    io::writeBENumber(writer, origSize, sizeof(uint32));
     ID3D_NOTICE( "ID3_FrameImpl::Render(): frame is compressed, wrote origSize = " << origSize );
   }
   if (hdr.GetEncryption())

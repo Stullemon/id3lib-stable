@@ -1,4 +1,4 @@
-// $Id: field_string_ascii.cpp,v 1.21 2000/10/12 22:30:02 eldamitri Exp $
+// $Id: field_string_ascii.cpp,v 1.22 2000/10/14 19:24:38 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -34,8 +34,7 @@
 #include "debug.h"
 #include "field_impl.h"
 #include "utils.h"
-#include "reader_decorators.h"
-#include "writer_decorators.h"
+#include "io_helpers.h"
 
 using namespace dami;
 
@@ -309,14 +308,13 @@ bool ID3_FieldImpl::ParseASCIIString(ID3_Reader& reader)
   ID3D_NOTICE( "ID3_Field::ParseText(): reader.getCur() = " << reader.getCur() );
   ID3D_NOTICE( "ID3_Field::ParseText(): reader.getEnd() = " << reader.getEnd() );
   this->Clear();
-  ::io::TextReader tr(reader);
   
   size_t fixed_size = this->Size();
   if (fixed_size)
   {
     ID3D_NOTICE( "ID3_Field::ParseText(): fixed size string" );
     // The string is of fixed length
-    ::String ascii = tr.readText(fixed_size);
+    String ascii = io::readText(reader, fixed_size);
     this->Set_i(ascii.data(), ascii.size());
     ID3D_NOTICE( "ID3_Field::ParseText(): fixed size string = " << ascii );
   }
@@ -325,9 +323,9 @@ bool ID3_FieldImpl::ParseASCIIString(ID3_Reader& reader)
     ID3D_NOTICE( "ID3_Field::ParseText(): text list" );
     // lists are always the last field in a frame.  parse all remaining 
     // characters in the reader
-    while (!tr.atEnd())
+    while (!reader.atEnd())
     {
-      ::String ascii = tr.readText();
+      String ascii = io::readString(reader);
       this->Add_i(ascii.data(), ascii.size());
       ID3D_NOTICE( "ID3_Field::ParseText(): adding string = " << ascii );
     }
@@ -335,19 +333,19 @@ bool ID3_FieldImpl::ParseASCIIString(ID3_Reader& reader)
   else if (_flags & ID3FF_CSTR)
   {
     ID3D_NOTICE( "ID3_Field::ParseText(): null terminated string" );
-    ::String ascii = tr.readText();
+    String ascii = io::readString(reader);
     this->Set_i(ascii.data(), ascii.size());
     ID3D_NOTICE( "ID3_Field::ParseText(): null terminated string = " << ascii );
   }
   else
   {
     ID3D_NOTICE( "ID3_Field::ParseText(): last field string" );
-    ::String ascii;
+    String ascii;
     // not null terminated.  
     const size_t BUFSIZ = 1024;
-    while (!tr.atEnd())
+    while (!reader.atEnd())
     {
-      ascii += tr.readText(BUFSIZ);
+      ascii += io::readText(reader, BUFSIZ);
     }
     this->Add_i(ascii.data(), ascii.size());
     ID3D_NOTICE( "ID3_Field::ParseText(): last field string = " << ascii );

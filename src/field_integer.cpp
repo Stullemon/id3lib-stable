@@ -1,4 +1,4 @@
-// $Id: field_integer.cpp,v 1.16 2000/10/09 04:25:49 eldamitri Exp $
+// $Id: field_integer.cpp,v 1.17 2000/10/14 19:24:38 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -31,8 +31,7 @@
 #include "debug.h"
 #include "field_impl.h"
 #include "utils.h"
-#include "reader_decorators.h"
-#include "writer_decorators.h"
+#include "io_helpers.h"
 
 using namespace dami;
 
@@ -92,8 +91,7 @@ bool ID3_FieldImpl::ParseInteger(ID3_Reader& reader)
     this->Clear();
     size_t fixed = this->Size();
     size_t nBytes = (fixed > 0) ? fixed : sizeof(uint32);
-    io::BinaryNumberReader nr(reader);
-    this->Set(nr.readNumber(nBytes));
+    this->Set(io::readBENumber(reader, nBytes));
     _changed = false;
     success = true;
   }
@@ -102,6 +100,5 @@ bool ID3_FieldImpl::ParseInteger(ID3_Reader& reader)
 
 void ID3_FieldImpl::RenderInteger(ID3_Writer& writer) const
 {
-  io::BinaryNumberWriter bnw(writer);
-  bnw.writeNumber(_integer, this->Size());
+  io::writeBENumber(writer, _integer, this->Size());
 }

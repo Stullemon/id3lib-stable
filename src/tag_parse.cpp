@@ -1,4 +1,4 @@
-// $Id: tag_parse.cpp,v 1.32 2000/10/13 18:21:39 eldamitri Exp $
+// $Id: tag_parse.cpp,v 1.33 2000/10/14 19:24:38 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -37,10 +37,10 @@
 #include "tag_impl.h"
 #include "uint28.h"
 #include "utils.h"
-#include "reader_decorators.h"
+#include "io_decorators.h"
+#include "io_helpers.h"
+#include "io_strings.h"
 #include "readers.h"
-#include "readers_compressed.h"
-#include "strings.h"
 
 using namespace dami;
 
@@ -108,8 +108,7 @@ namespace
           } 
           else 
           { 
-            io::BinaryNumberReader bnr(mr);
-            uint32 newSize = bnr.readNumber(sizeof(uint32));
+            uint32 newSize = io::readBENumber(mr, sizeof(uint32));
             size_t oldSize = f->GetDataSize() - sizeof(uint32) - 1;
             io::CompressedReader cr(mr, newSize);
             parseFrames(tag, cr);

@@ -1,4 +1,4 @@
-// $Id: header_frame.cpp,v 1.17 2000/10/13 18:20:43 eldamitri Exp $
+// $Id: header_frame.cpp,v 1.18 2000/10/14 19:24:38 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -38,8 +38,7 @@
 #include "frame_def.h"
 #include "field_def.h"
 #include "field_impl.h"
-#include "reader_decorators.h"
-#include "writer_decorators.h"
+#include "io_helpers.h"
 
 using namespace dami;
 
@@ -109,16 +108,15 @@ bool ID3_FrameHeader::Parse(ID3_Reader& reader)
     return false;
   }
 
-  io::TextReader tr(reader);
-  ::String text_id = tr.readText(_info->frame_bytes_id);
+  String textID = io::readText(reader, _info->frame_bytes_id);
 
-  ID3D_NOTICE( "ID3_FrameHeader::Parse: text_id = " << text_id );
+  ID3D_NOTICE( "ID3_FrameHeader::Parse: textID = " << textID );
   ID3D_NOTICE( "ID3_FrameHeader::Parse: getCur() = " << reader.getCur() );
 
-  ID3_FrameID fid = ID3_FindFrameID(text_id.c_str());
+  ID3_FrameID fid = ID3_FindFrameID(textID.c_str());
   if (ID3FID_NOFRAME == fid)
   {
-    this->SetUnknownFrame(text_id.c_str());
+    this->SetUnknownFrame(textID.c_str());
     ID3D_NOTICE( "ID3_FrameHeader::Parse: unknown frame id" );
   }
   else
@@ -126,13 +124,12 @@ bool ID3_FrameHeader::Parse(ID3_Reader& reader)
     this->SetFrameID(fid);
   }
 
-  io::BinaryNumberReader nr(reader);
-  uint32 dataSize = nr.readNumber(_info->frame_bytes_size);
+  uint32 dataSize = io::readBENumber(reader, _info->frame_bytes_size);
   ID3D_NOTICE( "ID3_FrameHeader::Parse: dataSize = " << dataSize );
   ID3D_NOTICE( "ID3_FrameHeader::Parse: getCur() = " << reader.getCur() );
   this->SetDataSize(dataSize);
 
-  uint32 flags = nr.readNumber(_info->frame_bytes_flags);
+  uint32 flags = io::readBENumber(reader, _info->frame_bytes_flags);
   _flags.add(flags);
 
   ID3D_NOTICE( "ID3_FrameHeader::Parse: flags = " << flags );
@@ -153,39 +150,38 @@ void ID3_FrameHeader::Render(ID3_Writer& writer) const
     return;
     //ID3_THROW(ID3E_InvalidFrameID);
   }
-  char *text_id;
+  char *textID;
   if (_info->frame_bytes_id == strlen(_frame_def->sShortTextID))
   {
-    text_id = _frame_def->sShortTextID;
+    textID = _frame_def->sShortTextID;
   }
   else
   {
-    text_id = _frame_def->sLongTextID;
+    textID = _frame_def->sLongTextID;
   }
 
-  ID3D_NOTICE( "ID3_FrameHeader::Render(): writing " << text_id << ", " << (int) _info->frame_bytes_size << " bytes");
-  writer.writeChars((uchar *) text_id, _info->frame_bytes_id);
-  io::BinaryNumberWriter bnw(writer);
+  ID3D_NOTICE( "ID3_FrameHeader::Render(): writing " << textID << ", " << (int) _info->frame_bytes_size << " bytes");
+  writer.writeChars((uchar *) textID, _info->frame_bytes_id);
 
-  bnw.writeNumber(_data_size, _info->frame_bytes_size);
-  bnw.writeNumber(_flags.get(), _info->frame_bytes_flags);
+  io::writeBENumber(writer, _data_size, _info->frame_bytes_size);
+  io::writeBENumber(writer, _flags.get(), _info->frame_bytes_flags);
 }
 
 const char* ID3_FrameHeader::GetTextID() const
 {
-  char *text_id = "";
+  char *textID = "";
   if (_info && _frame_def)
   {
     if (_info->frame_bytes_id == strlen(_frame_def->sShortTextID))
     {
-      text_id = _frame_def->sShortTextID;
+      textID = _frame_def->sShortTextID;
     }
     else
     {
-      text_id = _frame_def->sLongTextID;
+      textID = _frame_def->sLongTextID;
     }
   }
-  return text_id;
+  return textID;
 }
 
 ID3_FrameHeader& ID3_FrameHeader::operator=(const ID3_FrameHeader& hdr)

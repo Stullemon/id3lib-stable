@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.28 2000/10/12 22:34:33 eldamitri Exp $
+// $Id: tag.cpp,v 1.29 2000/10/14 19:24:38 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -78,7 +78,7 @@ using namespace dami;
  ** 'CDM' frames from the unreleased ID3v2 2.01 draft specification.
  **
  ** \author Dirk Mahoney
- ** \version $Id: tag.cpp,v 1.28 2000/10/12 22:34:33 eldamitri Exp $
+ ** \version $Id: tag.cpp,v 1.29 2000/10/14 19:24:38 eldamitri Exp $
  ** \sa ID3_Frame
  ** \sa ID3_Field
  ** \sa ID3_Err
@@ -418,11 +418,12 @@ size_t ID3_Tag::Parse(const uchar header[ID3_TagHeader::SIZE],
   {
     return 0;
   }
-  ::BString buf;
+  BString buf;
   buf.reserve(ID3_TagHeader::SIZE + size);
-  buf.append((char*)header, ID3_TagHeader::SIZE);
-  buf.append((char*)buffer, size);
-  return this->Parse((uchar*)buf.data(), buf.size());
+  buf.append(reinterpret_cast<const BString::value_type *>(header), 
+             ID3_TagHeader::SIZE);
+  buf.append(reinterpret_cast<const BString::value_type *>(buffer), size);
+  return this->Parse(buf.data(), buf.size());
 }
 
 /** Renders the tag and writes it to the attached file; the type of tag

@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.25 2000/10/12 22:30:20 eldamitri Exp $
+// $Id: field_string_unicode.cpp,v 1.26 2000/10/14 19:24:38 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,15 +24,17 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
+#if defined HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include "debug.h"
+
 #include <string.h>
 #include <stdlib.h>
 #include "field_impl.h"
 #include "utils.h"
-#include "reader_decorators.h"
-
-#if defined HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "io_helpers.h"
 
 using namespace dami;
 
@@ -339,14 +341,12 @@ bool ID3_FieldImpl::ParseUnicodeString(ID3_Reader& reader)
   ID3D_NOTICE( "ID3_Frame::ParseUText(): reader.getCur() = " << reader.getCur() );
   ID3D_NOTICE( "ID3_Frame::ParseUText(): reader.getEnd() = " << reader.getEnd() );
   this->Clear();
-  ::io::TextReader tr(reader);
-  tr.setEncoding(ID3TE_UNICODE);
   
   size_t fixed_size = this->Size();
   if (fixed_size)
   {
     // The string is of fixed length
-    ::String unicode = tr.readText(fixed_size);
+    String unicode = io::readUnicodeText(reader, fixed_size);
     this->Set_i(unicode.data(), unicode.size() / 2);
     ID3D_NOTICE( "ID3_Frame::ParseUText(): fixed size string = " << unicode );
   }
@@ -354,27 +354,27 @@ bool ID3_FieldImpl::ParseUnicodeString(ID3_Reader& reader)
   {
     // lists are always the last field in a frame.  parse all remaining 
     // characters in the reader
-    while (!tr.atEnd())
+    while (!reader.atEnd())
     {
-      ::String unicode = tr.readText();
+      String unicode = io::readUnicodeString(reader);
       this->Add_i((unicode_t *)unicode.data(), unicode.size() / 2);
       ID3D_NOTICE( "ID3_Frame::ParseUText(): adding string = " << unicode );
     }
   }
   else if (_flags & ID3FF_CSTR)
   {
-    ::String unicode = tr.readText();
+    String unicode = io::readUnicodeString(reader);
     this->Set_i((unicode_t *)unicode.data(), unicode.size() / 2);
     ID3D_NOTICE( "ID3_Frame::ParseUText(): null terminated string = " << unicode );
   }
   else
   {
-    ::String unicode;
+    String unicode;
     // not null terminated.  
     const size_t BUFSIZ = 1024;
-    while (!tr.atEnd())
+    while (!reader.atEnd())
     {
-      unicode += tr.readText(BUFSIZ);
+      unicode += io::readUnicodeText(reader, BUFSIZ);
     }
     this->Add_i((unicode_t *)unicode.data(), unicode.size() / 2);
     ID3D_NOTICE( "ID3_Frame::ParseUText(): last field string = " << unicode );

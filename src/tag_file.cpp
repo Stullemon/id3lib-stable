@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.27 2000/10/12 22:34:56 eldamitri Exp $
+// $Id: tag_file.cpp,v 1.28 2000/10/14 19:24:38 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,17 +24,20 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
+#if defined HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
+#include "debug.h"
+
 #include <string.h>
 #include <fstream.h>
 #include <stdlib.h>
 #include "utils.h"
 #include "writers.h"
-#include "writer_decorators.h"
+#include "io_strings.h"
 #include "tag_impl.h"
-
-#if defined HAVE_CONFIG_H
-#  include <config.h>
-#endif
+#include "utils.h"
 
 #if !defined HAVE_MKSTEMP
 #  include <stdio.h>
@@ -76,8 +79,6 @@ static int truncate(const char *path, size_t length)
 #  endif
 
 #endif
-
-using namespace dami;
 
 size_t ID3_TagImpl::Link(const char *fileInfo, bool parseID3v1, bool parseLyrics3)
 {
@@ -147,7 +148,7 @@ size_t RenderV1ToFile(ID3_TagImpl& tag, fstream& file)
   
   ID3_IOStreamWriter out(file);
   
-  id3::v1::render(out, tag);
+  dami::id3::v1::render(out, tag);
 
   return ID3_V1_LEN;
 }
@@ -161,9 +162,9 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
     return 0;
   }
 
-  String tagString; 
-  io::StringWriter writer(tagString);
-  id3::v2::render(writer, tag);
+  dami::String tagString; 
+  dami::io::StringWriter writer(tagString);
+  dami::id3::v2::render(writer, tag);
   ID3D_NOTICE( "RenderV2ToFile: rendered v2" );
 
   const char* tagData = tagString.data();
@@ -203,7 +204,7 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
     }
     
     rewind(tempOut);
-    ::openWritableFile(tag.GetFileName(), file);
+    dami::openWritableFile(tag.GetFileName(), file);
     
     while (!feof(tempOut))
     {
@@ -264,7 +265,7 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
     remove(tag.GetFileName());
     rename(sTempFile, tag.GetFileName());
 
-    ::openWritableFile(tag.GetFileName(), file);
+    dami::openWritableFile(tag.GetFileName(), file);
 #endif
   }
 
@@ -277,12 +278,12 @@ flags_t ID3_TagImpl::Update(flags_t ulTagFlag)
   flags_t tags = ID3TT_NONE;
   
   fstream file;
-  ID3_Err err = ::openWritableFile(this->GetFileName(), file);
-  _file_size = ::getFileSize(file);
+  ID3_Err err = dami::openWritableFile(this->GetFileName(), file);
+  _file_size = dami::getFileSize(file);
   
   if (err == ID3E_NoFile)
   {
-    err = ::createFile(this->GetFileName(), file);
+    err = dami::createFile(this->GetFileName(), file);
   }
   if (err == ID3E_ReadOnly)
   {
@@ -314,7 +315,7 @@ flags_t ID3_TagImpl::Update(flags_t ulTagFlag)
   }
   _changed = false;
   _file_tags.add(tags);
-  _file_size = ::getFileSize(file);
+  _file_size = dami::getFileSize(file);
   file.close();
   return tags;
 }
@@ -328,11 +329,11 @@ flags_t ID3_TagImpl::Strip(flags_t ulTagFlag)
   if (ulTagFlag & ID3TT_PREPENDED & _file_tags.get())
   {
     fstream file;
-    if (ID3E_NoError != ::openWritableFile(this->GetFileName(), file))
+    if (ID3E_NoError != dami::openWritableFile(this->GetFileName(), file))
     {
       return ulTags;
     }
-    _file_size = ::getFileSize(file);
+    _file_size = dami::getFileSize(file);
 
     // We will remove the id3v2 tag in place: since it comes at the beginning
     // of the file, we'll effectively move all the data that comes after the
@@ -361,7 +362,7 @@ flags_t ID3_TagImpl::Strip(flags_t ulTagFlag)
       nBytesCopied = 0;
     while (!file.eof())
     {
-      size_t nBytesToRead = MIN(nBytesRemaining - nBytesCopied, BUFSIZ);
+      size_t nBytesToRead = dami::min<size_t>(nBytesRemaining - nBytesCopied, BUFSIZ);
       file.read(aucBuffer, nBytesToRead);
       size_t nBytesRead = file.gcount();
 

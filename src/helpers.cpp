@@ -1,4 +1,4 @@
-// $Id: helpers.cpp,v 1.3 2000/10/12 22:33:49 eldamitri Exp $
+// $Id: helpers.cpp,v 1.4 2000/10/14 19:24:38 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -433,7 +433,7 @@ ID3_Frame* id3::v2::setSyncLyrics(ID3_TagImpl& tag, BString data,
   frame->GetField(ID3FN_DESCRIPTION)->Set(desc.c_str());
   frame->GetField(ID3FN_TIMESTAMPFORMAT)->Set(format);
   frame->GetField(ID3FN_CONTENTTYPE)->Set(type);
-  frame->GetField(ID3FN_DATA)->Set((const uchar*) data.c_str(), data.size());
+  frame->GetField(ID3FN_DATA)->Set(data.data(), data.size());
 
   return frame;
 }
@@ -448,6 +448,6 @@ BString getSyncLyrics(const ID3_TagImpl& tag, String lang, String desc)
   
   // get the lyrics size
   ID3_Field* fld = frame->GetField(ID3FN_DATA);
-  return BString((const char*)fld->GetBinary(), fld->Size());
+  return BString(reinterpret_cast<const BString::value_type *>(fld->GetBinary()), fld->Size());
 }
 

@@ -1,4 +1,4 @@
-// $Id: tag_parse_lyrics3.cpp,v 1.25 2000/10/12 22:35:49 eldamitri Exp $
+// $Id: tag_parse_lyrics3.cpp,v 1.26 2000/10/14 19:24:38 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -36,179 +36,145 @@
 #include "tag_impl.h"
 #include "utils.h"
 #include "helpers.h"
-#include "reader_decorators.h"
-#include "readers.h"
-
-namespace dami
-{
-  namespace io
-  {
-    class NumberStringReader : public IdentityReader
-    {
-      typedef IdentityReader SUPER;
-    public:
-      NumberStringReader(ID3_Reader& reader) : SUPER(reader) { ; }
-      virtual ~NumberStringReader() { ; }
-      
-      uint32 readInteger()
-      {
-        return this->readInteger(this->getEnd() - this->getCur());
-      }
-      
-      uint32 readInteger(size_t numBytes)
-      {
-        uint32 val = 0;
-        for (size_t i = 0; i < numBytes && isdigit(this->peekChar()); ++i)
-        {
-          val = (val * 10) + (this->readChar() - '0');
-        }
-        ID3D_NOTICE( "io::NumberStringReader::readInteger: val = " << val );
-        return val;
-      }
-    };
-    
-    class FinderReader : public IdentityReader
-    {
-      typedef IdentityReader SUPER;
-    public:
-      FinderReader(ID3_Reader& reader) : SUPER(reader) { ; }
-      virtual ~FinderReader() { ; }
-      
-      bool findText(String text)
-      {
-        if (text.empty())
-        {
-          return true;
-        }
-        
-        size_t index = 0;
-        while (!this->atEnd())
-        {
-          char_type ch = this->readChar();
-          if (ch == text[index])
-          {
-            index++;
-          }
-          else if (ch == text[0])
-          {
-            index = 1;
-          }
-          else
-          {
-            index = 0;
-          }
-          if (index == text.size())
-          {
-            this->setCur(this->getCur() - index);
-            ID3D_NOTICE( "io::FinderReader::readInteger: found \"" << text << "\" at " << this->getCur() );
-            break;
-          }
-        }
-        return !this->atEnd();
-      };
-    };
-    
-    class TimeStampReader : public IdentityReader
-    {
-      typedef IdentityReader SUPER;
-    public:
-      TimeStampReader(ID3_Reader& rdr) : SUPER(rdr) { ; }
-      virtual ~TimeStampReader() { ; }
-      
-      bool isTimeStamp()
-      {
-        pos_type cur = this->getCur();
-        if (this->getEnd() < cur + 7)
-        {
-          return false;
-        }
-        bool its = 
-        ('[' == this->readChar() && 
-         isdigit(this->readChar()) && isdigit(this->readChar()) &&
-         ':' == this->readChar() && 
-         isdigit(this->readChar()) && isdigit(this->readChar()) &&
-         ']' == this->readChar());
-        this->setCur(cur);
-        if (its)
-          ID3D_NOTICE( "io::TimeStampReader::isTimeStamp(): found timestamp, cur = " << this->getCur() );
-        return its;
-      }
-      
-      uint32 readTimeStamp()
-      {
-        this->skipChars(1);
-        io::NumberStringReader nsr(*this);
-        size_t sec = nsr.readInteger(2) * 60;
-        this->skipChars(1);
-        sec += nsr.readInteger(2);
-        this->skipChars(1);
-        ID3D_NOTICE( "TimeStampReader::readTimeStamp(): timestamp = " << sec );
-        return sec * 1000;
-      }
-    };
-  };
-};
+#include "io_decorators.h"
+#include "io_helpers.h"
+#include "io_strings.h"
 
 using namespace dami;
 
 namespace
 {
-  String lyrics3ToSylt(ID3_Reader& rdr)
+  uint32 readIntegerString(ID3_Reader& reader, size_t numBytes)
   {
-    String dest;
-    while (!rdr.atEnd())
+    uint32 val = 0;
+    for (size_t i = 0; i < numBytes && isdigit(reader.peekChar()); ++i)
+    {
+      val = (val * 10) + (reader.readChar() - '0');
+    }
+    ID3D_NOTICE( "readIntegerString: val = " << val );
+    return val;
+  }
+
+  uint32 readIntegerString(ID3_Reader& reader)
+  {
+    return readIntegerString(reader, reader.remainingBytes());
+  }
+  
+  bool isTimeStamp(ID3_Reader& reader)
+  {
+    ID3_Reader::pos_type cur = reader.getCur();
+    if (reader.getEnd() < cur + 7)
+    {
+      return false;
+    }
+    bool its = ('[' == reader.readChar() && 
+                isdigit(reader.readChar()) && isdigit(reader.readChar()) &&
+                ':' == reader.readChar() && 
+                isdigit(reader.readChar()) && isdigit(reader.readChar()) &&
+                ']' == reader.readChar());
+    reader.setCur(cur);
+    if (its)
+      ID3D_NOTICE( "isTimeStamp(): found timestamp, cur = " << 
+                   reader.getCur() );
+    return its;
+  }
+  
+  uint32 readTimeStamp(ID3_Reader& reader)
+  {
+    reader.skipChars(1);
+    size_t sec = readIntegerString(reader, 2) * 60;
+    reader.skipChars(1);
+    sec += readIntegerString(reader, 2);
+    reader.skipChars(1);
+    ID3D_NOTICE( "readTimeStamp(): timestamp = " << sec );
+    return sec * 1000;
+  }
+  
+  bool findText(ID3_Reader& reader, String text)
+  {
+    if (text.empty())
+    {
+      return true;
+    }
+    
+    size_t index = 0;
+    while (!reader.atEnd())
+    {
+      ID3_Reader::char_type ch = reader.readChar();
+      if (ch == text[index])
+      {
+        index++;
+      }
+      else if (ch == text[0])
+      {
+        index = 1;
+      }
+      else
+      {
+        index = 0;
+      }
+      if (index == text.size())
+      {
+        reader.setCur(reader.getCur() - index);
+        ID3D_NOTICE( "findText: found \"" << text << "\" at " << 
+                     reader.getCur() );
+        break;
+      }
+    }
+    return !reader.atEnd();
+  };
+
+  void lyrics3ToSylt(ID3_Reader& reader, ID3_Writer& writer)
+  {
+    while (!reader.atEnd())
     {
       bool lf = false;
       size_t ms = 0;
       size_t count = 0;
-      io::TimeStampReader tsr(rdr);
-      while (tsr.isTimeStamp())
+      while (isTimeStamp(reader))
       {
         // For now, just skip over multiple time stamps
         if (count++ > 0)
         {
-          tsr.readTimeStamp();
+          readTimeStamp(reader);
         }
         else
         {
-          ms = tsr.readTimeStamp();
+          ms = readTimeStamp(reader);
         }
       }
-      while (!tsr.atEnd() && !tsr.isTimeStamp())
+      while (!reader.atEnd() && !isTimeStamp(reader))
       {
-        ID3_Reader::char_type ch = tsr.readChar();
-        if (0x0A == ch && (tsr.atEnd() || tsr.isTimeStamp()))
+        ID3_Reader::char_type ch = reader.readChar();
+        if (0x0A == ch && (reader.atEnd() || isTimeStamp(reader)))
         {
           lf = true;
           break;
         }
         else
         {
-          dest += static_cast<char>(ch);
+          writer.writeChar(ch);
         }
       }
       
       // put synch identifier
-      dest += '\0';
+      writer.writeChar('\0');
       
       // put timestamp
       ID3D_NOTICE( "lyrics3toSylt: ms = " << ms );
       
-      dest += renderNumber(ms, sizeof(uint32));
+      io::writeBENumber(writer, ms, sizeof(uint32));
       if (lf)
       {
         ID3D_NOTICE( "lyrics3toSylt: adding lf" );
     
         // put the LF
-        dest += 0x0A;
+        writer.writeChar(0x0A);
       }
     }
-
-    return dest;
   }
 };
 
-//bool parse(TagImpl& tag, ID3_Reader& reader)
 bool lyr3::v1::parse(ID3_TagImpl& tag, ID3_Reader& reader)
 {
   io::ExitTrigger et(reader);
@@ -221,9 +187,8 @@ bool lyr3::v1::parse(ID3_TagImpl& tag, ID3_Reader& reader)
   reader.setCur(end - (9 + 128));
         
   {
-    io::TextReader tr(reader);
-          
-    if (tr.readText(9) != "LYRICSEND" || tr.readText(3) != "TAG")
+    if (io::readText(reader, 9) != "LYRICSEND" || 
+        io::readText(reader, 3) != "TAG")
     {
       return false;
     }
@@ -243,25 +208,19 @@ bool lyr3::v1::parse(ID3_TagImpl& tag, ID3_Reader& reader)
   reader.setCur(end - lyrDataSize);
   io::WindowedReader wr(reader, lyrDataSize - (9 + 128));
         
+  if (!findText(wr, "LYRICSBEGIN"))
   {
-    io::FinderReader fr(wr);
-    if (!fr.findText("LYRICSBEGIN"))
-    {
-      ID3D_WARNING( "id3::v1::parse: couldn't find LYRICSBEGIN, bailing" );
-      return false;
-    }
+    ID3D_WARNING( "id3::v1::parse: couldn't find LYRICSBEGIN, bailing" );
+    return false;
   }
-        
+  
   et.setExitPos(wr.getCur());
   wr.skipChars(11);
   wr.setBeg(wr.getCur());
 
-  {
-    io::LineFeedReader lfr(wr);
-    io::TextReader tr(lfr);
-    String lyrics = tr.readText();
-    id3::v2::setLyrics(tag, lyrics, "Converted from Lyrics3 v1.00", "XXX");
-  }
+  io::LineFeedReader lfr(wr);
+  String lyrics = io::readText(lfr, wr.remainingBytes());
+  id3::v2::setLyrics(tag, lyrics, "Converted from Lyrics3 v1.00", "XXX");
 
   return true;
 }
@@ -280,25 +239,21 @@ bool lyr3::v2::parse(ID3_TagImpl& tag, ID3_Reader& reader)
   reader.setCur(end - (6 + 9 + 128));
   uint32 lyrSize = 0;
 
+  ID3_Reader::pos_type beg = reader.getCur();
+  lyrSize = readIntegerString(reader, 6);
+  if (reader.getCur() < beg + 6)
   {
-    io::NumberStringReader nsr(reader);
-    ID3_Reader::pos_type beg = nsr.getCur();
-    lyrSize = nsr.readInteger(6);
-    if (nsr.getCur() < beg + 6)
-    {
-      ID3D_NOTICE( "lyr3::v2::parse: couldn't find numeric string, lyrSize = " << lyrSize );
-      return false;
-    }
+    ID3D_NOTICE( "lyr3::v2::parse: couldn't find numeric string, lyrSize = " <<
+                 lyrSize );
+    return false;
   }
-    
+  
+  if (io::readText(reader, 9) != "LYRICS200" || 
+      io::readText(reader, 3) != "TAG")
   {
-    io::TextReader tr(reader);
-    if (tr.readText(9) != "LYRICS200" || tr.readText(3) != "TAG")
-    {
-      return false;
-    }
+    return false;
   }
-        
+  
   if (end < reader.getBeg() + lyrSize + 6 + 9 + 128)
   {
     ID3D_WARNING( "lyr3::v2::parse: not enough data to parse tag, lyrSize = " << lyrSize );
@@ -309,18 +264,13 @@ bool lyr3::v2::parse(ID3_TagImpl& tag, ID3_Reader& reader)
   io::WindowedReader wr(reader);
   wr.setWindow(wr.getCur(), lyrSize);
         
-  ID3_Reader::pos_type beg     = wr.getCur();
+  beg = wr.getCur();
         
+  if (io::readText(wr, 11) != "LYRICSBEGIN")
   {
-    io::TextReader tr(wr);
-    String          beginid = tr.readText(11);
-          
-    if (beginid != "LYRICSBEGIN")
-    {
-      // not a lyrics v2.00 tag
-      ID3D_WARNING( "lyr3::v2::parse: couldn't find LYRICSBEGIN, bailing, beginid = " << beginid );
-      return false;
-    }
+    // not a lyrics v2.00 tag
+    ID3D_WARNING( "lyr3::v2::parse: couldn't find LYRICSBEGIN, bailing" );
+    return false;
   }
         
   bool has_time_stamps = false;
@@ -329,27 +279,20 @@ bool lyr3::v2::parse(ID3_TagImpl& tag, ID3_Reader& reader)
         
   while (!wr.atEnd())
   {
-    string fldName, fldData;
     uint32 fldSize;
           
-    {
-      io::TextReader tr(wr);
-      fldName = tr.readText(3);
-      ID3D_NOTICE( "lyr3::v2::parse: fldName = " << fldName );
-      io::NumberStringReader snr(tr);
-      fldSize = snr.readInteger(5);
-      ID3D_NOTICE( "lyr3::v2::parse: fldSize = " << fldSize );
-    }
+    String fldName = io::readText(wr, 3);
+    ID3D_NOTICE( "lyr3::v2::parse: fldName = " << fldName );
+    fldSize = readIntegerString(wr, 5);
+    ID3D_NOTICE( "lyr3::v2::parse: fldSize = " << fldSize );
           
-    {
-      io::WindowedReader wr2(wr);
-      wr2.setWindow(wr.getCur(), fldSize);
-      io::LineFeedReader lfr(wr2);
-      io::TextReader tr(lfr);
-            
-      fldData = tr.readText(fldSize);
-      ID3D_NOTICE( "lyr3::v2::parse: fldData = \"" << fldData << "\"" );
-    }
+    String fldData;
+
+    io::WindowedReader wr2(wr, fldSize);
+    io::LineFeedReader lfr(wr2);
+    
+    fldData = io::readText(lfr, fldSize);
+    ID3D_NOTICE( "lyr3::v2::parse: fldData = \"" << fldData << "\"" );
           
     // the IND field
     if (fldName == "IND")
@@ -405,9 +348,11 @@ bool lyr3::v2::parse(ID3_TagImpl& tag, ID3_Reader& reader)
       else
       {
         // converts from lyrics3 to SYLT in-place
-        ID3_MemoryReader mr(fldData.data(), fldData.size());
+        io::StringReader sr(fldData);
         ID3D_NOTICE( "lyr3::v2::parse: determining synced lyrics" );
-        String sylt = lyrics3ToSylt (mr);
+        BString sylt;
+        io::BStringWriter sw(sylt);
+        lyrics3ToSylt(sr, sw);
               
         lyr_frame = id3::v2::setSyncLyrics(tag, sylt, ID3TSF_MS, desc,
                                            "XXX", ID3CT_LYRICS);

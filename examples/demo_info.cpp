@@ -14,7 +14,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.21 2000/10/13 18:25:53 eldamitri Exp $
+// $Id: demo_info.cpp,v 1.22 2000/10/14 19:24:38 eldamitri Exp $
 
 
 #ifdef HAVE_CONFIG_H
@@ -28,14 +28,14 @@
 #include <id3/utils.h>
 #include <id3/misc_support.h>
 #include <id3/readers.h>
-#include <id3/reader_decorators.h>
+#include <id3/io_helpers.h>
 #include <id3/error.h>
 
 #include "demo_info_options.h"
 
 using namespace dami;
 
-static String VERSION_NUMBER = "$Revision: 1.21 $";
+static String VERSION_NUMBER = "$Revision: 1.22 $";
 
 void PrintUsage(const char *sName)
 {
@@ -271,12 +271,11 @@ void PrintInformation(const ID3_Tag &myTag)
           if (fld)
           {
             ID3_MemoryReader mr(fld->GetBinary(), fld->BinSize());
-            io::BinaryNumberReader bnr(mr);
-            io::TextReader tr(mr);
             while (!mr.atEnd())
             {
-              cout << tr.readText();
-              cout << " [" << bnr.readNumber(sizeof(uint32)) << " " << format << "] ";
+              cout << io::readString(mr);
+              cout << " [" << io::readBENumber(mr, sizeof(uint32)) << " " 
+                   << format << "] ";
             }
           }
           cout << endl;

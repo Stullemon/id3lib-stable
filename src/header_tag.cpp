@@ -1,4 +1,4 @@
-// $Id: header_tag.cpp,v 1.17 2000/10/09 04:28:07 eldamitri Exp $
+// $Id: header_tag.cpp,v 1.18 2000/10/14 19:24:38 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -36,8 +36,7 @@
 #include "uint28.h"
 #include "utils.h"
 #include "tag.h"
-#include "reader_decorators.h"
-#include "writer_decorators.h"
+#include "io_helpers.h"
 
 using namespace dami;
 
@@ -86,8 +85,7 @@ void ID3_TagHeader::Render(ID3_Writer& writer) const
   // now we render the extended header
   if (_flags.test(EXTENDED))
   {
-    io::BinaryNumberWriter bnw(writer);
-    bnw.writeNumber(_info->extended_bytes, sizeof(uint32));
+    io::writeBENumber(writer, _info->extended_bytes, sizeof(uint32));
   }
 }
 

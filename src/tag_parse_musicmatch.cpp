@@ -1,4 +1,4 @@
-// $Id: tag_parse_musicmatch.cpp,v 1.13 2000/10/12 22:36:15 eldamitri Exp $
+// $Id: tag_parse_musicmatch.cpp,v 1.14 2000/10/14 19:24:38 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -34,95 +34,45 @@
 #include "tag_impl.h"
 #include "utils.h"
 #include "helpers.h"
-#include "reader_decorators.h"
-
-namespace dami
-{
-  namespace io
-  {
-    class LENumberReader : public IdentityReader
-    {
-      typedef IdentityReader SUPER;
-    public:
-      LENumberReader(ID3_Reader& reader) : SUPER(reader) { ; }
-      virtual ~LENumberReader() { ; }
-
-      uint32 readInteger()
-      {
-        return this->readInteger(this->getEnd() - this->getCur());
-      }
-      
-      uint32 readInteger(size_t numBytes)
-      {
-        uint32 val = 0;
-        for (size_t i = 0; i < numBytes; i++)
-        {
-          if (this->atEnd())
-          {
-            break;
-          }
-          val += (static_cast<size_t>(0xFF & this->readChar()) << (i * 8));
-        }
-        return val;
-      }
-    };
-
-    class TimeReader : public IdentityReader
-    {
-      typedef IdentityReader SUPER;
-    public:
-      TimeReader(ID3_Reader& reader) : SUPER(reader) { ; }
-      virtual ~TimeReader() { ; }
-
-      uint32 readSeconds(size_t numBytes)
-      {
-        io::WindowedReader wr(*this, numBytes);
-        pos_type beg = wr.getCur();
-        uint32 seconds = 0;
-        uint32 cur = 0;
-        while (!wr.atEnd())
-        {
-          char_type ch = wr.readChar();
-          if (':' == ch)
-          {
-            seconds += 60 * cur;
-            cur = 0;
-          }
-          else if (!isdigit(ch))
-          {
-            this->setCur(beg);
-            return 0;
-          }
-          else
-          {
-            cur = cur * 10 + (ch - '0');
-          }
-        }
-        return seconds + cur;
-      }
-    };
-
-    class TextFrameReader : public IdentityReader
-    {
-      typedef IdentityReader SUPER;
-    public:
-      TextFrameReader(ID3_Reader& reader) : SUPER(reader) { ; }
-      virtual ~TextFrameReader() { ; }
-
-    };
-  };
-};
+#include "io_decorators.h"
+#include "io_helpers.h"
 
 using namespace dami;
 
 namespace 
 {
+  uint32 readSeconds(ID3_Reader& reader, size_t len)
+  {
+    io::ExitTrigger et(reader);
+    io::WindowedReader wr(reader, len);
+    ID3_Reader::pos_type beg = wr.getCur();
+    uint32 seconds = 0;
+    uint32 cur = 0;
+    while (!wr.atEnd())
+    {
+      ID3_Reader::char_type ch = wr.readChar();
+      if (':' == ch)
+      {
+        seconds += 60 * cur;
+        cur = 0;
+      }
+      else if (!isdigit(ch))
+      {
+        return 0;
+      }
+      else
+      {
+        cur = cur * 10 + (ch - '0');
+      }
+    }
+    et.release();
+    return seconds + cur;
+  }
   
   ID3_Frame* readTextFrame(ID3_Reader& reader, ID3_FrameID id, const String desc = "")
   {
-    io::LENumberReader nr(reader);
-    uint32 size = nr.readInteger(2);
-    ID3D_NOTICE( "io::TextFrameReader::readFrame() size = " << size );
+    uint32 size = io::readLENumber(reader, 2);
+    ID3D_NOTICE( "readTextFrame: size = " << size );
     if (size == 0)
     {
       return NULL;
@@ -132,15 +82,13 @@ namespace
     if (ID3FID_SONGLEN != id)
     {
       io::LineFeedReader lfr(reader);
-      io::TextReader tr(lfr);
-      text = tr.readText(size);
-      ID3D_NOTICE( "io::TextFrameReader::readFrame() text = " << text );
+      text = readText(lfr, size);
+      ID3D_NOTICE( "readTextFrame: text = " << text );
     }
     else
     {
-      io::TimeReader tr(reader);
-      text = toString(tr.readSeconds(size));
-      ID3D_NOTICE( "io::TextFrameReader::readFrame() songlen = " << text );
+      text = toString(readSeconds(reader, size) * 1000);
+      ID3D_NOTICE( "readTextFrame: songlen = " << text );
     }
     
     ID3_Frame* frame = new ID3_Frame(id);
@@ -181,14 +129,13 @@ bool mm::parse(ID3_TagImpl& tag, ID3_Reader& rdr)
   String version;
   
   {
-    io::TextReader tr(rdr);
-    if (tr.readText(32) != "Brava Software Inc.             ")
+    if (io::readText(rdr, 32) != "Brava Software Inc.             ")
     {
       ID3D_NOTICE( "mm::parse: bailing, couldn't find footer" );
       return false;
     }
     
-    version = tr.readText(4);
+    version = io::readText(rdr, 4);
     if (version.size() != 4 || 
         !isdigit(version[0]) || version[1] != '.' ||
         !isdigit(version[2]) || 
@@ -213,13 +160,10 @@ bool mm::parse(ID3_TagImpl& tag, ID3_Reader& rdr)
 
   uint32 offsets[5];
     
+  io::WindowedReader offsetWindow(rdr, 20);
+  for (size_t i = 0; i < 5; ++i)
   {
-    io::WindowedReader offsetWindow(rdr, 20);
-    io::LENumberReader offsetRdr(offsetWindow);
-    for (size_t i = 0; i < 5; ++i)
-    {
-      offsets[i] = offsetRdr.readInteger(sizeof(uint32));
-    }
+    offsets[i] = io::readLENumber(rdr, sizeof(uint32));
   }
 
   size_t metadataSize = 0;
@@ -251,10 +195,9 @@ bool mm::parse(ID3_TagImpl& tag, ID3_Reader& rdr)
         continue;
       }
       dataWindow.setCur(dataWindow.getCur() - offset);
-      io::TextReader tr(dataWindow);
         
       // now read in the signature to see if it's a match
-      if (tr.readText(8) == "18273645")
+      if (readText(dataWindow, 8) == "18273645")
       {
         metadataSize = possibleSizes[i];
         break;
@@ -314,26 +257,26 @@ bool mm::parse(ID3_TagImpl& tag, ID3_Reader& rdr)
   if (dataWindow.getBeg() >= 256)
   {
     rdr.setCur(dataWindow.getBeg() - 256);
-    io::TextReader tr(rdr);
-    if (tr.readText(8) == "18273645")
+    if (io::readText(rdr, 8) == "18273645")
     {
-      et.setExitPos(tr.getCur() - 8);
+      et.setExitPos(rdr.getCur() - 8);
+    }
+    else
+    {
+      et.setExitPos(dataWindow.getBeg());
     }
     dataWindow.setCur(dataWindow.getBeg());
   }
     
   // Now parse the various sections...
-  io::TextReader tr(dataWindow);
     
   // Parse the image extension at offset 0
   dataWindow.setCur(offsets[0]);
-  io::TrailingSpacesReader tsr(tr);
-  String imgExt = tsr.readString(4);
+  String imgExt = readTrailingSpaces(dataWindow, 4);
     
   // Parse the image binary at offset 1
   dataWindow.setCur(offsets[1]);
-  io::LENumberReader nr(dataWindow);
-  uint32 imgSize = nr.readInteger(4);
+  uint32 imgSize = readLENumber(dataWindow, 4);
   if (imgSize == 0)
   {
     // no image binary.  don't do anything.
@@ -348,8 +291,7 @@ bool mm::parse(ID3_TagImpl& tag, ID3_Reader& rdr)
     }
     else
     {
-      io::TextReader dataReader(imgWindow);
-      String imgData = dataReader.readText();
+      BString imgData = readAllBinary(imgWindow);
       ID3_Frame* frame = new ID3_Frame(ID3FID_PICTURE);
       if (frame)
       {
@@ -388,10 +330,10 @@ bool mm::parse(ID3_TagImpl& tag, ID3_Reader& rdr)
   tag.AttachFrame(readTextFrame(dataWindow, ID3FID_COMMENT, "MusicMatch_Serial"));
     
   // 2 bytes for track
-  uint32 trkNum = nr.readInteger(2);
+  uint32 trkNum = io::readLENumber(dataWindow, 2);
   if (trkNum > 0)
   {
-    String trkStr = ::toString(trkNum);
+    String trkStr = toString(trkNum);
     ID3_Frame* frame = new ID3_Frame(ID3FID_TRACKNUM);
     if (frame)
     {
