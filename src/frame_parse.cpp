@@ -1,4 +1,4 @@
-// $Id: frame_parse.cpp,v 1.27 2000/10/23 07:42:13 eldamitri Exp $
+// $Id: frame_parse.cpp,v 1.28 2000/10/23 07:45:17 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -156,12 +156,12 @@ bool ID3_FrameImpl::Parse(ID3_Reader& reader)
   // expand out the data if it's compressed 
   if (!_hdr.GetCompression())
   {
-    success = id3::v2::parseFields(wr, *this);
+    success = parseFields(wr, *this);
   }
   else
   {
     io::CompressedReader csr(wr, origSize);
-    success = id3::v2::parseFields(csr, *this);
+    success = parseFields(csr, *this);
   }
   et.setExitPos(wr.getCur());
 
