@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.38 2001/07/25 03:50:46 thefrogprince Exp $
+// $Id: tag.cpp,v 1.39 2001/08/04 00:05:34 thefrogprince Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -72,9 +72,9 @@ using namespace dami;
  **   ID3_Tag myTag("song.mp3");
  ** \endcode
  **
- ** This constructor links, or associates, the object \c tag with the file
+ ** This constructor links, or associates, the object \c myTag with the file
  ** "song.mp3".  In doing so, the tagging information from "song.mp3" is parsed
- ** and added to \c tag.  This association can also be accomplished by creating
+ ** and added to \c myTag.  This association can also be accomplished by creating
  ** an empty tag and making an explicit call to Link().
  **
  ** \code
@@ -85,7 +85,7 @@ using namespace dami;
  ** The default behavior of Link() is to parse all possible tagging information
  ** and convert it into ID3v2 frames.  The tagging information parsed can be
  ** limited to a particular type (or types) of tag by passing an ID3_TagType
- ** (or combination of ID3_TagType's).  For example, to read only the ID3v1
+ ** (or combination of ID3_TagTypes).  For example, to read only the ID3v1
  ** tag, pass in the constant ID3TT_ID3V1.
  **
  ** \code
@@ -103,12 +103,12 @@ using namespace dami;
  **
  ** After linking with a file, the object \c myTag now contains some or all of
  ** the tagging information present in the file "song.mp3", represented as
- ** ID3v2 frames.  How can that information be accessed?  There a variety of
+ ** ID3v2 frames.  How can that information be accessed?  There are a variety of
  ** ways to do this.  One is to iterate through all the frames in the tag.
  **
  ** \code
  **   // use an std::auto_ptr here to handle object cleanup automatically
- **   ID3_Tag::Iterator* iter = tag.createIterator();
+ **   ID3_Tag::Iterator* iter = myTag.createIterator();
  **   ID3_Frame* myFrame = NULL;
  **   while (NULL != (myFrame = iter->GetNext())
  **   {
@@ -280,7 +280,7 @@ using namespace dami;
  ** formatted 'CDM' frames from the unreleased ID3v2 2.01 draft specification.
  **
  ** \author Dirk Mahoney
- ** \version $Id: tag.cpp,v 1.38 2001/07/25 03:50:46 thefrogprince Exp $
+ ** \version $Id: tag.cpp,v 1.39 2001/08/04 00:05:34 thefrogprince Exp $
  ** \sa ID3_Frame
  ** \sa ID3_Field
  ** \sa ID3_Err
