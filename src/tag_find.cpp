@@ -1,4 +1,4 @@
-// $Id: tag_find.cpp,v 1.21 2000/10/15 06:39:26 eldamitri Exp $
+// $Id: tag_find.cpp,v 1.22 2000/10/16 07:00:59 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -233,21 +233,6 @@ ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, uint32 data) con
   return frame;
 }
 
-  /** Returns a pointer to the frame with the given index; returns NULL if
-   ** there is no such frame at that index.
-   ** 
-   ** Optionally, <a href="#operator[]">operator[]</a> can be used as an
-   ** alternative to this method.  Indexing is 0-based (that is, the first
-   ** frame is number 0, and the last frame in a tag that holds n frames is
-   ** n-1).
-   ** 
-   ** If you wish to have a more comlex searching facility, then at least for
-   ** now you will have to devise it yourself and implement it useing these
-   ** methods.
-   ** 
-   ** @param nIndex The index of the frame that is to be retrieved
-   ** @return A pointer to the requested frame, or NULL if no such frame.
-   **/
 ID3_Frame *ID3_TagImpl::GetFrameNum(index_t num) const
 {
   const size_t num_frames = this->NumFrames();
@@ -271,14 +256,6 @@ ID3_Frame *ID3_TagImpl::GetFrameNum(index_t num) const
   return frame;
 }
 
-/** Returns a pointer to the frame with the given index; returns NULL if
- ** there is no such frame at that index.
- ** 
- ** @name operator[]
- ** @param nIndex The index of the frame that is to be retrieved
- ** @return A pointer to the requested frame, or NULL if no such frame. 
- ** @see #GetFrameNum
- **/
 ID3_Frame *ID3_TagImpl::operator[](index_t num) const
 {
   return GetFrameNum(num);
