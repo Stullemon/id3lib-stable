@@ -1,4 +1,4 @@
-// $Id: frame_parse.cpp,v 1.23 2000/10/09 04:27:26 eldamitri Exp $
+// $Id: frame_parse.cpp,v 1.24 2000/10/12 22:30:58 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -102,6 +102,8 @@ bool id3::v2::parseFields(ID3_Reader& rdr, ID3_FrameImpl& frame)
     }
   }
   et.setExitPos(rdr.getCur());
+
+  return true;
 }
 
 bool ID3_FrameImpl::Parse(ID3_Reader& reader) 
