@@ -1,3 +1,41 @@
+2000-07-01  Scott Haug  <scott@id3.org>
+
+	* src/tag_parse_v1.cpp 
+	(ParseID3v1): Now returns number of bytes parsed.
+
+	* src/tag_parse_musicmatch.cpp 
+	(ParseMusicMatch): Now returns number of bytes parsed.
+
+	* src/tag_parse_lyrics3.cpp 
+	(ParseLyrics3): Now returns number of bytes parsed.  No longer parses
+	Lyrics3 v2.00 tags
+	(ParseLyrics3v2): Added implementation.
+
+	* src/tag_parse.cpp 
+	(Parse): __file_tags no longer updated
+	(ParseID3v2): Added implementation
+	(ParseFromHandle): Now takes responsibility for setting 
+	__starting_bytes, __ending_bytes, and __file_tags.  Now finds all
+	(known) tag types attached to the file by iteratively looking for a tag
+	starting where the last known tag was found.
+
+	* src/tag_file.cpp 
+	(Link): ParseFromHandle no longer returns a value, now accepts a file
+	handle
+	(Update): Now record the tags that have been updated in __file_tags
+	(Strip): If one appended tag type is stripped, they're all stripped.
+	Same for prepended tags
+
+	* include/id3/tag.h 
+	(class ID3_Tag): New interface for protected Parse methods
+
+	* include/id3/globals.h 
+	(ID3_TagTypes): Added LYRICS3, LYRICS3V2, PREPENDED, and APPENDED.
+	Deprecated LYRICS
+
+	* examples/demo_convert.cpp 
+	(main): Minor type change
+
 2000-06-25  Scott Haug  <scott@id3.org>
 
 	* include/id3/globals.h 
