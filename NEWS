@@ -1,4 +1,40 @@
-$Id: NEWS,v 1.8 2000/04/21 20:13:54 eldamitri Exp $
+$Id: NEWS,v 1.9 2000/04/25 00:16:39 eldamitri Exp $
+
+2000-04-24 Version 3.7.3
+
+* C/C++ interface changes:
+  - Moved V1_LEN* constants into an enumeration so that they can be used as 
+    array size initializers in C.  Renamed the constants for consistency
+    (LEN_V1 -> ID3_V1_LEN, LEN_V1_TITLE -> ID3_V1_LEN_TITLE, etc.)
+  - Renamed ID3_TagType's enums to be more consistent with rest of library's
+    enums (V1_TAG -> ID3TT_ID3V1, V2_TAG -> ID3TT_ID3V2, etc.)
+  - ID3_Err enumeration now defines ID3E_NoError
+* C++ interface changes:
+  - ID3_Frame now has a copy constructor
+  - ID3_Tag::AddNewFrame deprecated for AttachFrame (no other difference in 
+    behavior)
+  - ID3_Tag::Link(char *, bool, bool) deprecated for 
+    ID3_Tag::Link(char *, luint). Now accepts ID3_TagTypes to determine which
+    tags to parse. i.e, mytag.Link("myfile.mp3", ID3TT_ID3V2 | ID3TT_LYRICS);
+  - ID3_Tag::operator<<, ID3_Tag::AddFrame: relevant parameters now const
+* C interface changes:
+  - ID3Tag_Parse, ID3Tag_Update, ID3Tag_Strip now return an ID3_Err
+  - Added functions ID3Tag_UpdateByTagType, ID3Frame_New, ID3Frame_NewID,
+    ID3Frame_Delete
+* Implementation changes:
+  - AddFrame, AddFrames now add copies of the frames passed in.  
+  - AttachFrame adds the actual frame passed to it.
+  - The tag takes responsibility for managing its frames' memory in all cases.
+* Miscellaneous changes:
+  - Moved most enum and struct declarations to include/id3/globals.h so they
+    are accessible to C interface
+  - id3com.dsp file is 'fixed', but the project still doesn't compile w/o 
+    errors
+  - Most doxygen comments moved from tag.h to respective files
+  - Fixed a bug in id3lib.spec which caused rpm binaries to be compiled without
+    exception handling
+  - examples, include/id3/* header files no longer include config.h
+  - Other minor bugfixes
 
 2000-04-21 Version 3.7.2
 
