@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.20 2000/04/05 05:21:15 eldamitri Exp $
+// $Id: misc_support.cpp,v 1.21 2000/04/08 04:40:40 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,9 +24,9 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#include <cstdlib>
-#include <cctype>
-#include <cstdio>
+#include <stdlib.h>
+#include <ctype.h>
+#include <stdio.h>
 #include "misc_support.h"
 
 #if defined HAVE_CONFIG_H
@@ -165,7 +165,7 @@ char *ID3_GetString(const ID3_Frame *frame, const ID3_FieldID fldName,
     {
       frame->Field(fldName).Get(sText, nText, nIndex);
     }
-    catch (ID3_Err err)
+    catch (ID3_Err&)
     {
       delete [] sText;
       return NULL;
@@ -823,6 +823,10 @@ size_t ID3_RemoveLyrics(ID3_Tag *tag)
 }
 
 // $Log: misc_support.cpp,v $
+// Revision 1.21  2000/04/08 04:40:40  eldamitri
+// Changed new ANSI-standard C++ include headers to old-style headers.
+// (ID3_GetString): Removed variable name to prevent warning in windows.
+//
 // Revision 1.20  2000/04/05 05:21:15  eldamitri
 // Updated initial comment information to reflect license, copyright
 // change.
