@@ -25,7 +25,7 @@ int main( int argc, char *argv[])
   cout << "tags to ID3v2 tags.  This program will also remove" << endl;
   cout << "the old tags." << endl << endl;
 
-  if(argc > 1)
+  if (argc > 1)
   {
     try
     {
@@ -39,12 +39,13 @@ int main( int argc, char *argv[])
 
     catch(ID3_Error err)
     {
-      cout << "Error in ID3Lib call: '" << err.GetErrorDesc() << "'" << endl;
+      cout << err.GetErrorFile() << " (" << err.GetErrorLine() << "): "
+           << err.GetErrorType() << ": " << err.GetErrorDesc() << endl;
     }
   }
   else
   {
-    cout << "Usage: ID3Convert <file>" << endl << endl;
+    cout << "Usage: " << argv[0] << " <file>" << endl << endl;
 
     cout << "Where: 'file' is the file you wish to convert." << endl << endl;
   }
