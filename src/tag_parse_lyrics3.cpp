@@ -1,4 +1,4 @@
-// $Id: tag_parse_lyrics3.cpp,v 1.5 2000/05/03 03:02:56 eldamitri Exp $
+// $Id: tag_parse_lyrics3.cpp,v 1.6 2000/05/04 20:52:18 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -70,7 +70,7 @@ luint ID3_StripTimeStamps(char *buffer, luint size)
   char *dest = buffer;
   char *source = buffer;
   
-  if (buffer != NULL && size > 0)
+  if ((buffer == NULL) || (size == 0))
   {
     ID3_THROW(ID3E_NoData);
   }
@@ -92,6 +92,96 @@ luint ID3_StripTimeStamps(char *buffer, luint size)
   return newSize;
 }
 
+luint ID3_Lyrics3ToSylt(char *buffer, luint size)
+{
+  luint newSize = 0;
+  char *dest = buffer;
+  char *source = buffer;
+  luint	ms;
+  bool	bFirstTimeStamp = true;
+  bool	bFoundLf = false;
+  luint	*pts;
+  
+  if ((buffer == NULL) || (size == 0))
+  {
+    ID3_THROW(ID3E_NoData);
+  }
+
+  while (source < (buffer + size))
+  {
+    if (*source == '[')
+    {
+      // check if first timestamp
+      if (!bFirstTimeStamp)
+      {
+        // put synch identifier
+        *dest++ = '\0';
+
+        // put timestamp
+        pts = (luint *) dest;
+        *pts = ms;
+        dest += 4;
+
+        if (bFoundLf)
+        {
+          // put the LF
+          *dest++ = 0x0A;
+          bFoundLf = false;
+        }
+		  
+      }
+      else
+        bFirstTimeStamp = false;
+
+      // timestamp found skip [
+      source++;
+
+      // get minutes and ms
+      char minutes[5];
+      sprintf (minutes, "%c%c", source[0], source[1]);
+      ms = atoi (minutes) * 60000;
+
+      // skip :
+      source +=3;
+
+      // get seconds and ms
+      char sec[5];
+      sprintf (sec, "%c%c", source[0], source[1]);
+      ms = ms + (atoi (sec) * 1000);
+
+      // skip ]
+      source +=3;
+    }
+    else if (*source == 0x0A)
+    {
+      source++;
+      bFoundLf = true;
+    }
+    else
+    {
+      *dest++ = *source++;
+    }
+  }
+
+  // put the last synch identifier
+  *dest++ = '\0';
+
+  // put the last timestamp
+  pts = (luint *) dest;
+  *pts = ms;
+  dest += 4;
+
+  if (bFoundLf)
+  {
+    // put the last LF
+    *dest++ = 0x0A;
+    bFoundLf = false;
+  }
+  
+  newSize = dest - buffer;
+    
+  return newSize;
+}
 
 void ID3_Tag::ParseLyrics3(void)
 {
@@ -184,7 +274,12 @@ void ID3_Tag::ParseLyrics3(void)
       memcpy(text, bufflyr, newSize);
       delete[] bufflyr;
 
-      ID3_AddLyrics(this, text);
+      ID3_Frame	*pLyrFrame = ID3_AddLyrics(this, text);
+      if (NULL != pLyrFrame)
+      {
+        pLyrFrame->Field(ID3FN_LANGUAGE) = "eng";
+        pLyrFrame->Field(ID3FN_DESCRIPTION) = "Converted from Lyrics3 v1.00";
+      }
 
       delete[] text;
     }
@@ -193,6 +288,9 @@ void ID3_Tag::ParseLyrics3(void)
     {
       // we have a Lyrics3 v2.00 tag
       luint lyricsSize;
+
+      ID3_Frame	*pLyrFrame = NULL;
+      char		*textInf = NULL;
 
       buffer[6] = 0;
       lyricsSize = atoi((char *) buffer);
@@ -297,6 +395,47 @@ void ID3_Tag::ParseLyrics3(void)
             delete[] text;
           }
 
+          // the Lyrics/Music AUTHOR field
+          if (strcmp((char *) fid, "AUT") == 0)
+          {
+            char *text;
+
+            text = new char[size + 1];
+            if (NULL == text)
+            {
+              ID3_THROW(ID3E_NoMemory);
+            }
+
+            text[size] = 0;
+            memcpy(text, &buff2[posn + 8], size);
+
+            ID3_AddLyricist(this, text);
+
+            delete[] text;
+          }
+
+          // the INFORMATION field
+          if (strcmp((char *) fid, "INF") == 0)
+          {
+            luint newSize;
+
+            newSize = ID3_CRLFtoLF((char *) & buff2[posn + 8], size);
+
+            textInf = new char[newSize + 1];
+            if (NULL == textInf)
+            {
+              ID3_THROW(ID3E_NoMemory);
+            }
+
+            textInf[newSize] = 0;
+
+            memcpy(textInf, &buff2[posn + 8], newSize);
+
+            // if already found the lyrics text use this field as description
+            if (NULL != pLyrFrame)
+              pLyrFrame->Field(ID3FN_DESCRIPTION) = textInf;
+          }
+
           // the LYRICS field
           if (strcmp((char *) fid, "LYR") == 0)
           {
@@ -305,11 +444,36 @@ void ID3_Tag::ParseLyrics3(void)
 
             newSize = ID3_CRLFtoLF((char *) & buff2[posn + 8], size);
 
-            if (stampsUsed)
+            if (!stampsUsed)
             {
-              newSize = ID3_StripTimeStamps((char *) & buff2[posn + 8], 
-                                            newSize);
+              text = new char[newSize + 1];
+              if (NULL == text)
+              {
+                ID3_THROW(ID3E_NoMemory);
+              }
+
+              text[newSize] = 0;
+
+              memcpy(text, &buff2[posn + 8], newSize);
+
+              pLyrFrame = ID3_AddLyrics(this, text);
+              if (NULL != pLyrFrame)
+              {
+                pLyrFrame->Field(ID3FN_LANGUAGE) = "eng";
+
+                // if already found an INF field, use it as description
+                if (NULL != textInf)
+                  pLyrFrame->Field(ID3FN_DESCRIPTION) = textInf;
+                else
+                  pLyrFrame->Field(ID3FN_DESCRIPTION) = "Converted from Lyrics3 v2.00";
+              }
+
+              delete[] text;
             }
+            /* newSize = ID3_StripTimeStamps((char *) & buff2[posn + 8], 
+               newSize);*/
+            // convert lyrics into a SYLT frame Content Descriptor
+            newSize = ID3_Lyrics3ToSylt ((char *) & buff2[posn + 8], newSize);
 
             text = new char[newSize + 1];
             if (NULL == text)
@@ -321,7 +485,24 @@ void ID3_Tag::ParseLyrics3(void)
 
             memcpy(text, &buff2[posn + 8], newSize);
 
-            ID3_AddLyrics(this, text);
+            pLyrFrame = new ID3_Frame;
+            if (NULL == pLyrFrame)
+            {
+              ID3_THROW(ID3E_NoMemory);
+            }
+      
+            pLyrFrame->SetID(ID3FID_SYNCEDLYRICS);
+            AttachFrame(pLyrFrame);
+            pLyrFrame->Field(ID3FN_LANGUAGE) = "eng";
+            pLyrFrame->Field(ID3FN_TIMESTAMPFORMAT) = 2;
+            pLyrFrame->Field(ID3FN_CONTENTTYPE) = 1;
+            pLyrFrame->Field(ID3FN_DATA).Set ((const uchar *) text, newSize);
+
+            // if already found an INF field, use it as description
+            if (NULL != textInf)
+              pLyrFrame->Field(ID3FN_DESCRIPTION) = textInf;
+            else
+              pLyrFrame->Field(ID3FN_DESCRIPTION) = "Converted from Lyrics3 v2.00";
 
             delete[] text;
           }
@@ -330,6 +511,8 @@ void ID3_Tag::ParseLyrics3(void)
         }
 
         delete[] buff2;
+        if (NULL != textInf)
+          delete[] textInf;
       }
     }
   }
