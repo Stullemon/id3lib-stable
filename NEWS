@@ -1,4 +1,20 @@
-$Id: NEWS,v 1.24 2000/10/15 16:37:54 eldamitri Exp $
+$Id: NEWS,v 1.25 2000/11/20 09:06:41 eldamitri Exp $
+
+2000-11-20 Version 3.8.0pre1
+
+* First prerelease of 3.8.0 stable.
+* Clean separation of interface and implementation to help ensure interface and
+  binary compatibility of future releases
+* Completely revamped implementation of tag reading and writing
+* Better debugging output in debug mode
+* New documentation (much more still needed)
+* Command-line options processing now more cross-platform
+* Removed all exception handling
+* Minor changes to public interface
+* Use of std::string and other STL classes in implementation
+* id3com source code removed from source distribution.  It has moved to its own
+  project at http://sourceforge.net/projects/id3com
+* Many more changes than can be mentioned here:  see ChangeLog file
 
 2000-09-07 Version 3.7.13
 
