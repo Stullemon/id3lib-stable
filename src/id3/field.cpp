@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.13 1999/12/17 16:13:03 scott Exp $
+// $Id: field.cpp,v 1.14 1999/12/26 00:33:15 scott Exp $
 // 
 // This program is free software; you can distribute it and/or modify it under
 // the terms discussed in the COPYING file, which should have been included
@@ -18,6 +18,20 @@
 
 #include <string.h>
 #include "field.h"
+
+// This is used for unimplemented frames so that their data is preserved when
+// parsing and rendering
+static ID3_FieldDef ID3FD_Unimplemented[] =
+{
+  {
+    ID3FN_DATA,                         // FIELD NAME
+    ID3FTY_BINARY,                      // FIELD TYPE
+    -1, 2, 0,                           // FIXED LEN, VERSION, REVISION
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
+    ID3FF_NONE,                         // FLAGS
+    ID3FN_NOFIELD                       // LINKED FIELD
+  }
+};
 
 static ID3_FieldDef ID3FD_URL[] =
 { 
@@ -491,102 +505,115 @@ static ID3_FieldDef ID3FD_Volume[] =
   { ID3FN_NOFIELD }
 };
 #endif /* __UNEFINED__ */
-  
 
-// *** Currently Defined Frames
-// APIC  Attached picture
-// COMM  Comments
-// ENCR  Encryption method registration
-// GEOB  General encapsulated object
-// GRID  Group identification registration
-// IPLS  Involved people list
-// LINK  Linked information
-// PCNT  Play counter
-// POPM  Popularimeter
-// TALB  Album/Movie/Show title
-// TBPM  BPM (beats per minute)
-// TCOM  Composer
-// TCON  Content type
-// TCOP  Copyright message
-// TDAT  Date
-// TDLY  Playlist delay
-// TENC  Encoded by
-// TEXT  Lyricist/Text writer
-// TFLT  File type
-// TKEY  Initial key
-// TIME  Time
-// TIT1  Content group description
-// TIT2  Title/songname/content description
-// TIT3  Subtitle/Description refinement
-// TLAN  Language(s)
-// TLEN  Length
-// TMED  Media type
-// TOAL  Original album/movie/show title
-// TOFN  Original filename
-// TOLY  Original lyricist(s)/text writer(s)
-// TOPE  Original artist(s)/performer(s)
-// TORY  Original release year
-// TOWN  File owner/licensee
-// TPE1  Lead performer(s)/Soloist(s)
-// TPE2  Band/orchestra/accompaniment
-// TPE3  Conductor/performer refinement
-// TPE4  Interpreted, remixed, or otherwise modified by
-// TPOS  Part of a set
-// TPUB  Publisher
-// TRCK  Track number/Position in set
-// TRDA  Recording dates
-// TRSN  Internet radio station name
-// TRSO  Internet radio station owner
-// TSIZ  Size
-// TSRC  ISRC (international standard recording code)
-// TSSE  Software/Hardware and settings used for encoding
-// TYER  Year
-// TXXX  User defined text information frame
-// UFID  Unique file identifier
-// USER  Terms of use
-// USLT  Unsychronized lyric/text transcription
-// WCOM  Commercial information
-// WCOP  Copyright/Legal information
-// WOAF  Official audio file webpage
-// WOAR  Official artist/performer webpage
-// WOAS  Official audio source webpage
-// WORS  Official internet radio station homepage
-// WPAY  Payment
-// WPUB  Publishers official webpage
-// WXXX  User defined URL link frame
+// **** Currently Implemented Frames
+// APIC  PIC  ID3FID_PICTURE           Attached picture
+// COMM  COM  ID3FID_COMMENT           Comments
+// ENCR       ID3FID_CRYPTOREG         Encryption method registration
+// GEOB  GEO  ID3FID_GENERALOBJECT     General encapsulated object
+// GRID       ID3FID_GROUPINGREG       Group identification registration
+// IPLS  IPL  ID3FID_INVOLVEDPEOPLE    Involved people list
+// LINK  LNK  ID3FID_LINKEDINFO        Linked information
+// PCNT  CNT  ID3FID_PLAYCOUNTER       Play counter
+// POPM  POP  ID3FID_POPULARIMETER     Popularimeter
+// TALB  TAL  ID3FID_ALBUM             Album/Movie/Show title
+// TBPM  TBP  ID3FID_BPM               BPM (beats per minute)
+// TCOM  TCM  ID3FID_COMPOSER          Composer
+// TCON  TCO  ID3FID_CONTENTTYPE       Content type
+// TCOP  TCR  ID3FID_COPYRIGHT         Copyright message
+// TDAT  TDA  ID3FID_DATE              Date
+// TDLY  TDY  ID3FID_PLAYLISTDELAY     Playlist delay
+// TENC  TEN  ID3FID_ENCODEDBY         Encoded by
+// TEXT  TXT  ID3FID_LYRICIST          Lyricist/Text writer
+// TFLT  TFT  ID3FID_FILETYPE          File type
+// TIME  TKE  ID3FID_TIME              Time
+// TIT1  TIM  ID3FID_CONTENTGROUP      Content group description
+// TIT2  TT1  ID3FID_TITLE             Title/songname/content description
+// TIT3  TT2  ID3FID_SUBTITLE          Subtitle/Description refinement
+// TKEY  TT3  ID3FID_INITIALKEY        Initial key
+// TLAN  TLA  ID3FID_LANGUAGE          Language(s)
+// TLEN  TLE  ID3FID_SONGLEN           Length
+// TMED  TMT  ID3FID_MEDIATYPE         Media type
+// TOAL  TOT  ID3FID_ORIGALBUM         Original album/movie/show title
+// TOFN  TOF  ID3FID_ORIGFILENAME      Original filename
+// TOLY  TOL  ID3FID_ORIGLYRICIST      Original lyricist(s)/text writer(s)
+// TOPE  TOA  ID3FID_ORIGARTIST        Original artist(s)/performer(s)
+// TORY  TOR  ID3FID_ORIGYEAR          Original release year
+// TOWN       ID3FID_FILEOWNER         File owner/licensee
+// TPE1  TP1  ID3FID_LEADARTIST        Lead performer(s)/Soloist(s)
+// TPE2  TP2  ID3FID_BAND              Band/orchestra/accompaniment
+// TPE3  TP3  ID3FID_CONDUCTOR         Conductor/performer refinement
+// TPE4  TP4  ID3FID_MIXARTIST         Interpreted, remixed, or otherwise modified
+// TPOS  TPA  ID3FID_PARTINSET         Part of a set
+// TPUB  TPB  ID3FID_PUBLISHER         Publisher
+// TRCK  TRK  ID3FID_TRACKNUM          Track number/Position in set
+// TRDA  TRD  ID3FID_RECORDINGDATES    Recording dates
+// TRSN  TRN  ID3FID_NETRADIOSTATION   Internet radio station name
+// TRSO  TRO  ID3FID_NETRADIOOWNER     Internet radio station owner
+// TSIZ  TSI  ID3FID_SIZE              Size
+// TSRC  TRC  ID3FID_ISRC              ISRC (international standard recording code)
+// TSSE  TSS  ID3FID_ENCODERSETTINGS   Software/Hardware and encoding settings
+// TXXX  TXX  ID3FID_USERTEXT          User defined text information
+// TYER  TYE  ID3FID_YEAR              Year
+// UFID  UFI  ID3FID_UNIQUEFILEID      Unique file identifier
+// USER       ID3FID_TERMSOFUSE        Terms of use
+// USLT  ULT  ID3FID_UNSYNCEDLYRICS    Unsynchronized lyric/text transcription
+// WCOM  WCM  ID3FID_WWWCOMMERCIALINFO Commercial information
+// WCOP  WCM  ID3FID_WWWCOPYRIGHT      Copyright/Legal infromation
+// WOAF  WCP  ID3FID_WWWAUDIOFILE      Official audio file webpage
+// WOAR  WAF  ID3FID_WWWARTIST         Official artist/performer webpage
+// WOAS  WAR  ID3FID_WWWAUDIOSOURCE    Official audio source webpage
+// WORS  WAS  ID3FID_WWWRADIOPAGE      Official internet radio station homepage
+// WPAY  WRA  ID3FID_WWWPAYMENT        Payment
+// WPUB  WPY  ID3FID_WWWPUBLISHER      Official publisher webpage
+// WXXX  WXX  ID3FID_WWWUSER           User defined URL link
 
-// *** Currently Undefined Frames
-// AENC  Audio encryption
-// COMR  Commercial frame
-// EQUA  Equalization
-// ETCO  Event timing codes
-// MCDI  Music CD identifier
-// MLLT  MPEG location lookup table
-// OWNE  Ownership frame
-// PRIV  Private frame
-// POSS  Position synchronisation frame
-// RBUF  Recommended buffer size
-// RVAD  Relative volume adjustment
-// RVRB  Reverb
-// SYLT  Synchronized lyric/text
-// SYTC  Synchronized tempo codes
-
+// **** Currently unimplemented frames
+// AENC  CRA  ID3FID_AUDIOCRYPTO       Audio encryption
+// COMR       ID3FID_COMMERCIAL        Commercial frame
+// EQUA  EQU  ID3FID_EQUALIZATION      Equalization
+// ETCO  ETC  ID3FID_EVENTTIMING       Event timing codes
+// MCDI  MCI  ID3FID_CDID              Music CD identifier
+// MLLT  MLL  ID3FID_MPEGLOOKUP        MPEG location lookup table
+// OWNE       ID3FID_OWNERSHIP         Ownership frame
+// POSS       ID3FID_POSITIONSYNC      Position synchronisation frame
+// PRIV       ID3FID_PRIVATE           Private frame
+// RBUF  BUF  ID3FID_BUFFERSIZE        Recommended buffer size
+// RVAD  RVA  ID3FID_VOLUMEADJ         Relative volume adjustment
+// RVRB  REV  ID3FID_REVERB            Reverb
+// SYLT  SLT  ID3FID_SYNCEDLYRICS      Synchronized lyric/text
+// SYTC  STC  ID3FID_SYNCEDTEMPO       Synchronized tempo codes
+//       CRM  ID3FID_METACRYPTO        Encrypted meta frame
 
 static  ID3_FrameDef ID3_FrameDefs[] =
 {
   //                          short  long      tag    file
   // frame id                 id     id    pri discrd discrd handler field defs
+  {ID3FID_AUDIOCRYPTO,       "CRA", "AENC", 0, false, false, NULL, ID3FD_Unimplemented},
   {ID3FID_PICTURE,           "PIC", "APIC", 0, false, false, NULL, ID3FD_Picture},
   {ID3FID_COMMENT,           "COM", "COMM", 0, false, false, NULL, ID3FD_GeneralText},
+  {ID3FID_COMMERCIAL,        "   ", "COMR", 0, false, false, NULL, ID3FD_Unimplemented},
   {ID3FID_CRYPTOREG,         "   ", "ENCR", 0, false, false, NULL, ID3FD_Registration},
+  {ID3FID_EQUALIZATION,      "EQU", "EQUA", 0, false, true,  NULL, ID3FD_Unimplemented},
+  {ID3FID_EVENTTIMING,       "ETC", "ETCO", 0, false, true,  NULL, ID3FD_Unimplemented},
   {ID3FID_GENERALOBJECT,     "GEO", "GEOB", 0, false, false, NULL, ID3FD_GEO},
   {ID3FID_GROUPINGREG,       "   ", "GRID", 0, false, false, NULL, ID3FD_Registration},
   {ID3FID_INVOLVEDPEOPLE,    "IPL", "IPLS", 0, false, false, NULL, ID3FD_InvolvedPeople},
   {ID3FID_LINKEDINFO,        "LNK", "LINK", 0, false, false, NULL, ID3FD_LinkedInfo},
+  {ID3FID_CDID,              "MCI", "MCDI", 0, false, false, NULL, ID3FD_Unimplemented},
+  {ID3FID_MPEGLOOKUP,        "MLL", "MLLT", 0, false, true,  NULL, ID3FD_Unimplemented},
+  {ID3FID_OWNERSHIP,         "   ", "OWNE", 0, false, false, NULL, ID3FD_Unimplemented},
   {ID3FID_PLAYCOUNTER,       "CNT", "PCNT", 0, false, false, NULL, ID3FD_PlayCounter},
   {ID3FID_POPULARIMETER,     "POP", "POPM", 0, false, false, NULL, ID3FD_Popularimeter},
+  {ID3FID_POSITIONSYNC,      "   ", "POSS", 0, false, true,  NULL, ID3FD_Unimplemented},
+  {ID3FID_PRIVATE,           "   ", "PRIV", 0, false, false, NULL, ID3FD_Unimplemented},
+  {ID3FID_BUFFERSIZE,        "BUF", "RBUF", 0, false, false, NULL, ID3FD_Unimplemented},
+  {ID3FID_VOLUMEADJ,         "RVA", "RVAD", 0, false, true,  NULL, ID3FD_Unimplemented},
+  {ID3FID_REVERB,            "REV", "RVRB", 0, false, false, NULL, ID3FD_Unimplemented},
+  {ID3FID_SYNCEDLYRICS,      "SLT", "SYLT", 0, false, true,  NULL, ID3FD_Unimplemented},
+  {ID3FID_SYNCEDTEMPO,       "STC", "SYTC", 0, false, true,  NULL, ID3FD_Unimplemented},
   {ID3FID_ALBUM,             "TAL", "TALB", 0, false, false, NULL, ID3FD_Text},
-  {ID3FID_BEATSPERMINUTE,    "TBP", "TBPM", 0, false, false, NULL, ID3FD_Text},
+  {ID3FID_BPM,               "TBP", "TBPM", 0, false, false, NULL, ID3FD_Text},
   {ID3FID_COMPOSER,          "TCM", "TCOM", 0, false, false, NULL, ID3FD_Text},
   {ID3FID_CONTENTTYPE,       "TCO", "TCON", 0, false, false, NULL, ID3FD_Text},
   {ID3FID_COPYRIGHT,         "TCR", "TCOP", 0, false, false, NULL, ID3FD_Text},
@@ -595,20 +622,20 @@ static  ID3_FrameDef ID3_FrameDefs[] =
   {ID3FID_ENCODEDBY,         "TEN", "TENC", 0, false, true,  NULL, ID3FD_Text},
   {ID3FID_LYRICIST,          "TXT", "TEXT", 0, false, false, NULL, ID3FD_Text},
   {ID3FID_FILETYPE,          "TFT", "TFLT", 0, false, false, NULL, ID3FD_Text},
-  {ID3FID_KEY,               "TKE", "TKEY", 0, false, false, NULL, ID3FD_Text},
+  {ID3FID_INITIALKEY,        "TKE", "TKEY", 0, false, false, NULL, ID3FD_Text},
   {ID3FID_TIME,              "TIM", "TIME", 0, false, false, NULL, ID3FD_Text},
   {ID3FID_CONTENTGROUP,      "TT1", "TIT1", 0, false, false, NULL, ID3FD_Text},
   {ID3FID_TITLE,             "TT2", "TIT2", 0, false, false, NULL, ID3FD_Text},
   {ID3FID_SUBTITLE,          "TT3", "TIT3", 0, false, false, NULL, ID3FD_Text},
   {ID3FID_LANGUAGE,          "TLA", "TLAN", 0, false, false, NULL, ID3FD_Text},
-  {ID3FID_SONGLEN,           "TLE", "TLEN", 0, false, false, NULL, ID3FD_Text},
+  {ID3FID_SONGLEN,           "TLE", "TLEN", 0, false, true,  NULL, ID3FD_Text},
   {ID3FID_MEDIATYPE,         "TMT", "TMED", 0, false, false, NULL, ID3FD_Text},
   {ID3FID_ORIGALBUM,         "TOT", "TOAL", 0, false, false, NULL, ID3FD_Text},
   {ID3FID_ORIGFILENAME,      "TOF", "TOFN", 0, false, false, NULL, ID3FD_Text},
   {ID3FID_ORIGLYRICIST,      "TOL", "TOLY", 0, false, false, NULL, ID3FD_Text},
   {ID3FID_ORIGARTIST,        "TOA", "TOPE", 0, false, false, NULL, ID3FD_Text},
   {ID3FID_ORIGYEAR,          "TOR", "TORY", 0, false, false, NULL, ID3FD_Text},
-  {ID3FID_OWNER,             "   ", "TOWN", 0, false, false, NULL, ID3FD_Text},
+  {ID3FID_FILEOWNER,         "   ", "TOWN", 0, false, false, NULL, ID3FD_Text},
   {ID3FID_LEADARTIST,        "TP1", "TPE1", 0, false, false, NULL, ID3FD_Text},
   {ID3FID_BAND,              "TP2", "TPE2", 0, false, false, NULL, ID3FD_Text},
   {ID3FID_CONDUCTOR,         "TP3", "TPE3", 0, false, false, NULL, ID3FD_Text},
@@ -619,7 +646,7 @@ static  ID3_FrameDef ID3_FrameDefs[] =
   {ID3FID_RECORDINGDATES,    "TRD", "TRDA", 0, false, false, NULL, ID3FD_Text},
   {ID3FID_NETRADIOSTATION,   "TRN", "TRSN", 0, false, false, NULL, ID3FD_Text},
   {ID3FID_NETRADIOOWNER,     "TRO", "TRSO", 0, false, false, NULL, ID3FD_Text},
-  {ID3FID_SIZE,              "TSI", "TSIZ", 0, false, false, NULL, ID3FD_Text},
+  {ID3FID_SIZE,              "TSI", "TSIZ", 0, false, true,  NULL, ID3FD_Text},
   {ID3FID_ISRC,              "TRC", "TSRC", 0, false, false, NULL, ID3FD_Text},
   {ID3FID_ENCODERSETTINGS,   "TSS", "TSSE", 0, false, false, NULL, ID3FD_Text},
   {ID3FID_USERTEXT,          "TXX", "TXXX", 0, false, false, NULL, ID3FD_UserText},
@@ -636,6 +663,7 @@ static  ID3_FrameDef ID3_FrameDefs[] =
   {ID3FID_WWWPAYMENT,        "WPY", "WPAY", 0, false, false, NULL, ID3FD_URL},
   {ID3FID_WWWPUBLISHER,      "WPB", "WPUB", 0, false, false, NULL, ID3FD_URL},
   {ID3FID_WWWUSER,           "WXX", "WXXX", 0, false, false, NULL, ID3FD_UserURL},
+  {ID3FID_METACRYPTO,        "CRM", "    ", 0, false, false, NULL, ID3FD_Unimplemented},
   {ID3FID_NOFRAME}
 };
   
@@ -883,6 +911,14 @@ ID3_Field::operator=( const ID3_Field &rField )
 }
 
 // $Log: field.cpp,v $
+// Revision 1.14  1999/12/26 00:33:15  scott
+// (): Updated list of implemented and unimplemented frames to include
+// their id3lib frame id, id3v2.2 id, and www.id3.org description.
+// (ID3FD_Unimplemented): Added for unimplemented frames so that their
+// data is preseved when parsing and rendering.
+// (ID3_FrameDefs): Added entries for new frames, using
+// ID3FD_Unimplemented as frame definition.  Updated renamed entries.
+//
 // Revision 1.13  1999/12/17 16:13:03  scott
 // Updated opening comment block.
 //
