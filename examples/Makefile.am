@@ -24,6 +24,7 @@ check_PROGRAMS          = \
   testcompression         \
   testremove              \
   get_pic                 \
+  findstr                 \
   findeng
 id3cp_SOURCES           = demo_copy.cpp
 id3info_SOURCES         = demo_info.cpp
@@ -36,6 +37,7 @@ testcompression_SOURCES = test_compression.cpp
 testremove_SOURCES      = test_remove.cpp
 get_pic_SOURCES         = get_pic.cpp
 findeng_SOURCES         = findeng.cpp
+findstr_SOURCES         = findstr.cpp
 
 
 EXTRA_DIST =            \
