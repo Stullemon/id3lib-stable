@@ -1,4 +1,4 @@
-// $Id: tag_parse_v1.cpp,v 1.19 2001/12/16 11:44:24 shadrack Exp $
+// $Id: tag_parse_v1.cpp,v 1.20 2002/01/22 21:06:16 slackorama Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -112,7 +112,7 @@ bool id3::v1::parse(ID3_TagImpl& tag, ID3_Reader& reader)
   ID3D_NOTICE("id3::v1::parse: read bytes: " << reader.getCur() - beg);
   String comment = io::readTrailingSpaces(reader, ID3_V1_LEN_COMMENT);
   if (comment.length() == ID3_V1_LEN_COMMENT  &&
-      '\0' == comment[ID3_V1_LEN_COMMENT - 2] ||
+      '\0' == comment[ID3_V1_LEN_COMMENT - 2] &&
       '\0' != comment[ID3_V1_LEN_COMMENT - 1])
   {
     // This is an id3v1.1 tag.  The last byte of the comment is the track
