@@ -1,4 +1,4 @@
-// $Id: utils.h,v 1.4 2000/05/06 21:25:42 eldamitri Exp $
+// $Id: utils.h,v 1.5 2000/05/11 16:04:59 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -43,6 +43,11 @@ namespace id3
   void   ucsncpy(unicode_t *dest, const unicode_t *src, size_t len);
   int    ucscmp(const unicode_t *s1, const unicode_t *s2);
   int    ucsncmp(const unicode_t *s1, const unicode_t *s2, size_t len);
+
+  // these can be utility functions
+  size_t     ID3_GetUnSyncSize(uchar *, size_t);
+  void       ID3_UnSync(uchar *, size_t, const uchar *, size_t);
+  size_t     ID3_ReSync(uchar *, size_t);
 
 #if defined ID3_UNDEFINED
 }

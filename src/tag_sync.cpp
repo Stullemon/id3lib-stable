@@ -1,4 +1,4 @@
-// $Id: tag_sync.cpp,v 1.3 2000/05/01 13:05:07 eldamitri Exp $
+// $Id: tag_sync.cpp,v 1.4 2000/05/11 16:05:03 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,7 +24,7 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#include "tag.h"
+#include "utils.h"
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
@@ -33,53 +33,53 @@
 // To be used when reading an ID3v2-tag
 // Transforms all FF 00 sequences into FF
 
-luint ID3_Tag::ReSync(uchar *pData, luint nDataSize)
+luint ID3_ReSync(uchar *data, luint size)
 {
-  uchar *pSrc, *pDest;
-  for (pSrc = pDest = pData; pSrc < pData + nDataSize - 1; pSrc++, pDest++)
+  uchar *src, *dest;
+  for (src = dest = data; src < data + size - 1; src++, dest++)
   {
-    *pDest = *pSrc;
-    if (0xFF == pSrc[0] && 0x00 == pSrc[1])
+    *dest = *src;
+    if (0xFF == src[0] && '\0' == src[1])
     {
-      pSrc++;
+      src++;
     }
   }
   
-  return nDataSize - (pSrc - pDest);
+  return size - (src - dest);
 }
 
 // Determine if pCur is at a point in the pStart buffer where unsyncing is 
 // necessary
-bool ShouldUnsync(const uchar *pCur, const uchar *pStart, const size_t nSize)
+bool ID3_ShouldUnsync(const uchar *cur, const uchar *start, const size_t size)
 {
   // The current byte is a sync if it's equal to 0xFF and 
   // 1) It's the last byte in the file, or
   // 2) It comes before 111xxxxx (second part of an mp3 sync), or
   // 3) It comes before 00000000 (consequence of unsyncing)
   return
-    ( pCur           >= pStart )           &&
-    ( pCur            < pStart + nSize)    &&
-    ( pCur[0]        == 0xFF)              && // first sync
-    ((pCur    + 1    == (pStart + nSize))  || // last byte?
-     (pCur[1] & 0xE0 == 0xE0)              || // second sync
-     (pCur[1]        == 0x00));               // second null
+    ( cur           >= start )          &&
+    ( cur            < start + size)    &&
+    ( cur[0]        == 0xFF)            && // first sync
+    ((cur    + 1    == (start + size))  || // last byte?
+     (cur[1] & 0xE0 == 0xE0)            || // second sync
+     (cur[1]        == 0x00));             // second null
 }
 
 // How big will the tag be after we unsync?
-luint ID3_Tag::GetUnSyncSize(uchar *pBuffer, luint nSize)
+luint ID3_GetUnSyncSize(uchar *pBuffer, luint size)
 {
-  size_t nNewSize = nSize;
+  size_t new_size = size;
   
   // Determine the size needed for the destination data
-  for (uchar *pCur = pBuffer; pCur < pBuffer + nSize; pCur++)
+  for (uchar *cur = pBuffer; cur < pBuffer + size; cur++)
   {
-    if (ShouldUnsync(pCur, pBuffer, nSize))
+    if (ID3_ShouldUnsync(cur, pBuffer, size))
     {
-      nNewSize++;
+      new_size++;
     }
   }
   
-  return nNewSize;
+  return new_size;
 }
 
 
@@ -89,22 +89,23 @@ luint ID3_Tag::GetUnSyncSize(uchar *pBuffer, luint nSize)
 // 11111111 00000000 -> 11111111 00000000 00000000
 // 11111111 <EOF> -> 11111111 00000000 <EOF>
 
-void ID3_Tag::UnSync(uchar *pDestData, luint nDestSize, uchar *pSrcData, luint nSrcSize)
+void ID3_UnSync(uchar *dest_data, luint dest_size, 
+                const uchar *src_data, luint src_size)
 {
   // Now do the real transformation
-  for (uchar *pSrc = pSrcData, *pDest = pDestData; 
-       (pSrc < pSrcData + nSrcSize) && (pDest < pDestData + nDestSize);
-       pSrc++, pDest++)
+  for (uchar *src = src_data, *dest = dest_data; 
+       (src < src_data + src_size) && (dest < dest_data + dest_size);
+       src++, dest++)
   {
     // Copy the current character from source to destination
-    *pDest = *pSrc;
+    *dest = *src;
 
     // If we're at a sync point in the source, insert an extra null character
     // in the destination buffer
-    if (ShouldUnsync(pSrc, pSrcData, nSrcSize))
+    if (ID3_ShouldUnsync(src, src_data, src_size))
     {
-      pDest++;
-      *pDest = 0x00;
+      dest++;
+      *dest = '\0';
     }
   }
 }
