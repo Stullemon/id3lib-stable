@@ -2567,6 +2567,10 @@ ac_given_INSTALL="$INSTALL"
 trap 'rm -fr `echo "\
   Makefile                      \
   doc/Makefile                  \
+  doc/html/Makefile             \
+  doc/man/Makefile              \
+  doc/latex/Makefile            \
+  doc/texinfo/Makefile          \
   m4/Makefile                   \
   src/Makefile                  \
   src/id3/Makefile              \
@@ -2678,6 +2682,10 @@ cat >> $CONFIG_STATUS <<EOF
 CONFIG_FILES=\${CONFIG_FILES-"\
   Makefile                      \
   doc/Makefile                  \
+  doc/html/Makefile             \
+  doc/man/Makefile              \
+  doc/latex/Makefile            \
+  doc/texinfo/Makefile          \
   m4/Makefile                   \
   src/Makefile                  \
   src/id3/Makefile              \

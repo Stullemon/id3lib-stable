@@ -71,6 +71,10 @@ SH_SIZE_SPECIFIC_TYPES
 AC_OUTPUT(                      \
   Makefile                      \
   doc/Makefile                  \
+  doc/html/Makefile             \
+  doc/man/Makefile              \
+  doc/latex/Makefile            \
+  doc/texinfo/Makefile          \
   m4/Makefile                   \
   src/Makefile                  \
   src/id3/Makefile              \
