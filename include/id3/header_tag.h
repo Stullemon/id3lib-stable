@@ -1,4 +1,4 @@
-// $Id: header_tag.h,v 1.8 2000/04/21 05:46:16 eldamitri Exp $
+// $Id: header_tag.h,v 1.9 2000/05/02 21:59:16 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -29,18 +29,55 @@
 
 #include "header.h"
 
-#define ID3HF_UNSYNC            (1 << 7)
-#define ID3HF_EXTENDEDHEADER    (1 << 6)
-#define ID3HF_EXPERIMENTAL      (1 << 5)
-
 class ID3_TagHeader : public ID3_Header
 {
 public:
-  virtual size_t Size(void);
-  virtual size_t Render(uchar *buffer);
-  ID3_TagHeader& operator=(const ID3_TagHeader&);
+
+  enum
+  {
+    UNSYNC       = 1 << 7,
+    EXTENDED     = 1 << 6,
+    EXPERIMENTAL = 1 << 5
+  };
+
+  ID3_TagHeader() : ID3_Header() { ; }
+  virtual ~ID3_TagHeader() { ; }
+  ID3_TagHeader(const ID3_TagHeader& rhs) : ID3_Header() { *this = rhs; }
+
+  bool   SetSpec(ID3_V2Spec);
+  size_t Size() const;
+  size_t Render(uchar *buffer) const;
+  size_t Parse(const uchar*, size_t);
+  ID3_TagHeader& operator=(const ID3_TagHeader&hdr)
+  { this->ID3_Header::operator=(hdr); return *this; }
+
+  bool SetUnsync(bool b)
+  {
+    bool changed = __flags.set(UNSYNC, b);
+    __changed = __changed || changed;
+    return changed;
+  }
+
+  // id3v2 tag header signature:  $49 44 33 MM mm GG ss ss ss ss
+  // MM = major version (will never be 0xFF)
+  // mm = minor version (will never be 0xFF)
+  // ff = flags byte 
+  // ss = size bytes (less than $80)
+  static const char* const ID             = "ID3";
+  enum
+  {
+    ID_SIZE        = 3,
+    MAJOR_OFFSET   = 3,
+    MINOR_OFFSET   = 4,
+    FLAGS_OFFSET   = 5,
+    SIZE_OFFSET    = 6,
+    SIZE           = 10
+  };
+  
+  static size_t IsHeader(const uchar*);
 };
 
-lsint ID3_IsTagHeader(uchar header[ID3_TAGHEADERSIZE]);
+// deprecated!
+lsint ID3_IsTagHeader(const uchar header[ID3_TAGHEADERSIZE]);
 
 #endif /* __ID3LIB_HEADER_TAG_H__ */
