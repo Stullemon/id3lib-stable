@@ -1,4 +1,4 @@
-/* $Id: globals.h,v 1.37 2000/10/15 16:37:54 eldamitri Exp $
+/* $Id: globals.h,v 1.38 2000/10/21 07:05:19 eldamitri Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags Copyright
  * 1999, 2000 Scott Thomas Haug
@@ -87,7 +87,6 @@ typedef long    signed int    lsint;
 typedef long  unsigned int    luint;
 typedef long           double ldoub;
 
-typedef uint32*               bitset;
 typedef uint16                unicode_t;
 typedef uint16                flags_t;
 /* this needs to be done for compatibility with Sun Solaris */
@@ -294,7 +293,7 @@ ID3_ENUM(ID3_V1Lengths)
  **
  ** @author Dirk Mahoney (dirk@id3.org)
  ** @author Scott Thomas Haug (scott@id3.org)
- ** @version $Id: globals.h,v 1.37 2000/10/15 16:37:54 eldamitri Exp $
+ ** @version $Id: globals.h,v 1.38 2000/10/21 07:05:19 eldamitri Exp $
  ** @see ID3_Tag
  **/
 ID3_STRUCT(ID3V1_Tag)
@@ -371,11 +370,6 @@ ID3_ENUM(ID3_TimeStampFormat)
   ID3TSF_FRAME  = 1,
   ID3TSF_MS
 };
-
-#define BS_SIZE (sizeof(uint32)*8)
-#define BS_SET(v,x)   ((v)[(x) / BS_SIZE] |=  (1 << ((x) % BS_SIZE)))
-#define BS_CLEAR(v,x) ((v)[(x) / BS_SIZE] &= ~(1 << ((x) % BS_SIZE)))
-#define BS_ISSET(v,x) ((v)[(x) / BS_SIZE] &   (1 << ((x) % BS_SIZE)))
 
 #define MASK(bits) ((1 << (bits)) - 1)
 #define MASK1 MASK(1)
