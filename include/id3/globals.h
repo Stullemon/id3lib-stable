@@ -1,4 +1,4 @@
-/* $Id: globals.h,v 1.33 2000/09/11 07:46:31 eldamitri Exp $
+/* $Id: globals.h,v 1.34 2000/10/09 01:54:13 eldamitri Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags Copyright
  * 1999, 2000 Scott Thomas Haug
@@ -75,6 +75,14 @@ ID3_C_VAR const int          ID3LIB_BINARY_AGE;
 #define ID3_TAGID               "ID3"
 #define ID3_TAGIDSIZE           (3)
 #define ID3_TAGHEADERSIZE       (10)
+
+/** String used for the description field of a comment tag converted from an
+ ** id3v1 tag to an id3v2 tag
+ **
+ ** \sa #ID3V1_Tag
+ **/
+#define STR_V1_COMMENT_DESC "ID3v1 Comment"
+
 
 typedef       unsigned char   uchar;
 typedef short   signed int    ssint;
@@ -290,7 +298,7 @@ ID3_ENUM(ID3_V1Lengths)
  **
  ** @author Dirk Mahoney (dirk@id3.org)
  ** @author Scott Thomas Haug (sth2@cs.wustl.edu)
- ** @version $Id: globals.h,v 1.33 2000/09/11 07:46:31 eldamitri Exp $
+ ** @version $Id: globals.h,v 1.34 2000/10/09 01:54:13 eldamitri Exp $
  ** @see ID3_Tag
  **/
 ID3_STRUCT(ID3V1_Tag)
