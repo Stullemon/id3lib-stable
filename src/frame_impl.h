@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: frame_impl.h,v 1.1 2000/10/24 16:13:23 eldamitri Exp $
+// $Id: frame_impl.h,v 1.2 2000/11/07 09:18:36 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -37,6 +37,7 @@ class ID3_FrameImpl
 {
   typedef std::bitset<ID3FN_LASTFIELDID> Bitset;
   typedef std::vector<ID3_Field *> Fields;
+public:
   typedef Fields::iterator iterator;
   typedef Fields::const_iterator const_iterator;
 public:
