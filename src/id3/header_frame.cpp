@@ -1,4 +1,4 @@
-// $Id: header_frame.cpp,v 1.15 2000/04/10 16:57:28 eldamitri Exp $
+// $Id: header_frame.cpp,v 1.16 2000/04/10 20:58:14 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -201,6 +201,7 @@ ID3_FrameHeader& ID3_FrameHeader::operator=(const ID3_FrameHeader& hdr)
       __bDynFrameDef = true;
     }
   }
+  return *this;
 }
 
 ID3_FrameID ID3_FrameHeader::GetFrameID() const
@@ -231,6 +232,9 @@ void ID3_FrameHeader::Clear()
 }
 
 // $Log: header_frame.cpp,v $
+// Revision 1.16  2000/04/10 20:58:14  eldamitri
+// (operator=): Fixed bug - now returns *this.
+//
 // Revision 1.15  2000/04/10 16:57:28  eldamitri
 // (Copy): removed.
 // (operator=): Updated implementation so it isn't reliant on Copy.
