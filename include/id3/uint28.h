@@ -1,5 +1,5 @@
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
-// $Id: uint28.h,v 1.4 2000/06/14 16:24:14 eldamitri Exp $
+// $Id: uint28.h,v 1.5 2000/06/22 19:31:30 adcockj Exp $
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -55,12 +55,14 @@ class uint28
   // representation.
   uint32 __value;
 public:
+  // can't initilaize statics here as windows compiler doesn't like it
+  // these variables are initilaized in the cpp file
   /** The number of bits used per byte of an unsigned 28-bit integer **/
-  static const unsigned short BITSUSED = 7;
+  static const unsigned short BITSUSED;
   /** The minimum value this class can represent **/
-  static const uint32 MINVAL = 0;
+  static const uint32 MINVAL;
   /** The maximum value this class can represent (2^28-1) **/
-  static const uint32 MAXVAL = MASK(BITSUSED*sizeof(uint32));
+  static const uint32 MAXVAL;
 
   /** Default constructor
    ** \param val The initial value for the (defaults to 0)

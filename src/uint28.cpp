@@ -1,5 +1,5 @@
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
-// $Id: uint28.cpp,v 1.4 2000/06/14 16:43:57 eldamitri Exp $
+// $Id: uint28.cpp,v 1.5 2000/06/22 19:31:04 adcockj Exp $
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -28,6 +28,12 @@
 #if defined HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+// values are initialized here
+// this stops the window complier from complaining
+const unsigned short uint28::BITSUSED = 7;
+const uint32 uint28::MINVAL = 0;
+const uint32 uint28::MAXVAL = MASK(BITSUSED*sizeof(uint32));
 
 size_t uint28::Parse(const uchar* data)
 {
