@@ -1,3 +1,21 @@
+1999-11-25  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* Makefile.am (EXTRA_DIST): Added HISTORY and TODO
+
+	* AUTHORS: Minor clarification.
+
+	* COPYING: Change from the GPL to the original statement about being
+ 	in the Public Domain.
+
+	* TODO, HISTORY: Initial revision.
+
+	* NEWS: Actually added some news.
+
+	* README: Filled the README with semi-useful information.
+
+	* THANKS: Transcribed the Thanks section from Dirkk's original 
+	documentation.
+
 1999-11-15  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* configure.in, configure: 
