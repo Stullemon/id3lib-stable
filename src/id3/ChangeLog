@@ -1,3 +1,119 @@
+1999-11-19  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* tag_render.cpp
+ 	(RenderV1ToHandle): Added.  Adds or overwrites an id3v1 tag to a file
+	handle.  Needs testing.
+	(RenderV2ToHandle): Renamed from RenderToHandle.
+
+	* tag_parse_v1.cpp 
+	(ID3_RemoveTrailingSpaces): Minor code cleanup.
+	(ParseID3v1): Massive recoding of method to make use of new functions
+	defined in misc_support.  Simplifies flow of method.
+
+	* tag_find.cpp (Find): Add const qualifier.
+
+	* tag_file.cpp 
+	(Update): Changed parameter to be a flag which indicates which type of
+	tag to update, either V1_TAG, V2_TAG, or BOTH_TAGS.  Updated method to
+	act appropriately based on the parameter passed in.
+	(Strip): Changed parameter to be a flag which indicates which type of
+	tag to update, either V1_TAG, V2_TAG, or BOTH_TAGS.  Updated method to
+	act appropriately based on the parameter passed in.
+
+	* tag.h: Added new constants: STR_V1_COMMENT_DESC (to be added to
+ 	the description of comments converted from id3v1 tags); V1_TAG,
+ 	V2_TAG, and BOTH_TAGS (used for methods Strip and Update to
+ 	determine which tag to act on); and LEN_V1, LEN_V1_ID,
+ 	LEN_V1_TITLE, LEN_V1_ARTIST, LEN_V1_ALBUM, LEN_V1_YEAR,
+ 	LEN_V1_COMMENT, LEN_V1_GENRE (the lengths of the id3v1 tag and its
+ 	fields). Generalized ID3V1_Tag struct using newly defined
+ 	constants.  Added 1 to each char array size for null terminator. 
+	Added const qualifier to appropriate methods and parameters.  Added
+	declaration of RenderV1ToHandle method.  Renamed "RenderToHandle" to
+	"RenderV2ToHandle".
+
+	* misc_support.h: Added the function declarations for ID3_GetString,
+	ID3_GetArtist, ID3_GetAlbum, ID3_GetTitle, ID3_GetYear, ID3_AddYear,
+	ID3_GetComment, ID3_AddComment, ID3_GetTrack, ID3_GetTrackNum,
+ 	ID3_AddTrack, ID3_GetGenre, ID3_GetGenreNum, and ID3_GetLyrics.
+
+	* misc_support.cpp 
+	(ID3_ASCIItoUnicode): Updated interface to make parameters const.  
+	Replaced content of the code with call to mbstowcs, a function defined
+	in wchar.h for converting from a regular string to a wchar string.  The
+	original code might be reinstated if another type is used to store 
+	unicode characters.
+	(ID3_UnicodeToASCII): Updated interface to make parameters const.  
+	Replaced content of the code with call to wcstombs, a function defined
+	in wchar.h for converting from a wchar string to a regular string.  The
+	original code might be reinstated if another type is used to store 
+	unicode characters.
+	(ID3_GetString): Added.  Returns a dynamically-allocated copy of the
+	string contained in the frame/field parameters.
+	(ID3_GetArtist): Added.  Returns the artist as a string.  Will return
+	the LEADARTIST, the BAND, the CONDUCTOR, or the COMPOSER, whichever is
+	found first in that order.
+	(ID3_GetAlbum): Added.  Returns the album as a string.
+	(ID3_GetTitle): Added.  Returns the song title as a string.
+	(ID3_GetYear): Added.  Returns the year as a string.
+	(ID3_AddYear): Added.  Adds the year as a string to the frame.
+	(ID3_GetComment): Added.  Returns the first comment found as a string.
+	(ID3_AddComment): Added. Adds the comment as a string with the
+ 	description stored in STR_V1_COMMENT_DESC, currently "ID3v1_Comment".
+	Won't add if a tag with that or no description already exists.
+	(ID3_GetTrack): Added.  Returns the track number as a string.
+	(ID3_GetTrackNum): Added.  Returns the track number as an unsigned
+	integer.
+	(ID3_AddTrack): Added.  Adds the track number and track total as a
+	string in the form "N/T", where N is the track number and T is the
+ 	total.  If no total is indicated, then only the track number is added.
+	(ID3_GetGenre): Added.  Returns the genre as a string.
+	(ID3_GetGenreNum): Added. Returns the genre as a number.
+	(ID3_AddGenre): Added.  Adds the genre number as a string in the form
+	"(G)", where G is the genre number.
+	(ID3_GetLyrics): Added.  Gets the unsynced lyrics as a string.
+
+	* field_string_unicode.cpp 
+	(operator=): Updated interface to make parameters const.
+	(Set): Updated interface to make parameters const.  Bug fix for fixed
+	length strings.  Minor variable renaming.
+	(Add): Updated interface to make parameters const.
+	(Get): Updated interface to make parameters const.  Fixed bug which 
+	would add a null character to the string regardless of the length of
+	string requested.  Now only adds a null when the actual length of the
+	string is less than the maxium number of characters requested.
+
+	* field_string_ascii.cpp 
+	(operator=): Updated interface to make parameters const.
+	(Set): Updated interface to make parameters const.  Bug fix for fixed
+	length strings.
+	(Get): Removed check for nonempty strings so empty strings would be
+	set correctly.  Minor code cleanup.
+	(Add): Updated interface to make parameters const.  Made variable name
+	more descriptive.
+
+	* field_integer.cpp 
+	(ParseInteger): Updated interface to make parameters const.
+
+	* field_binary.cpp 
+	(Set): Updated interface to make parameters const.
+	(FromFile): Updated interface to make parameters const.
+	(ToFile): Updated interface to make parameters const.
+	(ParseBinary): Updated interface to make parameters const.
+
+	* field.h (class ID3_Field): Updated method interfaces to make
+	appropriate parameters const.
+
+	* field.cpp
+ 	(BinSize): Added check for an ascii string when called by Size, since
+ 	we store every string internally as unicode.
+	(Parse): Updated interface to make parameters const.
+	(ID3_FindFrameDef): Updated interface to make parameter const.
+	(ID3_FindFrameID): Updated interface to make parameter const.
+
+	* dll_wrapper.cpp (ID3Tag_Strip): Updated for interface change to
+ 	Tag::Strip.  Now accepts tag flags rather than a v1 boolean.
+
 1999-11-16  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* tag_parse.cpp
