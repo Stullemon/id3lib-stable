@@ -384,66 +384,72 @@ bool Mp3Info::Parse(ID3_Reader& reader, size_t mp3size)
   }
 
 //http://www.mp3-tech.org/programmer/frame_header.html
-  if (_mp3_header_output->frequency > 0 && mp3size > (HEADERSIZE + ((_mp3_header_output->crc == MP3CRC_OK) ? 2 : 0)))
+  if (_mp3_header_output->bitrate != MP3BITRATE_NONE && _mp3_header_output->frequency > 0)
   {
     if (_mp3_header_output->layer == MPEGLAYER_I)
       _mp3_header_output->framesize = fto_nearest_i((float)((48 * (float)_mp3_header_output->bitrate) / _mp3_header_output->frequency)) + (_tmpheader->padding_bit ? 4 : 0);
     else
       _mp3_header_output->framesize = fto_nearest_i((float)((144 * (float)_mp3_header_output->bitrate) / _mp3_header_output->frequency)) + (_tmpheader->padding_bit ? 1 : 0);
+  }
+  else
+    _mp3_header_output->framesize = 0; //unable to determine
 
-    const size_t CRCSIZE = 2;
-    size_t sideinfo_len;
+  const size_t CRCSIZE = 2;
+  size_t sideinfo_len;
 
-    if (_mp3_header_output->version == MPEGVERSION_1) /* MPEG 1 */
-      sideinfo_len = (_mp3_header_output->channelmode == MP3CHANNELMODE_SINGLE_CHANNEL) ? 4 + 17 : 4 + 32;
-    else                /* MPEG 2 */
-      sideinfo_len = (_mp3_header_output->channelmode == MP3CHANNELMODE_SINGLE_CHANNEL) ? 4 + 9 : 4 + 17;
+  if (_mp3_header_output->version == MPEGVERSION_1) /* MPEG 1 */
+    sideinfo_len = (_mp3_header_output->channelmode == MP3CHANNELMODE_SINGLE_CHANNEL) ? 4 + 17 : 4 + 32;
+  else                /* MPEG 2 */
+    sideinfo_len = (_mp3_header_output->channelmode == MP3CHANNELMODE_SINGLE_CHANNEL) ? 4 + 9 : 4 + 17;
 
-    sideinfo_len += 2; // add two for the crc itself
+  sideinfo_len += 2; // add two for the crc itself
 
-    if ((_mp3_header_output->crc == MP3CRC_OK) && mp3size < sideinfo_len)
-      _mp3_header_output->crc = MP3CRC_ERROR_SIZE;
+  if ((_mp3_header_output->crc == MP3CRC_OK) && mp3size < sideinfo_len)
+    _mp3_header_output->crc = MP3CRC_ERROR_SIZE;
 
-    if (_mp3_header_output->crc == MP3CRC_OK)
-    {
-      char crc[CRCSIZE + 1]; //+1 to hold the 0 char
-      char audiodata[38 + 1]; //+1 to hold the 0 char
-      uint16 crc16;
-      uint16 *crc16tmp;
+  if (_mp3_header_output->crc == MP3CRC_OK)
+  {
+    char crc[CRCSIZE + 1]; //+1 to hold the 0 char
+    char audiodata[38 + 1]; //+1 to hold the 0 char
+    uint16 crc16;
+    uint16 *crc16tmp;
 
-      _mp3_header_output->crc = MP3CRC_MISMATCH; //as a starting point, we assume the worst
+    _mp3_header_output->crc = MP3CRC_MISMATCH; //as a starting point, we assume the worst
 
-      reader.setCur(beg);
+    reader.setCur(beg);
 
-      reader.readChars(audiodata, sideinfo_len);
-      audiodata[sideinfo_len] = '\0';
+    reader.readChars(audiodata, sideinfo_len);
+    audiodata[sideinfo_len] = '\0';
 
-      crc16 = calcCRC(audiodata, sideinfo_len);
+    crc16 = calcCRC(audiodata, sideinfo_len);
 
-      beg = end;
-      end = beg + CRCSIZE;
+    beg = end;
+    end = beg + CRCSIZE;
 
-      reader.setCur(beg);
+    reader.setCur(beg);
 
-      reader.readChars(crc, CRCSIZE);
+    reader.readChars(crc, CRCSIZE);
 
-      crc[2] = crc[0];
-      crc[0] = crc[1];
-      crc[1] = crc[2];
-      crc[2] = '\0';
+    crc[2] = crc[0];
+    crc[0] = crc[1];
+    crc[1] = crc[2];
+    crc[2] = '\0';
 
-      crc16tmp = reinterpret_cast<uint16 *>(crc);
-      // a mismatch doesn't mean the file is unusable
-      // it has just some bits in the wrong place
-      if (*crc16tmp == crc16)
-        _mp3_header_output->crc = MP3CRC_OK;
-    }
+    crc16tmp = reinterpret_cast<uint16 *>(crc);
+    // a mismatch doesn't mean the file is unusable
+    // it has just some bits in the wrong place
+    if (*crc16tmp == crc16)
+      _mp3_header_output->crc = MP3CRC_OK;
+  }
+  if (_mp3_header_output->framesize > 0 && mp3size >= _mp3_header_output->framesize) // this means bitrate is not none too
+  {
     _mp3_header_output->frames = fto_nearest_i((float)mp3size / _mp3_header_output->framesize);
     // bitrate becomes byterate (per second) if divided by 8
     _mp3_header_output->time = fto_nearest_i( (float)mp3size / (_mp3_header_output->bitrate / 8) );
   }
   else
   {
+    _mp3_header_output->frames = 0;
     _mp3_header_output->time = 0;
   }
   //if we got to here it's okay
