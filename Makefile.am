@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.4 1999/11/30 19:54:08 scott Exp $
+# $Id: Makefile.am,v 1.5 1999/12/01 19:08:59 scott Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -11,9 +11,12 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 EXTRA_DIST = reconf
-SUBDIRS = m4 doc src
+SUBDIRS = m4 doc src include
 
 # $Log: Makefile.am,v $
+# Revision 1.5  1999/12/01 19:08:59  scott
+# (SUBDIRS): Added "include".
+#
 # Revision 1.4  1999/11/30 19:54:08  scott
 # (EXTRA_DIST): Removed ChangeLog, configure, HISTORY, and TODO.
 # These are included in the distribution automatically.

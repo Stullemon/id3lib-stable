@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.7 1999/12/01 18:10:43 scott Exp $
+# $Id: Makefile.in,v 1.8 1999/12/01 19:08:59 scott Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -91,7 +91,7 @@ lt_rev = @lt_rev@
 lt_ver = @lt_ver@
 
 EXTRA_DIST = reconf
-SUBDIRS = m4 doc src
+SUBDIRS = m4 doc src include
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
@@ -379,8 +379,8 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 # $Log: Makefile.in,v $
-# Revision 1.7  1999/12/01 18:10:43  scott
-# *** empty log message ***
+# Revision 1.8  1999/12/01 19:08:59  scott
+# (SUBDIRS): Added "include".
 #
 # Revision 1.4  1999/11/30 19:54:08  scott
 # (EXTRA_DIST): Removed ChangeLog, configure, HISTORY, and TODO.
