@@ -20,16 +20,15 @@
    along with this program; if not, write to the Free Software
    Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
-#if defined (WIN32)
-#include <string.h>
-#include <malloc.h>
-#endif
-
-
 /* NOTE!!!  AIX requires this to be the first thing in the file.
    Do not put ANYTHING before it!  */
 #if !defined (__GNUC__) && defined (_AIX)
  #pragma alloca
+#endif
+
+#include <string.h> //for strncmp
+#if defined (WIN32)
+#include <malloc.h>
 #endif
 
 #ifdef HAVE_CONFIG_H
@@ -450,7 +449,7 @@ _getopt_internal (argc, argv, optstring, longopts, longind, long_only)
       int exact = 0;
       int ambig = 0;
       const struct option *pfound = NULL;
-      int indfound;
+      int indfound = 0 ;
 
       while (*s && *s != '=')
 	s++;
