@@ -1,4 +1,4 @@
-// $Id: tag_parse_lyrics3.cpp,v 1.18 2000/07/04 22:21:56 eldamitri Exp $
+// $Id: tag_parse_lyrics3.cpp,v 1.19 2000/07/11 04:25:01 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,7 +24,6 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
@@ -162,21 +161,27 @@ luint ID3_Lyrics3ToSylt(char *buffer, luint size)
   return dest - buffer;
 }
 
-size_t ParseLyrics3(ID3_Tag& tag, FILE* handle)
+size_t ParseLyrics3(ID3_Tag& tag, fstream& file)
 {
   size_t tag_bytes = 0;
-  if (NULL == handle)
+  if (!file)
   {
     // TODO: log this
     return tag_bytes;
     // ID3_THROW(ID3E_NoData);
   }
   
-  long pos = ftell(handle);
   char id_buffer[6 + 9 + 3];
-  
-  fseek(handle, -(6 + 9 + 128), SEEK_CUR);
-  fread(id_buffer, 1, (6 + 9 + 3), handle);
+  if (file.tellg() < 6 + 9 + 128)
+  {
+    return 0;
+  }
+  file.seekg( -(6 + 9 + 128), ios::cur);
+  if (!file)
+  {
+    return 0;
+  }
+  file.read(id_buffer, (6 + 9 + 3));
 
   // first check for an ID3v1 tag
   if (memcmp(&id_buffer[6 + 9], "TAG", 3) == 0)
@@ -195,13 +200,16 @@ size_t ParseLyrics3(ID3_Tag& tag, FILE* handle)
       // reserve enough space for lyrics3 + id3v1 tag
       const size_t max_lyr_size = 11 + 5100 + 9 + 128;
 
-      size_t lyr_buffer_size = MIN(max_lyr_size, ID3_GetDataSize(tag));
+      size_t lyr_buffer_size = MIN(max_lyr_size, file.tellg());
 
-      // Using binary minus rather than unary minus to avoid compiler warning
-      fseek(handle, pos - lyr_buffer_size, SEEK_SET);
+      file.seekg(- static_cast<long>(lyr_buffer_size), ios::cur);
+      if (!file)
+      {
+        return 0;
+      }
 
       char lyr_buffer[max_lyr_size];
-      fread(lyr_buffer, 1, lyr_buffer_size, handle);
+      file.read(lyr_buffer, lyr_buffer_size);
 
       // search for LYRICSBEGIN
       char* lyr_begin = strstr(lyr_buffer, "LYRICSBEGIN");
@@ -232,22 +240,29 @@ size_t ParseLyrics3(ID3_Tag& tag, FILE* handle)
   return tag_bytes;
 }
 
-size_t ParseLyrics3v2(ID3_Tag& tag, FILE* handle)
+size_t ParseLyrics3v2(ID3_Tag& tag, fstream& file)
 {
   size_t tag_bytes = 0;
-  if (NULL == handle)
+  if (!file)
   {
     // TODO: log this
     return tag_bytes;
     // ID3_THROW(ID3E_NoData);
   }
   
-  long pos = ftell(handle);
   char id_buffer[6 + 9 + 3];
   
-  fseek(handle, 0 - (6 + 9 + 128), SEEK_CUR);
-  fread(id_buffer, 1, (6 + 9 + 3), handle);
-
+  if (file.tellg() < 6 + 9 + 128)
+  {
+    return 0;
+  }
+  file.seekg(0 - (6 + 9 + 128), ios::cur);
+  if (!file)
+  {
+    return 0;
+  }
+  file.read(id_buffer, (6 + 9 + 3));
+  
   // first check for an ID3v1 tag
   if (memcmp(&id_buffer[6 + 9], "TAG", 3) == 0)
   {
@@ -259,8 +274,14 @@ size_t ParseLyrics3v2(ID3_Tag& tag, FILE* handle)
       size_t lyr_size = atoi(id_buffer);
       
       // Using binary minus rather than unary minus to avoid compiler warning
-      fseek(handle, 0 - (lyr_size + 6 + 9 + 3), SEEK_CUR);
-      fread(id_buffer, 1, 11, handle);
+      
+      file.seekg(- MIN(file.tellg(), 
+                       (static_cast<long>(lyr_size) + 6 + 9 + 3)), ios::cur);
+      if (!file)
+      {
+        return 0;
+      }
+      file.read(id_buffer, 11);
 
       if (memcmp(id_buffer, "LYRICSBEGIN", 11) != 0)
       {
@@ -275,7 +296,7 @@ size_t ParseLyrics3v2(ID3_Tag& tag, FILE* handle)
       luint posn = 0;
       bool has_time_stamps = false;
 
-      fread(lyr_buffer, 1, lyr_size, handle);
+      file.read(lyr_buffer, lyr_size);
 
       while (posn + 3 + 5 <= lyr_size)
       {
