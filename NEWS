@@ -1,4 +1,22 @@
-$Id: NEWS,v 1.11 2000/04/28 17:27:30 eldamitri Exp $
+$Id: NEWS,v 1.12 2000/05/04 01:44:01 eldamitri Exp $
+
+2000-05-03 Version 3.7.6
+
+* Beginning of major rewrite of underlying codebase to improve efficiency,
+  expandability; the interface will need minor updates through this endeavor
+  (sorry!)
+* Major bugfix in ID3_Tag::Strip which was deleting too much info from a file
+  in certain circumstances
+* Add descriptions to frames; can access either through a ID3_Frame method for
+  a frame object, or via the static method on the class (w/ ID3_FrameID param)
+  (thanks John Adcock for descriptions, Daryl Pawluk for spotting misorder)
+* Frame compression is determined frame by frame, so deprecated 
+  ID3_Tag::SetCompression() for ID3_Frame::SetCompression().  
+  ID3_Tag::SetCompression() is now a no-op (updated C interface accordingly)
+* New method ID3_Frame::Contains(ID3_FieldID) for determining if a frame
+  contains a particular field
+* New static method ID3_Tag::IsV2Tag() deprecates ID3_IsTagHeader()
+* Other minor bugfixes
 
 2000-04-28 Version 3.7.5
 
