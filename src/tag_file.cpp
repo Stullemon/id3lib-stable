@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.43 2003/03/02 14:14:08 t1mpy Exp $
+// $Id: tag_file.cpp,v 1.44 2003/12/22 00:17:49 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -204,6 +204,45 @@ size_t RenderV1ToFile(ID3_TagImpl& tag, fstream& file)
   return ID3_V1_LEN;
 }
 
+#if defined(HAVE_UNISTD_H)
+static String ResolveSymlink(const String& filename, int depth = 0)
+{
+  int result;
+  String::size_type pos;
+  char tmpBuf[ID3_PATH_LENGTH];
+  String abs;
+  if (depth > 32)
+  {
+    return filename;
+  }
+  result = readlink(filename.c_str(), tmpBuf, ID3_PATH_LENGTH-1);
+  if (result > 0)
+  {
+    tmpBuf[result] = '\0';
+    if (tmpBuf[0] != '/')
+    { // relative path, create an absolute path
+      pos = filename.rfind('/');
+      if (pos == String::npos)
+      {
+      	// give up
+        return filename;
+      }
+      abs = filename.substr(0, pos+1) + tmpBuf;
+      return ResolveSymlink(abs, depth+1);
+    }
+    else
+    {
+      return ResolveSymlink(tmpBuf, depth+1);
+    }
+  }
+  else
+  {
+    // readlink error, most likely not a symbolic link
+    return filename;
+  }
+}
+#endif //defined(HAVE_UNISTD_H)
+
 size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
 {
   ID3D_NOTICE( "RenderV2ToFile: starting" );
@@ -304,8 +343,16 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
     if(stat(filename.c_str(), &fileStat) == 0)
     {
 #endif //defined(HAVE_SYS_STAT_H)
+#if defined(HAVE_UNISTD_H)
+      // if filename is a symbolic link, replace the file the link is
+      // ultimately pointing to
+      String realname = ResolveSymlink(filename);
+      remove(realname.c_str());
+      rename(sTempFile, realname.c_str());
+#else //defined(HAVE_UNISTD_H)
       remove(filename.c_str());
       rename(sTempFile, filename.c_str());
+#endif //defined(HAVE_UNISTD_H)
 #if defined(HAVE_SYS_STAT_H)
       chmod(filename.c_str(), fileStat.st_mode);
     }
