@@ -5,7 +5,7 @@
 
 #include "resource.h"       // main symbols
 #include <id3/tag.h>
-#include <id3/dll.h>
+#include <id3.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CID3Field
