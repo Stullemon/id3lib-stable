@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.13 2000/05/28 22:55:32 eldamitri Exp $
+// $Id: field_string_unicode.cpp,v 1.14 2000/05/29 02:01:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -326,7 +326,7 @@ size_t ID3_Field::RenderUnicodeString(uchar *buffer) const
   {
     // render the BOM
     unicode_t *BOM = (unicode_t *) buffer;
-    BOM[0] = 0xFEFF;
+    BOM[0] = 0xFFFE;
   }
   
   if (nBytes == sizeof(unicode_t) && (__flags & ID3FF_CSTR))
