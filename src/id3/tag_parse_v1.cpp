@@ -1,4 +1,4 @@
-// $Id: tag_parse_v1.cpp,v 1.9 1999/12/01 22:19:51 scott Exp $
+// $Id: tag_parse_v1.cpp,v 1.10 1999/12/05 05:34:27 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -108,7 +108,7 @@ void ID3_Tag::ParseID3v1(void)
       ID3_RemoveTrailingSpaces(tagID3v1.sComment, LEN_V1_COMMENT - 1);
       ID3_AddTrack(this, tagID3v1.sComment[LEN_V1_COMMENT - 1]);
     }
-    ID3_AddComment(this, tagID3v1.sComment);
+    ID3_AddComment(this, tagID3v1.sComment, STR_V1_COMMENT_DESC);
       
     // the GENRE field/frame
     fread(&tagID3v1.ucGenre, 1, LEN_V1_GENRE, __fFileHandle);
@@ -119,6 +119,10 @@ void ID3_Tag::ParseID3v1(void)
 }
 
 // $Log: tag_parse_v1.cpp,v $
+// Revision 1.10  1999/12/05 05:34:27  scott
+// (ParseID3v1): Added STR_V1_COMMENT_DESC as description parameter to
+// call to ID3_AddComment
+//
 // Revision 1.9  1999/12/01 22:19:51  scott
 // (ParseID3v1): Minor fix for windows compatibility (thanks elrod).
 //
