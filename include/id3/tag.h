@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.7 2000/04/05 05:20:52 eldamitri Exp $
+// $Id: tag.h,v 1.8 2000/04/07 04:29:58 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -93,7 +93,7 @@ const luint LEN_V1_GENRE   =   1;
 
     @author Dirk Mahoney (dirk@id3.org)
     @author Scott Thomas Haug (sth2@cs.wustl.edu)
-    @version $Id: tag.h,v 1.7 2000/04/05 05:20:52 eldamitri Exp $
+    @version $Id: tag.h,v 1.8 2000/04/07 04:29:58 eldamitri Exp $
     @see ID3_Tag
 */
 struct ID3V1_Tag
@@ -192,7 +192,7 @@ const luint ALL_TAG_TYPES = BOTH_ID3_TAGS | LYRICS_TAG;
      that id3lib 2.16 supports.
 
      @author Dirk Mahoney
-     @version $Id: tag.h,v 1.7 2000/04/05 05:20:52 eldamitri Exp $
+     @version $Id: tag.h,v 1.8 2000/04/07 04:29:58 eldamitri Exp $
      @see ID3_Frame
      @see ID3_Field
      @see ID3_Err
@@ -614,7 +614,13 @@ public:
       @see ID3_IsTagHeader
       @param fileInfo The filename of the file to link to.
   */
-  luint      Link(char *fileInfo);
+
+  /** Attaches a file to the tag, parses the file, and adds any tag informatio
+      found in the file to the tag.  Also decides if to parse the id3v1 tag, 
+      or the Lyrics3 tag 
+  */
+  luint      Link(char *fileInfo, bool parseID3v1 = true, 
+                  bool parseLyrics3 = true);
 
   /** Renders the tag and writes it to the attached file; the type of tag 
       rendered can be specified as a parameter.
@@ -813,6 +819,8 @@ private:
   luint     __ulOldTagSize;    // the size of the old tag (if any)
   luint     __ulExtraBytes;    // extra bytes to strip from end of file (ID3v1 and Lyrics3 tags)
   bool      __bHasV1Tag;       // does the file have an ID3v1 tag attached?
+  bool      __bParseID3v1;     // do we parse the ID3v1 tag?
+  bool      __bParseLyrics3;   // do we parse the Lyrics3 tag?
   char      __sFileName[MAXPATHLEN + 1]; // name of the file we are linked to
   static luint s_ulInstances;  // how many ID3_Tag objects are floating around in this app?
 }
@@ -821,6 +829,10 @@ private:
 #endif
 
 // $Log: tag.h,v $
+// Revision 1.8  2000/04/07 04:29:58  eldamitri
+// Added optional parameters to Link to make parsing of id3v1/lyrics3
+// tags optional.
+//
 // Revision 1.7  2000/04/05 05:20:52  eldamitri
 // Updated initial comment information to reflect license, copyright
 // change.
