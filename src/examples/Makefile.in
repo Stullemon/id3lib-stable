@@ -72,7 +72,6 @@ host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
 CC = @CC@
-CPP = @CPP@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 DLLTOOL = @DLLTOOL@
@@ -85,15 +84,13 @@ OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
-canonical_host_type = @canonical_host_type@
 
 INCLUDES = -I$(top_srcdir)/src
 LDADD = $(top_builddir)/src/id3/libid3.la
 
-check_PROGRAMS = id3info id3convert id3strip
+check_PROGRAMS = id3info id3convert
 id3info_SOURCES = demo_info.cpp
 id3convert_SOURCES = demo_convert.cpp
-id3strip_SOURCES = demo_strip.cpp
 
 EXTRA_DIST =    ChangeLog               demo_main.cpp           jules.mp3               jules-badtag.mp3        jules-goodtag.mp3       readme.txt
 
@@ -113,10 +110,6 @@ id3convert_OBJECTS =  demo_convert.o
 id3convert_LDADD = $(LDADD)
 id3convert_DEPENDENCIES =  $(top_builddir)/src/id3/libid3.la
 id3convert_LDFLAGS = 
-id3strip_OBJECTS =  demo_strip.o
-id3strip_LDADD = $(LDADD)
-id3strip_DEPENDENCIES =  $(top_builddir)/src/id3/libid3.la
-id3strip_LDFLAGS = 
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -129,9 +122,9 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-DEP_FILES =  .deps/demo_convert.P .deps/demo_info.P .deps/demo_strip.P
-SOURCES = $(id3info_SOURCES) $(id3convert_SOURCES) $(id3strip_SOURCES)
-OBJECTS = $(id3info_OBJECTS) $(id3convert_OBJECTS) $(id3strip_OBJECTS)
+DEP_FILES =  .deps/demo_convert.P .deps/demo_info.P
+SOURCES = $(id3info_SOURCES) $(id3convert_SOURCES)
+OBJECTS = $(id3info_OBJECTS) $(id3convert_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -192,10 +185,6 @@ id3info: $(id3info_OBJECTS) $(id3info_DEPENDENCIES)
 id3convert: $(id3convert_OBJECTS) $(id3convert_DEPENDENCIES)
 	@rm -f id3convert
 	$(CXXLINK) $(id3convert_LDFLAGS) $(id3convert_OBJECTS) $(id3convert_LDADD) $(LIBS)
-
-id3strip: $(id3strip_OBJECTS) $(id3strip_DEPENDENCIES)
-	@rm -f id3strip
-	$(CXXLINK) $(id3strip_LDFLAGS) $(id3strip_OBJECTS) $(id3strip_LDADD) $(LIBS)
 .cpp.o:
 	$(CXXCOMPILE) -c $<
 .cpp.lo:
