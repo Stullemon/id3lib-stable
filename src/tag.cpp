@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.19 2000/05/28 23:07:40 eldamitri Exp $
+// $Id: tag.cpp,v 1.20 2000/06/06 12:23:05 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -48,25 +48,23 @@
  ** \brief The representative class of an id3 tag.
  ** 
  ** This is the 'container' class for everything else.  It is through an
- ** ID3_Tag that most of the productive stuff happens.  
- ** Let's look at what's
+ ** ID3_Tag that most of the productive stuff happens.  Let's look at what's
  ** required to start using ID3v2 tags.
  ** 
  ** \code
  **   #include <id3/tag.h>
  ** \endcode
  ** 
- ** This simple \c #include does it all.  In order to read an
- ** existing tag, do the following:
+ ** This simple \c #include does it all.  In order to read an existing tag, do
+ ** the following:
  **
  ** \code
  **   ID3_Tag myTag;
  **   myTag.Link("something.mp3");
  ** \endcode
  ** 
- ** That is all there is to it.  Now all you have to do is use the 
- ** Find() method to locate the frames you are interested in
- ** is the following:
+ ** That is all there is to it.  Now all you have to do is use the Find()
+ ** method to locate the frames you are interested in is the following:
  ** 
  ** \code
  **   ID3_Frame *myFrame;
@@ -88,7 +86,7 @@
  ** 'CDM' frames from the unreleased ID3v2 2.01 draft specification.
  **
  ** \author Dirk Mahoney
- ** \version $Id: tag.cpp,v 1.19 2000/05/28 23:07:40 eldamitri Exp $
+ ** \version $Id: tag.cpp,v 1.20 2000/06/06 12:23:05 eldamitri Exp $
  ** \sa ID3_Frame
  ** \sa ID3_Field
  ** \sa ID3_Err
