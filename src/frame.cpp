@@ -1,4 +1,4 @@
-// $Id: frame.cpp,v 1.26 2000/09/21 23:16:41 eldamitri Exp $
+// $Id: frame.cpp,v 1.27 2000/09/30 22:12:39 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -43,7 +43,7 @@
  ** the implementation of a complex APIC frame and for a simple text frame.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: frame.cpp,v 1.26 2000/09/21 23:16:41 eldamitri Exp $
+ ** @version $Id: frame.cpp,v 1.27 2000/09/30 22:12:39 eldamitri Exp $
  ** @see ID3_Tag
  ** @see ID3_Field
  ** @see ID3_Err
@@ -65,8 +65,7 @@ ID3_Frame::ID3_Frame(ID3_FrameID id)
     _num_fields(0),
     _fields(NULL),
     _encryption_id('\0'),
-    _grouping_id('\0'),
-    _bad_parse(false)
+    _grouping_id('\0')
 {
   this->SetSpec(ID3V2_LATEST);
   this->_InitFieldBits();
@@ -80,8 +79,7 @@ ID3_Frame::ID3_Frame(const ID3_FrameHeader &hdr)
     _fields(NULL),
     _hdr(hdr),
     _encryption_id('\0'),
-    _grouping_id('\0'),
-    _bad_parse(false)
+    _grouping_id('\0')
 {
   this->_InitFieldBits();
   this->_InitFields();
@@ -93,8 +91,7 @@ ID3_Frame::ID3_Frame(const ID3_Frame& frame)
     _num_fields(0),
     _fields(NULL),
     _encryption_id('\0'),
-    _grouping_id('\0'),
-    _bad_parse(false)
+    _grouping_id('\0')
 {
   this->_InitFieldBits();
   *this = frame;
@@ -115,10 +112,6 @@ void ID3_Frame::_InitFieldBits()
     delete [] _field_bitset;
   }
   _field_bitset = new uint32[lWordsForFields];
-  if (NULL == _field_bitset)
-  {
-    ID3_THROW(ID3E_NoMemory);
-  }
 
   for (index_t i = 0; i < lWordsForFields; i++)
   {
@@ -198,18 +191,10 @@ void ID3_Frame::_InitFields()
   }
   
   _fields = new ID3_Field * [_num_fields];
-  if (NULL == _fields)
-  {
-    ID3_THROW(ID3E_NoMemory);
-  }
   
   for (index_t i = 0; i < _num_fields; i++)
   {
     _fields[i] = new ID3_FieldImpl(info->aeFieldDefs[i]);
-    if (NULL == _fields[i])
-    {
-      ID3_THROW(ID3E_NoMemory);
-    }
     
     // tell the frame that this field is present
     BS_SET(_field_bitset, _fields[i]->GetID());
@@ -290,6 +275,16 @@ ID3_V2Spec ID3_Frame::GetSpec() const
  **/
 ID3_Field& ID3_Frame::Field(ID3_FieldID fieldName) const
 {
+  ID3_Field* field = this->GetField(fieldName);
+  if (!field)
+  {
+    ID3_THROW(ID3E_FieldNotFound);
+  }
+  return *field;
+}
+
+ID3_Field* ID3_Frame::GetField(ID3_FieldID fieldName) const
+{
   ID3_Field* field = NULL;
   if (BS_ISSET(_field_bitset, fieldName))
   {
@@ -301,13 +296,22 @@ ID3_Field& ID3_Frame::Field(ID3_FieldID fieldName) const
       }
     }
   }
-  
-  if (!field)
+  return field;
+}
+
+size_t ID3_Frame::GetNumFields() const
+{
+  return _num_fields;
+}
+
+ID3_Field* ID3_Frame::GetFieldAt(index_t index) const
+{
+  ID3_Field* field = NULL;
+  if (index < this->GetNumFields())
   {
-    ID3_THROW(ID3E_FieldNotFound);
+    field = _fields[index];
   }
-  
-  return *field;
+  return field;
 }
 
 size_t ID3_Frame::Size()
@@ -378,7 +382,6 @@ ID3_Frame::operator=( const ID3_Frame &rFrame )
     this->_SetGroupingID(rFrame._GetGroupingID());
     this->SetCompression(rFrame.GetCompression());
     this->SetSpec(rFrame.GetSpec());
-    _bad_parse = false;
     _changed = false;
   }
   return *this;
