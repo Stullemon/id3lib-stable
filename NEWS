@@ -1,25 +1,37 @@
-$Id: NEWS,v 1.15 2000/05/24 03:03:48 eldamitri Exp $
+$Id: NEWS,v 1.16 2000/05/29 06:57:46 eldamitri Exp $
 
-2000-05-24 Version 3.7.9
+2000-05-28 Version 3.7.9
 
-* Fixed a bug when parsing compressed frames (thanks to Christian Becker 
-  <chris@craze.de> for the bug report and example file)
-* Fixed several bugs when writing to files (thanks to Lothar Egger 
-  <lothar.egger@chello.at> and Peter Thorstenson <swede@openlink.com.br> for
-  the bug reports)
-* New delphi example code for use with id3com (thanks to Michael Little
-  <mike@netlinear.com>)
+* Added new test programs in examples/ for creating example tag files
+* Further improvements to compile on (Unix) systems that don't have zlib
+* Fixed a bug when parsing compressed frames (thanks to Christian Becker for 
+  the bug report and example file)
+* Fixed several bugs when writing to files (thanks to Lothar Egger and Peter 
+  Thorstenson for the bug reports)
+* New delphi example code for use with id3com (thanks Michael Little)
+* Bugfixes for id3com (thanks John Adcock)
+* Changed behavior of Link() and Clear() in ID3_Tag: Clear() doesn't remove
+  file reference, and Link'ing to an already-linked tag just changes the file
+  reference
 * Cleaned up the class interfaces to use size_t, flags_t, and index_t rather
   than luint, so as to be more descriptive
-* Cleaned up internal class definitions (thereby destroying binary 
-  compatibility)
 * ID3_Tag::RemoveFrame() now returns the pointer to the frame removed (NULL if
   not present), thus releasing the tag from its repsonsibility of managing that
   frame's memory
+* Cleaned up C interface so that appropriate function parameters are const
 * Cleaned up implementation of ID3_Tag::Clear() to fix inconsistencies
 * Deprecated ID3_Tag's HasV2Tag(), HasV1Tag(), and HasLyrics() methods in 
   favor of ID3_Tag::HasTagType() method
 * All Render() methods now const
+* Added GetUnsync() method to ID3_Tag
+* Cleaned up internal class definitions (thereby destroying binary 
+  compatibility)
+* ID3v2 tag now won't render (and its reported size is 0) if there aren't any
+  frames (per the spec)
+* Fixed a bug when copying frames that prevented rendering compressed frames in
+  certain situations
+* Fixed a bug with resyncing that caused it to improperly handle the last byte
+* Fixed a bug with recognizing certain sync signals
 * Lots of other minor changes
 
 2000-05-11 Version 3.7.8
