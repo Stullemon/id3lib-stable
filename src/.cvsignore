@@ -18,14 +18,17 @@ globals.lo
 header.lo
 header_frame.lo
 header_tag.lo
+helpers.lo
 int28.lo
 libid3.la
 misc_support.lo
 old
+readers.lo
 spec.lo
 tag.lo
 tag_file.lo
 tag_find.lo
+tag_impl.lo
 tag_parse.lo
 tag_parse_lyrics3.lo
 tag_parse_musicmatch.lo
