@@ -1,4 +1,4 @@
-// $Id: helpers.cpp,v 1.2 2000/10/09 04:28:18 eldamitri Exp $
+// $Id: helpers.cpp,v 1.3 2000/10/12 22:33:49 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -54,10 +54,7 @@ String id3::v2::getString(const ID3_Frame* frame, ID3_FieldID fldName)
   ID3_TextEnc enc = fp->GetEncoding();
   fp->SetEncoding(ID3TE_ASCII);
   
-  size_t nText = fp->Size();
-  char raw[nText + 1];
-  fp->Get(raw, nText + 1);
-  String text(raw, nText);
+  String text(fp->GetText(), fp->Size());
   
   fp->SetEncoding(enc);
   return text;
@@ -72,15 +69,12 @@ String id3::v2::getStringAtIndex(const ID3_Frame* frame, ID3_FieldID fldName,
   }
   String text;
   ID3_Field* fp = frame->GetField(fldName);
-  if (fp)
+  if (fp && fp->GetNumTextItems() < nIndex)
   {
     ID3_TextEnc enc = fp->GetEncoding();
     fp->SetEncoding(ID3TE_ASCII);
 
-    const size_t nText = fp->Size();
-    char raw[nText + 1];
-    fp->Get(raw, nText + 1, nIndex);
-    text = raw;
+    text = fp->GetTextItem(nIndex);
     
     fp->SetEncoding(enc);
   }
@@ -92,7 +86,7 @@ size_t id3::v2::removeFrames(ID3_TagImpl& tag, ID3_FrameID id)
   size_t numRemoved = 0;
   ID3_Frame* frame = NULL;
 
-  while (frame = tag.Find(id))
+  while ((frame = tag.Find(id)) != NULL)
   {
     frame = tag.RemoveFrame(frame);
     delete frame;
@@ -148,7 +142,7 @@ size_t id3::v2::removeArtists(ID3_TagImpl& tag)
   size_t numRemoved = 0;
   ID3_Frame* frame = NULL;
   
-  while (frame = hasArtist(tag))
+  while ((frame = hasArtist(tag)) != NULL)
   {
     frame = tag.RemoveFrame(frame);
     delete frame;
