@@ -1,4 +1,4 @@
-# $Id: configure.in,v 1.17 2000/04/08 04:49:54 eldamitri Exp $
+# $Id: configure.in,v 1.18 2000/04/09 14:07:53 eldamitri Exp $
 
 # Copyright 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -58,7 +58,7 @@ VERSION=$ID3LIB_VERSION
 PACKAGE=id3lib
 
 dnl This is a hack to get the release date using cvs checkin macros
-ID3LIB_DATE="$Date: 2000/04/08 04:49:54 $ID3LIB_UNDEFINED"
+ID3LIB_DATE="$Date: 2000/04/09 14:07:53 $ID3LIB_UNDEFINED"
 ID3LIB_FULLNAME="$PACKAGE-$VERSION"
 
 AC_SUBST(ID3LIB_DATE)
@@ -137,7 +137,8 @@ AC_CHECK_HEADER(iostream.h)
 
 dnl Check for functions.
 AC_FUNC_MEMCMP
-AC_HAVE_FUNCS(
+AC_CHECK_FUNCS(mkstemp)
+AC_CHECK_FUNCS(
   truncate                      \
   ,,AC_MSG_ERROR([Missing a vital function for id3lib])
 )
@@ -214,6 +215,9 @@ AC_OUTPUT(                      \
 )
 
 # $Log: configure.in,v $
+# Revision 1.18  2000/04/09 14:07:53  eldamitri
+# Added check for mkstemp.
+#
 # Revision 1.17  2000/04/08 04:49:54  eldamitri
 # Updated to version 3.7.0, per Kamran's (MusicMatch) suggestion.  Other
 # minor updates.
