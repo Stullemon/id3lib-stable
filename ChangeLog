@@ -1,5 +1,96 @@
 2000-05-11  Scott Haug  <scott@id3.org>
 
+	* include/id3/flags.h 
+	(class ID3_Flags): Changed TYPE to flags_t
+
+	* include/id3/globals.h: 
+	Added typedefs for index_t (size_t) and flags_t (uint16)
+
+	* include/id3/header_tag.h 
+	(class ID3_TagHeader): Added SetExtended(), GetExtended()
+
+	* include/id3/tag.h: 
+	- Removed acBinary and bTagOwns fields from ID3_Elem (unused)
+	- Constructor parameter now const
+	- Changed all luint return types, parameters to one of index_t, size_t,
+	  or flags_t, where appropriate
+	- RemoveFrame now returns a frame pointer
+	- Render, RenderV1 now const methods
+	- Added HasTagType() method in favor of deprecated HasV2Tag(), 
+	  HasV1Tag(), and HasLyrics() methods
+	- Removed all *Sync* methods (now standalone funcs declared in utils.h)
+	- Removed all List, Elem helper methods (now standalone)
+	- Updated, reorganized private member variables
+
+	* src/tag.cpp: 
+	- Removed all occurrences of __instances (unused)
+	- Made RemoveFromList and ClearList local functions
+	- Removed implementation of SetupTag(), moved most of its functionality
+	  to Clear()
+	- Updated constructors to no longer rely on SetupTag
+	- Updated destructor to make better use of Clear()
+	- Updated appropriate methods to increment/decrement __num_frames when
+	  necessary
+	- RemoveFrame nwo returns the pointer to the frame returned (NULL if 
+	  not removed or not present) and therefore the tag is now released 
+	  from its responsibility of managing frame's memory
+	- Makes use of new __hdr member variable where appropriate
+	- NumFrames implementation removed (moved to header file)
+
+	* src/tag_file.cpp: 
+	- Updated member variables to new names
+	(Link): 
+	- Updated luint return type to be size_t
+	- Updated to use new __tags_to_parse member variable
+	(Update): Updated luint parameter, return type to flags_t
+	(Strip): Updated luint parameter, return type to flags_t
+
+	* src/tag_find.cpp: 
+	(Find): Updated luint parameter to be uint32
+	(GetFrameNum):
+	- Updated luint parameter to be index_t
+	- Reimplemented so that it returns the NumFrames - index element, since
+	  the frames are stored in a stack and would otherwise be traversed in
+	  reverse order
+	(operator[]): Updated luint parameter to be index_t
+	
+	* src/tag_parse.cpp 
+	(ID3_ParseFrames): Now a local function rather than an ID3_Tag member
+	function, accepts an ID3_Tag reference
+	(ParseFromHandle): Updated luint return type to size_t, updated to use 
+	new __tags_to_parse member variable
+
+	* src/tag_parse_lyrics3.cpp: 
+	* src/tag_parse_v1.cpp: 
+	Updated for new member variables
+
+	* src/tag_render.cpp: 
+	- Updated member variables to new names
+	(Render): 
+	- Updated luint return type to size_t
+	- method now const
+	- No longer sets actual tag to have LATEST spec
+	- Made use of new __hdr member variable
+	(Size):
+	- Updated luint return type to size_t
+	- Made use of new __hdr member variable
+	(RenderV1):
+	- Updated luint return type to size_t
+	- method now const
+	- Made use of new __file_tags member variable
+	(PaddingSize):
+	- Updated luint return type to size_t
+
+	* src/tag_sync.cpp 
+	(ID3_ReSync): Updated luint parameter, return type to size_t
+	(ID3_GetUnSyncSize): Updated luint parameter, return type to size_t
+	(ID3_UnSync): Updated luint parameters to size_t
+
+	* include/id3/utils.h: 
+	* src/tag_sync.cpp: 
+	All syncing functions are now stand-alone, rather than member functions
+	of ID3_Tag
+
 	* NEWS 
 	* configure.in
 	* id3lib.spec.in: 
