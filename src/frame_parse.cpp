@@ -1,4 +1,4 @@
-// $Id: frame_parse.cpp,v 1.13 2000/05/12 21:07:26 eldamitri Exp $
+// $Id: frame_parse.cpp,v 1.14 2000/05/22 19:02:42 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -34,16 +34,20 @@
 size_t ID3_Frame::Parse(const uchar * const buffer, size_t size) 
 { 
   __bad_parse = false;  
-  size_t hdr_size = __hdr.Parse(buffer, size);  
-  size_t data_size = __hdr.GetDataSize() - __hdr.GetExtrasSize();  
-  
+  const size_t hdr_size = __hdr.Parse(buffer, size);  
+
   if (!hdr_size)  
   {  
     return 0;  
   }  
   
+  const size_t data_size = __hdr.GetDataSize();
+  const size_t extras = __hdr.GetExtrasSize();
+  // how many bytes remain to be parsed 
+  size_t remainder = data_size - MIN(extras, data_size);
+  
   // data is the part of the buffer that appears after the header  
-  const uchar * data = &buffer[hdr_size]; 
+  const uchar* data = &buffer[hdr_size]; 
   uchar* expanded_data = NULL;
   
   // expand out the data if it's compressed 
@@ -52,10 +56,10 @@ size_t ID3_Frame::Parse(const uchar * const buffer, size_t size)
     unsigned long expanded_size = __hdr.GetExpandedSize();  
     expanded_data = new uchar[expanded_size];  
         
-    uncompress(expanded_data, &expanded_size, data, data_size);  
+    uncompress(expanded_data, &expanded_size, data, remainder);  
     data = expanded_data; 
-    data_size = expanded_size; 
-  }  
+    remainder = expanded_size; 
+  }
   
   // set the type of frame based on the parsed header  
   this->_ClearFields(); 
@@ -63,7 +67,6 @@ size_t ID3_Frame::Parse(const uchar * const buffer, size_t size)
   try
   {  
     ID3_TextEnc enc = ID3TE_ASCII;  // set the default encoding 
-    size_t remainder = data_size;   // how many bytes remain to be parsed 
     ID3_V2Spec spec = this->GetSpec(); 
     // parse the frame's fields  
     for (ID3_Field** fi = __fields; fi != __fields + __num_fields; fi++)
