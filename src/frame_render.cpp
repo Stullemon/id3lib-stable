@@ -1,4 +1,4 @@
-// $Id: frame_render.cpp,v 1.14 2000/09/27 07:49:32 eldamitri Exp $
+// $Id: frame_render.cpp,v 1.15 2000/10/01 00:39:23 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,15 +24,19 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#include <string.h>
-#include <memory.h>
-#include <zlib.h>
-#include "tag.h"
-#include "utils.h"
-
 #if defined HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include "debug.h"
+
+#include <string.h>
+#include <memory.h>
+#include <zlib.h>
+
+#include "tag.h"
+#include "utils.h"
+#include "frame_impl.h"
 
 // Ideally, Render should render the frame in the order it is parsed, starting
 // with the header, then any extra info (resulting from header flags), and then
@@ -69,7 +73,7 @@
 //
 // So, in short, Render is a more complicated function than it should be, but
 // it doesn't look like there's a much better way that's any faster.
-size_t ID3_Frame::Render(uchar *buffer) const
+size_t ID3_FrameImpl::Render(uchar *buffer) const
 {
   if (NULL == buffer)
   {
@@ -85,7 +89,7 @@ size_t ID3_Frame::Render(uchar *buffer) const
     return 0;
   }
 
-  uchar e_id = this->_GetEncryptionID(), g_id = this->_GetGroupingID();
+  uchar e_id = this->GetEncryptionID(), g_id = this->GetGroupingID();
   size_t decompressed_size = 0;
   size_t extras = ( e_id > 0 ? 1 : 0 ) + ( g_id > 0 ? 1 : 0 );
   ID3_FrameHeader hdr = _hdr;
