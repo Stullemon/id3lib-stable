@@ -21,4 +21,8 @@ EXTRA_DIST =            \
   jules.mp3             \
   jules-badtag.mp3      \
   jules-goodtag.mp3     \
+  221-compressed.tag    \
+  230-compressed.tag    \
+  230-picture.tag       \
+  230-unicode.tag       \
   readme.txt
