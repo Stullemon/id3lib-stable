@@ -1,4 +1,4 @@
-// $Id: utils.cpp,v 1.3 2000/05/12 21:07:26 eldamitri Exp $
+// $Id: utils.cpp,v 1.4 2000/06/25 06:23:44 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,6 +24,7 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
+#include <ctype.h>
 #include "utils.h"
 
 #if defined HAVE_CONFIG_H
@@ -34,6 +35,77 @@
 namespace id3
 {
 #endif /* ID3_UNDEFINED */
+
+  size_t ID3_TimeToSeconds(const char* data, size_t size)
+  {
+    size_t seconds = 0;
+    size_t cur = 0;
+    for (const char* p = data; p < data + size; ++p)
+    {
+      if (':' == *p)
+      {
+        seconds += 60 * cur;
+        cur = 0;
+      }
+      else if (!isdigit(*p))
+      {
+        return 0;
+      }
+      else
+      {
+        cur = cur * 10 + (*p - '0');
+      }
+    }
+    return seconds + cur;
+  }
+
+  bool ID3_IsCRLF(const char* begin, const char* end)
+  {
+    if (begin > end || (end - begin) < 2)
+    {
+      return false;
+    }
+    const char* cur = begin;
+    return 0x0D == *cur++ && 0x0A == *cur;
+  }
+  
+  size_t ID3_CRLFtoLF(char *buffer, size_t size)
+  {
+    size_t newSize = 0;
+    char *dest = buffer;
+    char *source = buffer;
+    
+    if (NULL == buffer || size == 0)
+    {
+      // TODO: log this
+      return 0;
+      // ID3_THROW(ID3E_NoData);
+    }
+    
+    while (source < (buffer + size))
+    {
+      if (ID3_IsCRLF(source, buffer + size))
+      {
+        source++;
+      }
+      else
+      {
+        *dest++ = *source++;
+      }
+    }
+    
+    newSize = dest - buffer;
+    
+    return newSize;
+  }
+
+  void RemoveTrailingSpaces(char *buffer, size_t length)
+  {
+    for (size_t i = length; i > 0 && 0x20 == buffer[i-1]; --i)
+    {
+      buffer[i-1] = '\0';
+    }
+  }
 
   // Extract a 32-bit number from a 4-byte character array
   uint32 ParseNumber(const uchar *buffer, size_t size)
