@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.10 2000/04/09 14:05:44 eldamitri Exp $
+# $Id: Makefile.am,v 1.11 2000/04/12 16:31:14 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -17,7 +17,7 @@ EXTRA_DIST =                    \
         reconf                  \
         config.h.win32          \
         config.h.win32.in 
-SUBDIRS = . m4 doc src include prj zlib
+SUBDIRS = . m4 doc src include prj zlib id3com libprj
 
 INCLUDES = @ID3LIB_DEBUG_FLAGS@
 
@@ -44,6 +44,9 @@ snapshot: config.h.win32
 	rm -rf $$ss_distdir
 
 # $Log: Makefile.am,v $
+# Revision 1.11  2000/04/12 16:31:14  eldamitri
+# (SUBDIRS): Added id3com and libprj
+#
 # Revision 1.10  2000/04/09 14:05:44  eldamitri
 # (config.h.win32): Fixed bug in creating config.h.win32.
 # (release): Added.  Creates id3lib-$(VERSION).tar.gz and
