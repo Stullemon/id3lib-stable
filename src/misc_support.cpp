@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.33 2001/11/05 09:55:33 shadrack Exp $
+// $Id: misc_support.cpp,v 1.34 2002/03/20 10:32:27 slackorama Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -603,10 +603,10 @@ size_t ID3_GetGenreNum(const ID3_Tag *tag)
   return ulGenre;
 }
 
-ID3_Frame* ID3_AddGenre(ID3_Tag *tag, size_t genre, bool replace)
+ID3_Frame* ID3_AddGenre(ID3_Tag *tag, const char *genre, bool replace)
 {
   ID3_Frame* frame = NULL;
-  if (NULL != tag && 0xFF != genre)
+  if (NULL != tag && NULL != genre && strlen(genre) > 0)
   {
     if (replace)
     {
@@ -617,16 +617,27 @@ ID3_Frame* ID3_AddGenre(ID3_Tag *tag, size_t genre, bool replace)
       frame = new ID3_Frame(ID3FID_CONTENTTYPE);
       if (NULL != frame)
       {
-        char sGenre[6];
-        sprintf(sGenre, "(%lu)", (luint) genre);
-
-        frame->GetField(ID3FN_TEXT)->Set(sGenre);
+        frame->GetField(ID3FN_TEXT)->Set(genre);
         tag->AttachFrame(frame);
       }
     }
   }
   
   return frame;
+}
+
+ID3_Frame* ID3_AddGenre(ID3_Tag *tag, size_t genreNum, bool replace)
+{
+  if(0xFF != genreNum) 
+  {
+    char sGenre[6];
+    sprintf(sGenre, "(%lu)", (luint) genreNum);
+    return(ID3_AddGenre(tag, sGenre, replace));
+  }
+  else 
+  {
+    return(NULL);
+  }
 }
 
 size_t ID3_RemoveGenres(ID3_Tag *tag)
