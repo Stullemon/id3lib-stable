@@ -1,4 +1,10 @@
-$Id: NEWS,v 1.25 2000/11/20 09:06:41 eldamitri Exp $
+$Id: NEWS,v 1.26 2001/09/08 23:53:55 shadrack Exp $
+
+2001-09-08 Version 3.8.0pre2
+* ID3Lib maintainer has disappeared.  Project maintenance taken over by existing
+  developers
+* Many bug fixes -- mostly compilation problems -- more detailed info will be
+  provided in a later release.
 
 2000-11-20 Version 3.8.0pre1
 

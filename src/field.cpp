@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.42 2001/09/08 21:33:18 shadrack Exp $
+// $Id: field.cpp,v 1.43 2001/09/08 23:53:55 shadrack Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -882,7 +882,7 @@ static  ID3_FrameDef ID3_FrameDefs[] =
  ** if you only plan to generate 3.0 tags.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: field.cpp,v 1.42 2001/09/08 21:33:18 shadrack Exp $
+ ** @version $Id: field.cpp,v 1.43 2001/09/08 23:53:55 shadrack Exp $
  ** \sa ID3_Tag
  ** \sa ID3_Frame
  ** \sa ID3_Err 
@@ -1203,7 +1203,7 @@ bool ID3_FieldImpl::SetEncoding(ID3_TextEnc enc)
  ** 
  ** void ShowKnownFrameInfo {
  **   ID3_FrameInfo myFrameInfo;
- **   for (int cur = ID3FID_NOFRAME; cur < myFrameInfo.MaxFrameID(); cur ++)
+ **   for (int cur = ID3FID_NOFRAME+1; cur <= myFrameInfo.MaxFrameID(); cur ++)
  **   { 
  **     cout << "Short ID: " << myFrameInfo.ShortName(ID3_FrameID(cur)) <<
  ** 	" Long ID: " << myFrameInfo.LongName(ID3_FrameID(cur)) <<
@@ -1220,7 +1220,7 @@ bool ID3_FieldImpl::SetEncoding(ID3_TextEnc enc)
  ** does it take on any meaningful significance.
  **
  ** \code
- **  for (int cur = ID3FID_NOFRAME; cur < fi.MaxFrameID(); cur ++)
+ **  for (int cur = ID3FID_NOFRAME+1; cur <= fi.MaxFrameID(); cur ++)
  **  {
  **	int numfields = fi.NumFields(ID3_FrameID(cur));
  **
@@ -1239,7 +1239,7 @@ bool ID3_FieldImpl::SetEncoding(ID3_TextEnc enc)
  ** \endcode
  **
  ** @author Cedric Tefft
- ** @version $Id: field.cpp,v 1.42 2001/09/08 21:33:18 shadrack Exp $
+ ** @version $Id: field.cpp,v 1.43 2001/09/08 23:53:55 shadrack Exp $
  **/
 
 

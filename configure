@@ -24,7 +24,7 @@ ac_default_prefix=/usr/local
 ID3LIB_MAJOR_VERSION=3
 ID3LIB_MINOR_VERSION=8
 ID3LIB_PATCH_VERSION=0
-ID3LIB_ADDED_VERSION=pre1
+ID3LIB_ADDED_VERSION=pre2
 ID3LIB_VERSION=$ID3LIB_MAJOR_VERSION.$ID3LIB_MINOR_VERSION.$ID3LIB_PATCH_VERSION$ID3LIB_ADDED_VERSION
 
 ID3LIB_INTERFACE_AGE=0
@@ -2686,7 +2686,7 @@ else
 #line 2687 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
-extern "C" void exit(int);
+extern "C" void exit(int) throw();
 #endif
 main() { bool b1=true; bool b2=false; }
 EOF
