@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.33 2000/05/28 22:08:06 eldamitri Exp $
+// $Id: tag.h,v 1.34 2000/06/06 12:22:00 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -57,38 +57,38 @@ public:
   void       Clear();
   bool       HasChanged() const;
   size_t     Size() const;
-
+  
   bool       SetUnsync(bool bSync);
   bool       SetExtendedHeader(bool bExt);
   bool       SetPadding(bool bPad);
-
+  
   void       AddFrame(const ID3_Frame&);
   void       AddFrame(const ID3_Frame*);
   void       AttachFrame(ID3_Frame*);
   ID3_Frame* RemoveFrame(const ID3_Frame *);
-
+  
   size_t     Parse(const uchar*, size_t);
   size_t     Parse(const uchar header[ID3_TAGHEADERSIZE], const uchar *buffer);
   size_t     Render(uchar*) const;
   size_t     Render(uchar*, ID3_TagType) const;
   size_t     RenderV1(uchar*) const;
-
+  
   size_t     Link(const char *fileInfo, flags_t = (flags_t) ID3TT_ALL);
   flags_t    Update(flags_t = (flags_t) ID3TT_ID3V2);
   flags_t    Strip(flags_t = (flags_t) ID3TT_ALL);
-
+  
   /// Finds frame with given frame id
   ID3_Frame* Find(ID3_FrameID id) const;
-
+  
   /// Finds frame with given frame id, fld id, and integer data
   ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, uint32 data) const;
-
+  
   /// Finds frame with given frame id, fld id, and ascii data
-  ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, const char *) const;
-
+  ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, const char*) const;
+  
   /// Finds frame with given frame id, fld id, and unicode data
-  ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, const unicode_t *) const;
-
+  ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, const unicode_t*) const;
+  
   /** Returns the number of frames present in the tag object.
    ** 
    ** This includes only those frames that id3lib recognises.  This is used as
@@ -100,14 +100,14 @@ public:
   ID3_Frame* GetFrameNum(index_t) const;
   ID3_Frame* operator[](index_t) const;
   ID3_Tag&   operator=( const ID3_Tag & );
-
+  
   bool       GetUnsync() const { return __hdr.GetUnsync(); }
-
+  
   bool       HasTagType(uint16 tt) const { return __file_tags.test(tt); }
   ID3_V2Spec GetSpec() const;
-
+  
   static size_t IsV2Tag(const uchar*);
-
+  
   /* Deprecated! */
   void       AddNewFrame(ID3_Frame* f) { this->AttachFrame(f); }
   size_t     Link(const char *fileInfo, bool parseID3v1, bool parseLyrics3);
@@ -116,35 +116,35 @@ public:
   bool       HasLyrics() const { return this->HasTagType(ID3TT_LYRICS); }
   bool       HasV2Tag()  const { return this->HasTagType(ID3TT_ID3V2); }
   bool       HasV1Tag()  const { return this->HasTagType(ID3TT_ID3V1); }
-
+  
 protected:
   bool       SetSpec(ID3_V2Spec);
-
+  
   ID3_Elem*  Find(const ID3_Frame *) const;
   size_t     PaddingSize(size_t) const;
-
+  
   void       RenderExtHeader(uchar *);
   ID3_Err    OpenFileForWriting();
   ID3_Err    OpenFileForReading();
   ID3_Err    CreateFile();
   bool       CloseFile();
-
+  
   void       RenderV1ToHandle();
   void       RenderV2ToHandle();
   size_t     ParseFromHandle();
   void       ParseID3v1();
   void       ParseLyrics3();
-
+  
 private:
   ID3_TagHeader __hdr;          // information relevant to the tag header
   bool       __is_padded;       // add padding to tags?
-
+  
   ID3_Elem*  __frames;          // frames attached to the tag
   size_t     __num_frames;      // the current number of frames
-
+  
   mutable ID3_Elem*  __cursor;  // which frame in list are we at
   mutable bool       __changed; // has tag changed since last parse or render?
-
+  
   // file-related member variables
   char*      __file_name;       // name of the file we are linked to
   FILE*      __file_handle;     // a handle to the file we are linked to
