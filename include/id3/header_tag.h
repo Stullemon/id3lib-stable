@@ -1,4 +1,4 @@
-// $Id: header_tag.h,v 1.10 2000/05/03 14:05:27 eldamitri Exp $
+// $Id: header_tag.h,v 1.11 2000/05/03 23:23:40 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -63,7 +63,7 @@ public:
   // mm = minor version (will never be 0xFF)
   // ff = flags byte 
   // ss = size bytes (less than $80)
-  static const char* const ID             = "ID3";
+  static const char* const ID;
   enum
   {
     ID_SIZE        = 3,
