@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: globals.h,v 1.52 2002/08/10 17:40:00 t1mpy Exp $
+/* $Id: globals.h,v 1.53 2002/11/02 17:48:51 t1mpy Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags
  * Copyright 1999, 2000 Scott Thomas Haug
@@ -9,12 +9,12 @@
  * under the terms of the GNU Library General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at your
  * option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
  * License for more details.
- * 
+ *
  * You should have received a copy of the GNU Library General Public License
  * along with this library; if not, write to the Free Software Foundation,
  * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
@@ -24,7 +24,7 @@
  * send such submissions.  See the AUTHORS file for a list of people who have
  * contributed to id3lib.  See the ChangeLog file for a list of changes to
  * id3lib.  These files are distributed with id3lib at
- * http://download.sourceforge.net/id3lib/ 
+ * http://download.sourceforge.net/id3lib/
  */
 
 /** This file defines common macros, types, constants, and enums used
@@ -55,22 +55,22 @@
 #    pragma message("***")
 #    error read message above or win32.readme.first.txt
 #  else
-#    if (ID3LIB_LINKOPTION == LINKOPTION_CREATE_DYNAMIC) 
+#    if (ID3LIB_LINKOPTION == LINKOPTION_CREATE_DYNAMIC)
        //used for creating a dynamic dll
 #      define ID3_C_EXPORT extern _declspec(dllexport)
 #      define ID3_CPP_EXPORT __declspec(dllexport)
 #      define CCONV __stdcall // Added for VB & Delphi Compatibility - By FrogPrince Advised By Lothar
 #    endif
-#    if (ID3LIB_LINKOPTION == LINKOPTION_STATIC) 
+#    if (ID3LIB_LINKOPTION == LINKOPTION_STATIC)
        //used for creating a static lib and using a static lib
 #      define ID3_C_EXPORT
 #      define ID3_CPP_EXPORT
 #      define CCONV
 #    endif
-#    if (ID3LIB_LINKOPTION == LINKOPTION_USE_DYNAMIC) 
+#    if (ID3LIB_LINKOPTION == LINKOPTION_USE_DYNAMIC)
        //used for those that do not link static and are using the dynamic dll by including a id3lib header
 #      define ID3_C_EXPORT extern _declspec(dllimport)
-#      define ID3_CPP_EXPORT __declspec(dllimport) //functions like these shouldn't be used by vb and delphi, 
+#      define ID3_CPP_EXPORT __declspec(dllimport) //functions like these shouldn't be used by vb and delphi,
 #      define CCONV __stdcall // Added for VB & Delphi Compatibility - By FrogPrince Advised By Lothar
 #    endif
 #  endif
@@ -166,7 +166,7 @@ ID3_ENUM(ID3_V2Spec)
   ID3V2_3_0,
   ID3V2_4_0,
   ID3V2_EARLIEST = ID3V2_2_0,
-  ID3V2_LATEST = ID3V2_3_0  
+  ID3V2_LATEST = ID3V2_3_0
 };
 
 /** The various types of tags that id3lib can handle
@@ -527,6 +527,7 @@ ID3_STRUCT(Mp3_Headerinfo)
   Mp3_ModeExt modeext;
   Mp3_Emphasis emphasis;
   Mp3_Crc crc;
+  uint32 vbr_bitrate;           // avg bitrate from xing header
   uint32 frequency;             // samplerate
   uint32 framesize;
   uint32 frames;                // nr of frames
@@ -535,6 +536,163 @@ ID3_STRUCT(Mp3_Headerinfo)
   bool copyrighted;
   bool original;
 };
+
+#define ID3_NR_OF_V1_GENRES 148
+
+static char* ID3_v1_genre_description[ID3_NR_OF_V1_GENRES] =
+{
+  "Blues",             //0
+  "Classic Rock",      //1
+  "Country",           //2
+  "Dance",             //3
+  "Disco",             //4
+  "Funk",              //5
+  "Grunge",            //6
+  "Hip-Hop",           //7
+  "Jazz",              //8
+  "Metal",             //9
+  "New Age",           //10
+  "Oldies",            //11
+  "Other",             //12
+  "Pop",               //13
+  "R&B",               //14
+  "Rap",               //15
+  "Reggae",            //16
+  "Rock",              //17
+  "Techno",            //18
+  "Industrial",        //19
+  "Alternative",       //20
+  "Ska",               //21
+  "Death Metal",       //22
+  "Pranks",            //23
+  "Soundtrack",        //24
+  "Euro-Techno",       //25
+  "Ambient",           //26
+  "Trip-Hop",          //27
+  "Vocal",             //28
+  "Jazz+Funk",         //29
+  "Fusion",            //30
+  "Trance",            //31
+  "Classical",         //32
+  "Instrumental",      //33
+  "Acid",              //34
+  "House",             //35
+  "Game",              //36
+  "Sound Clip",        //37
+  "Gospel",            //38
+  "Noise",             //39
+  "AlternRock",        //40
+  "Bass",              //41
+  "Soul",              //42
+  "Punk",              //43
+  "Space",             //44
+  "Meditative",        //45
+  "Instrumental Pop",  //46
+  "Instrumental Rock", //47
+  "Ethnic",            //48
+  "Gothic",            //49
+  "Darkwave",          //50
+  "Techno-Industrial", //51
+  "Electronic",        //52
+  "Pop-Folk",          //53
+  "Eurodance",         //54
+  "Dream",             //55
+  "Southern Rock",     //56
+  "Comedy",            //57
+  "Cult",              //58
+  "Gangsta",           //59
+  "Top 40",            //60
+  "Christian Rap",     //61
+  "Pop/Funk",          //62
+  "Jungle",            //63
+  "Native American",   //64
+  "Cabaret",           //65
+  "New Wave",          //66
+  "Psychadelic",       //67
+  "Rave",              //68
+  "Showtunes",         //69
+  "Trailer",           //70
+  "Lo-Fi",             //71
+  "Tribal",            //72
+  "Acid Punk",         //73
+  "Acid Jazz",         //74
+  "Polka",             //75
+  "Retro",             //76
+  "Musical",           //77
+  "Rock & Roll",       //78
+  "Hard Rock",         //79
+// following are winamp extentions
+  "Folk",                  //80
+  "Folk-Rock",             //81
+  "National Folk",         //82
+  "Swing",                 //83
+  "Fast Fusion",           //84
+  "Bebob",                 //85
+  "Latin",                 //86
+  "Revival",               //87
+  "Celtic",                //88
+  "Bluegrass",             //89
+  "Avantgarde",            //90
+  "Gothic Rock",           //91
+  "Progressive Rock",      //92
+  "Psychedelic Rock",      //93
+  "Symphonic Rock",        //94
+  "Slow Rock",             //95
+  "Big Band",              //96
+  "Chorus",                //97
+  "Easy Listening",        //98
+  "Acoustic",              //99
+  "Humour",                //100
+  "Speech",                //101
+  "Chanson",               //102
+  "Opera",                 //103
+  "Chamber Music",         //104
+  "Sonata",                //105
+  "Symphony",              //106
+  "Booty Bass",            //107
+  "Primus",                //108
+  "Porn Groove",           //109
+  "Satire",                //110
+  "Slow Jam",              //111
+  "Club",                  //112
+  "Tango",                 //113
+  "Samba",                 //114
+  "Folklore",              //115
+  "Ballad",                //116
+  "Power Ballad",          //117
+  "Rhythmic Soul",         //118
+  "Freestyle",             //119
+  "Duet",                  //120
+  "Punk Rock",             //121
+  "Drum Solo",             //122
+  "A capella",             //123
+  "Euro-House",            //124
+  "Dance Hall",            //125
+  "Goa",                   //126
+  "Drum & Bass",           //127
+  "Club-House",            //128
+  "Hardcore",              //129
+  "Terror",                //130
+  "Indie",                 //131
+  "Britpop",               //132
+  "Negerpunk",             //133
+  "Polsk Punk",            //134
+  "Beat",                  //135
+  "Christian Gangsta Rap", //136
+  "Heavy Metal",           //137
+  "Black Metal",           //138
+  "Crossover",             //139
+  "Contemporary Christian",//140
+  "Christian Rock ",       //141
+  "Merengue",              //142
+  "Salsa",                 //143
+  "Trash Metal",           //144
+  "Anime",                 //145
+  "JPop",                  //146
+  "Synthpop"               //147
+};
+
+#define ID3_V1GENRE2DESCRIPTION(x) (x < ID3_NR_OF_V1_GENRES && x >= 0) ? ID3_v1_genre_description[x] : NULL
 
 #define MASK(bits) ((1 << (bits)) - 1)
 #define MASK1 MASK(1)
