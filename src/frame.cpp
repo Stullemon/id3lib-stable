@@ -1,4 +1,4 @@
-// $Id: frame.cpp,v 1.25 2000/09/14 22:34:11 eldamitri Exp $
+// $Id: frame.cpp,v 1.26 2000/09/21 23:16:41 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -26,6 +26,9 @@
 
 #include <string.h>
 #include "tag.h"
+#include "field_impl.h"
+#include "frame_def.h"
+#include "field_def.h"
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
@@ -40,7 +43,7 @@
  ** the implementation of a complex APIC frame and for a simple text frame.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: frame.cpp,v 1.25 2000/09/14 22:34:11 eldamitri Exp $
+ ** @version $Id: frame.cpp,v 1.26 2000/09/21 23:16:41 eldamitri Exp $
  ** @see ID3_Tag
  ** @see ID3_Field
  ** @see ID3_Err
@@ -141,7 +144,7 @@ bool ID3_Frame::_ClearFields()
   }
   for (index_t fi = 0; fi < _num_fields; fi++)
   {
-    delete _fields[fi];
+    delete dynamic_cast<ID3_FieldImpl*>(_fields[fi]);
   }
   
   delete [] _fields;
@@ -202,7 +205,7 @@ void ID3_Frame::_InitFields()
   
   for (index_t i = 0; i < _num_fields; i++)
   {
-    _fields[i] = new ID3_Field(info->aeFieldDefs[i]);
+    _fields[i] = new ID3_FieldImpl(info->aeFieldDefs[i]);
     if (NULL == _fields[i])
     {
       ID3_THROW(ID3E_NoMemory);
