@@ -1,4 +1,4 @@
-// $Id: readers.cpp,v 1.5 2001/08/26 23:33:20 dmazzoni Exp $
+// $Id: readers.cpp,v 1.6 2002/06/29 17:36:40 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -43,3 +43,4 @@ ID3_MemoryReader::readChars(char_type buf[], size_type len)
   _cur += size;
   return size;
 }
+

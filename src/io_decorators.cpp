@@ -1,4 +1,4 @@
-// $Id: io_decorators.cpp,v 1.2 2000/10/29 01:37:29 eldamitri Exp $
+// $Id: io_decorators.cpp,v 1.3 2002/06/29 17:36:28 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -296,3 +296,4 @@ io::CompressedWriter::writeChars(const char_type buf[], size_type len)
   _data.append(buf, len);
   return len;
 }
+

@@ -1,4 +1,4 @@
-// $Id: tag_parse_v1.cpp,v 1.20 2002/01/22 21:06:16 slackorama Exp $
+// $Id: tag_parse_v1.cpp,v 1.21 2002/06/29 17:37:18 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -146,3 +146,4 @@ bool id3::v1::parse(ID3_TagImpl& tag, ID3_Reader& reader)
   ID3D_NOTICE("id3::v1::parse: read bytes: " << reader.getCur() - beg);
   return true;
 }
+

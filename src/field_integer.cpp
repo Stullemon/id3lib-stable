@@ -1,4 +1,4 @@
-// $Id: field_integer.cpp,v 1.19 2000/10/29 01:37:28 eldamitri Exp $
+// $Id: field_integer.cpp,v 1.20 2002/06/29 17:35:33 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -111,3 +111,4 @@ void ID3_FieldImpl::RenderInteger(ID3_Writer& writer) const
 {
   io::writeBENumber(writer, _integer, this->Size());
 }
+

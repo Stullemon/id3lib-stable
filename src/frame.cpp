@@ -1,4 +1,4 @@
-// $Id: frame.cpp,v 1.33 2002/06/29 14:43:18 t1mpy Exp $
+// $Id: frame.cpp,v 1.34 2002/06/29 17:35:39 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -42,7 +42,7 @@
  ** text frame.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: frame.cpp,v 1.33 2002/06/29 14:43:18 t1mpy Exp $
+ ** @version $Id: frame.cpp,v 1.34 2002/06/29 17:35:39 t1mpy Exp $
  ** @see ID3_Tag
  ** @see ID3_Field
  ** @see ID3_Err
@@ -316,3 +316,4 @@ ID3_Frame::CreateIterator() const
 {
   return new ConstIteratorImpl(*_impl);
 }
+

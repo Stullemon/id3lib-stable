@@ -1,4 +1,4 @@
-// $Id: globals.cpp,v 1.4 2000/10/15 07:05:23 eldamitri Exp $
+// $Id: globals.cpp,v 1.5 2002/06/29 17:35:57 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -47,3 +47,4 @@ extern "C"
 #ifdef _cplusplus
 }
 #endif
+

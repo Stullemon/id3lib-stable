@@ -1,4 +1,4 @@
-// $Id: io.cpp,v 1.1 2000/10/15 07:04:06 eldamitri Exp $
+// $Id: io.cpp,v 1.2 2002/06/29 17:36:22 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -33,3 +33,4 @@
 
 const ID3_Reader::int_type ID3_Reader::END_OF_READER = -1;
 const ID3_Writer::int_type ID3_Writer::END_OF_WRITER = -1;
+

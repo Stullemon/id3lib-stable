@@ -1,4 +1,4 @@
-// $Id: io_helpers.cpp,v 1.11 2002/06/29 14:43:30 t1mpy Exp $
+// $Id: io_helpers.cpp,v 1.12 2002/06/29 17:36:34 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -375,3 +375,4 @@ size_t io::writeUnicodeText(ID3_Writer& writer, String data, bool bom)
   }
   return writer.getCur() - beg;
 }
+

@@ -1,4 +1,4 @@
-// $Id: frame_render.cpp,v 1.22 2000/10/29 01:37:29 eldamitri Exp $
+// $Id: frame_render.cpp,v 1.23 2002/06/29 17:35:51 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -144,3 +144,4 @@ void ID3_FrameImpl::Render(ID3_Writer& writer) const
   writer.writeChars(flds.data(), fldSize);
   _changed = false;
 }
+

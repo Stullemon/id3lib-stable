@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.36 2002/06/27 12:46:12 t1mpy Exp $
+// $Id: tag_file.cpp,v 1.37 2002/06/29 17:36:53 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -491,3 +491,4 @@ flags_t ID3_TagImpl::Strip(flags_t ulTagFlag)
   
   return ulTags;
 }
+
