@@ -1,4 +1,4 @@
-// $Id: field_binary.cpp,v 1.13 2000/09/11 07:46:32 eldamitri Exp $
+// $Id: field_binary.cpp,v 1.14 2000/09/14 17:59:09 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -42,24 +42,23 @@ void ID3_Field::Set(const uchar *newData, //< The data to assign to this field.
                     size_t newSize        //< The number of bytes to be copied
                     )
 {
-  Clear();
-  
-  if (newSize == 0 || newData == NULL)
+  if (this->GetType() == ID3FTY_BINARY)
   {
-    _size = 0;
-    _data = NULL;
-  }
-  else
-  {
-    _data = new uchar[newSize];
+    this->Clear();
     
-    memcpy(_data, newData, newSize);
-    _size = newSize;
+    if (newSize == 0 || newData == NULL)
+    {
+      _bytes = 0;
+      _binary = NULL;
+    }
+    else
+    {
+      _bytes = newSize;
+      _binary = new uchar[_bytes];
+      ::memcpy(_binary, newData, _bytes);
+    }
+    _changed = true;
   }
-  _type = ID3FTY_BINARY;
-  _changed = true;
-  
-  return ;
 }
 
 
@@ -73,19 +72,20 @@ void ID3_Field::Set(const uchar *newData, //< The data to assign to this field.
  **   myFrame.Field(ID3FN_DATA).Get(buffer, sizeof(buffer));
  ** \endcode
  **/
-void ID3_Field::Get(uchar *buffer,    //< Destination of retrieved string
-                    size_t max_bytes //< Max number of bytes to copy
-                    ) const
+size_t ID3_Field::Get(uchar *buffer,    //< Destination of retrieved string
+                      size_t max_bytes //< Max number of bytes to copy
+                     ) const
 {
-  if (NULL == buffer)
+  size_t bytes = 0;
+  if (this->GetType() == ID3FTY_BINARY)
   {
-    ID3_THROW(ID3E_NoBuffer);
+    bytes = MIN(max_bytes, this->Size());
+    if (NULL != buffer && NULL != _binary && bytes > 0)
+    {
+      ::memcpy(buffer, _binary, bytes);
+    }
   }
-    
-  if (_data != NULL && _size > 0)
-  {
-    memcpy(buffer, _data, MIN(max_bytes, _size));
-  }
+  return bytes;
 }
 
 
@@ -98,7 +98,7 @@ void ID3_Field::Get(uchar *buffer,    //< Destination of retrieved string
 void ID3_Field::FromFile(const char *info //< Source filename
                          )
 {
-  if (!info)
+  if (this->GetType() != ID3FTY_BINARY || NULL == info)
   {
     return;
   }
@@ -136,18 +136,19 @@ void ID3_Field::FromFile(const char *info //< Source filename
 void ID3_Field::ToFile(const char *info //< Destination filename
                        ) const
 {
-  if (NULL == info)
+  if (this->GetType() != ID3FTY_BINARY || NULL == info)
   {
-    ID3_THROW(ID3E_NoData);
+    return;
   }
     
-  if ((_data != NULL) && (_size > 0))
+  size_t size = this->Size();
+  if ((_binary != NULL) && (size > 0))
   {
     FILE* temp_file = fopen(info, "wb");
     if (temp_file != NULL)
     {
-      fwrite(_data, 1, _size, temp_file);
-      fclose(temp_file);
+      ::fwrite(_binary, 1, size, temp_file);
+      ::fclose(temp_file);
     }
   }
   
@@ -156,11 +157,13 @@ void ID3_Field::ToFile(const char *info //< Destination filename
 
 
 size_t
-ID3_Field::ParseBinary(const uchar *buffer, size_t nSize)
+ID3_Field::ParseBinary(const uchar *buffer, size_t size)
 {
   // copy the remaining bytes, unless we're fixed length, in which case copy
   // the minimum of the remaining bytes vs. the fixed length
-  size_t bytesUsed = (_length > 0 ? MIN(nSize, _length) : nSize);
+  this->Clear();
+  size_t fixed = this->Size();
+  size_t bytesUsed = (fixed > 0) ? MIN(size, fixed) : size;
   this->Set(buffer, bytesUsed);
   _changed = false;
   
@@ -170,8 +173,8 @@ ID3_Field::ParseBinary(const uchar *buffer, size_t nSize)
 
 size_t ID3_Field::RenderBinary(uchar *buffer) const
 {
-  size_t bytesUsed = BinSize();
-  memcpy(buffer, (uchar *) _data, bytesUsed);
+  size_t bytesUsed = this->Size();
+  memcpy(buffer, _binary, bytesUsed);
   _changed = false;
   return bytesUsed;
 }
