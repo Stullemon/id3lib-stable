@@ -1,4 +1,4 @@
-// $Id: utils.cpp,v 1.25 2002/07/02 12:22:58 t1mpy Exp $
+// $Id: utils.cpp,v 1.26 2002/07/02 22:04:36 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,10 +24,6 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#if defined HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <ctype.h>
 
 #if (defined(__GNUC__) && __GNUC__ == 2)
@@ -39,10 +35,10 @@
 #define NOCREATE ((std::ios_base::openmode)0)
 #endif
 
-#include "utils.h"
+#include "id3/utils.h" // has <config.h> "id3/id3lib_streams.h" "id3/globals.h" "id3/id3lib_strings.h"
 
 #if defined HAVE_ICONV_H
-// check if we have all non-empty unicodes
+// check if we have all unicodes
 #if (defined(ID3_ICONV_FORMAT_UTF16BE) && defined(ID3_ICONV_FORMAT_UTF16) && defined(ID3_ICONV_FORMAT_UTF8) && defined(ID3_ICONV_FORMAT_ASCII))
 # include <iconv.h>
 # include <errno.h>
@@ -50,6 +46,46 @@
 # undef HAVE_ICONV_H
 #endif
 #endif
+
+  // converts an ASCII string into a Unicode one
+dami::String mbstoucs(dami::String data)
+{
+  size_t size = data.size();
+  dami::String unicode(size * 2, '\0');
+  for (size_t i = 0; i < size; ++i)
+  {
+    unicode[i*2+1] = toascii(data[i]);
+  }
+  return unicode;
+}
+
+// converts a Unicode string into ASCII
+dami::String ucstombs(dami::String data)
+{
+  size_t size = data.size() / 2;
+  dami::String ascii(size, '\0');
+  for (size_t i = 0; i < size; ++i)
+  {
+    ascii[i] = toascii(data[i*2+1]);
+  }
+  return ascii;
+}
+
+dami::String oldconvert(dami::String data, ID3_TextEnc sourceEnc, ID3_TextEnc targetEnc)
+{
+  dami::String target;
+#define ID3_IS_ASCII(enc)      ((enc) == ID3TE_ASCII || (enc) == ID3TE_ISO8859_1 || (enc) == ID3TE_UTF8)
+#define ID3_IS_UNICODE(enc)    ((enc) == ID3TE_UNICODE || (enc) == ID3TE_UTF16 || (enc) == ID3TE_UTF16BE)
+  if (ID3_IS_ASCII(sourceEnc) && ID3_IS_UNICODE(targetEnc))
+  {
+    target = mbstoucs(data);
+  }
+  else if (ID3_IS_UNICODE(sourceEnc) && ID3_IS_ASCII(targetEnc))
+  {
+    target = ucstombs(data);
+  }
+  return target;
+}
 
 using namespace dami;
 
@@ -77,35 +113,10 @@ String dami::renderNumber(uint32 val, size_t size)
 }
 
 
+#if defined(HAVE_ICONV_H)
+
 namespace 
 {
-#if !defined(HAVE_ICONV_H)
-  // converts an ASCII string into a Unicode one
-  String mbstoucs(String data)
-  {
-    size_t size = data.size();
-    String unicode(size * 2, '\0');
-    for (size_t i = 0; i < size; i++)
-    {
-      unicode[i*2+1] = toascii(data[i]);
-    }
-    return unicode;
-  }
-
-  // converts a Unicode string into ASCII
-  
-  String ucstombs(String data)
-  {
-    size_t size = data.size() / 2;
-    String ascii(size, '\0');
-    for (size_t i = 0; i < size; i++)
-    {
-      ascii[i] = toascii(data[i*2+1]);
-    }
-    return ascii;
-  }
-#else
-
   String convert_i(iconv_t cd, String source)
   {
     String target;
@@ -113,9 +124,9 @@ namespace
 #if defined(ID3LIB_ICONV_OLDSTYLE)
     const char* source_str = source.data();
 #else
-    char * source_str = new char[source.length()+1]; 
-    source.copy(source_str, std::string::npos); 
-    source_str[source.length()] = 0; 
+    char *source_str = new char[source.size()+1];
+    source.copy(source_str, String::npos);
+    source_str[source.length()] = 0;
 #endif
 
 #define ID3LIB_BUFSIZ 1024
@@ -125,11 +136,13 @@ namespace
     
     do
     {
+      errno = 0;
       size_t nconv = iconv(cd, 
                            &source_str, &source_size, 
                            &target_str, &target_size);
       if (nconv == (size_t) -1 && errno != EINVAL && errno != E2BIG)
       {
+// errno is probably EILSEQ here, which means either an invalid byte sequence or a valid but unconvertible byte sequence 
         return target;
       }
       target.append(buf, ID3LIB_BUFSIZ - target_size);
@@ -166,43 +179,37 @@ namespace
     }
     return format;
   }
-#endif
 }
+#endif
 
 String dami::convert(String data, ID3_TextEnc sourceEnc, ID3_TextEnc targetEnc)
 {
   String target;
-#if !defined HAVE_ICONV_H
-#define ID3_IS_ASCII(enc)      \
-  ((enc) == ID3TE_ASCII     || \
-   (enc) == ID3TE_ISO8859_1 || \
-   (enc) == ID3TE_UTF8)
-#define ID3_IS_UNICODE(enc)    \
-  ((enc) == ID3TE_UNICODE   || \
-   (enc) == ID3TE_UTF16     || \
-   (enc) == ID3TE_UTF16BE)
-  if (ID3_IS_ASCII(sourceEnc) && ID3_IS_UNICODE(targetEnc))
-  {
-    target = mbstoucs(data);
-  }
-  else if (ID3_IS_UNICODE(sourceEnc) && ID3_IS_ASCII(targetEnc))
-  {
-    target = ucstombs(data);
-  }
-#else
   if ((sourceEnc != targetEnc) && (data.size() > 0 ))
   {
+#if !defined HAVE_ICONV_H
+    target = oldconvert(data, sourceEnc, targetEnc);
+#else
     const char* targetFormat = getFormat(targetEnc);
     const char* sourceFormat = getFormat(sourceEnc);
-    
+   
     iconv_t cd = iconv_open (targetFormat, sourceFormat);
     if (cd != (iconv_t) -1)
     {
       target = convert_i(cd, data);
+      if (target.size() == 0)
+      {
+        //try it without iconv
+        target = oldconvert(data, sourceEnc, targetEnc);
+      }
+    }
+    else
+    {
+      target = oldconvert(data, sourceEnc, targetEnc);
     }
     iconv_close (cd);
-  }
 #endif
+  }
   return target;
 }
 
