@@ -1,4 +1,4 @@
-// $Id: field_string_ascii.cpp,v 1.8 2000/05/10 03:30:18 eldamitri Exp $
+// $Id: field_string_ascii.cpp,v 1.9 2000/05/10 14:54:30 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -165,7 +165,7 @@ ID3_Field::ParseASCIIString(const uchar *buffer, size_t nSize)
   // This check needs to come before the check for ID3FF_CSTR
   else if (__flags & ID3FF_LIST)
   {
-    char *sBuffer = (char *) buffer;
+    const char *sBuffer = (const char *) buffer;
     for (size_t i = 0; i < bytesUsed; i += strlen(&sBuffer[i]) + 1)
     {
       Add(&sBuffer[i]);
