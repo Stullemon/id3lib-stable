@@ -1,3 +1,8 @@
+1999-12-01  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* Makefile.am
+ 	(INCLUDES): Updated to point to new toplevel include directory.
+
 1999-11-30  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* demo_info.cpp, demo_convert.cpp: 

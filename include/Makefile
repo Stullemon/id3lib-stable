@@ -1,3 +1,4 @@
+# Generated automatically from Makefile.in by configure.
 # Makefile.in generated automatically by automake 1.4a from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
@@ -10,8 +11,6 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.7 1999/12/01 18:10:43 scott Exp $
-# 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
 # This file is free software; as a special exception the author gives
@@ -23,46 +22,45 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 
-SHELL = @SHELL@
+SHELL = /bin/sh
 
-srcdir = @srcdir@
-top_srcdir = @top_srcdir@
-VPATH = @srcdir@
-prefix = @prefix@
-exec_prefix = @exec_prefix@
+srcdir = .
+top_srcdir = ..
+prefix = /usr/local
+exec_prefix = ${prefix}
 
-bindir = @bindir@
-sbindir = @sbindir@
-libexecdir = @libexecdir@
-datadir = @datadir@
-sysconfdir = @sysconfdir@
-sharedstatedir = @sharedstatedir@
-localstatedir = @localstatedir@
-libdir = @libdir@
-infodir = @infodir@
-mandir = @mandir@
-includedir = @includedir@
+bindir = ${exec_prefix}/bin
+sbindir = ${exec_prefix}/sbin
+libexecdir = ${exec_prefix}/libexec
+datadir = ${prefix}/share
+sysconfdir = ${prefix}/etc
+sharedstatedir = ${prefix}/com
+localstatedir = ${prefix}/var
+libdir = ${exec_prefix}/lib
+infodir = ${prefix}/info
+mandir = ${prefix}/man
+includedir = ${prefix}/include
 oldincludedir = /usr/include
 
 DESTDIR =
 
-pkgdatadir = $(datadir)/@PACKAGE@
-pkglibdir = $(libdir)/@PACKAGE@
-pkgincludedir = $(includedir)/@PACKAGE@
+pkgdatadir = $(datadir)/id3lib
+pkglibdir = $(libdir)/id3lib
+pkgincludedir = $(includedir)/id3lib
 
-top_builddir = .
+top_builddir = ..
 
-ACLOCAL = @ACLOCAL@
-AUTOCONF = @AUTOCONF@
-AUTOMAKE = @AUTOMAKE@
-AUTOHEADER = @AUTOHEADER@
+ACLOCAL = aclocal
+AUTOCONF = autoconf
+AUTOMAKE = automake
+AUTOHEADER = autoheader
 
-INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@
-INSTALL_DATA = @INSTALL_DATA@
-INSTALL_SCRIPT = @INSTALL_SCRIPT@
+INSTALL = /usr/bin/install -c
+INSTALL_PROGRAM = ${INSTALL}
+INSTALL_DATA = ${INSTALL} -m 644
+INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_FLAG =
-transform = @program_transform_name@
+transform = s,x,x,
 
 NORMAL_INSTALL = :
 PRE_INSTALL = :
@@ -70,36 +68,32 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-host_alias = @host_alias@
-host_triplet = @host@
+host_alias = i686-pc-linux-gnu
+host_triplet = i686-pc-linux-gnu
 AS = @AS@
-CC = @CC@
-CXX = @CXX@
-CXXCPP = @CXXCPP@
+CC = gcc
+CXX = c++
+CXXCPP = c++ -E
 DLLTOOL = @DLLTOOL@
-LD = @LD@
-LIBTOOL = @LIBTOOL@
-LN_S = @LN_S@
-MAKEINFO = @MAKEINFO@
-NM = @NM@
+LD = /usr/bin/ld
+LIBTOOL = $(SHELL) $(top_builddir)/libtool
+LN_S = ln -s
+MAKEINFO = makeinfo
+NM = /usr/bin/nm -B
 OBJDUMP = @OBJDUMP@
-PACKAGE = @PACKAGE@
-RANLIB = @RANLIB@
-VERSION = @VERSION@
-lt_age = @lt_age@
-lt_rev = @lt_rev@
-lt_ver = @lt_ver@
+PACKAGE = id3lib
+RANLIB = ranlib
+VERSION = 3.6.0
+lt_age = 6
+lt_rev = 0
+lt_ver = 9
 
-EXTRA_DIST = reconf
-SUBDIRS = m4 doc src
-ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
+SUBDIRS = id3
+EXTRA_DIST = ChangeLog
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = config.h
+CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-DIST_COMMON =  README ./stamp-h.in AUTHORS COPYING ChangeLog INSTALL \
-Makefile.am Makefile.in NEWS THANKS TODO acconfig.h aclocal.m4 \
-config.guess config.h.in config.sub configure configure.in install-sh \
-ltconfig ltmain.sh missing mkinstalldirs
+DIST_COMMON =  Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -109,47 +103,12 @@ GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu include/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
-	  && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-$(ACLOCAL_M4):  configure.in 
-	cd $(srcdir) && $(ACLOCAL)
-
-config.status: $(srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
-	$(SHELL) ./config.status --recheck
-$(srcdir)/configure: $(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
-	cd $(srcdir) && $(AUTOCONF)
-
-config.h: stamp-h
-	@if test ! -f $@; then \
-		rm -f stamp-h; \
-		$(MAKE) stamp-h; \
-	else :; fi
-stamp-h: $(srcdir)/config.h.in $(top_builddir)/config.status
-	cd $(top_builddir) \
-	  && CONFIG_FILES= CONFIG_HEADERS=config.h \
-	     $(SHELL) ./config.status
-	@echo timestamp > stamp-h 2> /dev/null
-$(srcdir)/config.h.in: $(srcdir)/stamp-h.in
-	@if test ! -f $@; then \
-		rm -f $(srcdir)/stamp-h.in; \
-		$(MAKE) $(srcdir)/stamp-h.in; \
-	else :; fi
-$(srcdir)/stamp-h.in: $(top_srcdir)/configure.in $(ACLOCAL_M4) acconfig.h
-	cd $(top_srcdir) && $(AUTOHEADER)
-	@echo timestamp > $(srcdir)/stamp-h.in 2> /dev/null
-
-mostlyclean-hdr:
-
-clean-hdr:
-
-distclean-hdr:
-	-rm -f config.h
-
-maintainer-clean-hdr:
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run `make' without going through this Makefile.
@@ -158,7 +117,7 @@ maintainer-clean-hdr:
 #     (which will cause the Makefiles to be regenerated when you run `make');
 # (2) otherwise, pass the desired values on the `make' command line.
 
-@SET_MAKE@
+
 
 all-recursive install-data-recursive install-exec-recursive \
 installdirs-recursive install-recursive uninstall-recursive  \
@@ -216,7 +175,7 @@ ID: $(HEADERS) $(SOURCES) $(LISP)
 	here=`pwd` && cd $(srcdir) \
 	  && mkid -f$$here/ID $$unique $(LISP)
 
-TAGS: tags-recursive $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES) $(LISP)
+TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	tags=; \
 	here=`pwd`; \
 	list='$(SUBDIRS)'; for subdir in $$list; do \
@@ -228,8 +187,8 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES) config.h.in $(TAGS_DEPENDENCIES) $(LI
 	unique=`for i in $$list; do echo $$i; done | \
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
-	test -z "$(ETAGS_ARGS)config.h.in$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags config.h.in $$unique $(LISP) -o $$here/TAGS)
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -240,49 +199,16 @@ distclean-tags:
 
 maintainer-clean-tags:
 
-distdir = $(PACKAGE)-$(VERSION)
-top_distdir = $(distdir)
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
-# This target untars the dist file and tries a VPATH configuration.  Then
-# it guarantees that the distribution is self-contained by making another
-# tarfile.
-distcheck: dist
-	-rm -rf $(distdir)
-	GZIP=$(GZIP_ENV) $(TAR) zxf $(distdir).tar.gz
-	mkdir $(distdir)/=build
-	mkdir $(distdir)/=inst
-	dc_install_base=`cd $(distdir)/=inst && pwd`; \
-	cd $(distdir)/=build \
-	  && ../configure --srcdir=.. --prefix=$$dc_install_base \
-	  && $(MAKE) $(AM_MAKEFLAGS) \
-	  && $(MAKE) $(AM_MAKEFLAGS) dvi \
-	  && $(MAKE) $(AM_MAKEFLAGS) check \
-	  && $(MAKE) $(AM_MAKEFLAGS) install \
-	  && $(MAKE) $(AM_MAKEFLAGS) installcheck \
-	  && $(MAKE) $(AM_MAKEFLAGS) dist
-	-rm -rf $(distdir)
-	@banner="$(distdir).tar.gz is ready for distribution"; \
-	dashes=`echo "$$banner" | sed s/./=/g`; \
-	echo "$$dashes"; \
-	echo "$$banner"; \
-	echo "$$dashes"
-dist: distdir
-	-chmod -R a+r $(distdir)
-	GZIP=$(GZIP_ENV) $(TAR) chozf $(distdir).tar.gz $(distdir)
-	-rm -rf $(distdir)
-dist-all: distdir
-	-chmod -R a+r $(distdir)
-	GZIP=$(GZIP_ENV) $(TAR) chozf $(distdir).tar.gz $(distdir)
-	-rm -rf $(distdir)
+subdir = include
+
 distdir: $(DISTFILES)
-	-rm -rf $(distdir)
-	mkdir $(distdir)
-	-chmod 777 $(distdir)
 	here=`cd $(top_builddir) && pwd`; \
-	top_distdir=`cd $(distdir) && pwd`; \
+	top_distdir=`cd $(top_distdir) && pwd`; \
 	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu Makefile
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu include/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
@@ -299,7 +225,7 @@ distdir: $(DISTFILES)
 	    || mkdir $(distdir)/$$subdir \
 	    || exit 1; \
 	    chmod 777 $(distdir)/$$subdir; \
-	    (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) top_distdir=../$(distdir) distdir=../$(distdir)/$$subdir distdir) \
+	    (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) top_distdir=../$(top_distdir) distdir=../$(distdir)/$$subdir distdir) \
 	      || exit 1; \
 	  fi; \
 	done
@@ -311,9 +237,6 @@ check-am: all-am
 check: check-recursive
 installcheck-am:
 installcheck: installcheck-recursive
-all-recursive-am: config.h
-	$(MAKE) $(AM_MAKEFLAGS) all-recursive
-
 install-exec-am:
 install-exec: install-exec-recursive
 
@@ -325,8 +248,8 @@ install-am: all-am
 install: install-recursive
 uninstall-am:
 uninstall: uninstall-recursive
-all-am: Makefile config.h
-all-redirect: all-recursive-am
+all-am: Makefile
+all-redirect: all-recursive
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
 installdirs: installdirs-recursive
@@ -342,50 +265,39 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-mostlyclean-am:  mostlyclean-hdr mostlyclean-tags mostlyclean-generic
+mostlyclean-am:  mostlyclean-tags mostlyclean-generic
 
 mostlyclean: mostlyclean-recursive
 
-clean-am:  clean-hdr clean-tags clean-generic mostlyclean-am
+clean-am:  clean-tags clean-generic mostlyclean-am
 
 clean: clean-recursive
 
-distclean-am:  distclean-hdr distclean-tags distclean-generic clean-am
+distclean-am:  distclean-tags distclean-generic clean-am
 	-rm -f libtool
 
 distclean: distclean-recursive
-	-rm -f config.status
 
-maintainer-clean-am:  maintainer-clean-hdr maintainer-clean-tags \
-		maintainer-clean-generic distclean-am
+maintainer-clean-am:  maintainer-clean-tags maintainer-clean-generic \
+		distclean-am
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
 maintainer-clean: maintainer-clean-recursive
-	-rm -f config.status
 
-.PHONY: mostlyclean-hdr distclean-hdr clean-hdr maintainer-clean-hdr \
-install-data-recursive uninstall-data-recursive install-exec-recursive \
-uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
-all-recursive check-recursive installcheck-recursive info-recursive \
-dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
+.PHONY: install-data-recursive uninstall-data-recursive \
+install-exec-recursive uninstall-exec-recursive installdirs-recursive \
+uninstalldirs-recursive all-recursive check-recursive \
+installcheck-recursive info-recursive dvi-recursive \
+mostlyclean-recursive distclean-recursive clean-recursive \
 maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
 distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
-dvi-am dvi check check-am installcheck-am installcheck all-recursive-am \
-install-exec-am install-exec install-data-am install-data install-am \
-install uninstall-am uninstall all-redirect all-am all installdirs-am \
+dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
+install-exec install-data-am install-data install-am install \
+uninstall-am uninstall all-redirect all-am all installdirs-am \
 installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
-
-# $Log: Makefile.in,v $
-# Revision 1.7  1999/12/01 18:10:43  scott
-# *** empty log message ***
-#
-# Revision 1.4  1999/11/30 19:54:08  scott
-# (EXTRA_DIST): Removed ChangeLog, configure, HISTORY, and TODO.
-# These are included in the distribution automatically.
-#
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -1,3 +1,12 @@
+1999-12-01  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* configure.in 
+	(AC_OUTPUT): Added include/Makefile and include/id3/Makefile
+
+	* include/id3/Makefile.am: Added.
+
+	* include/Makefile.am: Added.
+
 1999-11-30  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* README:

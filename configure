@@ -543,7 +543,7 @@ id3lib_patch=0
 
 id3lib_release=$id3lib_version.$id3lib_revision.$id3lib_patch
 id3lib_name=id3lib
-id3lib_date="$Date: 1999/12/01 05:00:31 $UNDEFINED"
+id3lib_date="$Date: 1999/12/01 18:10:43 $UNDEFINED"
 
 ac_aux_dir=
 for ac_dir in $srcdir $srcdir/.. $srcdir/../..; do
@@ -2601,6 +2601,8 @@ trap 'rm -fr `echo "\
   doc/man/Makefile              \
   doc/latex/Makefile            \
   doc/texinfo/Makefile          \
+  include/Makefile              \
+  include/id3/Makefile          \
   m4/Makefile                   \
   src/Makefile                  \
   src/id3/Makefile              \
@@ -2719,6 +2721,8 @@ CONFIG_FILES=\${CONFIG_FILES-"\
   doc/man/Makefile              \
   doc/latex/Makefile            \
   doc/texinfo/Makefile          \
+  include/Makefile              \
+  include/id3/Makefile          \
   m4/Makefile                   \
   src/Makefile                  \
   src/id3/Makefile              \
@@ -2905,7 +2909,7 @@ test "$no_create" = yes || $SHELL $CONFIG_STATUS || exit 1
 
 
 # $Log: configure,v $
-# Revision 1.11  1999/12/01 05:00:31  scott
+# Revision 1.12  1999/12/01 18:10:43  scott
 # *** empty log message ***
 #
 # Revision 1.8  1999/11/30 20:01:36  scott
