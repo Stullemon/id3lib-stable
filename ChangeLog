@@ -1,5 +1,10 @@
 2000-04-28  Scott Haug  <scott@id3.org>
 
+	* NEWS 
+	* configure.in
+	* id3lib.spec.in: 
+	Updated for 3.7.5 release
+
 	* THANKS: 
 	Added mention of Severino's contribution, other minor fixes
 
