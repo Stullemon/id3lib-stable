@@ -1,5 +1,8 @@
 1999-11-29  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
+	* configure.in:
+ 	Added doc/*/Makefile to AC_OUPUT
+
 	* AUTHORS: 
 	Included text from contact.txt in original distribution.
 

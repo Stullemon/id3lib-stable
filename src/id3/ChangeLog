@@ -1,5 +1,8 @@
 1999-11-29  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
+	* Makefile.am: 
+	(the_headers): Added globals.h to header file listing.
+
 	* misc_support.h: 
 	Renamed ID3_ASCIItoUnicode to mbstoucs.  Renamed ID3_UnicodeToASCII to
 	ucstombs.  Added declarations for ucslen, ucscpy, ucsncpy, ucscmp, and

@@ -1,7 +1,11 @@
 1999-11-29  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
-	* Makefile.am (SUBDIRS):
- 	Added.
+	* Makefile.am:
+	Removed refs to removed files.
+	
+	* Makefile.am
+ 	(SUBDIRS): Added.
+	
 
 1999-11-26  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
