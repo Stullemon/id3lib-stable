@@ -1,4 +1,4 @@
-# $Id: configure.in,v 1.22 2000/04/19 02:04:36 eldamitri Exp $
+# $Id: configure.in,v 1.23 2000/04/20 03:52:19 eldamitri Exp $
 
 # Copyright 1999, 2000 Scott Thomas Haug <eldamitri@users.sourceforge.net>
 #  
@@ -15,6 +15,8 @@ AC_PREREQ(2.13)
 
 # init autoconf (and check for presence fo reconf)
 AC_INIT(reconf)
+
+ID3LIB_NAME=id3lib
 
 dnl The following has been adapted from glib (http://www.gtk.org)
 dnl
@@ -55,23 +57,17 @@ AC_SUBST(LT_REVISION)
 AC_SUBST(LT_AGE)
 
 VERSION=$ID3LIB_VERSION
-PACKAGE=id3lib
+PACKAGE=$ID3LIB_NAME
 
 dnl This is a hack to get the release date using cvs checkin macros
-ID3LIB_DATE="$Date: 2000/04/19 02:04:36 $ID3LIB_UNDEFINED"
-ID3LIB_FULLNAME="$PACKAGE-$VERSION"
+ID3LIB_DATE="$Date: 2000/04/20 03:52:19 $ID3LIB_UNDEFINED"
+ID3LIB_FULLNAME=$ID3LIB_NAME-$ID3LIB_VERSION
 
 AC_SUBST(ID3LIB_DATE)
 AC_SUBST(ID3LIB_FULLNAME)
 
 AM_INIT_AUTOMAKE($PACKAGE,$VERSION)
 AM_CONFIG_HEADER(config.h)
-
-AC_DEFINE_UNQUOTED(ID3LIB_MAJOR_VERSION, $ID3LIB_MAJOR_VERSION)
-AC_DEFINE_UNQUOTED(ID3LIB_MINOR_VERSION, $ID3LIB_MINOR_VERSION)
-AC_DEFINE_UNQUOTED(ID3LIB_PATCH_VERSION, $ID3LIB_PATCH_VERSION)
-AC_DEFINE_UNQUOTED(ID3LIB_INTERFACE_AGE, $ID3LIB_INTERFACE_AGE)
-AC_DEFINE_UNQUOTED(ID3LIB_BINARY_AGE,    $ID3LIB_BINARY_AGE)
 
 dnl Initialize libtool
 AM_PROG_LIBTOOL
@@ -162,36 +158,32 @@ dnl ACCONFIG TEMPLATE
 dnl 
 dnl /* config.h defines these preprocesser symbols to be used by id3lib for
 dnl  * determining internal versioning information.  The intent is that these
-dnl  * macros will be made available int the library via functions or static
-dnl  * methods.
+dnl  * macros will be made available in the library via constants, functions,
+dnl  * or static methods.
 dnl  */
-dnl /* Defines which major version of id3lib is being used (int) */
-dnl #undef ID3LIB_MAJOR_VERSION
-dnl /* Defines which minor version of id3lib is being used (int) */
-dnl #undef ID3LIB_MINOR_VERSION
-dnl /* Defines which patch version (or patch) of id3lib is being used (int) */
-dnl #undef ID3LIB_PATCH_VERSION
-dnl /* */
-dnl #undef ID3LIB_INTERFACE_AGE
-dnl /* */
-dnl #undef ID3LIB_BINARY_AGE
-dnl /* The date of this id3lib release */
-dnl #undef ID3LIB_DATE
-dnl /* The identifying string of this id3lib */
-dnl #undef ID3LIB_FULLNAME
-dnl /* */
-dnl #undef ID3_COMPILED_WITH_DEBUGGING
+dnl #undef __ID3LIB_NAME
+dnl #undef __ID3LIB_DATE
+dnl #undef __ID3LIB_VERSION
+dnl #undef __ID3LIB_FULLNAME
+dnl #undef __ID3LIB_MAJOR_VERSION
+dnl #undef __ID3LIB_MINOR_VERSION
+dnl #undef __ID3LIB_PATCH_VERSION
+dnl #undef __ID3LIB_INTERFACE_AGE
+dnl #undef __ID3LIB_BINARY_AGE
+dnl #undef __ID3_COMPILED_WITH_DEBUGGING
 dnl /* */
 dnl END ACCONFIG
 
-AC_DEFINE_UNQUOTED(ID3LIB_MAJOR_VERSION, $ID3LIB_MAJOR_VERSION)
-AC_DEFINE_UNQUOTED(ID3LIB_MINOR_VERSION, $ID3LIB_MINOR_VERSION)
-AC_DEFINE_UNQUOTED(ID3LIB_PATCH_VERSION, $ID3LIB_PATCH_VERSION)
-AC_DEFINE_UNQUOTED(ID3LIB_INTERFACE_AGE, $ID3LIB_INTERFACE_AGE)
-AC_DEFINE_UNQUOTED(ID3LIB_BINARY_AGE, $ID3LIB_BINARY_AGE)
-AC_DEFINE_UNQUOTED(ID3LIB_FULLNAME, "$ID3LIB_FULLNAME")
-AC_DEFINE_UNQUOTED(ID3_COMPILED_WITH_DEBUGGING, "${enable_debug}")
-AC_DEFINE_UNQUOTED(ID3LIB_DATE, "$ID3LIB_DATE")
+AC_DEFINE_UNQUOTED(__ID3LIB_NAME,                 "$ID3LIB_NAME")
+AC_DEFINE_UNQUOTED(__ID3LIB_DATE,                 "$ID3LIB_DATE")
+AC_DEFINE_UNQUOTED(__ID3LIB_VERSION,              "$ID3LIB_VERSION")
+AC_DEFINE_UNQUOTED(__ID3LIB_FULLNAME,             "$ID3LIB_FULLNAME")
+AC_DEFINE_UNQUOTED(__ID3LIB_MAJOR_VERSION,         $ID3LIB_MAJOR_VERSION)
+AC_DEFINE_UNQUOTED(__ID3LIB_MINOR_VERSION,         $ID3LIB_MINOR_VERSION)
+AC_DEFINE_UNQUOTED(__ID3LIB_PATCH_VERSION,         $ID3LIB_PATCH_VERSION)
+AC_DEFINE_UNQUOTED(__ID3LIB_INTERFACE_AGE,         $ID3LIB_INTERFACE_AGE)
+AC_DEFINE_UNQUOTED(__ID3LIB_BINARY_AGE,            $ID3LIB_BINARY_AGE)
+AC_DEFINE_UNQUOTED(__ID3_COMPILED_WITH_DEBUGGING, "${enable_debug}")
 
 AC_OUTPUT(                      \
   Makefile                      \
@@ -212,6 +204,11 @@ AC_OUTPUT(                      \
 )
 
 # $Log: configure.in,v $
+# Revision 1.23  2000/04/20 03:52:19  eldamitri
+# - Added ID3LIB_NAME definition
+# - Prepended '__' onto all macros that will be defined in config.h to
+#   alleviate namespace clashes
+#
 # Revision 1.22  2000/04/19 02:04:36  eldamitri
 # (AC_OUTPUT): Added examples/Makefile, removed src/id3/Makefile and
 # src/examples/Makefile
