@@ -1,4 +1,4 @@
-// $Id: frame.cpp,v 1.15 2000/05/23 15:27:57 eldamitri Exp $
+// $Id: frame.cpp,v 1.16 2000/05/28 03:42:05 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -115,16 +115,23 @@ bool ID3_Frame::_ClearFields()
   {
     delete __fields[i];
   }
-   
-  if (__field_bitset)
-  {
-    delete [] __field_bitset;
-    __field_bitset = NULL;
-  }
-   
+  
   delete [] __fields;
   __fields = NULL;
     
+  size_t lWordsForFields =
+    (((uint32) ID3FN_LASTFIELDID) - 1) / (sizeof(uint32) * 8);
+  
+  if ((((uint32) ID3FN_LASTFIELDID) - 1) % (sizeof(uint32) * 8) != 0)
+  {
+    lWordsForFields++;
+  }
+
+  for (index_t i = 0; i < lWordsForFields; i++)
+  {
+    __field_bitset[i] = 0;
+  }
+   
   __changed = true;
   return true;
 }
