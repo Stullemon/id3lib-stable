@@ -1,4 +1,4 @@
-// $Id: test_pic.cpp,v 1.2 2000/05/28 05:00:36 eldamitri Exp $
+// $Id: test_pic.cpp,v 1.3 2000/05/28 22:07:41 eldamitri Exp $
 
 #include <iostream.h>
 #include <getopt.h>
@@ -58,10 +58,11 @@ int main( int argc, char *argv[])
     frame.Field(ID3FN_MIMETYPE).Set("image/jpeg");
     frame.Field(ID3FN_PICTURETYPE).Set(11);
     frame.Field(ID3FN_DESCRIPTION).Set("B/W picture of Saint-Saëns");
+    frame.Field(ID3FN_DATA).FromFile("composer.jpg");
     tag.AddFrame(frame);
 
     tag.SetPadding(false);
-    tag.SetUnsync(false);
+    tag.SetUnsync(true);
     tag.Update(ID3TT_ID3V2);
   }   
   catch(const ID3_Error& err)
