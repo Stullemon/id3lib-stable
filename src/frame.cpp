@@ -1,4 +1,4 @@
-// $Id: frame.cpp,v 1.12 2000/05/09 13:26:52 eldamitri Exp $
+// $Id: frame.cpp,v 1.13 2000/05/10 03:27:14 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -248,65 +248,25 @@ ID3_Field& ID3_Frame::Field(ID3_FieldID fieldName) const
   return *__fields[fieldNum];
 }
 
-void ID3_Frame::_UpdateFieldDeps(void)
+void ID3_Frame::_UpdateStringTypes()
 {
-  for (luint i = 0; i < __num_fields; i++)
+  ID3_TextEnc enc = ID3TE_ASCII;
+  bool changed = false;
+  for (ID3_Field** fi = __fields; fi != __fields + __num_fields; fi++)
   {
-    if (__fields[i]->__flags & ID3FF_ADJUSTEDBY)
+    if (*fi && (*fi)->InScope(this->GetSpec()))
     {
-      switch(__fields[i]->__type)
+      if ((*fi)->GetID() == ID3FN_TEXTENC)
       {
-        case ID3FTY_BITFIELD:
-        {
-          //luint value = 0;
-          
-          // now find the field on which this field is dependent and get a
-          // copy of the value of that field.  then adjust the fixedLength of
-          // this field to that value / 8.
-          break;
-        }
-        
-        default:
-          break;
+        enc = (ID3_TextEnc) (*fi)->Get();
+      }
+      else
+      {
+        changed = (*fi)->SetEncoding(enc) || changed;
       }
     }
   }
-  
-  return ;
-}
-
-
-void ID3_Frame::_UpdateStringTypes(void)
-{
-  for (luint i = 0; i < __num_fields; i++)
-  {
-    if (__fields[i]->__flags & ID3FF_ADJUSTENC)
-    {
-      ID3_TextEnc enc;
-      ID3_FieldType newType;
-      
-      enc = (ID3_TextEnc) Field(ID3FN_TEXTENC).Get();
-      
-      switch(enc)
-      {
-        case ID3TE_ASCII:
-          newType = ID3FTY_ASCIISTRING;
-          break;
-          
-        case ID3TE_UNICODE:
-          newType = ID3FTY_UNICODESTRING;
-          break;
-          
-        default:
-          newType = ID3FTY_ASCIISTRING;
-          break;
-      }
-      
-      __fields[i]->__type = newType;
-    }
-  }
-  
-  return ;
+  __changed = __changed || changed;
 }
 
 
