@@ -1,4 +1,4 @@
-// $Id: tag_impl.cpp,v 1.4 2000/10/14 21:23:37 eldamitri Exp $
+// $Id: tag_impl.cpp,v 1.5 2000/10/16 08:57:46 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -96,48 +96,9 @@ size_t ID3_TagImpl::IsV2Tag(ID3_Reader& reader)
   return tagSize;
 }
 
-void ID3_RemoveFromList(ID3_Elem *which, ID3_Elem **list)
-{
-  ID3_Elem *cur = *list;
-
-  if (cur == which)
-  {
-    *list = which->pNext;
-    delete which;
-    which = NULL;
-  }
-  else
-  {
-    while (cur)
-    {
-      if (cur->pNext == which)
-      {
-        cur->pNext = which->pNext;
-        delete which;
-        which = NULL;
-        break;
-      }
-      else
-      {
-        cur = cur->pNext;
-      }
-    }
-  }
-}
-
-
-void ID3_ClearList(ID3_Elem *list)
-{
-  ID3_Elem *next = NULL;
-  for (ID3_Elem *cur = list; cur; cur = next)
-  {
-    next = cur->pNext;
-    delete cur;
-  }
-}
-
 ID3_TagImpl::ID3_TagImpl(const char *name)
-  : _frames(NULL),
+  : _frames(),
+    _cursor(_frames.begin()),
     _file_name(new char[ID3_PATH_LENGTH]),
     _file_size(0),
     _prepended_bytes(0),
@@ -152,7 +113,8 @@ ID3_TagImpl::ID3_TagImpl(const char *name)
 }
 
 ID3_TagImpl::ID3_TagImpl(const ID3_Tag &tag)
-  : _frames(NULL),
+  : _frames(),
+    _cursor(_frames.begin()),
     _file_name(new char[ID3_PATH_LENGTH]),
     _file_size(0),
     _prepended_bytes(0),
@@ -171,13 +133,16 @@ ID3_TagImpl::~ID3_TagImpl()
 
 void ID3_TagImpl::Clear()
 {
-  if (_frames)
+  for (iterator cur = _frames.begin(); cur != _frames.end(); ++cur)
   {
-    ID3_ClearList(_frames);
-    _frames = NULL;
+    if (*cur)
+    {
+      delete *cur;
+      *cur = NULL;
+    }
   }
-  _num_frames = 0;
-  _cursor = NULL;
+  _frames.clear();
+  _cursor = _frames.begin();
   _is_padded = true;
   
   _hdr.Clear();
@@ -198,8 +163,8 @@ void ID3_TagImpl::AddFrame(const ID3_Frame* frame)
 {
   if (frame)
   {
-    ID3_Frame* new_frame = new ID3_Frame(*frame);
-    this->AttachFrame(new_frame);
+    ID3_Frame* frm = new ID3_Frame(*frame);
+    this->AttachFrame(frm);
   }
 }
 
@@ -213,13 +178,8 @@ void ID3_TagImpl::AttachFrame(ID3_Frame *frame)
     //ID3_THROW(ID3E_NoData);
   }
 
-  ID3_Elem *elem = new ID3_Elem;
-  elem->pNext = _frames;
-  elem->pFrame = frame;
-  
-  _frames = elem;
-  _num_frames++;
-  _cursor = NULL;
+  _frames.push_back(frame);
+  _cursor = _frames.begin();
   
   _changed = true;
 }
@@ -227,19 +187,18 @@ void ID3_TagImpl::AttachFrame(ID3_Frame *frame)
 
 ID3_Frame* ID3_TagImpl::RemoveFrame(const ID3_Frame *frame)
 {
-  ID3_Frame *the_frame = NULL;
-  ID3_Elem *elem = Find(frame);
-  if (NULL != elem)
+  ID3_Frame *frm = NULL;
+  
+  iterator fi = Find(frame);
+  if (fi != _frames.end())
   {
-    the_frame = elem->pFrame;
-    //assert(the_frame == frame);
-    elem->pFrame = NULL;
-    ID3_RemoveFromList(elem, &_frames);
-    --_num_frames;
+    frm = *fi;
+    _frames.erase(fi);
+    _cursor = _frames.begin();
     _changed = true;
   }
     
-  return the_frame;
+  return frm;
 }
 
 
@@ -249,22 +208,16 @@ bool ID3_TagImpl::HasChanged() const
   
   if (! changed)
   {
-    ID3_Elem *cur = _frames;
-    
-    while (cur)
+    for (const_iterator fi = _frames.begin(); fi != _frames.end(); ++fi)
     {
-      if (cur->pFrame)
+      if (*fi)
       {
-        changed = cur->pFrame->HasChanged();
+        changed = (*fi)->HasChanged();
       }
         
       if (changed)
       {
         break;
-      }
-      else
-      {
-        cur = cur->pNext;
       }
     }
   }
