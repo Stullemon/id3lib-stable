@@ -13,7 +13,6 @@ EXTRA_DIST =            \
         EnumFields.h    \
         ID3COM.def      \
         ID3COM.rc       \
-        ID3COM_p.c      \
         ID3COMps.def    \
         ID3COMps.mk     \
         ID3Field.cpp    \
@@ -25,8 +24,6 @@ EXTRA_DIST =            \
         ID3Tag.cpp      \
         ID3Tag.h        \
         ID3Tag.rgs      \
-        ID3Test.vbp     \
-        ID3Test.vbw     \
         Makefile.am     \
         StdAfx.cpp      \
         StdAfx.h        \
