@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.43 2000/10/14 18:18:23 eldamitri Exp $
+# $Id: Makefile.in,v 1.44 2000/10/14 20:41:21 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -111,7 +111,7 @@ the_headers =    field.h                         frame.h                        
 id3includedir = $(includedir)/id3
 id3include_HEADERS = $(the_headers)
 
-noinst_HEADERS =    debug.h                         error.h                         field_def.h                     field_impl.h                    flags.h                         frame_def.h                     frame_impl.h                    header.h                        header_frame.h                  header_tag.h                    io_decorators.h                 io_helpers.h                    io_strings.h                    strings.h                       uint28.h                        utils.h                       
+noinst_HEADERS =    debug.h                         field_def.h                     field_impl.h                    flags.h                         frame_def.h                     frame_impl.h                    header.h                        header_frame.h                  header_tag.h                    io_decorators.h                 io_helpers.h                    io_strings.h                    strings.h                       uint28.h                        utils.h                       
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
