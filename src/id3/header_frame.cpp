@@ -1,4 +1,4 @@
-// $Id: header_frame.cpp,v 1.9 1999/12/26 15:11:26 scott Exp $
+// $Id: header_frame.cpp,v 1.10 1999/12/27 05:40:24 scott Exp $
 // 
 // This program is free software; you can distribute it and/or modify it under
 // the terms discussed in the COPYING file, which should have been included
@@ -22,83 +22,159 @@
 #include "error.h"
 #include "misc_support.h"
 
-void ID3_FrameHeader::SetFrameID(ID3_FrameID id)
+ID3_FrameHeader::ID3_FrameHeader()
+  : __pFrameDef(NULL)
 {
-  __eFrameID = id;
-  
-  return ;
 }
 
-
-luint ID3_FrameHeader::Size(void)
+void ID3_FrameHeader::SetFrameID(ID3_FrameID id)
 {
-  return __pInfo->ucFrameIDBytes + __pInfo->ucFrameSizeBytes + 
+  Clear();
+  __pFrameDef = ID3_FindFrameDef(id);
+  if (__pFrameDef->bTagDiscard)
+  {
+    AddFlags(ID3FL_TAGALTER);
+  }
+        
+  if (__pFrameDef->bFileDiscard)
+  {
+    AddFlags(ID3FL_FILEALTER);
+  }
+}
+
+size_t ID3_FrameHeader::Size(void)
+{
+  return 
+    __pInfo->ucFrameIDBytes   + 
+    __pInfo->ucFrameSizeBytes + 
     __pInfo->ucFrameFlagsBytes;
 }
 
-
-luint ID3_FrameHeader::GetFrameInfo(ID3_FrameAttr &attr, uchar *buffer)
+size_t ID3_FrameHeader::Parse(uchar *buffer)
 {
-  luint posn = 0;
-  luint i = 0;
+  size_t nSize = 0;
+  char sTextID[5];
   
-  strncpy(attr.sTextID, (char *) buffer, __pInfo->ucFrameIDBytes);
+  strncpy(sTextID, (char *) buffer, __pInfo->ucFrameIDBytes);
+  sTextID[__pInfo->ucFrameIDBytes] = '\0';
+  nSize += __pInfo->ucFrameIDBytes;
+  SetFrameID(ID3_FindFrameID(sTextID));
 
-  attr.sTextID[__pInfo->ucFrameIDBytes] = 0;
+  SetDataSize(ParseNumber(&buffer[nSize], __pInfo->ucFrameSizeBytes));
+  nSize += __pInfo->ucFrameSizeBytes;
+
+  uint16 flags = GetFlags() | 
+    (uint16) ParseNumber(&buffer[nSize], __pInfo->ucFrameFlagsBytes);
+  SetFlags(flags);
+  nSize += __pInfo->ucFrameFlagsBytes;
   
-  posn += __pInfo->ucFrameIDBytes;
-  
-  attr.ulSize = 0;
-  
-  attr.ulSize = ParseNumber(&buffer[posn], __pInfo->ucFrameSizeBytes);
-    
-  posn += __pInfo->ucFrameSizeBytes;
-  
-  attr.ulFlags = ParseNumber(&buffer[posn], __pInfo->ucFrameFlagsBytes);
-    
-  posn += __pInfo->ucFrameFlagsBytes;
-  
-  return posn;
+  return nSize;
 }
 
-
-luint ID3_FrameHeader::Render(uchar *buffer)
+size_t ID3_FrameHeader::Render(uchar *buffer)
 {
-  luint bytesUsed = 0;
-  ID3_FrameDef *frameDef = NULL;
-  char *textID = NULL;
-  luint i;
+  size_t bytesUsed = 0;
 
-  frameDef = ID3_FindFrameDef(__eFrameID);
-  if (NULL == frameDef)
+  if (NULL == __pFrameDef)
   {
     ID3_THROW(ID3E_InvalidFrameID);
   }
-
-  if(__pInfo->ucFrameIDBytes < strlen(frameDef->sLongTextID))
+  char *sTextID;
+  if(__pInfo->ucFrameIDBytes < strlen(__pFrameDef->sLongTextID))
   {
-    textID = frameDef->sShortTextID;
+    sTextID = __pFrameDef->sShortTextID;
   }
   else
   {
-    textID = frameDef->sLongTextID;
+    sTextID = __pFrameDef->sLongTextID;
   }
-    
-  memcpy(&buffer[bytesUsed], (uchar *) textID, __pInfo->ucFrameIDBytes);
+
+  memcpy(&buffer[bytesUsed], (uchar *) sTextID, __pInfo->ucFrameIDBytes);
   bytesUsed += __pInfo->ucFrameIDBytes;
-  
+    
   RenderNumber(&buffer[bytesUsed], __ulDataSize, __pInfo->ucFrameSizeBytes);
   bytesUsed += __pInfo->ucFrameSizeBytes;
-  
+    
   RenderNumber(&buffer[bytesUsed], __ulFlags, __pInfo->ucFrameFlagsBytes);
   bytesUsed += __pInfo->ucFrameFlagsBytes;
-  
+
   return bytesUsed;
 }
 
+const char *
+ID3_FrameHeader::GetTextID() const
+{
+  char *sTextID = "";
+  if (NULL != __pFrameDef)
+  {
+    if(__pInfo->ucFrameIDBytes < strlen(__pFrameDef->sLongTextID))
+    {
+      sTextID = __pFrameDef->sShortTextID;
+    }
+    else
+    {
+      sTextID = __pFrameDef->sLongTextID;
+    }
+  }
+  return sTextID;
+}
 
+void ID3_FrameHeader::Copy(const ID3_Header &hdr)
+{
+  if (this != &hdr)
+  {
+    try
+    {
+      const ID3_FrameHeader &frmhdr = 
+        dynamic_cast<const ID3_FrameHeader &>( hdr );
+      ID3_Header::Copy(frmhdr);
+      __pFrameDef = frmhdr.__pFrameDef;
+    }
+    catch (...)
+    {
+    }
+  }
+}
+
+ID3_FrameID ID3_FrameHeader::GetFrameID() const
+{
+  ID3_FrameID eID = ID3FID_NOFRAME;
+  if (NULL != __pFrameDef)
+  {
+    eID = __pFrameDef->eID;
+  }
+
+  return eID;
+}
+
+const ID3_FrameDef *ID3_FrameHeader::GetFrameDef() const
+{
+  return __pFrameDef;
+}
+
+void ID3_FrameHeader::Clear()
+{
+  ID3_Header::Clear();
+  __pFrameDef = NULL;
+}
 
 // $Log: header_frame.cpp,v $
+// Revision 1.10  1999/12/27 05:40:24  scott
+// (ID3_FrameHeader): Added default constructor.
+// (SetFrameID): Modified to reflect internal representation change.  Now
+// searches and stores frame definition associated with the frame id.
+// (GetFrameInfo): Removed.
+// (Parse): Added implementation.  Based on former GetFrameInfo.
+// (Render): Modified to reflect internal representation change.
+// (GetTextID): Added implementation.  Gets text id associated with frame
+// header.
+// (Copy): Added implementation.  Copies another frame header.
+// (GetFrameID): Added implementation.  Gets frame id associated with
+// frame header.
+// (GetFrameDef): Added implementation.  Gets frame definition associated
+// with frame header.
+// (Clear): Added implementation.  Clears contents of frame header.
+//
 // Revision 1.9  1999/12/26 15:11:26  scott
 // (GetFrameInfo): Now uses ParseNumber, defined in misc_support.
 // (Render): Now uses RenderNumber, defined in misc_support.
