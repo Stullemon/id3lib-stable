@@ -1,5 +1,67 @@
+2000-05-23  Scott Haug  <scott@id3.org>
+
+	* Makefile.am 
+	(release): win build now copies over delphi directory
+
+	* include/id3/frame.h 
+	(class ID3_Frame): Render is now const (again).  Added comments to 
+	SetCompression() and GetCompression() to indicate their limitations.
+	Added protected methods for getting and setting the grouping and
+	encryption id's.  __encryption_id and __grouping_id are now just 
+	single chars, rather than actual buffers.
+
+	* include/id3/globals.h: 
+	Made inclusion of iostream.h dependant on a c++ compiler
+
+	* include/id3/header_frame.h 
+	(class ID3_FrameHeader): Removed methods GetExtrasSize(), 
+	SetExpandedSize(), GetExpandedSize, SetEncryptionID(), 
+	GetEncryptionID(), SetGroupingID, GetGroupingID(), since it was 
+	determined that these issues lie outside the domain of the frame header.
+
+	* src/frame.cpp: 
+	Updated to reflect changes in __encryption_id and __grouping_id from
+	char buffs to chars.
+
+	* src/frame_parse.cpp 
+	(Parse): Added parsing of "extra" information from frame header to here
+	so that the domain of the frame and frame header are more clearly (and
+	cleanly) defined.
+
+	* src/frame_render.cpp 
+	(Render): Rewritten to make its operation easier to understand and to 
+	make it a const method.  Also added extensive comments to explain 
+	reason for its somewhat convoluted implementation.
+
+	* src/header_frame.cpp 
+	(Parse): Now only responsible for parsing header proper, and not any
+	"extra" info in the data that is a result of the various flags being set
+	(encryiption id, grouping id, and decompressed frame size).
+
+	* src/tag_file.cpp 
+	(Update): Added call to CloseFile so that the file isn't left open when
+	Update exits.
+
+	* src/tag_render.cpp 
+	(RenderV1ToHandle): Put in a throw in wehn file handle is null.
+	(RenderV2ToHandle): Added a call to reopen new file for writing after
+	writing out v2 under linux so that the file handle isn't null after
+	leaving this function.
+
 2000-05-22  Scott Haug  <scott@id3.org>
 
+	* delphi/ID3COM_TLB.dcu 
+	* delphi/ID3COM_TLB.pas 
+	* delphi/Unit1.dcu 
+	* delphi/Unit1.dfm 
+	* delphi/Unit1.pas 
+	* delphi/id3com.cfg 
+	* delphi/id3com.dof 
+	* delphi/id3com.dpr 
+	* delphi/id3com.res 
+	* delphi/readme.txt:
+	Added.  Provided by Michael Little <mike at netlinear dot com>.
+	
 	* src/frame_parse.cpp 
 	(Parse): Fixed bug that wasn't dealing with compressed frames correctly
 
