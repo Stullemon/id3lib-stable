@@ -1,3 +1,11 @@
+2000-04-07  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* include/id3/tag.h (class ID3_Tag): 
+	Added HasV1Tag, HasV2Tag, and HasLyrics (thanks John Adcock).
+
+	* include/id3/dll.h: 
+	Added extern "C" (thanks John Adcock).
+
 2000-04-06  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* configure.in: 
