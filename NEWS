@@ -1,4 +1,16 @@
-$Id: NEWS,v 1.9 2000/04/25 00:16:39 eldamitri Exp $
+$Id: NEWS,v 1.10 2000/04/27 02:55:48 eldamitri Exp $
+
+2000-04-24 Version 3.7.4
+
+* Fixed windows project files so that they all work correctly with new release
+  (thanks John Adcock, Robert Moon, and Lothar Egger)
+* Added a simple VB app to test id3lib using id3com.dll (thanks John Adcock)
+* Added better implementation of PRIV (Private) frame (thanks John Adcock)
+* Fixed padding logic (thanks John Adcock)
+* New "Spec Versioning" system under the hood produces minor interface change
+  - Defined new enum: ID3_V2Spec (ID3V2_2_0, ID3V2_2_1, ID3V2_3_0, etc.)
+  - {Get,Set}Spec now used in favor of deprected {Get,Set}Version, GetRevision
+  - Field definitions updated accordingly; now smaller and more exact
 
 2000-04-24 Version 3.7.3
 

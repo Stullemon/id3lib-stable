@@ -1,4 +1,4 @@
-# $Id: configure.in,v 1.28 2000/04/26 20:30:45 eldamitri Exp $
+# $Id: configure.in,v 1.29 2000/04/27 02:55:48 eldamitri Exp $
 
 # Copyright 1999, 2000 Scott Thomas Haug <eldamitri@users.sourceforge.net>
 #  
@@ -33,7 +33,7 @@ AC_DIVERT_PUSH(AC_DIVERSION_NOTICE)dnl
 #
 ID3LIB_MAJOR_VERSION=3
 ID3LIB_MINOR_VERSION=7
-ID3LIB_PATCH_VERSION=3
+ID3LIB_PATCH_VERSION=4
 ID3LIB_INTERFACE_AGE=0
 ID3LIB_BINARY_AGE=0
 ID3LIB_VERSION=$ID3LIB_MAJOR_VERSION.$ID3LIB_MINOR_VERSION.$ID3LIB_PATCH_VERSION
@@ -72,7 +72,7 @@ VERSION=$ID3LIB_VERSION
 PACKAGE=$ID3LIB_NAME
 
 dnl This is a hack to get the release date using cvs checkin macros
-ID3LIB_DATE="$Date: 2000/04/26 20:30:45 $ID3LIB_UNDEFINED"
+ID3LIB_DATE="$Date: 2000/04/27 02:55:48 $ID3LIB_UNDEFINED"
 ID3LIB_FULLNAME=$ID3LIB_NAME-$ID3LIB_VERSION
 
 AC_SUBST(ID3LIB_DATE)
@@ -213,6 +213,9 @@ AC_OUTPUT(                      \
 )
 
 # $Log: configure.in,v $
+# Revision 1.29  2000/04/27 02:55:48  eldamitri
+# Updated for 3.7.4 release
+#
 # Revision 1.28  2000/04/26 20:30:45  eldamitri
 # No longer generate Makefiles for windows projects
 #
