@@ -1,4 +1,4 @@
-// $Id: frame.cpp,v 1.4 2000/04/26 03:42:52 eldamitri Exp $
+// $Id: frame.cpp,v 1.5 2000/04/26 15:51:29 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -189,11 +189,16 @@ ID3_FrameID ID3_Frame::GetID(void) const
 }
 
 
-void ID3_Frame::SetSpec(ID3_V2Spec spec)
+void ID3_Frame::SetSpec(const ID3_V2Spec spec)
 {
   __bHasChanged = __bHasChanged || (__FrmHdr.GetSpec() != spec);
   
   __FrmHdr.SetSpec(spec);
+}
+
+ID3_V2Spec ID3_Frame::GetSpec() const
+{
+  return __FrmHdr.GetSpec();
 }
 
 lsint ID3_Frame::FindField(ID3_FieldID fieldName) const
@@ -350,6 +355,10 @@ ID3_Frame::operator=( const ID3_Frame &rFrame )
 }
 
 // $Log: frame.cpp,v $
+// Revision 1.5  2000/04/26 15:51:29  eldamitri
+// (SetSpec): Parameter now const
+// (GetSpec): Added implementation
+//
 // Revision 1.4  2000/04/26 03:42:52  eldamitri
 // - Replaced version/revision uchar combination with ID3_V2Spec enums
 // - Deprecated {Get,Set}Version, GetRevision for {Get,Set}Spec
