@@ -1,4 +1,4 @@
-// $Id: header.h,v 1.9 2000/04/26 04:18:26 eldamitri Exp $
+// $Id: header.h,v 1.10 2000/04/26 15:54:52 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -47,7 +47,7 @@ class ID3_Header : public ID3_Speccable
 public:
   ID3_Header(void);
   
-  virtual void       SetSpec(ID3_V2Spec = ID3V2_LATEST);
+  virtual void       SetSpec(const ID3_V2Spec);
   virtual ID3_V2Spec GetSpec() const;
   virtual void       SetDataSize(size_t newSize);
   virtual size_t     GetDataSize() const;
