@@ -1,6 +1,25 @@
 2000-05-09  Scott Haug  <scott@id3.org>
 
 	* include/id3/field.h 
+	(class ID3_Field): Added (commented out) decl's for SetEncoding() and
+	GetEncoding(); removed __spec member variable
+
+	* include/id3/globals.h 
+	(enum ID3_TextEnc): Added NONE and NUMENCODINGS to enumeration.
+
+	* src/frame_parse.cpp 
+	(Parse): Added call to SetEncoding (commented out for now)
+
+	* src/field.cpp 
+	(SetEncoding): Added implementation (commented out for now)
+
+	* src/header_tag.cpp 
+	(Parse): Fixed bug with determining data size.
+
+	* src/tag_parse.cpp 
+	(ParseFrames): Fixed bug with setting the frame spec (it wasn't!)
+
+	* include/id3/field.h 
 	(class ID3_Field): Added InScope and GetID methods, removed SetSpec
 	method and __spec member variable, updated Parse* methods to only 
 	accept two parameters, not three
