@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.8 1999/12/02 01:49:12 scott Exp $
+# $Id: Makefile.am,v 1.9 2000/01/04 16:33:26 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -15,7 +15,6 @@ LTVERSION = @lt_ver@:@lt_rev@:@lt_age@
 INCLUDES = -I$(top_srcdir)/include/id3
 
 the_sources =                   \
-  dll_wrapper.cpp               \
   error.cpp                     \
   field.cpp                     \
   field_binary.cpp              \
@@ -40,6 +39,10 @@ the_sources =                   \
   tag_sync.cpp                  \
   version.cpp                   
 
+EXTRA_DIST =                    \
+  dll_wrapper.cpp               
+
+
 lib_LTLIBRARIES   = libid3.la 
 
 libid3_la_SOURCES = $(the_sources)
@@ -47,6 +50,9 @@ libid3_la_LIBADD  = -lz
 libid3_la_LDFLAGS = -version-info $(LTVERSION)
 
 # $Log: Makefile.am,v $
+# Revision 1.9  2000/01/04 16:33:26  eldamitri
+# (the_sources): Moved dll_wrapper.cpp to EXTRA_DIST.
+#
 # Revision 1.8  1999/12/02 01:49:12  scott
 # Removed EXTRA_DIST (no more ChangeLog)
 #
