@@ -1,4 +1,4 @@
-// $Id: header_tag.cpp,v 1.4 2000/05/01 13:05:07 eldamitri Exp $
+// $Id: header_tag.cpp,v 1.5 2000/05/02 21:56:29 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -26,95 +26,126 @@
 
 #include <string.h>
 #include <memory.h>
-#include "int28.h"
 #include "header_tag.h"
-#include "error.h"
-#include "misc_support.h"
+#include "uint28.h"
+#include "utils.h"
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
 #endif
 
 // Analyses a buffer to determine if we have a valid ID3v2 tag header.
-// If so, return the number of bytes (starting _after_ the header) to
+// If so, return the total number of bytes (including the header) to
 // read so we get all of the tag
-
-lsint ID3_IsTagHeader(uchar header[ID3_TAGHEADERSIZE])
+size_t ID3_TagHeader::IsHeader(const uchar* const data)
 {
-  lsint tagSize = -1;
+  lsint tagSize = 0;
   
-  if ((memcmp(ID3_TAGID, header, ID3_TAGIDSIZE) == 0) &&
-      (header[ID3_TAGIDSIZE] <= ID3_V2SpecToVer(ID3V2_LATEST)))
+  if (strncmp(ID3_TagHeader::ID, (char *)data, ID3_TagHeader::ID_SIZE) == 0 &&
+      data[ID3_TagHeader::MAJOR_OFFSET]    <  0xFF &&
+      data[ID3_TagHeader::MINOR_OFFSET]    <  0xFF &&
+      data[ID3_TagHeader::SIZE_OFFSET + 0] <  0x80 &&
+      data[ID3_TagHeader::SIZE_OFFSET + 1] <  0x80 &&
+      data[ID3_TagHeader::SIZE_OFFSET + 2] <  0x80 &&
+      data[ID3_TagHeader::SIZE_OFFSET + 3] <  0x80)
   {
-    int28 temp = &header[6];
-    tagSize = temp.get();
+    uint28 data_size(&data[ID3_TagHeader::SIZE_OFFSET]);
+    tagSize = data_size.to_uint32() + ID3_TagHeader::SIZE;
   }
-    
+  
   return tagSize;
 }
 
-
-size_t ID3_TagHeader::Size(void)
+lsint ID3_IsTagHeader(const uchar data[ID3_TAGHEADERSIZE])
 {
-  size_t bytesUsed = ID3_TAGHEADERSIZE;
+  size_t size = ID3_TagHeader::IsHeader(data);
   
-  if (__pInfo->bHasExtHeader)
+  if (!size)
   {
-    bytesUsed += __pInfo->ulExtHeaderBytes + sizeof(uint32);
+    return -1;
   }
-    
+  
+  return size - ID3_TagHeader::SIZE;
+}
+
+bool ID3_TagHeader::SetSpec(const ID3_V2Spec spec)
+{
+  bool changed = this->ID3_Header::SetSpec(spec);
+  if (changed)
+  {
+    if (__info)
+    {
+      __flags.set(EXPERIMENTAL, __info->is_experimental);
+      __flags.set(EXTENDED,     __info->is_extended);
+    }
+  }
+  return changed;
+}
+
+size_t ID3_TagHeader::Size() const
+{
+  size_t bytesUsed = ID3_TagHeader::SIZE;
+  
+  if (__info->is_extended)
+  {
+    bytesUsed += __info->extended_bytes + sizeof(uint32);
+  }
+  
   return bytesUsed;
 }
 
 
-size_t ID3_TagHeader::Render(uchar *buffer)
+size_t ID3_TagHeader::Render(uchar *buffer) const
 {
-  size_t bytesUsed = 0;
+  size_t size = 0;
   
-  memcpy(&buffer[bytesUsed], (uchar *) ID3_TAGID, strlen(ID3_TAGID));
-  bytesUsed += strlen(ID3_TAGID);
+  memcpy(&buffer[size], (uchar *) ID, strlen(ID));
+  size += strlen(ID);
   
-  buffer[bytesUsed++] = ID3_V2SpecToVer(this->GetSpec());
-  buffer[bytesUsed++] = ID3_V2SpecToRev(this->GetSpec());
+  buffer[size++] = ID3_V2SpecToVer(this->GetSpec());
+  buffer[size++] = ID3_V2SpecToRev(this->GetSpec());
   
-  // do the automatic flags
-  if (__pInfo->bSetExpBit)
-  {
-    __ulFlags |= ID3HF_EXPERIMENTAL;
-  }
-    
-  if (__pInfo->bHasExtHeader)
-  {
-    __ulFlags |= ID3HF_EXTENDEDHEADER;
-  }
-    
   // set the flags byte in the header
-  buffer[bytesUsed++] = (uchar)(__ulFlags & MASK8);
+  buffer[size++] = static_cast<uchar>(__flags.get() & MASK8);
   
-  int28 temp = __ulDataSize;
-  
-  for (size_t i = 0; i < sizeof(uint32); i++)
-  {
-    buffer[bytesUsed++] = temp[i];
-  }
-    
+  uint28 size28(this->GetDataSize());
+  size28.Render(&buffer[size]);
+  size += sizeof(uint32);
+
   // now we render the extended header
-  if (__pInfo->bHasExtHeader)
+  if (__flags.test(EXTENDED))
   {
-    RenderNumber(&buffer[bytesUsed], __pInfo->ulExtHeaderBytes);
-    bytesUsed += sizeof(uint32);
+    id3::RenderNumber(&buffer[size], __info->extended_bytes);
+    size += sizeof(uint32);
   }
   
-  bytesUsed = Size();
-  
-  return bytesUsed;
+  return size;
 }
 
-ID3_TagHeader& ID3_TagHeader::operator=(const ID3_TagHeader& hdr)
+size_t ID3_TagHeader::Parse(const uchar* data, size_t data_size)
 {
-  if (this != &hdr)
+  if (!(ID3_IsTagHeader(data) > 0))
   {
-    this->ID3_Header::operator=(hdr);
+    return 0;
   }
-  return *this;
+
+  size_t size = SIZE;
+
+  // The spec version is determined with the MAJOR and MINOR OFFSETs
+  uchar major = data[MAJOR_OFFSET];
+  uchar minor = data[MINOR_OFFSET];
+  this->SetSpec(ID3_VerRevToV2Spec(major, minor));
+
+  // Get the flags at the appropriate offset
+  __flags.set(static_cast<ID3_Flags::TYPE>(data[FLAGS_OFFSET]));
+
+  // set the data size
+  this->SetDataSize(id3::ParseNumber(&data[SIZE_OFFSET], sizeof(uint32)));
+  
+  if (__flags.test(EXTENDED))
+  {
+    // need to do something here
+  }
+  
+  return size;
 }
