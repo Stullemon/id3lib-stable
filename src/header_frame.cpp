@@ -1,4 +1,4 @@
-// $Id: header_frame.cpp,v 1.5 2000/05/06 21:22:04 eldamitri Exp $
+// $Id: header_frame.cpp,v 1.6 2000/05/09 13:13:39 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -65,17 +65,11 @@ bool ID3_FrameHeader::SetFrameID(ID3_FrameID id)
   {
     return false;
   }
-  this->Clear();
   __frame_def = ID3_FindFrameDef(id);
-  if (__frame_def->bTagDiscard)
-  {
-    __flags.add(TAGALTER);
-  }
-  
-  if (__frame_def->bFileDiscard)
-  {
-    __flags.add(FILEALTER);
-  }
+  __flags.set(TAGALTER, __frame_def->bTagDiscard);
+  __flags.set(FILEALTER, __frame_def->bFileDiscard);
+
+  __changed = true;
   return true;
 }
 
@@ -93,35 +87,52 @@ size_t ID3_FrameHeader::Size() const
 
 size_t ID3_FrameHeader::Parse(const uchar *buffer, size_t size)
 {
-  size_t nSize = 0;
-  char sTextID[5];
+  size_t index = 0;
+  char text_id[5];
 
   if (!__info)
   {
     return 0;
   }
 
-  strncpy(sTextID, (char *) buffer, __info->frame_bytes_id);
-  sTextID[__info->frame_bytes_id] = '\0';
-  nSize += __info->frame_bytes_id;
+  strncpy(text_id, (char *) buffer, __info->frame_bytes_id);
+  text_id[__info->frame_bytes_id] = '\0';
+  index += __info->frame_bytes_id;
 
-  ID3_FrameID fid = ID3_FindFrameID(sTextID);
+  ID3_FrameID fid = ID3_FindFrameID(text_id);
   if (ID3FID_NOFRAME == fid)
   {
-    this->SetUnknownFrame(sTextID);
+    this->SetUnknownFrame(text_id);
   }
   else
   {
     this->SetFrameID(fid);
   }
 
-  this->SetDataSize(ParseNumber(&buffer[nSize], __info->frame_bytes_size));
-  nSize += __info->frame_bytes_size;
+  this->SetDataSize(ParseNumber(&buffer[index], __info->frame_bytes_size));
+  index += __info->frame_bytes_size;
 
-  __flags.add(ParseNumber(&buffer[nSize], __info->frame_bytes_flags));
-  nSize += __info->frame_bytes_flags;
+  __flags.add(ParseNumber(&buffer[index], __info->frame_bytes_flags));
+  index += __info->frame_bytes_flags;
   
-  return nSize;
+  // Parse the extras that can be appeded to a header before the data
+  if (__flags.test(COMPRESSION))
+  {
+    this->SetExpandedSize(ParseNumber(&buffer[index]));
+    index += sizeof(uint32);
+  }
+
+  if (__flags.test(ENCRYPTION))
+  {
+    __encryption_id = buffer[index++];
+  }
+
+  if (__flags.test(GROUPING))
+  {
+    __grouping_id = buffer[index++];
+  }
+
+  return index;
 }
 
 size_t ID3_FrameHeader::Render(uchar *buffer) const
@@ -134,17 +145,17 @@ size_t ID3_FrameHeader::Render(uchar *buffer) const
     return 0;
     //ID3_THROW(ID3E_InvalidFrameID);
   }
-  char *sTextID;
+  char *text_id;
   if (__info->frame_bytes_id == strlen(__frame_def->sShortTextID))
   {
-    sTextID = __frame_def->sShortTextID;
+    text_id = __frame_def->sShortTextID;
   }
   else
   {
-    sTextID = __frame_def->sLongTextID;
+    text_id = __frame_def->sLongTextID;
   }
 
-  memcpy(&buffer[size], (uchar *) sTextID, __info->frame_bytes_id);
+  memcpy(&buffer[size], (uchar *) text_id, __info->frame_bytes_id);
   size += __info->frame_bytes_id;
     
   size += RenderNumber(&buffer[size], __data_size, __info->frame_bytes_size);
@@ -155,19 +166,19 @@ size_t ID3_FrameHeader::Render(uchar *buffer) const
 
 const char* ID3_FrameHeader::GetTextID() const
 {
-  char *sTextID = "";
+  char *text_id = "";
   if (__info && __frame_def)
   {
     if (__info->frame_bytes_id == strlen(__frame_def->sShortTextID))
     {
-      sTextID = __frame_def->sShortTextID;
+      text_id = __frame_def->sShortTextID;
     }
     else
     {
-      sTextID = __frame_def->sLongTextID;
+      text_id = __frame_def->sLongTextID;
     }
   }
-  return sTextID;
+  return text_id;
 }
 
 ID3_FrameHeader& ID3_FrameHeader::operator=(const ID3_FrameHeader& hdr)
