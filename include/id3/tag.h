@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: tag.h,v 1.61 2002/09/21 17:23:32 t1mpy Exp $
+// $Id: tag.h,v 1.62 2002/11/02 17:35:56 t1mpy Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -85,6 +85,7 @@ public:
   size_t     Render(ID3_Writer&, ID3_TagType = ID3TT_ID3V2) const;
 
   size_t     Link(const char *fileInfo, flags_t = (flags_t) ID3TT_ALL);
+  size_t     Link(ID3_Reader &reader, flags_t = (flags_t) ID3TT_ALL);
   flags_t    Update(flags_t = (flags_t) ID3TT_ALL);
   flags_t    Strip(flags_t = (flags_t) ID3TT_ALL);
 
