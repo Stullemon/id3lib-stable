@@ -1,4 +1,4 @@
-// $Id: helpers.cpp,v 1.11 2002/07/02 22:13:24 t1mpy Exp $
+// $Id: helpers.cpp,v 1.12 2002/09/21 17:23:32 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -53,14 +53,14 @@ String id3::v2::getString(const ID3_Frame* frame, ID3_FieldID fldName)
   }
   ID3_TextEnc enc = fp->GetEncoding();
   fp->SetEncoding(ID3TE_ASCII);
-  
+
   String text(fp->GetRawText(), fp->Size());
-  
+
   fp->SetEncoding(enc);
   return text;
 }
 
-String id3::v2::getStringAtIndex(const ID3_Frame* frame, ID3_FieldID fldName, 
+String id3::v2::getStringAtIndex(const ID3_Frame* frame, ID3_FieldID fldName,
                                  size_t nIndex)
 {
   if (!frame)
@@ -75,7 +75,7 @@ String id3::v2::getStringAtIndex(const ID3_Frame* frame, ID3_FieldID fldName,
     fp->SetEncoding(ID3TE_ASCII);
 
     text = fp->GetRawTextItem(nIndex);
-    
+
     fp->SetEncoding(enc);
   }
   return text;
@@ -108,10 +108,10 @@ ID3_Frame* id3::v2::setFrameText(ID3_TagImpl& tag, ID3_FrameID id, String text)
   if (!frame)
   {
     frame = new ID3_Frame(id);
-    tag.AttachFrame(frame);
+    if(!tag.AttachFrame(frame)) return NULL;
   }
   frame->GetField(ID3FN_TEXT)->Set(text.c_str());
-  
+
   return frame;
 }
 
@@ -143,14 +143,14 @@ size_t id3::v2::removeArtists(ID3_TagImpl& tag)
 {
   size_t numRemoved = 0;
   ID3_Frame* frame = NULL;
-  
+
   while ((frame = hasArtist(tag)) != NULL)
   {
     frame = tag.RemoveFrame(frame);
     delete frame;
     numRemoved++;
   }
-  
+
   return numRemoved;
 }
 
@@ -255,7 +255,7 @@ String id3::v2::getComment(const ID3_TagImpl& tag, String desc)
   return getString(frame, ID3FN_TEXT);
 }
 
-ID3_Frame* id3::v2::setComment(ID3_TagImpl& tag, String text, String desc, 
+ID3_Frame* id3::v2::setComment(ID3_TagImpl& tag, String text, String desc,
                                String lang)
 {
   ID3D_NOTICE( "id3::v2::setComment: trying to find frame with description = " << desc );
@@ -283,7 +283,7 @@ ID3_Frame* id3::v2::setComment(ID3_TagImpl& tag, String text, String desc,
   {
     ID3D_NOTICE( "id3::v2::setComment: creating new comment frame" );
     frame = new ID3_Frame(ID3FID_COMMENT);
-    tag.AttachFrame(frame);
+    if(!tag.AttachFrame(frame)) return NULL;
   }
   if (!frame)
   {
@@ -319,7 +319,7 @@ size_t id3::v2::removeComments(ID3_TagImpl& tag, String desc)
     }
     if (frame->GetID() == ID3FID_COMMENT)
     {
-      // See if the description we have matches the description of the 
+      // See if the description we have matches the description of the
       // current comment.  If so, remove the comment
       String tmpDesc = getString(frame, ID3FN_DESCRIPTION);
       if (tmpDesc == desc)
@@ -363,7 +363,7 @@ ID3_Frame* id3::v2::setTrack(ID3_TagImpl& tag, uchar trk, uchar ttl)
     track += toString((size_t)ttl);
   }
   setFrameText(tag, ID3FID_TRACKNUM, track);
-  
+
   return frame;
 }
 
@@ -391,7 +391,7 @@ size_t id3::v2::getGenreNum(const ID3_TagImpl& tag)
   size_t ulGenre = 0xFF;
   size_t size = sGenre.size();
 
-  // If the genre string begins with "(ddd)", where "ddd" is a number, then 
+  // If the genre string begins with "(ddd)", where "ddd" is a number, then
   // "ddd" is the genre number---get it
   size_t i = 0;
   if (i < size && size && sGenre[i] == '(')
@@ -461,7 +461,7 @@ ID3_Frame* id3::v2::setLyrics(ID3_TagImpl& tag, String text, String desc,
   if (frame == NULL)
   {
     frame = new ID3_Frame(ID3FID_UNSYNCEDLYRICS);
-    tag.AttachFrame(frame);
+    if(!tag.AttachFrame(frame)) return NULL;
   }
   frame->GetField(ID3FN_LANGUAGE)->Set(lang.c_str());
   frame->GetField(ID3FN_DESCRIPTION)->Set(desc.c_str());
@@ -501,7 +501,7 @@ ID3_Frame* id3::v2::hasSyncLyrics(const ID3_TagImpl& tag, String lang, String de
 }
 
 ID3_Frame* id3::v2::setSyncLyrics(ID3_TagImpl& tag, BString data,
-                                  ID3_TimeStampFormat format, String desc, 
+                                  ID3_TimeStampFormat format, String desc,
                                   String lang, ID3_ContentType type)
 {
   ID3_Frame* frame = NULL;
@@ -513,7 +513,7 @@ ID3_Frame* id3::v2::setSyncLyrics(ID3_TagImpl& tag, BString data,
   if (!frame)
   {
     frame = new ID3_Frame(ID3FID_SYNCEDLYRICS);
-    tag.AttachFrame(frame);
+    if(!tag.AttachFrame(frame)) return NULL;
   }
   frame->GetField(ID3FN_LANGUAGE)->Set(lang.c_str());
   frame->GetField(ID3FN_DESCRIPTION)->Set(desc.c_str());
@@ -531,7 +531,7 @@ BString id3::v2::getSyncLyrics(const ID3_TagImpl& tag, String lang, String desc)
   (frame = tag.Find(ID3FID_SYNCEDLYRICS, ID3FN_LANGUAGE, lang)) ||
   (frame = tag.Find(ID3FID_SYNCEDLYRICS, ID3FN_DESCRIPTION, desc)) ||
   (frame = tag.Find(ID3FID_SYNCEDLYRICS));
-  
+
   // get the lyrics size
   ID3_Field* fld = frame->GetField(ID3FN_DATA);
   return BString(reinterpret_cast<const BString::value_type *>(fld->GetRawBinary()), fld->Size());

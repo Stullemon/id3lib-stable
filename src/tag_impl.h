@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: tag_impl.h,v 1.8 2002/08/10 10:17:18 t1mpy Exp $
+// $Id: tag_impl.h,v 1.9 2002/09/21 17:23:32 t1mpy Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -80,12 +80,12 @@ public:
   ID3_TagImpl(const char *name = NULL);
   ID3_TagImpl(const ID3_Tag &tag);
   virtual ~ID3_TagImpl();
-  
+
   void       Clear();
   bool       HasChanged() const;
   void       SetChanged(bool b) { _changed = b; }
   size_t     Size() const;
-  
+
   bool       SetUnsync(bool);
   bool       SetExtended(bool);
   bool       SetExperimental(bool);
@@ -97,33 +97,33 @@ public:
   bool       GetFooter() const;
 
   size_t     GetExtendedBytes() const;
-  
+
   void       AddFrame(const ID3_Frame&);
   void       AddFrame(const ID3_Frame*);
-  void       AttachFrame(ID3_Frame*);
+  bool       AttachFrame(ID3_Frame*);
   ID3_Frame* RemoveFrame(const ID3_Frame *);
-  
+
   size_t     Link(const char *fileInfo, flags_t = (flags_t) ID3TT_ALL);
   flags_t    Update(flags_t = (flags_t) ID3TT_ALL);
   flags_t    Strip(flags_t = (flags_t) ID3TT_ALL);
-  
+
   size_t     GetPrependedBytes() const { return _prepended_bytes; }
   size_t     GetAppendedBytes() const { return _appended_bytes; }
   size_t     GetFileSize() const { return _file_size; }
   dami::String GetFileName() const { return _file_name; }
-  
+
   ID3_Frame* Find(ID3_FrameID id) const;
   ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, uint32 data) const;
   ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, dami::String) const;
   ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, dami::WString) const;
-  
+
   size_t     NumFrames() const { return _frames.size(); }
   ID3_TagImpl&   operator=( const ID3_Tag & );
-  
+
   bool       HasTagType(ID3_TagType tt) const { return _file_tags.test(tt); }
   ID3_V2Spec GetSpec() const;
   bool       SetSpec(ID3_V2Spec);
-  
+
   static size_t IsV2Tag(ID3_Reader&);
 
   const Mp3_Headerinfo* GetMp3HeaderInfo() const { if (_mp3_info) return _mp3_info->GetMp3HeaderInfo(); else return NULL; }
@@ -132,7 +132,7 @@ public:
   iterator         end()         { return _frames.end(); }
   const_iterator   begin() const { return _frames.begin(); }
   const_iterator   end()   const { return _frames.end(); }
-  
+
   /* Deprecated! */
   void       AddNewFrame(ID3_Frame* f) { this->AttachFrame(f); }
   size_t     Link(const char *fileInfo, bool parseID3v1, bool parseLyrics3);
@@ -142,24 +142,24 @@ public:
   bool       HasV2Tag()  const { return this->HasTagType(ID3TT_ID3V2); }
   bool       HasV1Tag()  const { return this->HasTagType(ID3TT_ID3V1); }
   size_t     PaddingSize(size_t) const;
-  
+
 protected:
   const_iterator Find(const ID3_Frame *) const;
   iterator Find(const ID3_Frame *);
-  
+
   void       RenderExtHeader(uchar *);
 
   void       ParseFile();
-  
+
 private:
   ID3_TagHeader _hdr;          // information relevant to the tag header
   bool       _is_padded;       // add padding to tags?
-  
+
   Frames     _frames;
-  
+
   mutable const_iterator   _cursor;  // which frame in list are we at
   mutable bool       _changed; // has tag changed since last parse or render?
-  
+
   // file-related member variables
   dami::String _file_name;       // name of the file we are linked to
   size_t     _file_size;       // the size of the file (without any tag(s))

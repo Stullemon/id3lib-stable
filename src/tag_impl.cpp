@@ -1,4 +1,4 @@
-// $Id: tag_impl.cpp,v 1.12 2002/09/21 16:04:13 t1mpy Exp $
+// $Id: tag_impl.cpp,v 1.13 2002/09/21 17:23:32 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -164,13 +164,13 @@ void ID3_TagImpl::AddFrame(const ID3_Frame* frame)
   }
 }
 
-void ID3_TagImpl::AttachFrame(ID3_Frame *frame)
+bool ID3_TagImpl::AttachFrame(ID3_Frame *frame)
 {
 
   if (NULL == frame)
   {
     // log this
-    return;
+    return false;
     //ID3_THROW(ID3E_NoData);
   }
 
@@ -178,6 +178,7 @@ void ID3_TagImpl::AttachFrame(ID3_Frame *frame)
   _cursor = _frames.begin();
 
   _changed = true;
+  return true;
 }
 
 
