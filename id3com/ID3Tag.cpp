@@ -319,13 +319,8 @@ STDMETHODIMP CID3Tag::put_Artist(BSTR newVal)
 			(pFrame = m_ID3Tag->Find(ID3FID_CONDUCTOR)) == NULL &&
 			(pFrame = m_ID3Tag->Find(ID3FID_COMPOSER)) == NULL)
 		{
-			pFrame = new ID3_Frame;
-			if (NULL == pFrame)
-			{
-				ID3_THROW(ID3E_NoMemory);
-			}
-			pFrame->SetID(ID3FID_LEADARTIST);
-			m_ID3Tag->AddNewFrame(pFrame);
+			pFrame = new ID3_Frame(ID3FID_LEADARTIST);
+			m_ID3Tag->AttachFrame(pFrame);
 		}
 		pFrame->Field(ID3FN_TEXT) = OLE2A(newVal);
 		return S_OK;
@@ -616,15 +611,10 @@ STDMETHODIMP CID3Tag::put_LastPlayed(DATE newVal)
 		ID3_Frame *pFrame = m_ID3Tag->Find(ID3FID_USERTEXT, ID3FN_DESCRIPTION, "LastPlayed");
 		if(pFrame == NULL)
 		{
-			pFrame = new ID3_Frame;
-			if (NULL == pFrame)
-			{
-				ID3_THROW(ID3E_NoMemory);
-			}
-			pFrame->SetID(ID3FID_USERTEXT);
-			m_ID3Tag->AddNewFrame(pFrame);
+			pFrame = new ID3_Frame(ID3FID_USERTEXT);
 			pFrame->Field(ID3FN_DESCRIPTION) = "LastPlayed";
 			pFrame->Field(ID3FN_TEXTENC) = ID3TE_ASCII;
+			m_ID3Tag->AttachFrame(pFrame);
 		}
 		char Buffer[40];
 		sprintf(Buffer, "%6.7f", newVal);
@@ -776,14 +766,9 @@ STDMETHODIMP CID3Tag::put_PlayCount(BSTR EMailAddress, long newVal)
 		ID3_Frame *pFrame = m_ID3Tag->Find(ID3FID_POPULARIMETER, ID3FN_EMAIL, EMailAddress);
 		if(pFrame == NULL)
 		{
-			pFrame = new ID3_Frame;
-			if (NULL == pFrame)
-			{
-				ID3_THROW(ID3E_NoMemory);
-			}
-			pFrame->SetID(ID3FID_POPULARIMETER);
-			m_ID3Tag->AddNewFrame(pFrame);
+			pFrame = new ID3_Frame(ID3FID_POPULARIMETER);
 			pFrame->Field(ID3FN_EMAIL) = EMailAddress;
+			m_ID3Tag->AttachFrame(pFrame);
 		}
 		pFrame->Field(ID3FN_COUNTER) = newVal;
 		return S_OK;
@@ -827,14 +812,9 @@ STDMETHODIMP CID3Tag::put_Popularity(BSTR EMailAddress, short newVal)
 		ID3_Frame *pFrame = m_ID3Tag->Find(ID3FID_POPULARIMETER, ID3FN_EMAIL, EMailAddress);
 		if(pFrame == NULL)
 		{
-			pFrame = new ID3_Frame;
-			if (NULL == pFrame)
-			{
-				ID3_THROW(ID3E_NoMemory);
-			}
-			pFrame->SetID(ID3FID_POPULARIMETER);
-			m_ID3Tag->AddNewFrame(pFrame);
+			pFrame = new ID3_Frame(ID3FID_POPULARIMETER);
 			pFrame->Field(ID3FN_EMAIL) = EMailAddress;
+			m_ID3Tag->AttachFrame(pFrame);
 		}
 		pFrame->Field(ID3FN_RATING) = newVal;
 		return S_OK;
@@ -883,15 +863,10 @@ STDMETHODIMP CID3Tag::put_TagCreated(DATE newVal)
 		ID3_Frame *pFrame = m_ID3Tag->Find(ID3FID_USERTEXT, ID3FN_DESCRIPTION, "TagCreated");
 		if(pFrame == NULL)
 		{
-			pFrame = new ID3_Frame;
-			if (NULL == pFrame)
-			{
-				ID3_THROW(ID3E_NoMemory);
-			}
-			pFrame->SetID(ID3FID_USERTEXT);
-			m_ID3Tag->AddNewFrame(pFrame);
+			pFrame = new ID3_Frame(ID3FID_USERTEXT);
 			pFrame->Field(ID3FN_DESCRIPTION) = "TagCreated";
 			pFrame->Field(ID3FN_TEXTENC) = ID3TE_ASCII;
+			m_ID3Tag->AttachFrame(pFrame);
 		}
 		char Buffer[40];
 		sprintf(Buffer, "%6.7f", newVal);
@@ -942,19 +917,65 @@ STDMETHODIMP CID3Tag::put_PercentVolumeAdjust(double newVal)
 		ID3_Frame *pFrame = m_ID3Tag->Find(ID3FID_USERTEXT, ID3FN_DESCRIPTION, "PercentVolAdj");
 		if(pFrame == NULL)
 		{
-			pFrame = new ID3_Frame;
-			if (NULL == pFrame)
-			{
-				ID3_THROW(ID3E_NoMemory);
-			}
-			pFrame->SetID(ID3FID_USERTEXT);
-			m_ID3Tag->AddNewFrame(pFrame);
+			pFrame = new ID3_Frame(ID3FID_USERTEXT);
 			pFrame->Field(ID3FN_DESCRIPTION) = "PercentVolAdj";
 			pFrame->Field(ID3FN_TEXTENC) = ID3TE_ASCII;
+			m_ID3Tag->AttachFrame(pFrame);
 		}
 		char Buffer[40];
 		sprintf(Buffer, "%6.7f", newVal);
 		pFrame->Field(ID3FN_TEXT) = Buffer;
+		return S_OK;
+	}
+	catch (ID3_Error err)
+	{
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+	}
+	catch (...)
+	{
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
+	}
+}
+
+STDMETHODIMP CID3Tag::put_Padding(VARIANT_BOOL newVal)
+{
+	try
+	{
+		m_ID3Tag->SetPadding(newVal == VARIANT_TRUE);
+		return S_OK;
+	}
+	catch (ID3_Error err)
+	{
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+	}
+	catch (...)
+	{
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
+	}
+}
+
+STDMETHODIMP CID3Tag::put_Compression(VARIANT_BOOL newVal)
+{
+	try
+	{
+		m_ID3Tag->SetCompression(newVal == VARIANT_TRUE);
+		return S_OK;
+	}
+	catch (ID3_Error err)
+	{
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+	}
+	catch (...)
+	{
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
+	}
+}
+
+STDMETHODIMP CID3Tag::put_UnSync(VARIANT_BOOL newVal)
+{
+	try
+	{
+		m_ID3Tag->SetUnsync(newVal == VARIANT_TRUE);
 		return S_OK;
 	}
 	catch (ID3_Error err)

@@ -253,6 +253,9 @@ import "ocidl.idl";
 		[propput, id(25), helpstring("property TagCreated")] HRESULT TagCreated([in] DATE newVal);
 		[propget, id(26), helpstring("property PercentVolumeAdjust")] HRESULT PercentVolumeAdjust([out, retval] double *pVal);
 		[propput, id(26), helpstring("property PercentVolumeAdjust")] HRESULT PercentVolumeAdjust([in] double newVal);
+ 		[propput, id(27), helpstring("property Padding")] HRESULT Padding([in] VARIANT_BOOL newVal);
+ 		[propput, id(28), helpstring("property Compression")] HRESULT Compression([in] VARIANT_BOOL newVal);
+ 		[propput, id(29), helpstring("property UnSync")] HRESULT UnSync([in] VARIANT_BOOL newVal);
 		[propget, id(DISPID_NEWENUM), restricted] HRESULT _NewEnum([out, retval] IUnknown** pRetVal);
 	};
 [

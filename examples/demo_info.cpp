@@ -14,7 +14,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.4 2000/04/23 17:36:36 eldamitri Exp $
+// $Id: demo_info.cpp,v 1.5 2000/04/28 16:34:20 eldamitri Exp $
 
 #include <iostream.h>
 #include <id3/tag.h>
@@ -39,89 +39,6 @@ void PrintVersion(char *sName)
   cout << "Uses " << ID3LIB_FULL_NAME << endl << endl;
 }
 
-char *GetDescription(const ID3_FrameID eFrameID)
-{
-  switch (eFrameID)
-  {
-    /* AENC */ case ID3FID_AUDIOCRYPTO:       return "Audio encryption";
-    /* APIC */ case ID3FID_PICTURE:           return "Attached picture";
-    /* COMM */ case ID3FID_COMMENT:           return "Comments";
-    /* COMR */
-    /* ENCR */ case ID3FID_CRYPTOREG:         return "Encryption method registration";
-    /* EQUA */ case ID3FID_EQUALIZATION:      return "Equalization";
-    /* ETCO */ case ID3FID_EVENTTIMING:       return "Event timing codes";
-    /* GEOB */ case ID3FID_GENERALOBJECT:     return "General encapsulated object";
-    /* GRID */ case ID3FID_GROUPINGREG:       return "Group identification registration";
-    /* IPLS */ case ID3FID_INVOLVEDPEOPLE:    return "Involved people list";
-    /* LINK */ case ID3FID_LINKEDINFO:        return "Linked information";
-    /* MCDI */ case ID3FID_CDID:              return "Music CD identifier";
-    /* MLLT */ case ID3FID_MPEGLOOKUP:        return "MPEG location lookup table";
-    /* OWNE */ case ID3FID_OWNERSHIP:         return "Ownership frame";
-    /* PRIV */ case ID3FID_PRIVATE:           return "Private frame";
-    /* PCNT */ case ID3FID_PLAYCOUNTER:       return "Play counter";
-    /* POPM */ case ID3FID_POPULARIMETER:     return "Popularimeter";
-    /* POSS */ case ID3FID_POSITIONSYNC:      return "Position synchronisation frame";
-    /* RBUF */ case ID3FID_BUFFERSIZE:        return "Recommended buffer size";
-    /* RVAD */ case ID3FID_VOLUMEADJ:         return "Relative volume adjustment";
-    /* RVRB */ case ID3FID_REVERB:            return "Reverb";
-    /* SYLT */ case ID3FID_SYNCEDLYRICS:      return "Synchronized lyric/text";
-    /* SYTC */ case ID3FID_SYNCEDTEMPO:       return "Synchronized tempo codes";
-    /* TALB */ case ID3FID_ALBUM:             return "Album/Movie/Show title";
-    /* TBPM */ case ID3FID_BPM:               return "BPM (beats per minute)";
-    /* TCOM */ case ID3FID_COMPOSER:          return "Composer";
-    /* TCON */ case ID3FID_CONTENTTYPE:       return "Content type";
-    /* TCOP */ case ID3FID_COPYRIGHT:         return "Copyright message";
-    /* TDAT */ case ID3FID_DATE:              return "Date";
-    /* TDLY */ case ID3FID_PLAYLISTDELAY:     return "Playlist delay";
-    /* TENC */ case ID3FID_ENCODEDBY:         return "Encoded by";
-    /* TEXT */ case ID3FID_LYRICIST:          return "Lyricist/Text writer";
-    /* TFLT */ case ID3FID_FILETYPE:          return "File type";
-    /* TIME */ case ID3FID_TIME:              return "Time";
-    /* TIT1 */ case ID3FID_CONTENTGROUP:      return "Content group description";
-    /* TIT2 */ case ID3FID_TITLE:             return "Title/songname/content description";
-    /* TIT3 */ case ID3FID_SUBTITLE:          return "Subtitle/Description refinement";
-    /* TKEY */ case ID3FID_INITIALKEY:        return "Initial key";
-    /* TLAN */ case ID3FID_LANGUAGE:          return "Language(s)";
-    /* TLEN */ case ID3FID_SONGLEN:           return "Length";
-    /* TMED */ case ID3FID_MEDIATYPE:         return "Media type";
-    /* TOAL */ case ID3FID_ORIGALBUM:         return "Original album/movie/show title";
-    /* TOFN */ case ID3FID_ORIGFILENAME:      return "Original filename";
-    /* TOLY */ case ID3FID_ORIGLYRICIST:      return "Original lyricist(s)/text writer(s)";
-    /* TOPE */ case ID3FID_ORIGARTIST:        return "Original artist(s)/performer(s)";
-    /* TORY */ case ID3FID_ORIGYEAR:          return "Original release year";
-    /* TOWN */ case ID3FID_FILEOWNER:         return "File owner/licensee";
-    /* TPE1 */ case ID3FID_LEADARTIST:        return "Lead performer(s)/Soloist(s)";
-    /* TPE2 */ case ID3FID_BAND:              return "Band/orchestra/accompaniment";
-    /* TPE3 */ case ID3FID_CONDUCTOR:         return "Conductor/performer refinement";
-    /* TPE4 */ case ID3FID_MIXARTIST:         return "Interpreted, remixed, or otherwise modified by";
-    /* TPOS */ case ID3FID_PARTINSET:         return "Part of a set";
-    /* TPUB */ case ID3FID_PUBLISHER:         return "Publisher";
-    /* TRCK */ case ID3FID_TRACKNUM:          return "Track number/Position in set";
-    /* TRDA */ case ID3FID_RECORDINGDATES:    return "Recording dates";
-    /* TRSN */ case ID3FID_NETRADIOSTATION:   return "Internet radio station name";
-    /* TRSO */ case ID3FID_NETRADIOOWNER:     return "Internet radio station owner";
-    /* TSIZ */ case ID3FID_SIZE:              return "Size";
-    /* TSRC */ case ID3FID_ISRC:              return "ISRC (international standard recording code)";
-    /* TSSE */ case ID3FID_ENCODERSETTINGS:   return "Software/Hardware and settings used for encoding";
-    /* TXXX */ case ID3FID_USERTEXT:          return "User defined text information";
-    /* TYER */ case ID3FID_YEAR:              return "Year";
-    /* UFID */ case ID3FID_UNIQUEFILEID:      return "Unique file identifier";
-    /* USER */ case ID3FID_TERMSOFUSE:        return "Terms of use";
-    /* USLT */ case ID3FID_UNSYNCEDLYRICS:    return "Unsynchronized lyric/text transcription";
-    /* WCOM */ case ID3FID_WWWCOMMERCIALINFO: return "Commercial information";
-    /* WCOP */ case ID3FID_WWWCOPYRIGHT:      return "Copyright/Legal infromation";
-    /* WOAF */ case ID3FID_WWWAUDIOFILE:      return "Official audio file webpage";
-    /* WOAR */ case ID3FID_WWWARTIST:         return "Official artist/performer webpage";
-    /* WOAS */ case ID3FID_WWWAUDIOSOURCE:    return "Official audio source webpage";
-    /* WORS */ case ID3FID_WWWRADIOPAGE:      return "Official internet radio station homepage";
-    /* WPAY */ case ID3FID_WWWPAYMENT:        return "Payment";
-    /* WPUB */ case ID3FID_WWWPUBLISHER:      return "Official publisher webpage";
-    /* WXXX */ case ID3FID_WWWUSER:           return "User defined URL link";
-    /*      */ case ID3FID_METACRYPTO:        return "Encrypted meta frame";
-    /* ???? */ default:                       return "Unknown";
-  }
-}
-
 void PrintInformation(ID3_Tag &myTag)
 {
   for (size_t nFrames = 0; nFrames < myTag.NumFrames(); nFrames++)
@@ -130,7 +47,7 @@ void PrintInformation(ID3_Tag &myTag)
     if (NULL != myFrame)
     { 
       ID3_FrameID eFrameID = myFrame->GetID();
-      cout << "=== " << GetDescription(eFrameID) << ": ";
+      cout << "=== " << ID3_GetFrameDescription(eFrameID) << ": ";
       switch (eFrameID)
       {
         case ID3FID_ALBUM:
@@ -432,43 +349,3 @@ int main( int argc, char *argv[])
 
   return 0;
 }
-
-// $Log: demo_info.cpp,v $
-// Revision 1.4  2000/04/23 17:36:36  eldamitri
-// - Removed dependency on config.h
-//
-// Revision 1.3  2000/04/20 03:27:47  eldamitri
-// Replaced call to ID3_FullName with ID3LIB_FULL_NAME constant
-//
-// Revision 1.2  2000/04/18 21:45:39  eldamitri
-// Moved demo_info.cpp from src/examples to examples
-//
-// Revision 1.7  2000/04/15 18:44:54  eldamitri
-// (PrintInformation): Renamed ID3FN_SYMBOL to ID3FN_ID
-//
-// Revision 1.6  1999/12/26 00:29:55  scott
-// (GetDescription): Reformatted.  Descriptions now match those from
-// www.id3.org.  Added descriptions for new frame id's.
-// (PrintInformation): Updated for added frames.  Now handles
-// unimplemented frames.
-//
-// Revision 1.5  1999/12/23 15:56:26  scott
-// Added check and include for config.h.
-//
-// Revision 1.4  1999/12/09 02:48:54  scott
-// (PrintInformation): Separated out information printing code into this
-// separate function.
-// (main): Added new runtime option -a that will test the ability of
-// id3lib to make copies of tags.  Not very useful in general, but nice
-// for testing the new operator= code.
-//
-// Revision 1.3  1999/11/30 20:05:30  scott
-// Updated to reflect changes from version macros to version functions.
-//
-// Revision 1.2  1999/11/19 17:09:02  scott
-// * demo_info.cpp: Added runtime options for version and help.  Minor
-// code cleanup.
-//
-// Revision 1.1  1999/11/16 05:25:52  scott
-// Initial revision.
-//
