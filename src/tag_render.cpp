@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.19 2000/05/23 15:19:33 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.20 2000/05/28 05:07:26 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -49,6 +49,17 @@
 #  define ID3_PATH_LENGTH   (2048 + 1)
 #endif  /* !MAXPATHLEN && !PATH_MAX */
 
+size_t RenderFrames(uchar* buffer, const ID3_Elem* cur)
+{
+  size_t size = 0;
+  if (cur)
+  {
+    size = RenderFrames(buffer, cur->pNext);
+    size += cur->pFrame->Render(&buffer[size]);
+  }
+  return size;
+}
+
 /** Renders a binary image of the tag into the supplied buffer.
  ** 
  ** See <a href="#Size">Size</a> for an example.  This method returns the
@@ -69,42 +80,42 @@
  **/
 size_t ID3_Tag::Render(uchar *buffer) const
 {
-  luint bytesUsed = 0;
+  // There has to be at least one frame for there to be a tag...
+  if (this->NumFrames() == 0)
+  {
+    return 0;
+  }
+  size_t bytesUsed = 0;
   
   if (NULL == buffer)
   {
     ID3_THROW(ID3E_NoBuffer);
   }
 
-  ID3_Elem *cur = __frames;
   ID3_TagHeader header;
-    
-  header.SetSpec(ID3V2_LATEST);
-  bytesUsed += header.Size();
+  size_t hdr_size = __hdr.Size();
+  
+  bytesUsed += hdr_size;
     
   // set up the encryption and grouping IDs
     
   // ...
-    
-  while (cur)
+  size_t frame_bytes = RenderFrames(&buffer[bytesUsed], __frames);;
+  if (frame_bytes == 0)
   {
-    if (cur->pFrame != NULL)
-    {
-      cur->pFrame->SetSpec(this->GetSpec());
-      bytesUsed += cur->pFrame->Render(&buffer[bytesUsed]);
-    }
-      
-    cur = cur->pNext;
+    return 0;
   }
-    
+  
+  bytesUsed += frame_bytes;
+  
   if (__hdr.GetUnsync())
   {
     uchar *tempz;
     luint newTagSize;
     
-    newTagSize = ID3_GetUnSyncSize(&buffer[header.Size()], 
-                                   bytesUsed - header.Size());
-    if (newTagSize > 0 && (newTagSize + header.Size()) > bytesUsed)
+    newTagSize = ID3_GetUnSyncSize(&buffer[hdr_size], 
+                                   bytesUsed - hdr_size);
+    if (newTagSize > 0 && (newTagSize + hdr_size) > bytesUsed)
     {
       tempz = new uchar[newTagSize];
       if (NULL == tempz)
@@ -112,12 +123,12 @@ size_t ID3_Tag::Render(uchar *buffer) const
         ID3_THROW(ID3E_NoMemory);
       }
 
-      ID3_UnSync(tempz, newTagSize, &buffer[header.Size()],
-                 bytesUsed - header.Size());
+      ID3_UnSync(tempz, newTagSize, &buffer[hdr_size],
+                 bytesUsed - hdr_size);
       header.SetUnsync(true);
 
-      memcpy(&buffer[header.Size()], tempz, newTagSize);
-      bytesUsed = newTagSize + header.Size();
+      memcpy(&buffer[hdr_size], tempz, newTagSize);
+      bytesUsed = newTagSize + hdr_size;
       delete[] tempz;
     }
   }
@@ -128,9 +139,9 @@ size_t ID3_Tag::Render(uchar *buffer) const
   memset(&buffer[bytesUsed], '\0', nPadding);
   bytesUsed += nPadding;
     
-  header.SetDataSize(bytesUsed - header.Size());
+  header.SetDataSize(bytesUsed - hdr_size);
   header.Render(buffer);
-    
+  
   // set the flag which says that the tag hasn't changed
   __changed = false;
   
@@ -169,24 +180,34 @@ size_t ID3_Tag::Render(uchar *buffer) const
    **/
 size_t ID3_Tag::Size() const
 {
-  luint bytesUsed = 0;
+  if (!this->NumFrames())
+  {
+    return 0;
+  }
   ID3_Elem *cur = __frames;
   ID3_TagHeader header;
-  
+
   header.SetSpec(this->GetSpec());
-  bytesUsed += header.Size();
+  size_t bytesUsed = header.Size();
   
+  size_t frame_bytes = 0;
   while (cur)
   {
     if (cur->pFrame)
     {
       cur->pFrame->SetSpec(this->GetSpec());
-      bytesUsed += cur->pFrame->Size();
+      frame_bytes += cur->pFrame->Size();
     }
     
     cur = cur->pNext;
   }
   
+  if (!frame_bytes)
+  {
+    return 0;
+  }
+  
+  bytesUsed += frame_bytes;
   // add 30% for sync
   if (__hdr.GetUnsync())
   {
@@ -365,25 +386,25 @@ void ID3_Tag::RenderV1ToHandle()
 void ID3_Tag::RenderV2ToHandle()
 {
   uchar *buffer;
-  luint size = Size();
   
   if (NULL == __file_handle)
   {
     ID3_THROW(ID3E_NoData);
   }
 
-  if (size == 0)
+  size_t size = this->Size();
+  if (!size)
   {
     return;
   }
-
+  
   buffer = new uchar[size];
   if (NULL == buffer)
   {
     ID3_THROW(ID3E_NoMemory);
   }
-
-  size = Render(buffer);      
+  
+  size = this->Render(buffer);      
   if (0 == size)
   {
     delete [] buffer;
@@ -393,7 +414,7 @@ void ID3_Tag::RenderV2ToHandle()
   // if the new tag fits perfectly within the old and the old one
   // actually existed (ie this isn't the first tag this file has had)
   if ((0 == __starting_bytes && 0 == __file_size) || 
-      (size == __starting_bytes && size != 0))
+      (size == __starting_bytes))
   {
     fseek(__file_handle, 0, SEEK_SET);
     fwrite(buffer, 1, size, __file_handle);
