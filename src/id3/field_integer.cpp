@@ -16,51 +16,51 @@
 #include <id3/field.h>
 
 
-ID3_Field&	ID3_Field::operator=	( luint newData )
+ID3_Field& ID3_Field::operator=(luint newData)
 {
-  Set ( newData );
+  Set(newData);
   
   return *this;
 }
 
 
-void	ID3_Field::Set	( luint newData )
+void ID3_Field::Set(luint newData)
 {
   Clear();
   
-  data	= (uchar *) newData;
-  size	= sizeof ( luint );
-  type	= ID3FTY_INTEGER;
-  hasChanged	= true;
+  data = (uchar *) newData;
+  size = sizeof(luint);
+  type = ID3FTY_INTEGER;
+  hasChanged = true;
   
   return ;
 }
 
 
-luint	ID3_Field::Get	( void )
+luint ID3_Field::Get(void)
 {
   return (luint) data;
 }
 
 
-luint	ID3_Field::ParseInteger	( uchar *buffer, luint posn, luint buffSize )
+luint ID3_Field::ParseInteger(uchar *buffer, luint posn, luint buffSize)
 {
-  luint	bytesUsed	= 0;
+  luint bytesUsed = 0;
   
-  if ( buffer && buffSize )
+  if (buffer && buffSize)
   {
-    luint	i;
-    luint	temp	= 0;
+    luint i;
+    luint temp = 0;
     
     bytesUsed = 4;
     
-    if ( fixedLength != -1 )
-      bytesUsed = MIN ( fixedLength, bytesUsed );
+    if (fixedLength != -1)
+      bytesUsed = MIN(fixedLength, bytesUsed);
       
-    for ( i = 0; i < bytesUsed; i++ )
-      temp |= ( buffer[ posn + i ] << ( ( ( bytesUsed - i ) - 1 ) * 8 ) );
+    for(i = 0; i < bytesUsed; i++)
+      temp |= (buffer[posn + i] << (((bytesUsed - i) - 1) * 8));
       
-    Set ( temp );
+    Set(temp);
     hasChanged = false;
   }
   
@@ -68,18 +68,16 @@ luint	ID3_Field::ParseInteger	( uchar *buffer, luint posn, luint buffSize )
 }
 
 
-luint	ID3_Field::RenderInteger	( uchar *buffer )
+luint ID3_Field::RenderInteger(uchar *buffer)
 {
-  luint	bytesUsed	= 0;
-  luint	length	= BinSize();
+  luint bytesUsed = 0;
+  luint length = BinSize();
   
-  for ( luint i = 0; i < length; i++ )
-    buffer[ i ] = (uchar) ( ( ( (luint) data ) >> ( ( ( length - i ) - 1 ) * 8 ) ) & 0xFF );
+  for(luint i = 0; i < length; i++)
+    buffer[i] = (uchar)((((luint) data) >> (((length - i) - 1) * 8)) & 0xFF);
     
   bytesUsed = length;
   hasChanged = false;
   
   return bytesUsed;
 }
-
-

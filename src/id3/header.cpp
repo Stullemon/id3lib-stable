@@ -19,69 +19,59 @@
 #include <id3/error.h>
 
 
-ID3_HeaderInfo	ID3_VersionInfo[] =
+ID3_HeaderInfo ID3_VersionInfo[] =
   {
-    //				SIZEOF	SIZEOF	SIZEOF	EXT		EXT		EXPERIM
-    //	VER	REV		FRID	FRSZ	FRFL	HEADER	SIZE	BIT
-    {	2, 0, 3, 3, 0, false, 0, false	},
-    {	2, 1, 3, 3, 0, true, 8, true	},
-    {	3, 0, 4, 4, 2, false, 10, false	},
-    {	0	}
+    //         SIZEOF SIZEOF SIZEOF EXT    EXT  EXPERIM
+    // VER REV FRID   FRSZ   FRFL   HEADER SIZE BIT
+    {  2,  0,  3,     3,     0,     false, 0,   false },
+    {  2,  1,  3,     3,     0,     true,  8,   true },
+    {  3,  0,  4,     4,     2,     false, 10,  false },
+    {  0 }
   };
   
   
-ID3_HeaderInfo	*ID3_LookupHeaderInfo	( uchar ver, uchar rev )
+ID3_HeaderInfo *ID3_LookupHeaderInfo(uchar ver, uchar rev)
 {
-  ID3_HeaderInfo	*info	= NULL;
-  luint	i	= 0;
-  
-  while ( ID3_VersionInfo[ i ].version != 0 )
-  {
-    if ( ID3_VersionInfo[ i ].version == ver &&
-         ID3_VersionInfo[ i ].revision == rev )
-      break;
-    else
-      i++;
-  }
-  
-  if ( ID3_VersionInfo[ i ].version != 0 )
-    info = &ID3_VersionInfo[ i ];
+  ID3_HeaderInfo *info = NULL;
+  luint i = 0;
+  for (luint i = 0; (ID3_VersionInfo[i].version  != 0   &&
+                     ID3_VersionInfo[i].version  == ver &&
+                     ID3_VersionInfo[i].revision == rev);
+       i++)
+    continue;
+
+  if (ID3_VersionInfo[i].version != 0)
+    info = &ID3_VersionInfo[i];
     
   return info;
 }
 
-
-ID3_Header::ID3_Header	( void )
+ID3_Header::ID3_Header(void)
 {
-  SetVersion ( ID3_TAGVERSION, ID3_TAGREVISION );
+  SetVersion(ID3_TAGVERSION, ID3_TAGREVISION);
   dataSize = 0;
   flags = 0;
 }
 
-
-void	ID3_Header::SetVersion	( uchar ver, uchar rev )
+void ID3_Header::SetVersion(uchar ver, uchar rev)
 {
-  version	= ver;
-  revision	= rev;
-  info	= ID3_LookupHeaderInfo ( version, revision );
+  version = ver;
+  revision = rev;
+  info = ID3_LookupHeaderInfo(version, revision);
   
   return ;
 }
 
-
-void	ID3_Header::SetDataSize	( luint newSize )
+void ID3_Header::SetDataSize(luint newSize)
 {
   dataSize = newSize;
   
   return ;
 }
 
-
-void	ID3_Header::SetFlags	( luint newFlags )
+void ID3_Header::SetFlags(luint newFlags)
 {
   flags = newFlags;
   
   return ;
 }
-
-

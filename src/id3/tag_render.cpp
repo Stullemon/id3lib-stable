@@ -12,7 +12,6 @@
 //
 //  Mon Nov 23 18:34:01 1998
 
-
 #include <string.h>
 #include <memory.h>
 #include <id3/tag.h>
@@ -20,71 +19,72 @@
 #include <stdlib.h>
 
 
-luint ID3_Tag::Render ( uchar *buffer )
+luint ID3_Tag::Render(uchar *buffer)
 {
   luint bytesUsed = 0;
   
-  if ( buffer )
+  if (buffer)
   {
     ID3_Elem *cur = frameList;
     ID3_TagHeader header;
     
-    SetVersion ( ID3_TAGVERSION, ID3_TAGREVISION );
+    SetVersion(ID3_TAGVERSION, ID3_TAGREVISION);
     
-    header.SetVersion ( version, revision );
+    header.SetVersion(version, revision);
     bytesUsed += header.Size();
     
     // set up the encryption and grouping IDs
     
     // ...
     
-    while ( cur )
+    while (cur)
     {
-      if ( cur->frame )
+      if (cur->frame)
       {
         cur->frame->compression = compression;
-        cur->frame->SetVersion ( version, revision );
-        bytesUsed += cur->frame->Render ( &buffer[ bytesUsed ] );
+        cur->frame->SetVersion(version, revision);
+        bytesUsed += cur->frame->Render(&buffer[bytesUsed]);
       }
       
       cur = cur->next;
     }
     
-    if ( syncOn )
+    if (syncOn)
     {
       uchar *tempz;
       luint newTagSize;
       
-      newTagSize = GetUnSyncSize ( &buffer[ header.Size() ], bytesUsed - header.Size() );
+      newTagSize = GetUnSyncSize(&buffer[header.Size()], 
+                                 bytesUsed - header.Size());
       
-      if ( newTagSize > 0 && ( newTagSize + header.Size() ) > bytesUsed )
+      if (newTagSize > 0 && (newTagSize + header.Size()) > bytesUsed)
       {
-        if ( tempz = new uchar[ newTagSize ] )
+        if (tempz = new uchar[newTagSize])
         {
-          UnSync ( tempz, newTagSize, &buffer[ header.Size() ], bytesUsed - header.Size() );
-          header.SetFlags ( ID3HF_UNSYNC );
+          UnSync(tempz, newTagSize, &buffer[header.Size()],
+                 bytesUsed - header.Size());
+          header.SetFlags(ID3HF_UNSYNC);
           
-          memcpy ( &buffer[ header.Size() ], tempz, newTagSize );
+          memcpy(&buffer[header.Size()], tempz, newTagSize);
           bytesUsed = newTagSize + header.Size();
           delete[] tempz;
         }
         else
-          ID3_THROW ( ID3E_NoMemory );
+          ID3_THROW(ID3E_NoMemory);
       }
     }
     
-    // zero the remainder of the buffer so that our
-    // padding bytes are zero
-    for ( luint i = 0; i < PaddingSize ( bytesUsed ); i++ )
-      buffer[ bytesUsed + i ] = 0;
+    // zero the remainder of the buffer so that our padding bytes are zero
+    for (luint i = 0; i < PaddingSize(bytesUsed); i++)
+      buffer[bytesUsed + i] = 0;
       
-    bytesUsed += PaddingSize ( bytesUsed );
+    bytesUsed += PaddingSize(bytesUsed);
     
-    header.SetDataSize ( bytesUsed - header.Size() );
-    header.Render ( buffer );
+    header.SetDataSize(bytesUsed - header.Size());
+    header.Render(buffer);
   }
   else
-    ID3_THROW ( ID3E_NoBuffer );
+    ID3_THROW(ID3E_NoBuffer);
     
   // set the flag which says that the tag hasn't changed
   hasChanged = false;
@@ -93,20 +93,20 @@ luint ID3_Tag::Render ( uchar *buffer )
 }
 
 
-luint ID3_Tag::Size ( void )
+luint ID3_Tag::Size(void)
 {
   luint bytesUsed = 0;
   ID3_Elem *cur = frameList;
   ID3_TagHeader header;
   
-  header.SetVersion ( version, revision );
+  header.SetVersion(version, revision);
   bytesUsed += header.Size();
   
-  while ( cur )
+  while (cur)
   {
-    if ( cur->frame )
+    if (cur->frame)
     {
-      cur->frame->SetVersion ( version, revision );
+      cur->frame->SetVersion(version, revision);
       bytesUsed += cur->frame->Size();
     }
     
@@ -114,97 +114,93 @@ luint ID3_Tag::Size ( void )
   }
   
   // add 30% for sync
-  if ( syncOn )
+  if (syncOn)
     bytesUsed += bytesUsed / 3;
     
-  bytesUsed += PaddingSize ( bytesUsed );
+  bytesUsed += PaddingSize(bytesUsed);
   
   return bytesUsed;
 }
 
 
-void ID3_Tag::RenderExtHeader ( uchar *buffer )
+void ID3_Tag::RenderExtHeader(uchar *buffer)
 {
   luint bytesUsed = 0;
   
-  if ( version == 3 && revision == 0 )
+  if (version == 3 && revision == 0)
   {}
-  
   
   return ;
 }
 
 
-void ID3_Tag::GenerateTempName ( void )
+void ID3_Tag::GenerateTempName(void)
 {
   strcpy(tempName, fileName);
   strcat(tempName, "XXXXXX");
   mkstemp(tempName);
-  //tmpnam ( tempName );
+  //tmpnam(tempName);
   
   return ;
 }
 
 
-void ID3_Tag::RenderToHandle ( void )
+void ID3_Tag::RenderToHandle(void)
 {
   uchar *buffer;
   luint size;
   
-  if ( fileHandle )
+  if (fileHandle)
   {
-    if ( size = Size() )
+    if (size = Size())
     {
-      if ( buffer = new uchar[ size ] )
+      if (buffer = new uchar[size])
       {
-        if ( size = Render ( buffer ) )
+        if (size = Render(buffer))
         {
-          // if the new tag fits perfectly within the old
-          // and the old one actually existed (ie this isn't the first tag
-          // this file has had)
-          if ( ( oldTagSize == 0 && fileSize == 0 ) || ( size == oldTagSize && size != 0 ) )
+          // if the new tag fits perfectly within the old and the old one
+          // actually existed (ie this isn't the first tag this file has had)
+          if ((oldTagSize == 0 && fileSize == 0) || 
+              (size == oldTagSize && size != 0))
           {
-            fseek ( fileHandle, 0, SEEK_SET );
-            fwrite ( buffer, 1, size, fileHandle );
+            fseek(fileHandle, 0, SEEK_SET);
+            fwrite(buffer, 1, size, fileHandle);
             oldTagSize = size;
           }
           else
           {
-            // else we gotta make a temp file,
-            // copy the tag into it, copy the
-            // rest of the old file after the tag,
-            // delete the old file, rename this
-            // new file to the old file's name
-            // and update the fileHandle
+            // else we gotta make a temp file, copy the tag into it, copy the
+            // rest of the old file after the tag, delete the old file, rename
+            // this new file to the old file's name and update the fileHandle
             FILE *tempOut;
             
-            if ( strlen ( tempName ) > 0 )
+            if (strlen(tempName) > 0)
             {
-              if ( tempOut = fopen ( tempName, "wb" ) )
+              if (tempOut = fopen(tempName, "wb"))
               {
                 uchar * buffer2;
                 
-                fwrite ( buffer, 1, size, tempOut );
+                fwrite(buffer, 1, size, tempOut);
                 
-                fseek ( fileHandle, oldTagSize, SEEK_SET );
+                fseek(fileHandle, oldTagSize, SEEK_SET);
                 
-                if ( buffer2 = new uchar [ BUFF_SIZE ] )
+                if (buffer2 = new uchar [BUFF_SIZE])
                 {
                   int i;
                   
-                  while ( ! feof ( fileHandle ) )
+                  while (! feof(fileHandle))
                   {
-                    i = fread ( buffer2, 1, BUFF_SIZE, fileHandle );
-                    fwrite ( buffer2, 1, i, tempOut );
+                    i = fread(buffer2, 1, BUFF_SIZE, fileHandle);
+                    fwrite(buffer2, 1, i, tempOut);
                   }
                   
                   delete[] buffer2;
                 }
                 
-                fclose ( tempOut );
-                fclose ( fileHandle );
-                remove ( fileName );
-                rename ( tempName, fileName );
+                fclose(tempOut);
+                fclose(fileHandle);
+                remove(fileName);
+                rename(tempName, fileName);
                 OpenLinkedFile();
                 
                 oldTagSize = size;
@@ -216,47 +212,44 @@ void ID3_Tag::RenderToHandle ( void )
         delete[] buffer;
       }
       else
-        ID3_THROW ( ID3E_NoMemory );
+        ID3_THROW(ID3E_NoMemory);
     }
   }
   else
-    ID3_THROW ( ID3E_NoData );
+    ID3_THROW(ID3E_NoData);
     
   return ;
 }
 
 
-#define ID3_PADMULTIPLE  ( 2048 )
-#define ID3_PADMAX   ( 4096 )
+#define ID3_PADMULTIPLE (2048)
+#define ID3_PADMAX  (4096)
 
 
-luint ID3_Tag::PaddingSize ( luint curSize )
+luint ID3_Tag::PaddingSize(luint curSize)
 {
   luint newSize = 0;
   
   // if padding is switched off or there is no attached file
-  if ( ! padding || fileSize == 0 )
+  if (! padding || fileSize == 0)
     return 0;
     
-  // if the old tag was large enough to hold the new tag, then
-  // we will simply pad out the difference - that way the new
-  // tag can be written without shuffling the rest of the song
-  // file around
-  if ( oldTagSize && ( oldTagSize > curSize ) && ( curSize - oldTagSize ) < ID3_PADMAX )
+  // if the old tag was large enough to hold the new tag, then we will simply
+  // pad out the difference - that way the new tag can be written without
+  // shuffling the rest of the song file around
+  if (oldTagSize && (oldTagSize > curSize) && 
+      (curSize - oldTagSize) < ID3_PADMAX)
     newSize = oldTagSize;
   else
   {
     luint tempSize = curSize + fileSize;
     
-    // this method of automatic padding
-    // rounds the COMPLETE FILE up to the
-    // nearest 2K.  If the file will already be an
-    // even multiple of 2K (with the tag included)
-    // then we just add another 2K of padding
-    tempSize = ( ( tempSize / ID3_PADMULTIPLE ) + 1 ) * ID3_PADMULTIPLE;
+    // this method of automatic padding rounds the COMPLETE FILE up to the
+    // nearest 2K.  If the file will already be an even multiple of 2K (with
+    // the tag included) then we just add another 2K of padding
+    tempSize = ((tempSize / ID3_PADMULTIPLE) + 1) * ID3_PADMULTIPLE;
     
-    // the size of the new tag is the new filesize
-    // minus the song size
+    // the size of the new tag is the new filesize minus the song size
     newSize = tempSize - fileSize;
   }
   

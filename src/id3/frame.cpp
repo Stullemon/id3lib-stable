@@ -12,57 +12,55 @@
 //
 //  Mon Nov 23 18:34:01 1998
 
-
 #include <string.h>
 #include <id3/tag.h>
 
-
-ID3_Frame::ID3_Frame	( ID3_FrameID id )
+ID3_Frame::ID3_Frame(ID3_FrameID id)
 {
-  luint	lwordsForFields	= 0;
+  luint lwordsForFields = 0;
   
-  version	= ID3_TAGVERSION;
-  revision	= ID3_TAGREVISION;
-  numFields	= 0;
-  fields	= NULL;
-  groupingID[ 0 ]	= 0;
-  encryptionID[ 0 ]	= 0;
-  compression	= true;
+  version = ID3_TAGVERSION;
+  revision = ID3_TAGREVISION;
+  numFields = 0;
+  fields = NULL;
+  groupingID[0] = 0;
+  encryptionID[0] = 0;
+  compression = true;
   
-  lwordsForFields = ( ( (luint) ID3FN_LASTFIELDID ) - 1 ) / ( sizeof ( luint ) * 8 );
+  lwordsForFields =(((luint) ID3FN_LASTFIELDID) - 1) / (sizeof(luint) * 8);
   
-  if ( ( ( (luint) ID3FN_LASTFIELDID ) - 1 ) % ( sizeof ( luint ) * 8 ) != 0 )
+  if ((((luint) ID3FN_LASTFIELDID) - 1) %(sizeof(luint) * 8) != 0)
     lwordsForFields++;
     
-  if ( fieldBits = new luint[ lwordsForFields ] )
+  if (fieldBits = new luint[lwordsForFields])
   {
-    for ( luint i = 0; i < lwordsForFields; i++ )
-      fieldBits[ i ] = 0;
+    for (luint i = 0; i < lwordsForFields; i++)
+      fieldBits[i] = 0;
   }
   else
-    ID3_THROW ( ID3E_NoMemory );
+    ID3_THROW(ID3E_NoMemory);
     
-  SetID ( id );
+  SetID(id);
 }
 
 
-ID3_Frame::~ID3_Frame	( void )
+ID3_Frame::~ID3_Frame(void)
 {
   Clear();
   
-  if ( fieldBits )
-    delete[] fieldBits;
+  if (fieldBits)
+    delete [] fieldBits;
 }
 
 
-void	ID3_Frame::Clear	( void )
+void ID3_Frame::Clear(void)
 {
-  if ( numFields && fields )
+  if (numFields && fields)
   {
-    for ( luint i = 0; i < numFields; i++ )
-      delete fields[ i ];
+    for (luint i = 0; i < numFields; i++)
+      delete fields[i];
       
-    delete[] fields;
+    delete [] fields;
     
     fields = NULL;
     numFields = 0;
@@ -73,43 +71,43 @@ void	ID3_Frame::Clear	( void )
 }
 
 
-void	ID3_Frame::SetID	( ID3_FrameID id )
+void ID3_Frame::SetID(ID3_FrameID id)
 {
-  ID3_FrameDef	*info;
+  ID3_FrameDef *info;
   
   Clear();
   
-  if ( id != ID3FID_NOFRAME )
+  if (id != ID3FID_NOFRAME)
   {
-    if ( info = ID3_FindFrameDef ( id ) )
+    if (info = ID3_FindFrameDef(id))
     {
       frameID = id;
       
-      numFields	= 0;
+      numFields = 0;
       
-      while ( info->fieldDefs[ numFields ].id != ID3FN_NOFIELD )
+      while(info->fieldDefs[numFields].id != ID3FN_NOFIELD)
         numFields++;
         
-      if ( ( fields = new ID3_Field * [ numFields ] ) == NULL )
-        ID3_THROW ( ID3E_NoMemory );
+      if ((fields = new ID3_Field * [numFields]) == NULL)
+        ID3_THROW(ID3E_NoMemory);
       else
       {
-        for ( luint i = 0; i < numFields; i++ )
+        for (luint i = 0; i < numFields; i++)
         {
-          if ( ( fields[ i ] = new ID3_Field ) == NULL )
-            ID3_THROW ( ID3E_NoMemory );
+          if ((fields[i] = new ID3_Field) == NULL)
+            ID3_THROW(ID3E_NoMemory);
           else
           {
-            fields[ i ]->name	= info->fieldDefs[ i ].id;
-            fields[ i ]->type	= info->fieldDefs[ i ].type;
-            fields[ i ]->fixedLength	= info->fieldDefs[ i ].fixedLength;
-            fields[ i ]->ioVersion	= info->fieldDefs[ i ].version;
-            fields[ i ]->ioRevision	= info->fieldDefs[ i ].revision;
-            fields[ i ]->control	= info->fieldDefs[ i ].control;
-            fields[ i ]->flags	= info->fieldDefs[ i ].flags;
+            fields[i]->name        = info->fieldDefs[i].id;
+            fields[i]->type        = info->fieldDefs[i].type;
+            fields[i]->fixedLength = info->fieldDefs[i].fixedLength;
+            fields[i]->ioVersion   = info->fieldDefs[i].version;
+            fields[i]->ioRevision  = info->fieldDefs[i].revision;
+            fields[i]->control     = info->fieldDefs[i].control;
+            fields[i]->flags       = info->fieldDefs[i].flags;
             
             // tell the frame that this field is present
-            BS_SET ( fieldBits, fields[ i ]->name );
+            BS_SET(fieldBits, fields[i]->name);
           }
         }
         
@@ -117,85 +115,71 @@ void	ID3_Frame::SetID	( ID3_FrameID id )
       }
     }
     else
-      ID3_THROW ( ID3E_InvalidFrameID );
+      ID3_THROW(ID3E_InvalidFrameID);
   }
   
   return ;
 }
 
 
-ID3_FrameID	ID3_Frame::GetID	( void )
+ID3_FrameID ID3_Frame::GetID(void)
 {
   return frameID;
 }
 
 
-void	ID3_Frame::SetVersion	( uchar ver, uchar rev )
+void ID3_Frame::SetVersion(uchar ver, uchar rev)
 {
-  if ( version != ver || rev != rev )
+  if (version != ver || rev != rev)
     hasChanged = true;
     
-  version	= ver;
-  revision	= rev;
+  version = ver;
+  revision = rev;
   
   return ;
 }
 
-
-lsint	ID3_Frame::FindField	( ID3_FieldID fieldName )
+lsint ID3_Frame::FindField(ID3_FieldID fieldName)
 {
-  lsint	num	= 0;
-  bool	done	= false;
   
-  if ( BS_ISSET ( fieldBits, fieldName ) )
+  if (BS_ISSET(fieldBits, fieldName))
   {
-    while ( ! done && num < (lsint) numFields )
-    {
-      if ( fields[ num ]->name == fieldName )
-        done = true;
-      else
-        num++;
-    }
+    for (lsint num = 0; num < (lsint) numFields; num++)
+      if (fields[num]->name == fieldName)
+        return num;
   }
-  
-  if ( ! done )
-    num = -1;
-    
-  return num;
+
+  return -1;
 }
 
-
-ID3_Field&	ID3_Frame::Field	( ID3_FieldID fieldName )
+ID3_Field& ID3_Frame::Field(ID3_FieldID fieldName)
 {
-  luint	fieldNum	= FindField ( fieldName );
+  luint fieldNum = FindField(fieldName);
   
-  if ( fieldNum == -1 )
-    ID3_THROW ( ID3E_FieldNotFound );
+  if (fieldNum == -1)
+    ID3_THROW(ID3E_FieldNotFound);
     
-  return *fields[ fieldNum ];
+  return *fields[fieldNum];
 }
 
-
-void	ID3_Frame::UpdateFieldDeps	( void )
+void ID3_Frame::UpdateFieldDeps(void)
 {
-  for ( luint i = 0; i < numFields; i++ )
+  for (luint i = 0; i < numFields; i++)
   {
-    if ( fields[ i ]->flags & ID3FF_ADJUSTEDBY )
+    if (fields[i]->flags & ID3FF_ADJUSTEDBY)
     {
-      switch ( fields[ i ]->type )
+      switch(fields[i]->type)
       {
-          case ID3FTY_BITFIELD:
-          {
-            luint	value	= 0;
-            
-            // now find the field on which this
-            // field is dependent and get a copy
-            // of the value of that field.
-            // then adjust the fixedLength of this
-            // field to that value / 8.
-          }
+        case ID3FTY_BITFIELD:
+        {
+          luint value = 0;
           
-          break;
+          // now find the field on which this field is dependent and get a
+          // copy of the value of that field.  then adjust the fixedLength of
+          // this field to that value / 8.
+        }
+        
+        break;
       }
     }
   }
@@ -204,33 +188,33 @@ void	ID3_Frame::UpdateFieldDeps	( void )
 }
 
 
-void	ID3_Frame::UpdateStringTypes	( void )
+void ID3_Frame::UpdateStringTypes(void)
 {
-  for ( luint i = 0; i < numFields; i++ )
+  for (luint i = 0; i < numFields; i++)
   {
-    if ( fields[ i ]->flags & ID3FF_ADJUSTENC )
+    if (fields[i]->flags & ID3FF_ADJUSTENC)
     {
-      ID3_TextEnc	enc;
-      ID3_FieldType	newType;
+      ID3_TextEnc enc;
+      ID3_FieldType newType;
       
-      enc = (ID3_TextEnc) Field ( ID3FN_TEXTENC ).Get();
+      enc = (ID3_TextEnc) Field(ID3FN_TEXTENC).Get();
       
-      switch ( enc )
+      switch(enc)
       {
-          case ID3TE_ASCII:
+        case ID3TE_ASCII:
           newType = ID3FTY_ASCIISTRING;
           break;
           
-          case ID3TE_UNICODE:
+        case ID3TE_UNICODE:
           newType = ID3FTY_UNICODESTRING;
           break;
           
-          default:
+        default:
           newType = ID3FTY_ASCIISTRING;
           break;
       }
       
-      fields[ i ]->type = newType;
+      fields[i]->type = newType;
     }
   }
   
@@ -238,48 +222,44 @@ void	ID3_Frame::UpdateStringTypes	( void )
 }
 
 
-luint	ID3_Frame::Size	( void )
+luint ID3_Frame::Size(void)
 {
-  luint	bytesUsed	= 0;
-  float	factor	= 1.0;
-  ID3_FrameHeader	header;
+  luint bytesUsed = 0;
+  float factor = 1.0;
+  ID3_FrameHeader header;
   
-  header.SetVersion ( version, revision );
+  header.SetVersion(version, revision);
   bytesUsed += header.Size();
   
-  if ( strlen ( encryptionID ) )
+  if (strlen(encryptionID))
     bytesUsed++;
     
-  if ( strlen ( groupingID ) )
+  if (strlen(groupingID))
     bytesUsed++;
     
-  // this call is to tell the string fields
-  // what they should be rendered/parsed as
-  // (ASCII or Unicode)
+  // this call is to tell the string fields what they should be rendered/parsed
+  // as (ASCII or Unicode)
   UpdateStringTypes();
   
-  for ( luint i = 0; i < numFields; i++ )
+  for (luint i = 0; i < numFields; i++)
   {
-    fields[ i ]->SetVersion ( version, revision );
-    bytesUsed += fields[ i ]->BinSize();
+    fields[i]->SetVersion(version, revision);
+    bytesUsed += fields[i]->BinSize();
   }
   
   return bytesUsed;
 }
 
 
-bool	ID3_Frame::HasChanged	( void )
+bool ID3_Frame::HasChanged(void)
 {
-  bool	changed	= hasChanged;
+  bool changed = hasChanged;
   
-  if ( ! changed )
+  if (! changed)
   {
-    for ( luint i = 0; i < numFields; i++ )
+    for (luint i = 0; i < numFields && !changed; i++)
     {
-      changed = fields[ i ]->HasChanged();
-      
-      if ( changed )
-        break;
+      changed = fields[i]->HasChanged();
     }
   }
   

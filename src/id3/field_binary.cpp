@@ -18,16 +18,16 @@
 #include <id3/field.h>
 
 
-void	ID3_Field::Set	( uchar *newData, luint newSize )
+void ID3_Field::Set(uchar *newData, luint newSize)
 {
   Clear();
   
-  if ( newSize )
+  if (newSize)
   {
-    if ( ! ( data = new uchar[ newSize ] ) )
-      ID3_THROW ( ID3E_NoMemory );
+    if (!(data = new uchar[newSize]))
+      ID3_THROW(ID3E_NoMemory);
       
-    memcpy ( data, newData, newSize );
+    memcpy(data, newData, newSize);
     size = newSize;
     
     type = ID3FTY_BINARY;
@@ -38,66 +38,66 @@ void	ID3_Field::Set	( uchar *newData, luint newSize )
 }
 
 
-void	ID3_Field::Get	( uchar *buffer, luint buffLength )
+void ID3_Field::Get(uchar *buffer, luint buffLength)
 {
-  if ( ! buffer )
-    ID3_THROW ( ID3E_NoBuffer );
+  if (! buffer)
+    ID3_THROW(ID3E_NoBuffer);
     
-  if ( data && size )
+  if (data && size)
   {
-    luint	actualBytes	= MIN ( buffLength, size );
+    luint actualBytes = MIN(buffLength, size);
     
-    memcpy ( buffer, data, actualBytes );
+    memcpy(buffer, data, actualBytes);
   }
   
   return ;
 }
 
 
-void	ID3_Field::FromFile	( char *info )
+void ID3_Field::FromFile(char *info)
 {
-  FILE	*temp;
-  luint	fileSize;
-  uchar	*buffer;
+  FILE *temp;
+  luint fileSize;
+  uchar *buffer;
   
-  if ( ! info )
-    ID3_THROW ( ID3E_NoData );
+  if (! info)
+    ID3_THROW(ID3E_NoData);
     
   if ((temp = fopen(info, "rb")))
   {
-    fseek ( temp, 0, SEEK_END );
-    fileSize = ftell ( temp );
-    fseek ( temp, 0, SEEK_SET );
+    fseek(temp, 0, SEEK_END);
+    fileSize = ftell(temp);
+    fseek(temp, 0, SEEK_SET);
     
-    if ( buffer = new uchar[ fileSize ] )
+    if (buffer = new uchar[fileSize])
     {
-      fread ( buffer, 1, fileSize, temp );
+      fread(buffer, 1, fileSize, temp);
       
-      Set ( buffer, fileSize );
+      Set(buffer, fileSize);
       
-      delete[] buffer;
+      delete [] buffer;
     }
     
-    fclose ( temp );
+    fclose(temp);
   }
   
   return ;
 }
 
 
-void	ID3_Field::ToFile	( char *info )
+void ID3_Field::ToFile(char *info)
 {
-  if ( ! info )
-    ID3_THROW ( ID3E_NoData );
+  if (! info)
+    ID3_THROW(ID3E_NoData);
     
-  if ( ( data != NULL ) && ( size > 0 ) )
+  if ((data != NULL) &&(size > 0))
   {
-    FILE	*temp;
+    FILE *temp;
     
-    if ( temp = fopen ( info, "wb" ) )
+    if (temp = fopen(info, "wb"))
     {
-      fwrite ( data, 1, size, temp );
-      fclose ( temp );
+      fwrite(data, 1, size, temp);
+      fclose(temp);
     }
   }
   
@@ -105,16 +105,16 @@ void	ID3_Field::ToFile	( char *info )
 }
 
 
-luint	ID3_Field::ParseBinary	( uchar *buffer, luint posn, luint buffSize )
+luint ID3_Field::ParseBinary(uchar *buffer, luint posn, luint buffSize)
 {
-  luint	bytesUsed	= 0;
+  luint bytesUsed = 0;
   
   bytesUsed = buffSize - posn;
   
-  if ( fixedLength != -1 )
-    bytesUsed = MIN ( fixedLength, bytesUsed );
+  if (fixedLength != -1)
+    bytesUsed = MIN(fixedLength, bytesUsed);
     
-  Set ( &buffer[ posn ], bytesUsed );
+  Set(&buffer[posn], bytesUsed);
   
   hasChanged = false;
   
@@ -122,12 +122,12 @@ luint	ID3_Field::ParseBinary	( uchar *buffer, luint posn, luint buffSize )
 }
 
 
-luint	ID3_Field::RenderBinary	( uchar *buffer )
+luint ID3_Field::RenderBinary(uchar *buffer)
 {
-  luint	bytesUsed	= 0;
+  luint bytesUsed = 0;
   
   bytesUsed = BinSize();
-  memcpy ( buffer, (uchar *) data, bytesUsed );
+  memcpy(buffer, (uchar *) data, bytesUsed);
   
   hasChanged = false;
   

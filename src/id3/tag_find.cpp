@@ -12,20 +12,18 @@
 //
 //  Mon Nov 23 18:34:01 1998
 
-
 #include <id3/tag.h>
 #include <id3/misc_support.h>
 
-
-ID3_Elem	*ID3_Tag::Find	( ID3_Frame *frame )
+ID3_Elem *ID3_Tag::Find(ID3_Frame *frame)
 {
-  ID3_Elem	*elem	= NULL;
-  ID3_Elem	*cur	= frameList;
-  bool	done	= false;
+  ID3_Elem *elem = NULL;
+  ID3_Elem *cur = frameList;
+  bool done = false;
   
-  while ( ! done && cur )
+  while (! done && cur)
   {
-    if ( cur->frame == frame )
+    if (cur->frame == frame)
     {
       elem = cur;
       done = true;
@@ -37,23 +35,22 @@ ID3_Elem	*ID3_Tag::Find	( ID3_Frame *frame )
   return elem;
 }
 
-
-ID3_Frame	*ID3_Tag::Find	( ID3_FrameID id )
+ID3_Frame *ID3_Tag::Find(ID3_FrameID id)
 {
-  ID3_Frame	*frame	= NULL;
-  ID3_Elem	*cur	= findCursor;
-  bool	done	= false;
+  ID3_Frame *frame = NULL;
+  ID3_Elem *cur = findCursor;
+  bool done = false;
   
-  if ( cur == NULL )
+  if (cur == NULL)
     findCursor = cur = frameList;
     
-  while ( ! done && cur )
+  while (! done && cur)
   {
-    if ( cur->frame && ( cur->frame->GetID() == id ) )
+    if (cur->frame && (cur->frame->GetID() == id))
     {
       frame = cur->frame;
       
-      if ( frame )
+      if (frame)
       {
         findCursor = cur->next;
         done = true;
@@ -62,27 +59,26 @@ ID3_Frame	*ID3_Tag::Find	( ID3_FrameID id )
     else
       cur = cur->next;
       
-    if ( cur == NULL )
+    if (cur == NULL)
       cur = frameList;
       
-    if ( cur == findCursor )
+    if (cur == findCursor)
       done = true;
   }
   
   return frame;
 }
 
-
-ID3_Frame	*ID3_Tag::Find	( ID3_FrameID id, ID3_FieldID fld, char *data )
+ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, char *data)
 {
-  ID3_Frame	*frame	= NULL;
-  wchar_t	*temp;
+  ID3_Frame *frame = NULL;
+  wchar_t *temp;
   
-  if ( temp = new wchar_t[ strlen ( data ) + 1 ] )
+  if (temp = new wchar_t[strlen(data) + 1])
   {
-    ID3_ASCIItoUnicode ( temp, data, strlen ( data ) + 1 );
+    ID3_ASCIItoUnicode(temp, data, strlen(data) + 1);
     
-    frame = Find ( id, fld, temp );
+    frame = Find(id, fld, temp);
     
     delete[] temp;
   }
@@ -90,34 +86,33 @@ ID3_Frame	*ID3_Tag::Find	( ID3_FrameID id, ID3_FieldID fld, char *data )
   return frame;
 }
 
-
-ID3_Frame	*ID3_Tag::Find	( ID3_FrameID id, ID3_FieldID fld, wchar_t *data )
+ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, wchar_t *data)
 {
-  ID3_Frame	*frame	= NULL;
-  ID3_Elem	*cur	= findCursor;
-  bool	done	= false;
+  ID3_Frame *frame = NULL;
+  ID3_Elem *cur = findCursor;
+  bool done = false;
   
-  if ( cur == NULL )
+  if (cur == NULL)
     findCursor = cur = frameList;
     
-  while ( ! done && cur )
+  while (! done && cur)
   {
-    if ( cur->frame && ( cur->frame->GetID() == id ) )
+    if (cur->frame && (cur->frame->GetID() == id))
     {
       frame = cur->frame;
       
-      if ( data && wcslen ( data ) && BS_ISSET ( frame->fieldBits, fld ) )
+      if (data && wcslen(data) && BS_ISSET(frame->fieldBits, fld))
       {
-        wchar_t	*buffer;
-        luint	size;
+        wchar_t *buffer;
+        luint size;
         
-        size = frame->Field ( fld ).BinSize();
+        size = frame->Field(fld).BinSize();
         
-        if ( buffer = new wchar_t[ size ] )
+        if (buffer = new wchar_t[size])
         {
-          frame->Field ( fld ).Get ( buffer, size );
+          frame->Field(fld).Get(buffer, size);
           
-          if ( wcscmp ( buffer, data ) != 0 )
+          if (wcscmp(buffer, data) != 0)
           {
             frame = NULL;
             cur = cur->next;
@@ -127,7 +122,7 @@ ID3_Frame	*ID3_Tag::Find	( ID3_FrameID id, ID3_FieldID fld, wchar_t *data )
         }
       }
       
-      if ( frame )
+      if (frame)
       {
         findCursor = cur->next;
         break;
@@ -136,39 +131,38 @@ ID3_Frame	*ID3_Tag::Find	( ID3_FrameID id, ID3_FieldID fld, wchar_t *data )
     else
       cur = cur->next;
       
-    if ( cur == NULL )
+    if (cur == NULL)
       cur = frameList;
       
-    if ( cur == findCursor )
+    if (cur == findCursor)
       done = true;
   }
   
   return frame;
 }
 
-
-ID3_Frame	*ID3_Tag::Find	( ID3_FrameID id, ID3_FieldID fld, luint data )
+ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, luint data)
 {
-  ID3_Frame	*frame	= NULL;
-  ID3_Elem	*cur	= findCursor;
-  bool	done	= false;
+  ID3_Frame *frame = NULL;
+  ID3_Elem *cur = findCursor;
+  bool done = false;
   
-  if ( cur == NULL )
+  if (cur == NULL)
     findCursor = cur = frameList;
     
-  while ( ! done && cur )
+  while (! done && cur)
   {
-    if ( cur->frame && ( cur->frame->GetID() == id ) )
+    if (cur->frame && (cur->frame->GetID() == id))
     {
       frame = cur->frame;
       
-      if ( frame->Field ( fld ).Get() != data )
+      if (frame->Field(fld).Get() != data)
       {
         frame = NULL;
         cur = cur->next;
       }
       
-      if ( frame )
+      if (frame)
       {
         findCursor = cur->next;
         break;
@@ -177,27 +171,26 @@ ID3_Frame	*ID3_Tag::Find	( ID3_FrameID id, ID3_FieldID fld, luint data )
     else
       cur = cur->next;
       
-    if ( cur == NULL )
+    if (cur == NULL)
       cur = frameList;
       
-    if ( cur == findCursor )
+    if (cur == findCursor)
       done = true;
   }
   
   return frame;
 }
 
-
-ID3_Frame	*ID3_Tag::GetFrameNum	( luint num )
+ID3_Frame *ID3_Tag::GetFrameNum(luint num)
 {
-  ID3_Frame	*frame	= NULL;
-  ID3_Elem	*cur	= frameList;
-  bool	done	= false;
-  luint	curNum	= 0;
+  ID3_Frame *frame = NULL;
+  ID3_Elem *cur = frameList;
+  bool done = false;
+  luint curNum = 0;
   
-  while ( cur && ! done )
+  while (cur && ! done)
   {
-    if ( num == curNum )
+    if (num == curNum)
     {
       frame = cur->frame;
       done = true;
@@ -212,10 +205,7 @@ ID3_Frame	*ID3_Tag::GetFrameNum	( luint num )
   return frame;
 }
 
-
-ID3_Frame	*ID3_Tag::operator[]	( luint num )
+ID3_Frame *ID3_Tag::operator[](luint num)
 {
-  return GetFrameNum ( num );
+  return GetFrameNum(num);
 }
-
-

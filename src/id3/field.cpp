@@ -542,32 +542,32 @@ ID3_Field::BinSize(bool withExtras)
     {
       if (! data && size)
       {
-	bytes = (flags & ID3FF_NULL) ? 2 : 0;
+        bytes = (flags & ID3FF_NULL) ? 2 : 0;
       }
       
-      // if we are a Unicode string, add 2 bytes for the BOM (but
-      // only if there is a string to render - regardless of NULL)
+      // if we are a Unicode string, add 2 bytes for the BOM (but only if there
+      // is a string to render - regardless of NULL)
       if (type == ID3FTY_UNICODESTRING && data && size)
-	bytes += 2;
+        bytes += 2;
         
-      // if we are an ASCII string, divide by sizeof ( wchar_t )
-      // because internally we store the string as Unicode, so
-      // the ASCII version will only be half as long
+      // if we are an ASCII string, divide by sizeof ( wchar_t ) because
+      // internally we store the string as Unicode, so the ASCII version will
+      // only be half as long
       if (type == ID3FTY_ASCIISTRING)
-	bytes /= sizeof (wchar_t);
+        bytes /= sizeof (wchar_t);
     }
     else
     {
       // because it seems that the application called us via ID3_Field::Size()
-      // we are going to return the number of characters, not bytes, so if
-      // the string is Unicode, we will half the 'bytes' variable because
-      // Unicode strings have twice as many bytes as they do characters
+      // we are going to return the number of characters, not bytes, so if the
+      // string is Unicode, we will half the 'bytes' variable because Unicode
+      // strings have twice as many bytes as they do characters
       if (type == ID3FTY_UNICODESTRING)
-	bytes /= sizeof (wchar_t);
+        bytes /= sizeof (wchar_t);
     }
     
-    // check to see if we are within the legal limit for this field
-    // -1 means arbitrary length field
+    // check to see if we are within the legal limit for this field -1 means
+    // arbitrary length field
     if (fixedLength != -1)
       bytes = fixedLength;
   }
@@ -587,24 +587,24 @@ ID3_Field::Parse(uchar *buffer, luint posn, luint buffSize)
     switch (type)
     {
       case ID3FTY_INTEGER:
-	bytesUsed = ParseInteger(buffer, posn, buffSize);
-	break;
+        bytesUsed = ParseInteger(buffer, posn, buffSize);
+        break;
         
       case ID3FTY_BINARY:
-	bytesUsed = ParseBinary( buffer, posn, buffSize);
-	break;
+        bytesUsed = ParseBinary( buffer, posn, buffSize);
+        break;
         
       case ID3FTY_ASCIISTRING:
-	bytesUsed = ParseASCIIString(buffer, posn, buffSize);
-	break;
+        bytesUsed = ParseASCIIString(buffer, posn, buffSize);
+        break;
         
       case ID3FTY_UNICODESTRING:
-	bytesUsed = ParseUnicodeString(buffer, posn, buffSize);
-	break;
+        bytesUsed = ParseUnicodeString(buffer, posn, buffSize);
+        break;
         
       default:
-	ID3_THROW(ID3E_UnknownFieldType);
-	break;
+        ID3_THROW(ID3E_UnknownFieldType);
+        break;
     }
   }
   
@@ -636,9 +636,9 @@ ID3_FindFrameID(char *id)
   for (luint cur = 0; ID3_FrameDefs[cur].id != ID3FID_NOFRAME; cur++)
   {
     if (((strcmp(ID3_FrameDefs[cur].shortTextID, id) == 0) &&
-	 strlen(id) == 3) ||
-	((strcmp(ID3_FrameDefs[cur].longTextID,  id) == 0) &&
-	 strlen(id) == 4))
+         strlen(id) == 3) ||
+        ((strcmp(ID3_FrameDefs[cur].longTextID,  id) == 0) &&
+         strlen(id) == 4))
     {
       fid = ID3_FrameDefs[cur].id;
       break;
@@ -660,24 +660,24 @@ ID3_Field::Render(uchar *buffer)
     switch ( type ) 
     {
       case ID3FTY_INTEGER:
-	bytesUsed = RenderInteger ( buffer );
-	break;
+        bytesUsed = RenderInteger ( buffer );
+        break;
         
       case ID3FTY_BINARY:
-	bytesUsed = RenderBinary ( buffer );
-	break;
+        bytesUsed = RenderBinary ( buffer );
+        break;
         
       case ID3FTY_ASCIISTRING:
-	bytesUsed = RenderASCIIString ( buffer );
-	break;
+        bytesUsed = RenderASCIIString ( buffer );
+        break;
         
       case ID3FTY_UNICODESTRING:
-	bytesUsed = RenderUnicodeString ( buffer );
-	break;
+        bytesUsed = RenderUnicodeString ( buffer );
+        break;
         
       default:
-	ID3_THROW ( ID3E_UnknownFieldType );
-	break;
+        ID3_THROW ( ID3E_UnknownFieldType );
+        break;
     }
     
   return bytesUsed;

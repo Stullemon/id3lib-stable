@@ -12,104 +12,99 @@
 //
 //  Mon Nov 23 18:34:01 1998
 
-
 #include <stdio.h>
 #include <string.h>
 #include <memory.h>
 #include <id3/tag.h>
 #include <zlib.h>
 
-
-ID3_Elem *ID3_Tag::GetLastElem ( ID3_Elem *list )
+ID3_Elem *ID3_Tag::GetLastElem(ID3_Elem *list)
 {
   ID3_Elem *last;
   
   last = list;
   
-  while ( last && last->next )
+  while (last && last->next)
     last = last->next;
     
   return last;
 }
 
-
-
-void ID3_Tag::AddBinary ( uchar *buffer, luint size )
+void ID3_Tag::AddBinary(uchar *buffer, luint size)
 {
   uchar *newBin;
   
-  if ( size > 0 )
+  if (size > 0)
   {
-    if ( newBin = new uchar[ size ] )
+    if (newBin = new uchar[size])
     {
       ID3_Elem * elem, *lastElem;
       
-      memcpy ( newBin, buffer, size );
+      memcpy(newBin, buffer, size);
       
-      if ( elem = new ID3_Elem )
+      if (elem = new ID3_Elem)
       {
         elem->next = NULL;
         elem->frame = NULL;
         elem->binary = newBin;
         elem->tagOwns = true;
         
-        lastElem = GetLastElem ( binaryList );
+        lastElem = GetLastElem(binaryList);
         
-        if ( lastElem )
+        if (lastElem)
           lastElem->next = elem;
         else
           binaryList = elem;
       }
       else
-        ID3_THROW ( ID3E_NoMemory );
+        ID3_THROW(ID3E_NoMemory);
     }
     else
-      ID3_THROW ( ID3E_NoMemory );
+      ID3_THROW(ID3E_NoMemory);
   }
   else
-    ID3_THROW ( ID3E_NoData );
+    ID3_THROW(ID3E_NoData);
     
   return ;
 }
 
-
-void ID3_Tag::ExpandBinaries ( uchar *buffer, luint size )
+void ID3_Tag::ExpandBinaries(uchar *buffer, luint size)
 {
   ID3_FrameAttr attr;
   ID3_FrameHeader frHeader;
   luint posn = 0;
   
-  while ( posn < ( size - 6 ) && buffer[ posn ] != 0 )
+  while (posn <(size - 6) && buffer[posn] != 0)
   {
     luint newBinSize;
     
-    frHeader.SetVersion ( version, revision );
+    frHeader.SetVersion(version, revision);
     
-    posn += frHeader.GetFrameInfo ( attr, &buffer[ posn ] );
+    posn += frHeader.GetFrameInfo(attr, &buffer[posn]);
     newBinSize = frHeader.Size() + attr.size;
     
-    // firstly, let's check to see if we are parsing a CDM.  If so,
-    // let's expanded it out now.
-    if ( strcmp ( attr.textID, "CDM" ) == 0 )
+    // firstly, let's check to see if we are parsing a CDM.  If so, let's
+    // expanded it out now.
+    if (strcmp(attr.textID, "CDM") == 0)
     {
       // if the method was zlib
-      if ( buffer[ posn ] == 'z' )
+      if (buffer[posn] == 'z')
       {
         luint expandedSize = 0;
         uchar *expBin;
         
-        expandedSize |= buffer[ posn + 1 ] << 24;
-        expandedSize |= buffer[ posn + 2 ] << 16;
-        expandedSize |= buffer[ posn + 3 ] << 8;
-        expandedSize |= buffer[ posn + 4 ];
+        expandedSize |= buffer[posn + 1] << 24;
+        expandedSize |= buffer[posn + 2] << 16;
+        expandedSize |= buffer[posn + 3] << 8;
+        expandedSize |= buffer[posn + 4];
         
-        if ( expBin = new uchar[ expandedSize ] )
+        if (expBin = new uchar[expandedSize])
         {
-          uncompress ( expBin, &expandedSize, 
-                       &buffer[ posn + 1 + sizeof ( luint ) ], 
-                       attr.size - sizeof ( luint ) - 1 );
+          uncompress(expBin, &expandedSize, 
+                       &buffer[posn + 1 + sizeof(luint)], 
+                       attr.size - sizeof(luint) - 1);
           
-          ExpandBinaries ( expBin, expandedSize );
+          ExpandBinaries(expBin, expandedSize);
           
           posn += attr.size;
           
@@ -119,7 +114,7 @@ void ID3_Tag::ExpandBinaries ( uchar *buffer, luint size )
     }
     else
     {
-      AddBinary ( &buffer[ posn - frHeader.Size() ], attr.size + frHeader.Size() );
+      AddBinary(&buffer[posn - frHeader.Size()], attr.size + frHeader.Size());
       posn += attr.size;
     }
   }
@@ -127,16 +122,15 @@ void ID3_Tag::ExpandBinaries ( uchar *buffer, luint size )
   return ;
 }
 
-
-void ID3_Tag::ProcessBinaries ( ID3_FrameID whichFrame, bool attach )
+void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
 {
   ID3_FrameAttr attr;
   ID3_FrameHeader frHeader;
   ID3_Elem *cur = binaryList;
   
-  frHeader.SetVersion ( version, revision );
+  frHeader.SetVersion(version, revision);
   
-  while ( cur && cur->binary )
+  while (cur && cur->binary)
   {
     ID3_FrameID id;
     ID3_Frame *frame;
@@ -146,89 +140,89 @@ void ID3_Tag::ProcessBinaries ( ID3_FrameID whichFrame, bool attach )
     uchar groupingID = 0;
     uchar encryptionID = 0;
     
-    posn = frHeader.GetFrameInfo ( attr, cur->binary );
+    posn = frHeader.GetFrameInfo(attr, cur->binary);
     
-    if ( attr.flags & ID3FL_COMPRESSION )
+    if (attr.flags & ID3FL_COMPRESSION)
     {
-      expandedSize |= cur->binary[ posn + 0 ] << 24;
-      expandedSize |= cur->binary[ posn + 1 ] << 16;
-      expandedSize |= cur->binary[ posn + 2 ] << 8;
-      expandedSize |= cur->binary[ posn + 3 ];
+      expandedSize |= cur->binary[posn + 0] << 24;
+      expandedSize |= cur->binary[posn + 1] << 16;
+      expandedSize |= cur->binary[posn + 2] << 8;
+      expandedSize |= cur->binary[posn + 3];
       
-      extras += sizeof ( luint );
+      extras += sizeof(luint);
     }
     
-    if ( attr.flags & ID3FL_ENCRYPTION )
+    if (attr.flags & ID3FL_ENCRYPTION)
     {
-      encryptionID = cur->binary[ posn ];
+      encryptionID = cur->binary[posn];
       posn++, extras++;
     }
     
-    if ( attr.flags & ID3FL_GROUPING )
+    if (attr.flags & ID3FL_GROUPING)
     {
-      groupingID = cur->binary[ posn ];
+      groupingID = cur->binary[posn];
       posn++, extras++;
     }
     
-    id = ID3_FindFrameID ( attr.textID );
+    id = ID3_FindFrameID(attr.textID);
     
-    if ( ( id == whichFrame || whichFrame == ID3FID_NOFRAME ) && id != ID3FID_NOFRAME )
+    if ((id == whichFrame || whichFrame == ID3FID_NOFRAME) &&
+        id != ID3FID_NOFRAME)
     {
       uchar *expBin;
       bool useExpBin = false;
       
-      if ( attr.flags & ID3FL_COMPRESSION )
+      if (attr.flags & ID3FL_COMPRESSION)
       {
-        if ( ! ( expBin = new uchar[ expandedSize ] ) )
-          ID3_THROW ( ID3E_NoMemory );
+        if (!(expBin = new uchar[expandedSize]))
+          ID3_THROW(ID3E_NoMemory);
           
-        uncompress ( expBin, &expandedSize, &cur->binary[ posn + sizeof ( luint ) ], attr.size - extras );
+        uncompress(expBin, &expandedSize, &cur->binary[posn + sizeof(luint)],
+                   attr.size - extras);
         useExpBin = true;
       }
       
-      if ( ! ( frame = new ID3_Frame ) )
-        ID3_THROW ( ID3E_NoMemory );
+      if (!(frame = new ID3_Frame))
+        ID3_THROW(ID3E_NoMemory);
         
       ID3_Elem *elem, *lastElem;
       
-      frame->SetID ( id );
+      frame->SetID(id);
       
-      if ( useExpBin )
+      if (useExpBin)
       {
-        frame->Parse ( expBin, expandedSize );
+        frame->Parse(expBin, expandedSize);
         delete[] expBin;
       }
       else
-        frame->Parse ( &cur->binary[ posn ], attr.size - extras );
+        frame->Parse(&cur->binary[posn], attr.size - extras);
         
-      // here is where we call a special handler
-      // for this frame type if one is specified
-      // in the frame definition
+      // here is where we call a special handler for this frame type if one is
+      // specified in the frame definition
       {
         ID3_FrameDef *frameInfo;
         
-        frameInfo = ID3_FindFrameDef ( id );
+        frameInfo = ID3_FindFrameDef(id);
         
-        if ( frameInfo && frameInfo->parseHandler )
-          attach = frameInfo->parseHandler ( frame );
+        if (frameInfo && frameInfo->parseHandler)
+          attach = frameInfo->parseHandler(frame);
       }
       
-      // if, after all is said and done, we
-      // are still supposed to attach our
+      // if, after all is said and done, we are still supposed to attach our
       // newly parsed frame to the tag, do so
-      if ( attach )
+      if (attach)
       {
-        if ( ! ( elem = new ID3_Elem ) )
-          ID3_THROW ( ID3E_NoMemory );
+        if (!(elem = new ID3_Elem))
+          ID3_THROW(ID3E_NoMemory);
           
         elem->next = NULL;
         elem->frame = frame;
         elem->binary = NULL;
         elem->tagOwns = true;
         
-        lastElem = GetLastElem ( frameList );
+        lastElem = GetLastElem(frameList);
         
-        if ( lastElem )
+        if (lastElem)
           lastElem->next = elem;
         else
           frameList = elem;
@@ -242,7 +236,7 @@ void ID3_Tag::ProcessBinaries ( ID3_FrameID whichFrame, bool attach )
       ID3_Elem *temp = cur;
       cur = cur->next;
       
-      RemoveFromList ( temp, &binaryList );
+      RemoveFromList(temp, &binaryList);
     }
     else
     {
@@ -254,11 +248,11 @@ void ID3_Tag::ProcessBinaries ( ID3_FrameID whichFrame, bool attach )
 }
 
 
-void ID3_Tag::Parse ( uchar header[ ID3_TAGHEADERSIZE ], uchar *buffer )
+void ID3_Tag::Parse(uchar header[ID3_TAGHEADERSIZE], uchar *buffer)
 {
   luint tagSize = 0;
   bool done = false;
-  int28 temp = &header[ 6 ];
+  int28 temp = &header[6];
   luint posn = 0;
   uchar prevVer = version;
   uchar prevRev = revision;
@@ -267,76 +261,64 @@ void ID3_Tag::Parse ( uchar header[ ID3_TAGHEADERSIZE ], uchar *buffer )
   
   tagSize = temp.get();
   
-  SetVersion ( header[ 3 ], header[ 4 ] );
+  SetVersion(header[3], header[4]);
   
-  if ( header[ 5 ] & ID3HF_UNSYNC )
-    tagSize = ReSync ( buffer, tagSize );
+  if (header[5] & ID3HF_UNSYNC)
+    tagSize = ReSync(buffer, tagSize);
     
-  // okay, if we are 2.01, then let's skip over the
-  // extended header for now because I am lazy
-  if ( version == 2 && revision == 1 )
-    if ( header[ 5 ] & ID3HF_EXTENDEDHEADER )
+  // okay, if we are 2.01, then let's skip over the extended header for now
+  // because I am lazy
+  if (version == 2 && revision == 1)
+    if (header[5] & ID3HF_EXTENDEDHEADER)
     {
       luint extSize = 0;
       
-      extSize |= buffer[ 0 ] << 24;
-      extSize |= buffer[ 1 ] << 16;
-      extSize |= buffer[ 2 ] << 8;
-      extSize |= buffer[ 3 ] << 0;
+      extSize |= buffer[0] << 24;
+      extSize |= buffer[1] << 16;
+      extSize |= buffer[2] << 8;
+      extSize |= buffer[3] << 0;
       
-      posn = extSize + sizeof ( luint );
+      posn = extSize + sizeof(luint);
     }
     
-  // okay, if we are 3.00, then let's actually
-  // parse the extended header (for now, we skip
-  // it because we are lazy)
-  if ( version == 3 && revision == 0 )
-    if ( header[ 5 ] & ID3HF_EXTENDEDHEADER )
+  // okay, if we are 3.00, then let's actually parse the extended header (for
+  // now, we skip it because we are lazy)
+  if (version == 3 && revision == 0)
+    if (header[5] & ID3HF_EXTENDEDHEADER)
     {
       luint extSize = 0;
       
-      extSize |= buffer[ 0 ] << 24;
-      extSize |= buffer[ 1 ] << 16;
-      extSize |= buffer[ 2 ] << 8;
-      extSize |= buffer[ 3 ] << 0;
+      extSize |= buffer[0] << 24;
+      extSize |= buffer[1] << 16;
+      extSize |= buffer[2] << 8;
+      extSize |= buffer[3] << 0;
       
-      posn = extSize + sizeof ( luint );
+      posn = extSize + sizeof(luint);
     }
     
-  // this call will convert the binary data block (tag)
-  // into a linked list of binary frames
-  ExpandBinaries ( &buffer[ posn ], tagSize );
+  // this call will convert the binary data block (tag) into a linked list of
+  // binary frames
+  ExpandBinaries(&buffer[posn], tagSize);
   
-  // let's parse the CRYPTO frames
-  // the 'false' parameter means "don't
-  // attach the frame to the tag when
-  // processed".  This is because we have
-  // installed a parsing handler for the
-  // crypto reg frame.  This is a default
-  // parameter - if the frame type has a
-  // custom parsing handler, that handler
-  // will tell ID3Lib whether to attach
-  // or not.
-  ProcessBinaries ( ID3FID_CRYPTOREG, false );
+  // let's parse the CRYPTO frames the 'false' parameter means "don't attach
+  // the frame to the tag when processed".  This is because we have installed a
+  // parsing handler for the crypto reg frame.  This is a default parameter -
+  // if the frame type has a custom parsing handler, that handler will tell
+  // ID3Lib whether to attach or not.
+  ProcessBinaries(ID3FID_CRYPTOREG, false);
   
-  // let's parse the GROUPING frames
-  // the 'false' parameter means "don't
-  // attach the frame to the tag when
-  // processed".  This is because we have
-  // installed a parsing handler for the
-  // crypto reg frame.  This is a default
-  // parameter - if the frame type has a
-  // custom parsing handler, that handler
-  // will tell ID3Lib whether to attach
-  // or not.
-  ProcessBinaries ( ID3FID_GROUPINGREG, false );
+  // let's parse the GROUPING frames the 'false' parameter means "don't attach
+  // the frame to the tag when processed".  This is because we have installed a
+  // parsing handler for the crypto reg frame.  This is a default parameter -
+  // if the frame type has a custom parsing handler, that handler will tell
+  // ID3Lib whether to attach or not.
+  ProcessBinaries(ID3FID_GROUPINGREG, false);
   
   // let's parse the rest of the binaries
   ProcessBinaries();
   
-  // reset the version parameters which
-  // were in effect before the parse
-  SetVersion ( prevVer, prevRev );
+  // reset the version parameters which were in effect before the parse
+  SetVersion(prevVer, prevRev);
   
   // set the flag which says that the tag hasn't changed
   hasChanged = false;
@@ -345,28 +327,28 @@ void ID3_Tag::Parse ( uchar header[ ID3_TAGHEADERSIZE ], uchar *buffer )
 }
 
 
-luint ID3_Tag::ParseFromHandle ( void )
+luint ID3_Tag::ParseFromHandle(void)
 {
   luint size = 0;
   
-  if ( fileHandle )
+  if (fileHandle)
   {
-    uchar header [ ID3_TAGHEADERSIZE ];
+    uchar header [ID3_TAGHEADERSIZE];
     lsint tagSize;
     
-    fseek ( fileHandle, 0, SEEK_SET );
+    fseek(fileHandle, 0, SEEK_SET);
     
-    if ( fread ( header, 1, sizeof ( header ), fileHandle ) )
+    if (fread(header, 1, sizeof(header), fileHandle))
     {
-      if ( ( tagSize = ID3_IsTagHeader ( header ) ) > 0 )
+      if ((tagSize = ID3_IsTagHeader(header)) > 0)
       {
         uchar * bin;
         
-        if ( bin = new uchar[ tagSize ] )
+        if (bin = new uchar[tagSize])
         {
-          fread ( bin, 1, tagSize, fileHandle );
+          fread(bin, 1, tagSize, fileHandle);
           
-          Parse ( header, bin );
+          Parse(header, bin);
           size = tagSize;
           
           delete[] bin;
@@ -378,7 +360,7 @@ luint ID3_Tag::ParseFromHandle ( void )
     ParseID3v1();
   }
   else
-    ID3_THROW ( ID3E_NoData );
+    ID3_THROW(ID3E_NoData);
     
   return size;
 }

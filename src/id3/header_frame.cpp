@@ -19,7 +19,7 @@
 #include <id3/error.h>
 
 
-void	ID3_FrameHeader::SetFrameID	( ID3_FrameID id )
+void ID3_FrameHeader::SetFrameID(ID3_FrameID id)
 {
   frameID = id;
   
@@ -27,33 +27,33 @@ void	ID3_FrameHeader::SetFrameID	( ID3_FrameID id )
 }
 
 
-luint	ID3_FrameHeader::Size	( void )
+luint ID3_FrameHeader::Size(void)
 {
   return info->frameIDBytes + info->frameSizeBytes + info->frameFlagsBytes;
 }
 
 
-luint	ID3_FrameHeader::GetFrameInfo	( ID3_FrameAttr &attr, uchar *buffer )
+luint ID3_FrameHeader::GetFrameInfo(ID3_FrameAttr &attr, uchar *buffer)
 {
-  luint	posn	= 0;
-  luint	i	= 0;
+  luint posn = 0;
+  luint i = 0;
   
-  strncpy ( attr.textID, (char *) buffer, info->frameIDBytes );
-  attr.textID[ info->frameIDBytes ] = 0;
+  strncpy(attr.textID, (char *) buffer, info->frameIDBytes);
+  attr.textID[info->frameIDBytes] = 0;
   
   posn += info->frameIDBytes;
   
   attr.size = 0;
   
-  for ( i = 0; i < info->frameSizeBytes; i++ )
-    attr.size |= buffer[ posn + i ] << ( ( info->frameSizeBytes - 1 - i ) * 8 );
+  for(i = 0; i < info->frameSizeBytes; i++)
+    attr.size |= buffer[posn + i] << ((info->frameSizeBytes - 1 - i) * 8);
     
   posn += info->frameSizeBytes;
   
   attr.flags = 0;
   
-  for ( i = 0; i < info->frameFlagsBytes; i++ )
-    attr.flags |= buffer[ posn + i ] << ( ( info->frameFlagsBytes - 1 - i ) * 8 );
+  for(i = 0; i < info->frameFlagsBytes; i++)
+    attr.flags |= buffer[posn + i] << ((info->frameFlagsBytes - 1 - i) * 8);
     
   posn += info->frameFlagsBytes;
   
@@ -61,33 +61,35 @@ luint	ID3_FrameHeader::GetFrameInfo	( ID3_FrameAttr &attr, uchar *buffer )
 }
 
 
-luint	ID3_FrameHeader::Render	( uchar *buffer )
+luint ID3_FrameHeader::Render(uchar *buffer)
 {
-  luint	bytesUsed	= 0;
-  ID3_FrameDef	*frameDef	= NULL;
-  char	*textID	= NULL;
-  luint	i;
+  luint bytesUsed = 0;
+  ID3_FrameDef *frameDef = NULL;
+  char *textID = NULL;
+  luint i;
   
-  if ( frameDef = ID3_FindFrameDef ( frameID ) )
+  if(frameDef = ID3_FindFrameDef(frameID))
   {
-    if ( info->frameIDBytes < strlen ( frameDef->longTextID ) )
+    if(info->frameIDBytes < strlen(frameDef->longTextID))
       textID = frameDef->shortTextID;
     else
       textID = frameDef->longTextID;
   }
   else
-    ID3_THROW ( ID3E_InvalidFrameID );
+    ID3_THROW(ID3E_InvalidFrameID);
     
-  memcpy ( &buffer[ bytesUsed ], (uchar *) textID, info->frameIDBytes );
+  memcpy(&buffer[bytesUsed], (uchar *) textID, info->frameIDBytes);
   bytesUsed += info->frameIDBytes;
   
-  for ( i = 0; i < info->frameSizeBytes; i++ )
-    buffer[ bytesUsed + i ] = (uchar) ( ( dataSize >> ( ( info->frameSizeBytes - i - 1 ) * 8 ) ) & 0xFF );
+  for(i = 0; i < info->frameSizeBytes; i++)
+    buffer[bytesUsed + i] = 
+      (uchar)((dataSize >> ((info->frameSizeBytes - i - 1) * 8)) & 0xFF);
     
   bytesUsed += info->frameSizeBytes;
   
-  for ( i = 0; i < info->frameFlagsBytes; i++ )
-    buffer[ bytesUsed + i ] = (uchar) ( ( flags >> ( ( info->frameFlagsBytes - i - 1 ) * 8 ) ) & 0xFF );
+  for(i = 0; i < info->frameFlagsBytes; i++)
+    buffer[bytesUsed + i] = 
+      (uchar)((flags >> ((info->frameFlagsBytes - i - 1) * 8)) & 0xFF);
     
   bytesUsed += info->frameFlagsBytes;
   

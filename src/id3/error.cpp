@@ -48,7 +48,7 @@ ID3_Err ID3_Error::GetErrorID(void)
 
 char *ID3_Error::GetErrorDesc(void)
 {
-  return ID3_ErrorDescs[ error ];
+  return ID3_ErrorDescs[error];
 }
 
 

@@ -12,38 +12,36 @@
 //
 //  Mon Nov 23 18:34:01 1998
 
-
 #include <id3/tag.h>
-
 
 luint ID3_Tag::instances = 0;
 
 
-ID3_Tag& operator<< ( ID3_Tag& tag, ID3_Frame& frame )
+ID3_Tag& operator<<(ID3_Tag& tag, ID3_Frame& frame)
 {
-  tag.AddFrame ( &frame );
+  tag.AddFrame(&frame);
   
   return tag;
 }
 
 
-ID3_Tag& operator<< ( ID3_Tag& tag, ID3_Frame *frame )
+ID3_Tag& operator<<(ID3_Tag& tag, ID3_Frame *frame)
 {
-  tag.AddFrame ( frame );
+  tag.AddFrame(frame);
   
   return tag;
 }
 
 
-ID3_Tag::ID3_Tag ( char *name )
+ID3_Tag::ID3_Tag(char *name)
 {
-  SetupTag ( name );
+  SetupTag(name);
   
   instances++;
 }
 
 
-void ID3_Tag::SetupTag ( char *fileInfo )
+void ID3_Tag::SetupTag(char *fileInfo)
 {
   version = ID3_TAGVERSION;
   revision = ID3_TAGREVISION;
@@ -65,39 +63,39 @@ void ID3_Tag::SetupTag ( char *fileInfo )
   
   Clear();
   
-  if ( fileInfo )
-    Link ( fileInfo );
+  if (fileInfo)
+    Link(fileInfo);
     
   return ;
 }
 
 
-ID3_Tag::~ID3_Tag ( void )
+ID3_Tag::~ID3_Tag(void)
 {
-  if ( fileHandle )
-    fclose ( fileHandle );
+  if (fileHandle)
+    fclose(fileHandle);
     
   Clear();
   
   instances--;
   
-  if ( instances == 0 )
+  if (instances == 0)
   {}
   
 }
 
 
-void ID3_Tag::Clear ( void )
+void ID3_Tag::Clear(void)
 {
-  if ( frameList )
+  if (frameList)
   {
-    ClearList ( frameList );
+    ClearList(frameList);
     frameList = NULL;
   }
   
-  if ( binaryList )
+  if (binaryList)
   {
-    ClearList ( binaryList );
+    ClearList(binaryList);
     binaryList = NULL;
   }
   
@@ -108,19 +106,19 @@ void ID3_Tag::Clear ( void )
 }
 
 
-void ID3_Tag::DeleteElem ( ID3_Elem *cur )
+void ID3_Tag::DeleteElem(ID3_Elem *cur)
 {
-  if ( cur )
+  if (cur)
   {
-    if ( cur->tagOwns )
+    if (cur->tagOwns)
     {
-      if ( cur->frame )
+      if (cur->frame)
       {
         delete cur->frame;
         cur->frame = NULL;
       }
       
-      if ( cur->binary )
+      if (cur->binary)
       {
         delete[] cur->binary;
         cur->binary = NULL;
@@ -137,16 +135,16 @@ void ID3_Tag::DeleteElem ( ID3_Elem *cur )
 }
 
 
-void ID3_Tag::ClearList ( ID3_Elem *list )
+void ID3_Tag::ClearList(ID3_Elem *list)
 {
   ID3_Elem *cur = list;
   
-  while ( cur )
+  while (cur)
   {
     ID3_Elem *next;
     
     next = cur->next;
-    DeleteElem ( cur );
+    DeleteElem(cur);
     cur = next;
   }
   
@@ -154,13 +152,13 @@ void ID3_Tag::ClearList ( ID3_Elem *list )
 }
 
 
-void ID3_Tag::AddFrame ( ID3_Frame *newFrame, bool freeWhenDone )
+void ID3_Tag::AddFrame(ID3_Frame *newFrame, bool freeWhenDone)
 {
   ID3_Elem *elem;
   
-  if ( newFrame )
+  if (newFrame)
   {
-    if ( elem = new ID3_Elem )
+    if (elem = new ID3_Elem)
     {
       elem->next = frameList;
       elem->frame = newFrame;
@@ -173,54 +171,54 @@ void ID3_Tag::AddFrame ( ID3_Frame *newFrame, bool freeWhenDone )
       hasChanged = true;
     }
     else
-      ID3_THROW ( ID3E_NoMemory );
+      ID3_THROW(ID3E_NoMemory);
   }
   else
-    ID3_THROW ( ID3E_NoData );
+    ID3_THROW(ID3E_NoData);
     
   return ;
 }
 
 
-void ID3_Tag::AddFrames ( ID3_Frame *frames, luint numFrames, bool freeWhenDone )
+void ID3_Tag::AddFrames(ID3_Frame *frames, luint numFrames, bool freeWhenDone)
 {
   lsint i;
   
-  for ( i = numFrames - 1; i >= 0; i-- )
-    AddFrame ( &frames[ i ], freeWhenDone );
+  for (i = numFrames - 1; i >= 0; i--)
+    AddFrame(&frames[i], freeWhenDone);
     
   return ;
 }
 
 
-void ID3_Tag::RemoveFrame ( ID3_Frame *frame )
+void ID3_Tag::RemoveFrame(ID3_Frame *frame)
 {
   ID3_Elem *elem = NULL;
   
-  if ( elem = Find ( frame ) )
-    RemoveFromList ( elem, &frameList );
+  if (elem = Find(frame))
+    RemoveFromList(elem, &frameList);
     
   return ;
 }
 
 
-void ID3_Tag::RemoveFromList ( ID3_Elem *which, ID3_Elem **list )
+void ID3_Tag::RemoveFromList(ID3_Elem *which, ID3_Elem **list)
 {
   ID3_Elem *cur = *list;
   
-  if ( cur == which )
+  if (cur == which)
   {
     *list = which->next;
-    DeleteElem ( which );
+    DeleteElem(which);
   }
   else
   {
-    while ( cur )
+    while (cur)
     {
-      if ( cur->next == which )
+      if (cur->next == which)
       {
         cur->next = which->next;
-        DeleteElem ( which );
+        DeleteElem(which);
         break;
       }
       else
@@ -232,20 +230,20 @@ void ID3_Tag::RemoveFromList ( ID3_Elem *which, ID3_Elem **list )
 }
 
 
-bool ID3_Tag::HasChanged ( void )
+bool ID3_Tag::HasChanged(void)
 {
   bool changed = hasChanged;
   
-  if ( ! changed )
+  if (! changed)
   {
     ID3_Elem *cur = frameList;
     
-    while ( cur )
+    while (cur)
     {
-      if ( cur->frame )
+      if (cur->frame)
         changed = cur->frame->HasChanged();
         
-      if ( changed )
+      if (changed)
         break;
       else
         cur = cur->next;
@@ -256,9 +254,9 @@ bool ID3_Tag::HasChanged ( void )
 }
 
 
-void ID3_Tag::SetVersion ( uchar ver, uchar rev )
+void ID3_Tag::SetVersion(uchar ver, uchar rev)
 {
-  if ( version != ver || rev != rev )
+  if (version != ver || rev != rev)
     hasChanged = true;
     
   version = ver;
@@ -268,9 +266,9 @@ void ID3_Tag::SetVersion ( uchar ver, uchar rev )
 }
 
 
-void ID3_Tag::SetUnsync ( bool newSync )
+void ID3_Tag::SetUnsync(bool newSync)
 {
-  if ( syncOn != newSync )
+  if (syncOn != newSync)
     hasChanged = true;
     
   syncOn = newSync;
@@ -279,9 +277,9 @@ void ID3_Tag::SetUnsync ( bool newSync )
 }
 
 
-void ID3_Tag::SetExtendedHeader ( bool ext )
+void ID3_Tag::SetExtendedHeader(bool ext)
 {
-  if ( extendedHeader != ext )
+  if (extendedHeader != ext)
     hasChanged = true;
     
   extendedHeader = ext;
@@ -290,9 +288,9 @@ void ID3_Tag::SetExtendedHeader ( bool ext )
 }
 
 
-void ID3_Tag::SetCompression ( bool comp )
+void ID3_Tag::SetCompression(bool comp)
 {
-  if ( compression != comp )
+  if (compression != comp)
     hasChanged = true;
     
   compression = comp;
@@ -301,9 +299,9 @@ void ID3_Tag::SetCompression ( bool comp )
 }
 
 
-void ID3_Tag::SetPadding ( bool pad )
+void ID3_Tag::SetPadding(bool pad)
 {
-  if ( padding != pad )
+  if (padding != pad)
     hasChanged = true;
     
   padding = pad;
@@ -312,12 +310,12 @@ void ID3_Tag::SetPadding ( bool pad )
 }
 
 
-luint ID3_Tag::NumFrames ( void )
+luint ID3_Tag::NumFrames(void)
 {
   luint numFrames = 0;
   ID3_Elem *cur = frameList;
   
-  while ( cur )
+  while (cur)
   {
     numFrames++;
     
@@ -326,5 +324,3 @@ luint ID3_Tag::NumFrames ( void )
   
   return numFrames;
 }
-
-

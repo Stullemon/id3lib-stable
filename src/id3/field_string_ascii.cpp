@@ -18,9 +18,9 @@
 #include <id3/misc_support.h>
 
 
-ID3_Field&	ID3_Field::operator=	( char *string )
+ID3_Field& ID3_Field::operator= (char *string)
 {
-  Set ( string );
+  Set(string);
   
   return *this;
 }
@@ -28,22 +28,24 @@ ID3_Field&	ID3_Field::operator=	( char *string )
 
 // the ::Set() function for ASCII
 
-void	ID3_Field::Set	( char *newString )
+void ID3_Field::Set(char *newString)
 {
-  if ( newString )
+  if (newString)
   {
-    wchar_t	*temp;
+    wchar_t *temp;
     
     Clear();
     
-    if ( temp = new wchar_t[ strlen ( newString ) + 1 ] )
+    if (temp = new wchar_t[strlen(newString) + 1])
     {
-      ID3_ASCIItoUnicode ( temp, newString, strlen ( newString ) + 1 );
-      Set ( temp );
-      delete[] temp;
+      ID3_ASCIItoUnicode(temp, newString, strlen(newString) + 1);
+      Set(temp);
+      delete [] temp;
       
       type = ID3FTY_ASCIISTRING;
     }
+    else
+      ID3_THROW(ID3E_NoMemory);
   }
   
   return ;
@@ -52,56 +54,56 @@ void	ID3_Field::Set	( char *newString )
 
 // the ::Get() function for ASCII
 
-luint	ID3_Field::Get	( char *buffer, luint maxLength, luint itemNum )
+luint ID3_Field::Get(char *buffer, luint maxLength, luint itemNum)
 {
-  luint	bytesUsed	= 0;
-  wchar_t	*temp;
-  char	*ascii;
+  luint bytesUsed = 0;
+  wchar_t *temp;
+  char *ascii;
   
-  if ( temp = new wchar_t[ maxLength ] )
+  if (temp = new wchar_t[maxLength])
   {
-    luint	len;
+    luint len;
     
-    if ( len = Get ( temp, maxLength, itemNum ) )
+    if (len = Get(temp, maxLength, itemNum))
     {
-      if ( ascii = new char[ len + 1 ] )
+      if (ascii = new char[len + 1])
       {
-        luint	length;
+        luint length;
         
-        ID3_UnicodeToASCII ( ascii, temp, len + 1 );
+        ID3_UnicodeToASCII(ascii, temp, len + 1);
         
-        length = MIN ( strlen ( ascii ), maxLength );
+        length = MIN(strlen(ascii), maxLength);
         
-        strncpy ( buffer, ascii, length );
-        buffer[ length ] = 0;
+        strncpy(buffer, ascii, length);
+        buffer[length] = 0;
         bytesUsed = length;
         
-        delete[] ascii;
+        delete [] ascii;
       }
       else
-        ID3_THROW ( ID3E_NoMemory );
+        ID3_THROW(ID3E_NoMemory);
     }
     
-    delete[] temp;
+    delete [] temp;
   }
   else
-    ID3_THROW ( ID3E_NoMemory );
+    ID3_THROW(ID3E_NoMemory);
     
   return bytesUsed;
 }
 
 
-void	ID3_Field::Add	( char *newString )
+void ID3_Field::Add(char *newString)
 {
-  if ( newString )
+  if (newString)
   {
-    wchar_t	*temp;
+    wchar_t *temp;
     
-    if ( temp = new wchar_t[ strlen ( newString ) + 1 ] )
+    if (temp = new wchar_t[strlen(newString) + 1])
     {
-      ID3_ASCIItoUnicode ( temp, newString, strlen ( newString ) + 1 );
-      Add ( temp );
-      delete[] temp;
+      ID3_ASCIItoUnicode(temp, newString, strlen(newString) + 1);
+      Add(temp);
+      delete [] temp;
       
       type = ID3FTY_ASCIISTRING;
     }
@@ -111,38 +113,38 @@ void	ID3_Field::Add	( char *newString )
 }
 
 
-luint	ID3_Field::ParseASCIIString	( uchar *buffer, luint posn, luint buffSize )
+luint ID3_Field::ParseASCIIString(uchar *buffer, luint posn, luint buffSize)
 {
-  luint	bytesUsed	= 0;
-  char	*temp	= NULL;
+  luint bytesUsed = 0;
+  char *temp = NULL;
   
-  if ( fixedLength != -1 )
+  if (fixedLength != -1)
     bytesUsed = fixedLength;
   else
   {
-    if ( flags & ID3FF_NULL )
-      while ( ( posn + bytesUsed ) < buffSize && buffer[ posn + bytesUsed ] != 0 )
+    if (flags & ID3FF_NULL)
+      while ((posn + bytesUsed) < buffSize && buffer[posn + bytesUsed] != 0)
         bytesUsed++;
     else
       bytesUsed = buffSize - posn;
   }
   
-  if ( bytesUsed )
+  if (bytesUsed > 0)
   {
-    if ( temp = new char[ bytesUsed + 1 ] )
+    if (temp = new char[bytesUsed + 1])
     {
-      memcpy ( temp, &buffer[ posn ], bytesUsed );
-      temp[ bytesUsed ] = 0;
+      memcpy(temp, &buffer[posn], bytesUsed);
+      temp[bytesUsed] = 0;
       
-      Set ( temp );
+      Set(temp);
       
-      delete[] temp;
+      delete [] temp;
     }
     else
-      ID3_THROW ( ID3E_NoMemory );
+      ID3_THROW(ID3E_NoMemory);
   }
   
-  if ( flags & ID3FF_NULL )
+  if (flags & ID3FF_NULL)
     bytesUsed++;
     
   hasChanged = false;
@@ -151,51 +153,48 @@ luint	ID3_Field::ParseASCIIString	( uchar *buffer, luint posn, luint buffSize )
 }
 
 
-luint	ID3_Field::RenderASCIIString	( uchar *buffer )
+luint ID3_Field::RenderASCIIString(uchar *buffer)
 {
-  luint	bytesUsed	= 0;
-  char	*ascii;
+  luint bytesUsed = 0;
+  char *ascii;
   
   bytesUsed = BinSize();
   
-  if ( data && size )
+  if (data && size)
   {
-    if ( ascii = new char[ size ] )
+    if (ascii = new char[size])
     {
-      luint	i;
+      luint i;
       
-      ID3_UnicodeToASCII ( ascii, (wchar_t *) data, size );
-      memcpy ( buffer, (uchar *) ascii, bytesUsed );
+      ID3_UnicodeToASCII(ascii, (wchar_t *) data, size);
+      memcpy(buffer, (uchar *) ascii, bytesUsed);
       
-      // now we convert the internal dividers to what they
-      // are supposed to be
-      for ( i = 0; i < bytesUsed; i++ )
-        if ( buffer[ i ] == 1 )
+      // now we convert the internal dividers to what they are supposed to be
+      for (i = 0; i < bytesUsed; i++)
+        if (buffer[i] == 1)
         {
-          char	sub	= '/';
+          char sub = '/';
           
-          if ( flags & ID3FF_NULLDIVIDE )
+          if (flags & ID3FF_NULLDIVIDE)
             sub = '\0';
             
-          buffer[ i ] = sub;
+          buffer[i] = sub;
         }
         
-      if ( size - 1 < bytesUsed )
-        for ( i = 0; i < ( size - 1 - bytesUsed ); i++ )
-          buffer[ bytesUsed + i ] = 0x20;
+      if (size - 1 < bytesUsed)
+        for (i = 0; i <(size - 1 - bytesUsed); i++)
+          buffer[bytesUsed + i] = 0x20;
           
-      delete[] ascii;
+      delete [] ascii;
     }
     else
-      ID3_THROW ( ID3E_NoMemory );
+      ID3_THROW(ID3E_NoMemory);
   }
   
-  if ( bytesUsed == 1 && flags & ID3FF_NULL )
-    buffer[ 0 ] = 0;
+  if (bytesUsed == 1 && flags & ID3FF_NULL)
+    buffer[0] = 0;
     
   hasChanged = false;
   
   return bytesUsed;
 }
-
-

@@ -24,21 +24,20 @@
 
 struct ID3_VerInfo
 {
-  char	name	[ 30 ];
-  luint	version,
+  char name [ 30 ];
+  luint version,
   revision;
 };
-
 
 
 // misc wrappers
 
 CDLLEXPORT
-void	ID3_GetVersion	( ID3_VerInfo *info )
+void ID3_GetVersion(ID3_VerInfo *info)
 {
-  info->version	= ID3LIB_VER;
-  info->revision	= ID3LIB_REV;
-  strcpy ( info->name, ID3LIB_NAME );
+  info->version = ID3LIB_VER;
+  info->revision = ID3LIB_REV;
+  strcpy(info->name, ID3LIB_NAME);
   
   return ;
 }
@@ -47,16 +46,16 @@ void	ID3_GetVersion	( ID3_VerInfo *info )
 // tag wrappers
 
 CDLLEXPORT
-ID3_Tag	*ID3Tag_New	( void )
+ID3_Tag *ID3Tag_New(void)
 {
   return new ID3_Tag;
 }
 
 
 CDLLEXPORT
-void	ID3Tag_Delete	( ID3_Tag *tag )
+void ID3Tag_Delete(ID3_Tag *tag)
 {
-  if ( tag )
+  if (tag)
     delete tag;
     
   return ;
@@ -64,9 +63,9 @@ void	ID3Tag_Delete	( ID3_Tag *tag )
 
 
 CDLLEXPORT
-void	ID3Tag_Clear	( ID3_Tag *tag )
+void ID3Tag_Clear(ID3_Tag *tag)
 {
-  if ( tag )
+  if (tag)
     tag->Clear();
     
   return ;
@@ -74,11 +73,11 @@ void	ID3Tag_Clear	( ID3_Tag *tag )
 
 
 CDLLEXPORT
-bool	ID3Tag_HasChanged	( ID3_Tag *tag )
+bool ID3Tag_HasChanged(ID3_Tag *tag)
 {
-  bool	changed	= false;
+  bool changed = false;
   
-  if ( tag )
+  if (tag)
     changed = tag->HasChanged();
     
   return changed;
@@ -86,101 +85,101 @@ bool	ID3Tag_HasChanged	( ID3_Tag *tag )
 
 
 CDLLEXPORT
-void	ID3Tag_SetUnsync	( ID3_Tag *tag, bool unsync )
+void ID3Tag_SetUnsync(ID3_Tag *tag, bool unsync)
 {
-  if ( tag )
-    tag->SetUnsync ( unsync );
+  if (tag)
+    tag->SetUnsync(unsync);
     
   return ;
 }
 
 
 CDLLEXPORT
-void	ID3Tag_SetExtendedHeader	( ID3_Tag *tag, bool ext )
+void ID3Tag_SetExtendedHeader(ID3_Tag *tag, bool ext)
 {
-  if ( tag )
-    tag->SetExtendedHeader ( ext );
+  if (tag)
+    tag->SetExtendedHeader(ext);
     
   return ;
 }
 
 
 CDLLEXPORT
-void	ID3Tag_SetCompression	( ID3_Tag *tag, bool comp )
+void ID3Tag_SetCompression(ID3_Tag *tag, bool comp)
 {
-  if ( tag )
-    tag->SetCompression ( comp );
+  if (tag)
+    tag->SetCompression(comp);
     
   return ;
 }
 
 
 CDLLEXPORT
-void	ID3Tag_SetPadding	( ID3_Tag *tag, bool pad )
+void ID3Tag_SetPadding(ID3_Tag *tag, bool pad)
 {
-  if ( tag )
-    tag->SetPadding ( pad );
+  if (tag)
+    tag->SetPadding(pad);
     
   return ;
 }
 
 
 CDLLEXPORT
-void	ID3Tag_AddFrame	( ID3_Tag *tag, ID3_Frame *frame )
+void ID3Tag_AddFrame(ID3_Tag *tag, ID3_Frame *frame)
 {
-  if ( tag )
-    tag->AddFrame ( frame );
+  if (tag)
+    tag->AddFrame(frame);
     
   return ;
 }
 
 
 CDLLEXPORT
-void	ID3Tag_AddFrames	( ID3_Tag *tag, ID3_Frame *frames, luint num )
+void ID3Tag_AddFrames(ID3_Tag *tag, ID3_Frame *frames, luint num)
 {
-  if ( tag )
-    tag->AddFrames ( frames, num );
+  if (tag)
+    tag->AddFrames(frames, num);
     
   return ;
 }
 
 
 CDLLEXPORT
-void	ID3Tag_RemoveFrame	( ID3_Tag *tag, ID3_Frame *frame )
+void ID3Tag_RemoveFrame(ID3_Tag *tag, ID3_Frame *frame)
 {
-  if ( tag )
-    tag->RemoveFrame ( frame );
+  if (tag)
+    tag->RemoveFrame(frame);
     
   return ;
 }
 
 
 CDLLEXPORT
-void	ID3Tag_Parse	( ID3_Tag *tag, uchar header[ ID3_TAGHEADERSIZE ], uchar *buffer )
+void ID3Tag_Parse(ID3_Tag *tag, uchar header[ ID3_TAGHEADERSIZE ], uchar *buffer)
 {
-  if ( tag )
-    tag->Parse ( header, buffer );
+  if (tag)
+    tag->Parse(header, buffer);
     
   return ;
 }
 
 
 CDLLEXPORT
-luint	ID3Tag_Link	( ID3_Tag *tag, char *fileName )
+luint ID3Tag_Link(ID3_Tag *tag, char *fileName)
 {
-  luint	offset	= 0;
+  luint offset = 0;
   
-  if ( tag )
-    offset = tag->Link ( fileName );
+  if (tag)
+    offset = tag->Link(fileName);
     
   return offset;
 }
 
 
 CDLLEXPORT
-void	ID3Tag_Update	( ID3_Tag *tag )
+void ID3Tag_Update(ID3_Tag *tag)
 {
-  if ( tag )
+  if (tag)
     tag->Update();
     
   return ;
@@ -188,69 +187,72 @@ void	ID3Tag_Update	( ID3_Tag *tag )
 
 
 CDLLEXPORT
-void	ID3Tag_Strip	( ID3_Tag *tag, bool v1Also )
+void ID3Tag_Strip(ID3_Tag *tag, bool v1Also)
 {
-  if ( tag )
-    tag->Strip ( v1Also );
+  if (tag)
+    tag->Strip(v1Also);
     
   return ;
 }
 
 
 CDLLEXPORT
-ID3_Frame	*ID3Tag_FindFrameWithID	( ID3_Tag *tag, ID3_FrameID id )
+ID3_Frame *ID3Tag_FindFrameWithID(ID3_Tag *tag, ID3_FrameID id)
 {
-  ID3_Frame	*frame	= NULL;
+  ID3_Frame *frame = NULL;
   
-  if ( tag )
-    frame = tag->Find ( id );
+  if (tag)
+    frame = tag->Find(id);
     
   return frame;
 }
 
 
 CDLLEXPORT
-ID3_Frame	*ID3Tag_FindFrameWithINT	( ID3_Tag *tag, ID3_FrameID id, ID3_FieldID fld, luint data )
+ID3_Frame *ID3Tag_FindFrameWithINT(ID3_Tag *tag, ID3_FrameID id, 
+                                   ID3_FieldID fld, luint data)
 {
-  ID3_Frame	*frame	= NULL;
+  ID3_Frame *frame = NULL;
   
-  if ( tag )
-    frame = tag->Find ( id, fld, data );
+  if (tag)
+    frame = tag->Find(id, fld, data);
     
   return frame;
 }
 
 
 CDLLEXPORT
-ID3_Frame	*ID3Tag_FindFrameWithASCII	( ID3_Tag *tag, ID3_FrameID id, ID3_FieldID fld, char *data )
+ID3_Frame *ID3Tag_FindFrameWithASCII(ID3_Tag *tag, ID3_FrameID id, 
+                                     ID3_FieldID fld, char *data)
 {
-  ID3_Frame	*frame	= NULL;
+  ID3_Frame *frame = NULL;
   
-  if ( tag )
-    frame = tag->Find ( id, fld, data );
+  if (tag)
+    frame = tag->Find(id, fld, data);
     
   return frame;
 }
 
 
 CDLLEXPORT
-ID3_Frame	*ID3Tag_FindFrameWithUNICODE	( ID3_Tag *tag, ID3_FrameID id, ID3_FieldID fld, wchar_t *data )
+ID3_Frame *ID3Tag_FindFrameWithUNICODE(ID3_Tag *tag, ID3_FrameID id, 
+                                       ID3_FieldID fld, wchar_t *data)
 {
-  ID3_Frame	*frame	= NULL;
+  ID3_Frame *frame = NULL;
   
-  if ( tag )
-    frame = tag->Find ( id, fld, data );
+  if (tag)
+    frame = tag->Find(id, fld, data);
     
   return frame;
 }
 
 
 CDLLEXPORT
-luint	ID3Tag_NumFrames	( ID3_Tag *tag )
+luint ID3Tag_NumFrames(ID3_Tag *tag)
 {
-  luint	num	= 0;
+  luint num = 0;
   
-  if ( tag )
+  if (tag)
     num = tag->NumFrames();
     
   return num;
@@ -258,12 +260,12 @@ luint	ID3Tag_NumFrames	( ID3_Tag *tag )
 
 
 CDLLEXPORT
-ID3_Frame	*ID3Tag_GetFrameNum	( ID3_Tag *tag, luint num )
+ID3_Frame *ID3Tag_GetFrameNum(ID3_Tag *tag, luint num)
 {
-  ID3_Frame	*frame	= NULL;
+  ID3_Frame *frame = NULL;
   
-  if ( tag )
-    frame = tag->GetFrameNum ( num );
+  if (tag)
+    frame = tag->GetFrameNum(num);
     
   return frame;
 }
@@ -272,9 +274,9 @@ ID3_Frame	*ID3Tag_GetFrameNum	( ID3_Tag *tag, luint num )
 // frame wrappers
 
 CDLLEXPORT
-void	ID3Frame_Clear	( ID3_Frame *frame )
+void ID3Frame_Clear(ID3_Frame *frame)
 {
-  if ( frame )
+  if (frame)
     frame->Clear();
     
   return ;
@@ -282,21 +284,21 @@ void	ID3Frame_Clear	( ID3_Frame *frame )
 
 
 CDLLEXPORT
-void	ID3Frame_SetID	( ID3_Frame *frame, ID3_FrameID id )
+void ID3Frame_SetID(ID3_Frame *frame, ID3_FrameID id)
 {
-  if ( frame )
-    frame->SetID ( id );
+  if (frame)
+    frame->SetID(id);
     
   return ;
 }
 
 
 CDLLEXPORT
-ID3_FrameID	ID3Frame_GetID	( ID3_Frame *frame )
+ID3_FrameID ID3Frame_GetID(ID3_Frame *frame)
 {
-  ID3_FrameID	id	= ID3FID_NOFRAME;
+  ID3_FrameID id = ID3FID_NOFRAME;
   
-  if ( frame )
+  if (frame)
     id = frame->GetID();
     
   return id;
@@ -304,12 +306,12 @@ ID3_FrameID	ID3Frame_GetID	( ID3_Frame *frame )
 
 
 CDLLEXPORT
-ID3_Field	*ID3Frame_GetField	( ID3_Frame *frame, ID3_FieldID name )
+ID3_Field *ID3Frame_GetField(ID3_Frame *frame, ID3_FieldID name)
 {
-  ID3_Field	*field	= NULL;
+  ID3_Field *field = NULL;
   
-  if ( frame )
-    field = &( frame->Field ( name ) );
+  if (frame)
+    field = &( frame->Field(name));
     
   return field;
 }
@@ -319,9 +321,9 @@ ID3_Field	*ID3Frame_GetField	( ID3_Frame *frame, ID3_FieldID name )
 
 
 CDLLEXPORT
-void	ID3Field_Clear	( ID3_Field *field )
+void ID3Field_Clear(ID3_Field *field)
 {
-  if ( field )
+  if (field)
     field->Clear();
     
   return ;
@@ -329,11 +331,11 @@ void	ID3Field_Clear	( ID3_Field *field )
 
 
 CDLLEXPORT
-luint	ID3Field_Size	( ID3_Field *field )
+luint ID3Field_Size(ID3_Field *field)
 {
-  luint	size	= 0;
+  luint size = 0;
   
-  if ( field )
+  if (field)
     size = field->Size();
     
   return size;
@@ -341,11 +343,11 @@ luint	ID3Field_Size	( ID3_Field *field )
 
 
 CDLLEXPORT
-luint	ID3Field_GetNumTextItems	( ID3_Field *field )
+luint ID3Field_GetNumTextItems(ID3_Field *field)
 {
-  luint	items	= 0;
+  luint items = 0;
   
-  if ( field )
+  if (field)
     items = field->GetNumTextItems();
     
   return items;
@@ -353,21 +355,21 @@ luint	ID3Field_GetNumTextItems	( ID3_Field *field )
 
 
 CDLLEXPORT
-void	ID3Field_SetINT	( ID3_Field *field, luint data )
+void ID3Field_SetINT(ID3_Field *field, luint data)
 {
-  if ( field )
-    field->Set ( data );
+  if (field)
+    field->Set(data);
     
   return ;
 }
 
 
 CDLLEXPORT
-luint	ID3Field_GetINT	( ID3_Field *field )
+luint ID3Field_GetINT(ID3_Field *field)
 {
-  luint	value	= 0;
+  luint value = 0;
   
-  if ( field )
+  if (field)
     value = field->Get();
     
   return value;
@@ -375,109 +377,109 @@ luint	ID3Field_GetINT	( ID3_Field *field )
 
 
 CDLLEXPORT
-void	ID3Field_SetUNICODE	( ID3_Field *field, wchar_t *string )
+void ID3Field_SetUNICODE(ID3_Field *field, wchar_t *string)
 {
-  if ( field )
-    field->Set ( string );
+  if (field)
+    field->Set(string);
     
   return ;
 }
 
 
 CDLLEXPORT
-luint	ID3Field_GetUNICODE	( ID3_Field *field, wchar_t *buffer, luint maxChars, luint itemNum )
+luint ID3Field_GetUNICODE(ID3_Field *field, wchar_t *buffer, 
+                          luint maxChars, luint itemNum)
 {
-  luint	numChars	= 0;
+  luint numChars = 0;
   
-  if ( field )
-    numChars = field->Get ( buffer, maxChars, itemNum );
+  if (field)
+    numChars = field->Get(buffer, maxChars, itemNum);
     
   return numChars;
 }
 
 
 CDLLEXPORT
-void	ID3Field_AddUNICODE	( ID3_Field *field, wchar_t *string )
+void ID3Field_AddUNICODE(ID3_Field *field, wchar_t *string)
 {
-  if ( field )
-    field->Add ( string );
+  if (field)
+    field->Add(string);
     
   return ;
 }
 
 
 CDLLEXPORT
-void	ID3Field_SetASCII	( ID3_Field *field, char *string )
+void ID3Field_SetASCII(ID3_Field *field, char *string)
 {
-  if ( field )
-    field->Set ( string );
+  if (field)
+    field->Set(string);
     
   return ;
 }
 
 
 CDLLEXPORT
-luint	ID3Field_GetASCII	( ID3_Field *field, char *buffer, luint maxChars, luint itemNum )
+luint ID3Field_GetASCII(ID3_Field *field, char *buffer, 
+                        luint maxChars, luint itemNum)
 {
-  luint	numChars	= 0;
+  luint numChars = 0;
   
-  if ( field )
-    numChars = field->Get ( buffer, maxChars, itemNum );
+  if (field)
+    numChars = field->Get(buffer, maxChars, itemNum);
     
   return numChars;
 }
 
 
 CDLLEXPORT
-void	ID3Field_AddASCII	( ID3_Field *field, char *string )
+void ID3Field_AddASCII(ID3_Field *field, char *string)
 {
-  if ( field )
-    field->Add ( string );
+  if (field)
+    field->Add(string);
     
   return ;
 }
 
 
 CDLLEXPORT
-void	ID3Field_SetBINARY	( ID3_Field *field, uchar *data, luint size )
+void ID3Field_SetBINARY(ID3_Field *field, uchar *data, luint size)
 {
-  if ( field )
-    field->Set ( data, size );
+  if (field)
+    field->Set(data, size);
     
   return ;
 }
 
 
 CDLLEXPORT
-void	ID3Field_GetBINARY	( ID3_Field *field, uchar *buffer, luint buffLength )
+void ID3Field_GetBINARY(ID3_Field *field, uchar *buffer, luint buffLength)
 {
-  if ( field )
-    field->Get ( buffer, buffLength );
+  if (field)
+    field->Get(buffer, buffLength);
     
   return ;
 }
 
 
 CDLLEXPORT
-void	ID3Field_FromFile	( ID3_Field *field, char *fileName )
+void ID3Field_FromFile(ID3_Field *field, char *fileName)
 {
-  if ( field )
-    field->FromFile ( fileName );
+  if (field)
+    field->FromFile(fileName);
     
   return ;
 }
 
 
 CDLLEXPORT
-void	ID3Field_ToFile	( ID3_Field *field, char *fileName )
+void ID3Field_ToFile(ID3_Field *field, char *fileName)
 {
-  if ( field )
-    field->ToFile ( fileName );
+  if (field)
+    field->ToFile(fileName);
     
   return ;
 }
 
 
 #endif
-
-

@@ -18,110 +18,106 @@
 
 // converts an ASCII string into a Unicode one
 
-void	ID3_ASCIItoUnicode	( wchar_t *unicode, char *ascii, luint len )
+void ID3_ASCIItoUnicode(wchar_t *unicode, char *ascii, luint len)
 {
-  if ( ascii && unicode )
-    for ( luint i = 0; i < len; i++ )
-      unicode[ i ] = (wchar_t) ascii[ i ] & 0xFF;
+  if (ascii && unicode)
+    for (luint i = 0; i < len; i++)
+      unicode[i] = (wchar_t) ascii[i] & 0xFF;
       
   return ;
 }
-
 
 // converts a Unicode string into ASCII
 
-void	ID3_UnicodeToASCII	( char *ascii, wchar_t *unicode, luint len )
+void ID3_UnicodeToASCII(char *ascii, wchar_t *unicode, luint len)
 {
-  if ( unicode && ascii )
-    for ( luint i = 0; i < len; i++ )
-      ascii[ i ] = unicode[ i ] & 0xFF;
+  if (unicode && ascii)
+    for (luint i = 0; i < len; i++)
+      ascii[i] = unicode[i] & 0xFF;
       
   return ;
 }
 
-
-void	ID3_AddArtist	( ID3_Tag *tag, char *text )
+void ID3_AddArtist(ID3_Tag *tag, char *text)
 {
-  if ( tag->Find ( ID3FID_LEADARTIST ) == NULL &&
-       tag->Find ( ID3FID_BAND ) == NULL &&
-       tag->Find ( ID3FID_CONDUCTOR ) == NULL &&
-       tag->Find ( ID3FID_COMPOSER ) == NULL &&
-       strlen ( text ) > 0 )
+  if (tag->Find(ID3FID_LEADARTIST) == NULL &&
+      tag->Find(ID3FID_BAND)       == NULL &&
+      tag->Find(ID3FID_CONDUCTOR)  == NULL &&
+      tag->Find(ID3FID_COMPOSER)   == NULL &&
+      strlen(text) > 0)
   {
-    ID3_Frame	*artistFrame;
+    ID3_Frame *artistFrame;
     
-    if ( artistFrame = new ID3_Frame )
+    if (artistFrame = new ID3_Frame)
     {
-      artistFrame->SetID ( ID3FID_LEADARTIST );
-      artistFrame->Field ( ID3FN_TEXT ) = text;
-      tag->AddFrame ( artistFrame, true );
+      artistFrame->SetID(ID3FID_LEADARTIST);
+      artistFrame->Field(ID3FN_TEXT) = text;
+      tag->AddFrame(artistFrame, true);
     }
     else
-      ID3_THROW ( ID3E_NoMemory );
+      ID3_THROW(ID3E_NoMemory);
   }
   
   return ;
 }
 
 
-void	ID3_AddAlbum	( ID3_Tag *tag, char *text )
+void ID3_AddAlbum(ID3_Tag *tag, char *text)
 {
-  if ( tag->Find ( ID3FID_ALBUM ) == NULL && strlen ( text ) > 0 )
+  if (tag->Find(ID3FID_ALBUM) == NULL && strlen(text) > 0)
   {
-    ID3_Frame	*albumFrame;
+    ID3_Frame *albumFrame;
     
-    if ( albumFrame = new ID3_Frame )
+    if (albumFrame = new ID3_Frame)
     {
-      albumFrame->SetID ( ID3FID_ALBUM );
-      albumFrame->Field ( ID3FN_TEXT ) = text;
-      tag->AddFrame ( albumFrame, true );
+      albumFrame->SetID(ID3FID_ALBUM);
+      albumFrame->Field(ID3FN_TEXT) = text;
+      tag->AddFrame(albumFrame, true);
     }
     else
-      ID3_THROW ( ID3E_NoMemory );
+      ID3_THROW(ID3E_NoMemory);
   }
   
   return ;
 }
 
 
-void	ID3_AddTitle	( ID3_Tag *tag, char *text )
+void ID3_AddTitle(ID3_Tag *tag, char *text)
 {
-  if ( tag->Find ( ID3FID_TITLE ) == NULL && strlen ( text ) > 0 )
+  if (tag->Find(ID3FID_TITLE) == NULL && strlen(text) > 0)
   {
-    ID3_Frame	*titleFrame;
+    ID3_Frame *titleFrame;
     
-    if ( titleFrame = new ID3_Frame )
+    if (titleFrame = new ID3_Frame)
     {
-      titleFrame->SetID ( ID3FID_TITLE );
-      titleFrame->Field ( ID3FN_TEXT ) = text;
-      tag->AddFrame ( titleFrame, true );
+      titleFrame->SetID(ID3FID_TITLE);
+      titleFrame->Field(ID3FN_TEXT) = text;
+      tag->AddFrame(titleFrame, true);
     }
     else
-      ID3_THROW ( ID3E_NoMemory );
+      ID3_THROW(ID3E_NoMemory);
   }
   
   return ;
 }
 
 
-void	ID3_AddLyrics	( ID3_Tag *tag, char *text )
+void ID3_AddLyrics(ID3_Tag *tag, char *text)
 {
-  if ( tag->Find ( ID3FID_UNSYNCEDLYRICS ) == NULL && strlen ( text ) > 0 )
+  if (tag->Find(ID3FID_UNSYNCEDLYRICS) == NULL && strlen(text) > 0)
   {
-    ID3_Frame	*lyricsFrame;
+    ID3_Frame *lyricsFrame;
     
-    if ( lyricsFrame = new ID3_Frame )
+    if (lyricsFrame = new ID3_Frame)
     {
-      lyricsFrame->SetID ( ID3FID_UNSYNCEDLYRICS );
-      lyricsFrame->Field ( ID3FN_LANGUAGE ) = "eng";
-      lyricsFrame->Field ( ID3FN_TEXT ) = text;
-      tag->AddFrame ( lyricsFrame, true );
+      lyricsFrame->SetID(ID3FID_UNSYNCEDLYRICS);
+      lyricsFrame->Field(ID3FN_LANGUAGE) = "eng";
+      lyricsFrame->Field(ID3FN_TEXT) = text;
+      tag->AddFrame(lyricsFrame, true);
     }
     else
-      ID3_THROW ( ID3E_NoMemory );
+      ID3_THROW(ID3E_NoMemory);
   }
   
   return ;
 }
-
-
