@@ -8,9 +8,9 @@ exec perl -w -x $0 ${1+"$@"} # -*- mode: perl; perl-indent-level: 2; -*-
 ###                                                        ###
 ##############################################################
 
-## $Revision: 1.1 $
-## $Date: 2000/09/27 09:05:42 $
-## $Author: eldamitri $
+## $Revision: 1.2 $
+## $Date: 2002/08/11 10:58:42 $
+## $Author: t1mpy $
 ##
 ##   (C) 1999 Karl Fogel <kfogel@red-bean.com>, under the GNU GPL.
 ## 
@@ -32,13 +32,11 @@ exec perl -w -x $0 ${1+"$@"} # -*- mode: perl; perl-indent-level: 2; -*-
 ## Boston, MA 02111-1307, USA.
 
 
-
 use strict;
 use Text::Wrap;
 use Time::Local;
 use File::Basename;
 
-
 # The Plan:
 #
 # Read in the logs for multiple files, spit out a nice ChangeLog that
@@ -70,15 +68,14 @@ use File::Basename;
 # If we're not using the `--distributed' flag, the directory is always
 # considered to be `./', even as descend into subdirectories.
 
-
 ############### Globals ################
 
 
 # What we run to generate it:
-my $Log_Source_Command = "cvs log";
+my $Log_Source_Command = "cvs -z3 log";
 
 # In case we have to print it out:
-my $VERSION = '$Revision: 1.1 $';
+my $VERSION = '$Revision: 1.2 $';
 $VERSION =~ s/\S+\s+(\S+)\s+\S+/$1/;
 
 ## Vars set by options:
