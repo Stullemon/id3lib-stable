@@ -1,9 +1,10 @@
+ChangeLog
 Makefile
 config.cache
 config.h
 config.log
 config.status
 id3lib.spec
+libtool
 stamp-h
 tmp
-libtool
