@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.8 2000/05/09 13:28:10 eldamitri Exp $
+// $Id: field_string_unicode.cpp,v 1.9 2000/05/10 03:29:12 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -51,7 +51,7 @@ void ID3_Field::Set(const unicode_t *string)
   
   // we can simply increment the nBytes count here because we just pilfer
   // the NULL which is present in the string which was passed to us
-  if (__flags & ID3FF_NULL)
+  if (__flags & ID3FF_CSTR)
   {
     nBytes++;
   }
@@ -61,7 +61,7 @@ void ID3_Field::Set(const unicode_t *string)
   
   Set((uchar *) string, nBytes);
   
-  __type = ID3FTY_UNICODESTRING;
+  __enc = ID3TE_UNICODE;
   __changed = true;
   
   return ;
@@ -116,7 +116,7 @@ luint ID3_Field::Get(unicode_t *buffer, const luint maxChars, const luint itemNu
   {
     lsint nullOffset = 0;
     
-    if (__flags & ID3FF_NULL)
+    if (__flags & ID3FF_CSTR)
     {
       nullOffset = -1;
     }
@@ -205,7 +205,7 @@ ID3_Field::ParseUnicodeString(const uchar *buffer, size_t nSize)
   }
   else
   {
-    if (__flags & ID3FF_NULL)
+    if (__flags & ID3FF_CSTR)
     {
       while (nBytes < nSize &&
              !(buffer[nBytes] == 0 && buffer[nBytes + 1] == 0))
@@ -277,7 +277,7 @@ ID3_Field::ParseUnicodeString(const uchar *buffer, size_t nSize)
     delete [] temp;
   }
   
-  if (__flags & ID3FF_NULL)
+  if (__flags & ID3FF_CSTR)
   {
     nBytes += sizeof(unicode_t);
   }
@@ -311,7 +311,7 @@ luint ID3_Field::RenderUnicodeString(uchar *buffer)
       {
         unicode_t sub = L'/';
         
-        if (__flags & ID3FF_NULLDIVIDE)
+        if (__flags & ID3FF_LIST)
         {
           sub = L'\0';
         }
@@ -328,7 +328,7 @@ luint ID3_Field::RenderUnicodeString(uchar *buffer)
     BOM[0] = 0xFEFF;
   }
   
-  if (nBytes == sizeof(unicode_t) && (__flags & ID3FF_NULL))
+  if (nBytes == sizeof(unicode_t) && (__flags & ID3FF_CSTR))
   {
     for (size_t i = 0; i < sizeof(unicode_t); i++)
     {
