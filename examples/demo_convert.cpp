@@ -1,4 +1,4 @@
-// $Id: demo_convert.cpp,v 1.5 2000/05/29 02:19:43 eldamitri Exp $
+// $Id: demo_convert.cpp,v 1.6 2000/06/25 17:18:43 eldamitri Exp $
 //
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -16,7 +16,7 @@
 #include <id3/tag.h>
 #include <getopt.h>
 
-#define VERSION_NUMBER "$Revision: 1.5 $"
+#define VERSION_NUMBER "$Revision: 1.6 $"
 
 void PrintUsage(char *sName)
 {
@@ -147,7 +147,7 @@ int main( unsigned int argc, char *argv[])
         cout << argv[nIndex] << ": ";
 
         myTag.Clear();
-        myTag.Link(argv[nIndex]);
+        myTag.Link(argv[nIndex], ID3TT_ALL);
         myTag.SetPadding(bPadding);
 
         cout << "attempting ";

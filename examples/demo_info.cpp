@@ -14,7 +14,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.12 2000/06/14 16:11:10 eldamitri Exp $
+// $Id: demo_info.cpp,v 1.13 2000/06/25 17:18:43 eldamitri Exp $
 
 #include <iostream.h>
 #include <id3/tag.h>
@@ -371,7 +371,7 @@ int main( unsigned int argc, char *argv[])
       {
         ID3_Tag myTag;
 
-        myTag.Link(argv[nIndex]);
+        myTag.Link(argv[nIndex], ID3TT_ALL);
         cout << endl << "*** Tag information for " << argv[nIndex] << endl;
         if (!bTestAssignment)
         {
