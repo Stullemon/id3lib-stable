@@ -1,4 +1,4 @@
-// $Id: tag_find.cpp,v 1.17 2000/09/27 07:38:26 eldamitri Exp $
+// $Id: tag_find.cpp,v 1.18 2000/10/01 00:55:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,13 +24,15 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#include <string.h>
-#include "tag.h"
-#include "utils.h"
-
 #if defined HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include <string.h>
+
+#include "tag.h"
+#include "field.h"
+#include "utils.h"
 
   /** Returns a pointer to the next ID3_Frame with the given ID3_FrameID;
    ** returns NULL if no such frame found.
