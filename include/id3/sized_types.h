@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: sized_types.h,v 1.6 2000/10/23 04:32:33 eldamitri Exp $
+/* $Id: sized_types.h,v 1.7 2002/07/23 16:28:44 t1mpy Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags Copyright
  * 1999, 2000 Scott Thomas Haug
@@ -45,7 +45,7 @@ typedef unsigned char   uint8;
 typedef signed char      int8;
 
 #else
-#error This machine has no 8-bit type
+#error This machine has no 8-bit type; report compiler, and the contents of your limits.h to the persons in the AUTHORS file
 #endif /* UCHAR_MAX == 0xff */
 
 /* Define 16-bit types */
@@ -60,7 +60,7 @@ typedef unsigned short  uint16;
 typedef short            int16;
 
 #else
-#error This machine has no 16-bit type
+#error This machine has no 16-bit type; report compiler, and the contents of your limits.h to the persons in the AUTHORS file
 #endif /* UINT_MAX == 0xffff */
 
 /* Define 32-bit types */
@@ -80,7 +80,7 @@ typedef unsigned short  uint32;
 typedef short            int32;
 
 #else
-#error This machine has no 32-bit type
+#error This machine has no 32-bit type; report compiler, and the contents of your limits.h to the persons in the AUTHORS file
 #endif /* UINT_MAX == 0xfffffffful */
 
 #endif /* _SIZED_TYPES_H_ */
