@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.13 2000/05/28 23:03:02 eldamitri Exp $
+// $Id: misc_support.cpp,v 1.14 2000/06/20 16:06:53 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -113,22 +113,26 @@ size_t ID3_RemoveArtists(ID3_Tag *tag)
 
   while ((pFrame = tag->Find(ID3FID_LEADARTIST)))
   {
-    tag->RemoveFrame(pFrame);
+    pFrame = tag->RemoveFrame(pFrame);
+    delete pFrame;
     nRemoved++;
   }
   while ((pFrame = tag->Find(ID3FID_BAND)))
   {
-    tag->RemoveFrame(pFrame);
+    pFrame = tag->RemoveFrame(pFrame);
+    delete pFrame;
     nRemoved++;
   }
   while ((pFrame = tag->Find(ID3FID_CONDUCTOR)))
   {
-    tag->RemoveFrame(pFrame);
+    pFrame = tag->RemoveFrame(pFrame);
+    delete pFrame;
     nRemoved++;
   }
   while ((pFrame = tag->Find(ID3FID_COMPOSER)))
   {
-    tag->RemoveFrame(pFrame);
+    pFrame = tag->RemoveFrame(pFrame);
+    delete pFrame;
     nRemoved++;
   }
 
@@ -186,7 +190,8 @@ size_t ID3_RemoveAlbums(ID3_Tag *tag)
 
   while ((pFrame = tag->Find(ID3FID_ALBUM)))
   {
-    tag->RemoveFrame(pFrame);
+    pFrame = tag->RemoveFrame(pFrame);
+    delete pFrame;
     nRemoved++;
   }
 
@@ -244,7 +249,8 @@ size_t ID3_RemoveTitles(ID3_Tag *tag)
 
   while ((pFrame = tag->Find(ID3FID_TITLE)))
   {
-    tag->RemoveFrame(pFrame);
+    pFrame = tag->RemoveFrame(pFrame);
+    delete pFrame;
     nRemoved++;
   }
 
@@ -302,7 +308,8 @@ size_t ID3_RemoveYears(ID3_Tag *tag)
 
   while ((pFrame = tag->Find(ID3FID_YEAR)))
   {
-    tag->RemoveFrame(pFrame);
+    pFrame = tag->RemoveFrame(pFrame);
+    delete pFrame;
     nRemoved++;
   }
 
@@ -410,7 +417,8 @@ size_t ID3_RemoveComments(ID3_Tag *tag, const char *sDescription)
       }
       if (bRemove)
       {
-        tag->RemoveFrame(pFrame);
+        pFrame = tag->RemoveFrame(pFrame);
+        delete pFrame;
         nRemoved++;
       }
     }
@@ -496,7 +504,8 @@ size_t ID3_RemoveTracks(ID3_Tag *tag)
 
   while ((pFrame = tag->Find(ID3FID_TRACKNUM)))
   {
-    tag->RemoveFrame(pFrame);
+    pFrame = tag->RemoveFrame(pFrame);
+    delete pFrame;
     nRemoved++;
   }
 
@@ -587,7 +596,8 @@ size_t ID3_RemoveGenres(ID3_Tag *tag)
 
   while ((pFrame = tag->Find(ID3FID_CONTENTTYPE)))
   {
-    tag->RemoveFrame(pFrame);
+    pFrame = tag->RemoveFrame(pFrame);
+    delete pFrame;
     nRemoved++;
   }
 
@@ -646,7 +656,8 @@ size_t ID3_RemoveLyrics(ID3_Tag *tag)
 
   while ((pFrame = tag->Find(ID3FID_UNSYNCEDLYRICS)))
   {
-    tag->RemoveFrame(pFrame);
+    pFrame = tag->RemoveFrame(pFrame);
+    delete pFrame;
     nRemoved++;
   }
 
@@ -704,7 +715,8 @@ size_t ID3_RemoveLyricist(ID3_Tag *tag)
 
   while ((pFrame = tag->Find(ID3FID_LYRICIST)))
   {
-    tag->RemoveFrame(pFrame);
+    pFrame = tag->RemoveFrame(pFrame);
+    delete pFrame;
     nRemoved++;
   }
 
@@ -734,7 +746,8 @@ ID3_Frame* ID3_AddSyncLyrics(ID3_Tag *tag, const char *lang, const char *desc,
   {
     if (bReplace && pFrameExist)
     {
-      tag->RemoveFrame (pFrameExist);
+      pFrameExist = tag->RemoveFrame (pFrameExist);
+      delete pFrameExist;
       pFrameExist = NULL;
     }
 
