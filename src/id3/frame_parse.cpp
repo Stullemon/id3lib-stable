@@ -1,4 +1,4 @@
-// $Id: frame_parse.cpp,v 1.8 1999/12/17 16:13:04 scott Exp $
+// $Id: frame_parse.cpp,v 1.9 1999/12/26 15:10:48 scott Exp $
 // 
 // This program is free software; you can distribute it and/or modify it under
 // the terms discussed in the COPYING file, which should have been included
@@ -33,7 +33,9 @@ void ID3_Frame::Parse(uchar *buffer, luint size)
     // concerned string fields in the frame what they are expected to parse
     // (ASCII or Unicode)
     if (ID3FN_TEXTENC == __apFields[i]->__eName)
+    {
       UpdateStringTypes();
+    }
   }
   
   __bHasChanged = false;
@@ -42,6 +44,9 @@ void ID3_Frame::Parse(uchar *buffer, luint size)
 }
 
 // $Log: frame_parse.cpp,v $
+// Revision 1.9  1999/12/26 15:10:48  scott
+// Minor reformatting.
+//
 // Revision 1.8  1999/12/17 16:13:04  scott
 // Updated opening comment block.
 //

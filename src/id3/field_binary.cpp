@@ -1,4 +1,4 @@
-// $Id: field_binary.cpp,v 1.9 1999/12/17 16:13:03 scott Exp $
+// $Id: field_binary.cpp,v 1.10 1999/12/26 15:10:48 scott Exp $
 // 
 // This program is free software; you can distribute it and/or modify it under
 // the terms discussed in the COPYING file, which should have been included
@@ -29,7 +29,9 @@ void ID3_Field::Set(const uchar *newData, luint newSize)
   {
     __sData = new uchar[newSize];
     if (NULL == __sData)
+    {
       ID3_THROW(ID3E_NoMemory);
+    }
       
     memcpy(__sData, newData, newSize);
     __ulSize = newSize;
@@ -45,7 +47,9 @@ void ID3_Field::Set(const uchar *newData, luint newSize)
 void ID3_Field::Get(uchar *buffer, luint buffLength)
 {
   if (NULL == buffer)
+  {
     ID3_THROW(ID3E_NoBuffer);
+  }
     
   if (__sData != NULL && __ulSize > 0)
   {
@@ -65,7 +69,9 @@ void ID3_Field::FromFile(const char *info)
   uchar *buffer;
   
   if (NULL == info)
+  {
     ID3_THROW(ID3E_NoData);
+  }
     
   temp = fopen(info, "rb");
   if (temp != NULL)
@@ -94,7 +100,9 @@ void ID3_Field::FromFile(const char *info)
 void ID3_Field::ToFile(const char *info)
 {
   if (NULL == info)
+  {
     ID3_THROW(ID3E_NoData);
+  }
     
   if ((__sData != NULL) && (__ulSize > 0))
   {
@@ -112,14 +120,15 @@ void ID3_Field::ToFile(const char *info)
 }
 
 
-luint ID3_Field::ParseBinary(const uchar *buffer, const luint posn, const luint buffSize)
+size_t
+ID3_Field::ParseBinary(const uchar *buffer, luint posn, size_t nSize)
 {
-  luint bytesUsed = 0;
-  
-  bytesUsed = buffSize - posn;
+  size_t bytesUsed = nSize - posn;
   
   if (__lFixedLength != -1)
+  {
     bytesUsed = MIN(__lFixedLength, bytesUsed);
+  }
     
   Set(&buffer[posn], bytesUsed);
   
@@ -129,7 +138,8 @@ luint ID3_Field::ParseBinary(const uchar *buffer, const luint posn, const luint 
 }
 
 
-luint ID3_Field::RenderBinary(uchar *buffer)
+luint 
+ID3_Field::RenderBinary(uchar *buffer)
 {
   luint bytesUsed = 0;
   
@@ -144,6 +154,9 @@ luint ID3_Field::RenderBinary(uchar *buffer)
 
 
 // $Log: field_binary.cpp,v $
+// Revision 1.10  1999/12/26 15:10:48  scott
+// Minor reformatting.
+//
 // Revision 1.9  1999/12/17 16:13:03  scott
 // Updated opening comment block.
 //

@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.12 1999/12/17 16:13:04 scott Exp $
+// $Id: field_string_unicode.cpp,v 1.13 1999/12/26 15:10:48 scott Exp $
 // 
 // This program is free software; you can distribute it and/or modify it under
 // the terms discussed in the COPYING file, which should have been included
@@ -183,9 +183,10 @@ luint ID3_Field::GetNumTextItems(void)
 }
 
 
-luint ID3_Field::ParseUnicodeString(const uchar *buffer, const luint posn, const luint buffSize)
+size_t 
+ID3_Field::ParseUnicodeString(const uchar *buffer, luint posn, size_t nSize)
 {
-  luint nBytes = 0;
+  size_t nBytes = 0;
   unicode_t *temp = NULL;
   if (__lFixedLength != -1)
   {
@@ -195,7 +196,7 @@ luint ID3_Field::ParseUnicodeString(const uchar *buffer, const luint posn, const
   {
     if (__ulFlags & ID3FF_NULL)
     {
-      while ((posn + nBytes) < buffSize &&
+      while ((posn + nBytes) < nSize &&
              !(buffer[posn + nBytes] == 0 && 
                buffer[posn + nBytes + 1] == 0))
       {
@@ -204,14 +205,14 @@ luint ID3_Field::ParseUnicodeString(const uchar *buffer, const luint posn, const
     }
     else
     {
-      nBytes = buffSize - posn;
+      nBytes = nSize - posn;
     }
   }
   
   if (nBytes > 0)
   {
     // Sanity check our indices and sizes before we start copying memory
-    if ((nBytes > buffSize) || (posn + nBytes > buffSize))
+    if ((nBytes > nSize) || (posn + nBytes > nSize))
     {
       ID3_THROW_DESC(ID3E_BadData, "field information invalid");
     }
@@ -331,6 +332,9 @@ luint ID3_Field::RenderUnicodeString(uchar *buffer)
 }
 
 // $Log: field_string_unicode.cpp,v $
+// Revision 1.13  1999/12/26 15:10:48  scott
+// Minor reformatting.
+//
 // Revision 1.12  1999/12/17 16:13:04  scott
 // Updated opening comment block.
 //

@@ -1,4 +1,4 @@
-// $Id: field_string_ascii.cpp,v 1.15 1999/12/23 15:56:50 scott Exp $
+// $Id: field_string_ascii.cpp,v 1.16 1999/12/26 15:10:48 scott Exp $
 // 
 // This program is free software; you can distribute it and/or modify it under
 // the terms discussed in the COPYING file, which should have been included
@@ -120,9 +120,10 @@ void ID3_Field::Add(const char *sString)
 }
 
 
-luint ID3_Field::ParseASCIIString(const uchar *buffer, const luint posn, const luint buffSize)
+size_t 
+ID3_Field::ParseASCIIString(const uchar *buffer, luint posn, size_t nSize)
 {
-  luint bytesUsed = 0;
+  size_t bytesUsed = 0;
   char *temp = NULL;
   
   if (__lFixedLength != -1)
@@ -135,11 +136,11 @@ luint ID3_Field::ParseASCIIString(const uchar *buffer, const luint posn, const l
     // If the string isn't null-terminated or if it is null divided, we're
     // assured this is the last field of of the frame, and we can claim the
     // remaining bytes for ourselves
-    bytesUsed = buffSize - posn;
+    bytesUsed = nSize - posn;
   }
   else
   {
-    while ((posn + bytesUsed) < buffSize && buffer[posn + bytesUsed] != '\0')
+    while ((posn + bytesUsed) < nSize && buffer[posn + bytesUsed] != '\0')
     {
       bytesUsed++;
     }
@@ -168,7 +169,7 @@ luint ID3_Field::ParseASCIIString(const uchar *buffer, const luint posn, const l
   else
   {
     // Sanity check our indices and sizes before we start copying memory
-    if ((bytesUsed > buffSize) || (posn + bytesUsed > buffSize))
+    if ((bytesUsed > nSize) || (posn + bytesUsed > nSize))
     {
       ID3_THROW_DESC(ID3E_BadData, "field information invalid");
     }
@@ -232,6 +233,9 @@ luint ID3_Field::RenderASCIIString(uchar *buffer)
 }
 
 // $Log: field_string_ascii.cpp,v $
+// Revision 1.16  1999/12/26 15:10:48  scott
+// Minor reformatting.
+//
 // Revision 1.15  1999/12/23 15:56:50  scott
 // (RenderASCIIString): Rewrote the function so that it doesn't create
 // temporary dynamic storage, and so that it copies the number of

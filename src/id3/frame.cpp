@@ -1,4 +1,4 @@
-// $Id: frame.cpp,v 1.9 1999/12/17 16:13:04 scott Exp $
+// $Id: frame.cpp,v 1.10 1999/12/26 15:10:48 scott Exp $
 // 
 // This program is free software; you can distribute it and/or modify it under
 // the terms discussed in the COPYING file, which should have been included
@@ -21,8 +21,6 @@
 
 ID3_Frame::ID3_Frame(ID3_FrameID id)
 {
-  luint lwordsForFields = 0;
-  
   __ucVersion  = ID3_TAGVERSION;
   __ucRevision = ID3_TAGREVISION;
   __ulNumFields = 0;
@@ -30,21 +28,23 @@ ID3_Frame::ID3_Frame(ID3_FrameID id)
   __sGroupingID[0] = 0;
   __sEncryptionID[0] = 0;
   __bCompression = true;
+  __bReadOnly = false;
   
-  lwordsForFields =(((luint) ID3FN_LASTFIELDID) - 1) / (sizeof(luint) * 8);
+  luint lWordsForFields =
+    (((luint) ID3FN_LASTFIELDID) - 1) / (sizeof(luint) * 8);
   
-  if ((((luint) ID3FN_LASTFIELDID) - 1) %(sizeof(luint) * 8) != 0)
+  if ((((luint) ID3FN_LASTFIELDID) - 1) % (sizeof(luint) * 8) != 0)
   {
-    lwordsForFields++;
+    lWordsForFields++;
   }
     
-  __auiFieldBits = new luint[lwordsForFields];
+  __auiFieldBits = new luint[lWordsForFields];
   if (NULL == __auiFieldBits)
   {
     ID3_THROW(ID3E_NoMemory);
   }
 
-  for (luint i = 0; i < lwordsForFields; i++)
+  for (luint i = 0; i < lWordsForFields; i++)
   {
     __auiFieldBits[i] = 0;
   }
@@ -316,6 +316,9 @@ ID3_Frame::operator=( const ID3_Frame &rFrame )
 }
 
 // $Log: frame.cpp,v $
+// Revision 1.10  1999/12/26 15:10:48  scott
+// Minor reformatting.
+//
 // Revision 1.9  1999/12/17 16:13:04  scott
 // Updated opening comment block.
 //
