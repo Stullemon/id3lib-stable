@@ -8,16 +8,33 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-SUBDIRS = html latex man texinfo
 EXTRA_DIST =            \
+  Doxyfile              \
+  Doxyfile.in           \
   3d-logo.gif           \
   attilas_id3logo.jpg   \
   fillpx.gif            \
   id3guide.html         \
   id3lib-manual.php     \
+  id3lib.css            \
   id3v2.3.0.html        \
   id3v2.3.0.txt         \
   id3v2.gif             \
   id3v2.ico             \
   id3v2.png             \
-  index.html
+  index.html            \
+  index.html.in
+
+Doxyfile: $(srcdir)/Doxyfile.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+index.html: $(srcdir)/index.html.in  $(top_builddir)/config.status
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+docs: Doxyfile index.html
+	doxygen Doxyfile
+
+dist-hook: docs
+	@cp -R html latex $(distdir)
