@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.11 1999/11/30 20:12:35 scott Exp $
+// $Id: misc_support.cpp,v 1.12 1999/12/01 18:00:59 scott Exp $
 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -16,7 +16,7 @@
 #include <config.h>
 #endif
 
-#include <id3/misc_support.h>
+#include "misc_support.h"
 #include <stdlib.h>
 #include <ctype.h>
 
@@ -468,6 +468,11 @@ bool ID3_AddLyrics(ID3_Tag *tag, char *text)
 }
 
 // $Log: misc_support.cpp,v $
+// Revision 1.12  1999/12/01 18:00:59  scott
+// Changed all of the #include <id3/*> to #include "*" to help ensure that
+// the sources are searched for in the right places (and to make compiling under
+// windows easier).
+//
 // Revision 1.11  1999/11/30 20:12:35  scott
 // No more SIZE_SPECIFIC_TYPES code.  No more code for wchar's.  Typedefs
 // in sized_types.h guarantee that unicode_t will be two bytes.

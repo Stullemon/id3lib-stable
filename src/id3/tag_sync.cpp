@@ -1,4 +1,4 @@
-// $Id: tag_sync.cpp,v 1.6 1999/11/29 19:26:18 scott Exp $
+// $Id: tag_sync.cpp,v 1.7 1999/12/01 18:00:59 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -16,7 +16,7 @@
 #include <config.h>
 #endif
 
-#include <id3/tag.h>
+#include "tag.h"
 
 // To be used when reading an ID3v2-tag
 // Transforms all FF 00 sequences into FF
@@ -129,6 +129,11 @@ void ID3_Tag::UnSync(uchar *destData, luint destSize, uchar *sourceData, luint s
 
 
 // $Log: tag_sync.cpp,v $
+// Revision 1.7  1999/12/01 18:00:59  scott
+// Changed all of the #include <id3/*> to #include "*" to help ensure that
+// the sources are searched for in the right places (and to make compiling under
+// windows easier).
+//
 // Revision 1.6  1999/11/29 19:26:18  scott
 // Updated the leading license information of the file to reflect new maintainer.
 //

@@ -1,4 +1,4 @@
-// $Id: header.cpp,v 1.6 1999/11/29 19:26:18 scott Exp $
+// $Id: header.cpp,v 1.7 1999/12/01 18:00:59 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -18,8 +18,8 @@
 
 #include <string.h>
 #include <memory.h>
-#include <id3/header.h>
-#include <id3/error.h>
+#include "header.h"
+#include "error.h"
 
 ID3_HeaderInfo ID3_VersionInfo[] =
   {
@@ -77,6 +77,11 @@ void ID3_Header::SetFlags(luint newFlags)
 }
 
 // $Log: header.cpp,v $
+// Revision 1.7  1999/12/01 18:00:59  scott
+// Changed all of the #include <id3/*> to #include "*" to help ensure that
+// the sources are searched for in the right places (and to make compiling under
+// windows easier).
+//
 // Revision 1.6  1999/11/29 19:26:18  scott
 // Updated the leading license information of the file to reflect new maintainer.
 //

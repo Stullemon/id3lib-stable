@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.9 1999/11/29 19:26:18 scott Exp $
+// $Id: field.cpp,v 1.10 1999/12/01 18:00:59 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -17,7 +17,7 @@
 #endif
 
 #include <string.h>
-#include <id3/field.h>
+#include "field.h"
 
 static ID3_FieldDef ID3FD_URL[] =
 { 
@@ -692,6 +692,11 @@ ID3_Field::Render(uchar *buffer)
 }
 
 // $Log: field.cpp,v $
+// Revision 1.10  1999/12/01 18:00:59  scott
+// Changed all of the #include <id3/*> to #include "*" to help ensure that
+// the sources are searched for in the right places (and to make compiling under
+// windows easier).
+//
 // Revision 1.9  1999/11/29 19:26:18  scott
 // Updated the leading license information of the file to reflect new maintainer.
 //

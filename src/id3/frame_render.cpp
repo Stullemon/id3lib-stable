@@ -1,4 +1,4 @@
-// $Id: frame_render.cpp,v 1.6 1999/11/29 19:26:18 scott Exp $
+// $Id: frame_render.cpp,v 1.7 1999/12/01 18:00:59 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -18,8 +18,8 @@
 
 #include <string.h>
 #include <memory.h>
-#include <id3/tag.h>
-#include <id3/misc_support.h>
+#include "tag.h"
+#include "misc_support.h"
 #include <zlib.h>
 
 luint ID3_Frame::Render(uchar *buffer)
@@ -141,6 +141,11 @@ luint ID3_Frame::Render(uchar *buffer)
 }
 
 // $Log: frame_render.cpp,v $
+// Revision 1.7  1999/12/01 18:00:59  scott
+// Changed all of the #include <id3/*> to #include "*" to help ensure that
+// the sources are searched for in the right places (and to make compiling under
+// windows easier).
+//
 // Revision 1.6  1999/11/29 19:26:18  scott
 // Updated the leading license information of the file to reflect new maintainer.
 //
