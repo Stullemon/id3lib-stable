@@ -43,6 +43,7 @@ the_headers =                   \
   externals.h                   \
   field.h                       \
   frame.h                       \
+  globals.h                     \
   header.h                      \
   header_frame.h                \
   header_tag.h                  \
