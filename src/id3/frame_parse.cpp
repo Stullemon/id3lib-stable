@@ -1,4 +1,4 @@
-// $Id: frame_parse.cpp,v 1.9 1999/12/26 15:10:48 scott Exp $
+// $Id: frame_parse.cpp,v 1.10 1999/12/27 05:55:57 scott Exp $
 // 
 // This program is free software; you can distribute it and/or modify it under
 // the terms discussed in the COPYING file, which should have been included
@@ -26,7 +26,7 @@ void ID3_Frame::Parse(uchar *buffer, luint size)
   
   for (i = 0; i < __ulNumFields; i++)
   {
-    __apFields[i]->SetVersion(__ucVersion, __ucRevision);
+    __apFields[i]->SetVersion(__FrmHdr.GetVersion(), __FrmHdr.GetRevision());
     posn += __apFields[i]->Parse(buffer, posn, size);
     
     // if we just parsed a TEXTENC field, we'd better tell the rest of the
@@ -44,6 +44,10 @@ void ID3_Frame::Parse(uchar *buffer, luint size)
 }
 
 // $Log: frame_parse.cpp,v $
+// Revision 1.10  1999/12/27 05:55:57  scott
+// (Parse): Moved header processing tasks to the header object, now a
+// member of ID3_Frame.
+//
 // Revision 1.9  1999/12/26 15:10:48  scott
 // Minor reformatting.
 //
