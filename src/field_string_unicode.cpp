@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.20 2000/09/21 22:52:56 eldamitri Exp $
+// $Id: field_string_unicode.cpp,v 1.21 2000/09/27 08:28:19 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include "field_impl.h"
 #include "utils.h"
+#include "reader_decorators.h"
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
@@ -111,7 +112,7 @@ size_t ID3_FieldImpl::Set_i(const unicode_t *string, size_t size)
     _num_items = 1;
   }
 
-  return MIN(_chars, size);
+  return id3::min(_chars, size);
 }
 
 size_t ID3_FieldImpl::Set(const unicode_t *string)
@@ -125,7 +126,7 @@ size_t ID3_FieldImpl::Set(const unicode_t *string)
     }
     else
     {
-      len = this->Set_i(string, ucslen(string));
+      len = this->Set_i(string, id3::ucslen(string));
     }
   }
   return len;
@@ -199,7 +200,7 @@ size_t ID3_FieldImpl::Add(const unicode_t *str)
     }
     else
     {
-      len = this->Add_i(str, ucslen(str));
+      len = this->Add_i(str, id3::ucslen(str));
     }
   }
   return len;
@@ -234,7 +235,7 @@ size_t ID3_FieldImpl::Get(unicode_t *buffer, size_t maxLength) const
       buffer != NULL && maxLength > 0)
   {
     size_t size = this->Size();
-    length = MIN(maxLength, size);
+    length = id3::min(maxLength, size);
     memcpy((void *)buffer, (void *)_unicode, length * 2);
     if (length < maxLength)
     {
@@ -274,7 +275,7 @@ size_t ID3_FieldImpl::Get(unicode_t *buffer, size_t maxLength, index_t itemNum) 
       {
         break;
       }
-      cur += ucslen(cur) + 1;
+      cur += id3::ucslen(cur) + 1;
       num++;
     }
     if (cur < end)
@@ -287,7 +288,7 @@ size_t ID3_FieldImpl::Get(unicode_t *buffer, size_t maxLength, index_t itemNum) 
       }
       else
       {
-        length = ucslen(cur);
+        length = id3::ucslen(cur);
       }
       ::memcpy((void *)buffer, (void *)cur, length * 2);
       if (length < maxLength)
@@ -314,78 +315,52 @@ size_t ID3_FieldImpl::GetNumTextItems() const
   return _num_items;
 }
 
-
-size_t 
-ID3_FieldImpl::ParseUnicodeString(const uchar *buffer, size_t nSize)
+void ID3_FieldImpl::ParseUnicodeString(ID3_Reader& reader)
 {
-  size_t nChars = 0;
-  const unicode_t* unicode = (const unicode_t*) buffer;
-
-  if (_fixed_length > 0)
+  ID3D_NOTICE( "ID3_Frame::ParseUText(): reader.getBeg() = " << reader.getBeg() );
+  ID3D_NOTICE( "ID3_Frame::ParseUText(): reader.getCur() = " << reader.getCur() );
+  ID3D_NOTICE( "ID3_Frame::ParseUText(): reader.getEnd() = " << reader.getEnd() );
+  this->Clear();
+  id3::TextReader tr(reader);
+  tr.setEncoding(ID3TE_UNICODE);
+  
+  size_t fixed_size = this->Size();
+  if (fixed_size)
   {
-    nChars = _fixed_length;
+    // The string is of fixed length
+    id3::string unicode = tr.readText(fixed_size);
+    this->Set_i(unicode.data(), unicode.size() / 2);
+    ID3D_NOTICE( "ID3_Frame::ParseUText(): fixed size string = " << unicode );
   }
-  else if (!(_flags & ID3FF_CSTR) || (_flags & ID3FF_LIST))
-  {
-    // If the string isn't null-terminated or if it is null divided, we're
-    // assured this is the last field of of the frame, and we can claim the
-    // remaining bytes for ourselves
-    nChars = nSize / 2;
-  }
-  else
-  {
-    // it would be nice to use ucslen to find nBytes, but the buffer might be
-    // invalid, so there might not be a null character to mark the end of the
-    // string
-    while (nChars < (nSize / 2) && unicode[nChars] != NULL_UNICODE)
-    {
-      nChars++;
-    }
-  }
-
-  if (nChars == 0)
-  {
-    this->Set_i(static_cast<const char *>(NULL), 0);
-  }
-  // This check needs to come before the check for ID3FF_CSTR
   else if (_flags & ID3FF_LIST)
   {
-    const unicode_t* cur = unicode;
-    const unicode_t* end = unicode + nChars;
-    while (cur < end)
+    // lists are always the last field in a frame.  parse all remaining 
+    // characters in the reader
+    while (tr.peekChar() != ID3_Reader::END_OF_READER)
     {
-      size_t length = ucslen(cur);
-      // sanity check!
-      if (length + cur > end)
-      {
-        length = end - cur;
-      }
-      this->Add_i(cur, length);
-      cur += length + 1;
+      id3::string unicode = tr.readText();
+      this->Add_i((unicode_t *)unicode.data(), unicode.size() / 2);
+      ID3D_NOTICE( "ID3_Frame::ParseUText(): adding string = " << unicode );
     }
   }
-  // This check needs to come after the check for ID3FF_LIST
   else if (_flags & ID3FF_CSTR)
   {
-    this->Set_i(unicode, nChars);
+    id3::string unicode = tr.readText();
+    this->Set_i((unicode_t *)unicode.data(), unicode.size() / 2);
+    ID3D_NOTICE( "ID3_Frame::ParseUText(): null terminated string = " << unicode );
   }
   else
   {
-    // Sanity check our indices and sizes before we start copying memory
-    if (nChars * 2 > nSize)
+    id3::string unicode;
+    // not null terminated.  
+    const size_t BUFSIZ = 1024;
+    while (tr.peekChar() != ID3_Reader::END_OF_READER)
     {
-      nChars = nSize / 2;
+      unicode += tr.readText(BUFSIZ);
     }
-
-    this->Set_i(unicode, nChars);
+    this->Add_i((unicode_t *)unicode.data(), unicode.size() / 2);
+    ID3D_NOTICE( "ID3_Frame::ParseUText(): last field string = " << unicode );
   }
   
-  if (_flags & ID3FF_CSTR && !(_flags & ID3FF_LIST))
-  {
-    nChars++;
-  }
-    
   _changed = false;
-  
-  return nChars * 2;
 }
