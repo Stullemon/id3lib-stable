@@ -1,3 +1,58 @@
+2000-04-23  Scott Haug  <scott@id3.org>
+
+	* examples/demo_info.cpp: 
+	- Removed dependency on config.h
+
+	* examples/demo_convert.cpp: 
+	* examples/demo_tag.cpp: 
+	- Removed dependency on config.h
+	- Updated ID3_TagType constants to new names
+
+	* include/id3/error.h: 
+	Moved ID3_Err enumeration to globals.h
+
+	* include/id3/field.h: 
+	Moved ID3_FieldFlags, ID3_FieldType, ID3_VerCtl enums to globals.h
+
+	* include/id3/globals.h: 
+	- Remove ID3_ENUM_TYPE macro, renamed and redefined ID3_ENUM_DECL macro
+	  to ID3_ENUM to make it easier to use
+	- Added ID3_MACRO macro
+	- Renamed the ID3_SpecVersion, ID3_TatType enums to follow more
+	  consistent naming of all enums
+	- Moved LEN_V1 constants into ID3_V1Lengths enumeration, since array
+	  lengths can't be specified with consts in C
+	- Added ID3V1_Tag struct from tag.h
+	- Added ID3_FieldFlags, ID3_FieldType, ID3_VerCtl enums from field.h
+	- Added ID3_Err enum from error.h
+
+	* include/id3/tag.h: 
+	- Moved def of ID3_PATH_LENGTH from tag.h, since its def requires a 
+	  macro defined in config.h, which isn't accessible from the .h files.
+	- Moved LEN_V1 constants (renamed to ID3_V1_LEN constants) to globals.h
+	- Moved ID3V1_Tag struct declaration to globals.h
+	- Moved ID3_TagType enum declaration to globals.h
+	- Updated ID3_TagType constants to new names
+	- __sFileName is no longer a fixed-length char array, but rather a char
+	  pointer, since ID3_PATH_LENGTH can't be defined in tag.h
+
+	* src/tag.cpp: 
+	- Moved def of ID3_PATH_LENGTH from tag.h, since its def requires a 
+	  macro defined in config.h, which isn't accessible from the .h files.
+	- __sFileName is now dynamically allocated
+
+	* src/tag_file.cpp: 
+	- Updated ID3_TagType constants to new names
+
+	* src/tag_parse_v1.cpp: 
+	- Updated ID3_V1_LEN constants to new names
+
+	* src/tag_render.cpp: 
+	- Moved def of ID3_PATH_LENGTH from tag.h, since its def requires a 
+	  macro defined in config.h, which isn't accessible from the .h files.
+	- Updated ID3_V1_LEN constants to new names
+	
+
 2000-04-22  Scott Haug  <scott@id3.org>
 
 	* include/id3.h: 
@@ -238,7 +293,7 @@
 	* prj/id3lib.mak: 
 	Updated for new file paths.
 
-2000-04-17  Scott Thomas Haug  <sth2@cs.wustl.edu>
+2000-04-17  Scott Thomas Haug  <scott@id3.org>
 
 	* configure.in: 
 	(AC_OUTPUT): Removed doc's subdirs.
@@ -246,7 +301,7 @@
 	* doc/Makefile.am: 
 	Fixed bug which prevented successful 'make distcheck'
 
-2000-04-16  Scott Thomas Haug  <sth2@cs.wustl.edu>
+2000-04-16  Scott Thomas Haug  <scott@id3.org>
 
 	* TODO
 	* THANKS
@@ -287,7 +342,7 @@
 	Updated parameters of certain methods with const modifier to match 
 	declaration.
 
-2000-04-15  Scott Thomas Haug  <sth2@cs.wustl.edu>
+2000-04-15  Scott Thomas Haug  <scott@id3.org>
 
 	* doc/Makefile.am 
 	(EXTRA_DIST): Updated to reflect documentation changes
@@ -304,7 +359,7 @@
 	* doc/id3guide.html: 
 	Updated with version at http://www.id3.org
 
-2000-04-13  Scott Thomas Haug  <sth2@cs.wustl.edu>
+2000-04-13  Scott Thomas Haug  <scott@id3.org>
 
 	* include/id3/globals.h 
 	(ID3_FieldID): Renamed ID3FN_SYMBOL to ID3FN_ID
@@ -313,7 +368,7 @@
 	(ID3FD_LinkedInfo): Fixed bug in definition of LinkedInfo array.
 	(ID3FD_Registration): Renamed ID3FN_SYMBOL to ID3FN_ID
 
-2000-04-12  Scott Thomas Haug  <sth2@cs.wustl.edu>
+2000-04-12  Scott Thomas Haug  <scott@id3.org>
 
 	* configure.in
 	(AC_OUTPUT): Add id3com/Makefile and libprj/Makefile
@@ -324,7 +379,7 @@
 	* id3com/Makefile.am
 	(EXTRA_DIST): Removed files.txt
 
-2000-04-10  Scott Thomas Haug  <sth2@cs.wustl.edu>
+2000-04-10  Scott Thomas Haug  <scott@id3.org>
 
 	* include/id3/error.h
 	* include/id3/field.h
@@ -374,7 +429,7 @@
 	* src/id3/tag_parse.cpp 
 	(ProcessBinaries): Minor change to prevent warning in windows.
 
-2000-04-09  Scott Thomas Haug  <sth2@cs.wustl.edu>
+2000-04-09  Scott Thomas Haug  <scott@id3.org>
 
 	* include/id3/tag.h: 
 	Started updating comments for doxygen.
@@ -426,7 +481,7 @@
 	(RenderV2ToHandle): Changed conditional from '#if defined WIN32' to
 	'#if !defined HAVE_MKSTEMP'.
 
-2000-04-07  Scott Thomas Haug  <sth2@cs.wustl.edu>
+2000-04-07  Scott Thomas Haug  <scott@id3.org>
 
 	* configure.in: 
 	Updated to version 3.7.0, per Kamran's (MusicMatch) suggestion.  Other
@@ -482,7 +537,7 @@
 	* include/id3/dll.h: 
 	Added extern "C" (thanks John Adcock).
 
-2000-04-06  Scott Thomas Haug  <sth2@cs.wustl.edu>
+2000-04-06  Scott Thomas Haug  <scott@id3.org>
 
 	* configure.in: 
 	Changed occurrences of 'micro' to 'patch'.
@@ -516,7 +571,7 @@
 	* AUTHORS: 
 	Updated to reflect MusicMatch's release of project direction.
 
-2000-04-05  Scott Thomas Haug  <sth2@cs.wustl.edu>
+2000-04-05  Scott Thomas Haug  <scott@id3.org>
 
 	* include/id3/field.h
 	* include/id3/int28.h 
@@ -553,7 +608,7 @@
 	* COPYING: 
 	Switched to the LGPL.
 
-2000-01-04  Scott Thomas Haug  <sth2@cs.wustl.edu>
+2000-01-04  Scott Thomas Haug  <scott@id3.org>
 
 	* configure.in: 
 	Removed AC_C_CONST and AC_C_INLINE checks, since we're using a C++ compiler
@@ -595,7 +650,7 @@
 	standard C++, updated, rearranged, and removed (where necessary) 
 	#include directives.
 
-1999-12-27  Scott Thomas Haug  <sth2@cs.wustl.edu>
+1999-12-27  Scott Thomas Haug  <scott@id3.org>
 
 	* configure.in: 
 	* config.win32: 
@@ -626,7 +681,7 @@
 	(ID3_TAGIDSIZE): Added constant.
 	(class ID3_TagHeader): Minor return type changes for Size and Render.
 
-1999-12-26  Scott Thomas Haug  <sth2@cs.wustl.edu>
+1999-12-26  Scott Thomas Haug  <scott@id3.org>
 
 	* src/id3/frame.cpp 
 	(ID3_Frame): Added data member initialization list.  Updated to reflect
@@ -750,7 +805,7 @@
 	* src/id3/field_binary.cpp: 
 	Minor reformatting.
 
-1999-12-25  Scott Thomas Haug  <sth2@cs.wustl.edu>
+1999-12-25  Scott Thomas Haug  <scott@id3.org>
 
 	* include/id3/globals.h 
 	(ID3_FieldID): Reformatted.
@@ -784,7 +839,7 @@
 	(PrintUsage): Included new padding option.
 	(main): Added new option for padding the tag.
 
-1999-12-23  Scott Thomas Haug  <sth2@cs.wustl.edu>
+1999-12-23  Scott Thomas Haug  <scott@id3.org>
 
 	* src/id3/field_string_ascii.cpp 
 	(RenderASCIIString): Rewrote the function so that it doesn't create
@@ -799,7 +854,7 @@
 	* src/examples/demo_tag.cpp: 
 	Added check and include for config.h.
 
-1999-12-17  Scott Thomas Haug  <sth2@cs.wustl.edu>
+1999-12-17  Scott Thomas Haug  <scott@id3.org>
 
 	* [all .cpp and .h files in src/id3 and include/id3]
 	Updated opening comment block.
@@ -822,7 +877,7 @@
 	(ShouldUnsync): Added for use with GetUnSyncSize and UnSync.
 	(ReSync, GetUnSyncSize, UnSync): Renamed variables.  Restructured code.
 
-1999-12-16  Scott Thomas Haug  <sth2@cs.wustl.edu>
+1999-12-16  Scott Thomas Haug  <scott@id3.org>
 
 	* src/id3/tag_parse_v1.cpp: 
 	Fixed inclusion config.h (thanks Alexander Voronin).
@@ -830,7 +885,7 @@
 	* src/id3/tag_parse_lyrics3.cpp 
 	(ID3_CRLFtoLF): Fixed memory allocation bug (thanks Alexander Voronin).
 
-1999-12-15  Scott Thomas Haug  <sth2@cs.wustl.edu>
+1999-12-15  Scott Thomas Haug  <scott@id3.org>
 
 	* include/id3/field.h: 
 	Reformatted some comments.
@@ -838,12 +893,12 @@
 	* src/id3/field_string_ascii.cpp 
 	(ParseASCIIString): Better comment for assigning bytesUsed. 
 
-1999-12-13  Scott Thomas Haug  <sth2@cs.wustl.edu>
+1999-12-13  Scott Thomas Haug  <scott@id3.org>
 
 	* src/id3/tag_parse.cpp: 
 	Minor code cleanup.
 
-1999-12-12  Scott Thomas Haug  <sth2@cs.wustl.edu>
+1999-12-12  Scott Thomas Haug  <scott@id3.org>
 
 	* config.win32: 
 	Added definition of MAXPATHLEN.
@@ -901,7 +956,7 @@
 	file owner (TOWN), file size (TSIZ), International Standard
 	Recording Code (TSRC), and terms of use (USER).
 
-1999-12-08  Scott Thomas Haug  <sth2@cs.wustl.edu>
+1999-12-08  Scott Thomas Haug  <scott@id3.org>
 
 	* include/id3/misc_support.h 
 	(ID3_GetString): Added nItems parameter for retrieving a string from a
@@ -959,7 +1014,7 @@
 	id3lib to make copies of tags.  Not very useful in general, but nice
 	for testing the new operator= code.
 
-1999-12-05  Scott Thomas Haug  <sth2@cs.wustl.edu>
+1999-12-05  Scott Thomas Haug  <scott@id3.org>
 
 	* src/examples/Makefile.am
 	(check_PROGRAMS): Added id3lib
@@ -973,7 +1028,7 @@
 	temporary file, enabling only a single copy for rendering new id3v2
 	tag.  Used an fstream for the temporary file.
 
-1999-12-04  Scott Thomas Haug  <sth2@cs.wustl.edu>
+1999-12-04  Scott Thomas Haug  <scott@id3.org>
 
 	* src/id3/tag_parse_v1.cpp
 	(ParseID3v1): Added STR_V1_COMMENT_DESC as description parameter to 
@@ -1015,12 +1070,12 @@
 	(ID3_RemoveGenres): Added.  Removes any and all content type frames
 	(ID3_RemoveLyrics): Added.  Removes any and all unsynced lyrics frames
 
-1999-12-03  Scott Thomas Haug  <sth2@cs.wustl.edu>
+1999-12-03  Scott Thomas Haug  <scott@id3.org>
 
 	* Makefile.am 
 	(EXTRA_DIST): Added config.win32.
 
-1999-12-02  Scott Thomas Haug  <sth2@cs.wustl.edu>
+1999-12-02  Scott Thomas Haug  <scott@id3.org>
 
 	* NEWS: 
 	Added update for release 3.6.2.
@@ -1094,7 +1149,7 @@
 	Changed all of the #include <id3/*> to #include "*" to help ensure that
 	the sources are searched for in the right places.
 	 
-1999-12-01  Scott Thomas Haug  <sth2@cs.wustl.edu>
+1999-12-01  Scott Thomas Haug  <scott@id3.org>
 
 	* configure.in: 
 	Changed the release information for 3.6.1.
@@ -1186,7 +1241,7 @@
 	* src/examples/Makefile.am
 	(INCLUDES): Updated to point to new toplevel include directory.
 
-1999-11-30  Scott Thomas Haug  <sth2@cs.wustl.edu>
+1999-11-30  Scott Thomas Haug  <scott@id3.org>
 
 	* README:
 	Renamed ID3Lib to id3lib.
@@ -1255,7 +1310,7 @@
 	Removed.  Content now in src/id3/sized_types.h (a more appropriate
 	file).
 
-1999-11-29  Scott Thomas Haug  <sth2@cs.wustl.edu>
+1999-11-29  Scott Thomas Haug  <scott@id3.org>
 
 	* configure.in:
 	Added doc/*/Makefile to AC_OUPUT
@@ -1351,7 +1406,7 @@
 	* m4/Makefile.in: 
 	Added sh_types.m4 and lf_cxx_convenience.m4 to distribution.
 
-1999-11-26  Scott Thomas Haug  <sth2@cs.wustl.edu>
+1999-11-26  Scott Thomas Haug  <scott@id3.org>
 
 	* doc/contact.txt: 
 	Removed.  Relevant information updated and included in README and 
@@ -1381,7 +1436,7 @@
 	converted into various formats (html, latex, texinfo, man) using
 	doc++ or kdoc.
 
-1999-11-25  Scott Thomas Haug  <sth2@cs.wustl.edu>
+1999-11-25  Scott Thomas Haug  <scott@id3.org>
 
 	* Makefile.am 
 	(EXTRA_DIST): Added HISTORY and TODO
@@ -1531,7 +1586,7 @@
 	* doc/id3libhistory.txt: 
 	Rerformatted to fit within 80 characters.
 
-1999-11-19  Scott Thomas Haug  <sth2@cs.wustl.edu>
+1999-11-19  Scott Thomas Haug  <scott@id3.org>
 
 	* src/id3/tag_render.cpp
 	(RenderV1ToHandle): Added.  Adds or overwrites an id3v1 tag to a file
@@ -1660,7 +1715,7 @@
 
 	* src/examples/demo_strip.cpp: Initial revision.
 
-1999-11-16  Scott Thomas Haug  <sth2@cs.wustl.edu>
+1999-11-16  Scott Thomas Haug  <scott@id3.org>
 
 	* src/id3/tag_parse.cpp
 	(ProcessBinaries): Added try/catch block to catch any exceptions so
@@ -1691,7 +1746,7 @@
 	* src/id3/error.cpp 
 	(ID3_ErrorDescs): Added text entry for ID3E_BadData.
 
-1999-11-15  Scott Thomas Haug  <sth2@cs.wustl.edu>
+1999-11-15  Scott Thomas Haug  <scott@id3.org>
 
 	* configure.in
 	* configure: 
@@ -1830,7 +1885,7 @@
 	Adjusted so that the macros aren't installed.
 
 
-1999-11-04  Scott Thomas Haug  <sth2@cs.wustl.edu>
+1999-11-04  Scott Thomas Haug  <scott@id3.org>
 	* src/id3/dll.h:
 	* src/id3/error.h:
 	* src/id3/externals.h:
@@ -1874,7 +1929,7 @@
 	* configure.in
 	Removed reference to zlib
 	
-1999-11-02  Scott Thomas Haug  <sth2@cs.wustl.edu>
+1999-11-02  Scott Thomas Haug  <scott@id3.org>
 	* src/id3/dll.h:
 	* src/id3/error.h:
 	* src/id3/externals.h:
@@ -1911,7 +1966,7 @@
 	* src/id3/version.h:
 	Formatting changes (tab to spaces, excess space removal, etc.)
 	
-1999-11-01  Scott Thomas Haug  <sth2@cs.wustl.edu>
+1999-11-01  Scott Thomas Haug  <scott@id3.org>
 	* src/id3/dll.h:
 	* src/id3/dll_wrapper.cpp:
 	* src/id3/error.cpp:
