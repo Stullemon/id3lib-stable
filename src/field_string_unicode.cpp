@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.14 2000/05/29 02:01:56 eldamitri Exp $
+// $Id: field_string_unicode.cpp,v 1.15 2000/05/29 06:53:40 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -297,18 +297,16 @@ size_t ID3_Field::RenderUnicodeString(uchar *buffer) const
   
   if (NULL != __data && __size && nBytes)
   {
-    unicode_t *ourString = (unicode_t *) & buffer[sizeof(unicode_t)];
-    
     // we render at sizeof(unicode_t) bytes into the buffer because we make
     // room for the Unicode BOM
     memcpy(&buffer[sizeof(unicode_t)], (uchar *) __data, 
            nBytes - sizeof(unicode_t));
     
-    index_t i;
+    unicode_t *ourString = (unicode_t *) &buffer[sizeof(unicode_t)];
     // now we convert the internal dividers to what they are supposed to be
-    for (i = 0; i < nBytes; i++)
+    for (index_t i = sizeof(unicode_t); i < this->Size(); i++)
     {
-      if (ourString[i] == 1)
+      if (ourString[i] == 0x01)
       {
         unicode_t sub = L'/';
         
@@ -316,7 +314,7 @@ size_t ID3_Field::RenderUnicodeString(uchar *buffer) const
         {
           sub = L'\0';
         }
-          
+        
         ourString[i] = sub;
       }
     }
