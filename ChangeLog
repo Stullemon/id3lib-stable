@@ -1,3 +1,134 @@
+2000-09-14  Scott Haug  <scott@id3.org>
+
+	* NEWS:
+	* configure.in:
+	* id3lib.spec.in: 
+	Updated for 3.7.13 release
+
+	* src/uint28.cpp: 
+	Added check for iomanip
+
+	* src/tag_parse.cpp: 
+	Minor rearrangement of include files
+
+	* config.h.win32.in: 
+	Fixed versioning constants
+
+	* id3com/ID3Tag.cpp 
+	(get_VersionString): Fixed version constants
+
+	* include/id3/field.h 
+	(class ID3_Field): Made BinSize() public, HasChanged() public and const
+
+	* src/misc_support.cpp 
+	(ID3_GetString): Fixed bug with encoding type
+
+	* src/frame.cpp
+	(_InitFields): Access field id via method, not member
+	(Field): Access field id via method, not member
+
+	* src/field.cpp 
+	(HasChanged): changed to const
+
+	* examples/demo_info.cpp
+	(PrintInformation): Adjustment for new indexing in IPLS
+
+	* src/field_string_ascii.cpp
+	* src/field_string_unicode.cpp: 
+	A complete reimplementation for text strings.  Rather than storing all
+	text strings as unicode, requiring extra copies for every Set and Get,
+	the field object stores a union of a char* and unicode_t* pointer,
+	converting back and forth only when necessary.  The result is a more
+	efficient, easier-to-maintain implementation.
+
+	* src/misc_support.cpp 
+	(ID3_GetString): New implementation that retrieves entire string
+	(ID3_GetString): Indexing is no longer off by 1
+
+	* src/frame_parse.cpp 
+	(Parse): No longer catches exceptions (none thrown in field objects)
+
+	* src/frame.cpp 
+	(_InitFields): Fields initialized with field def object, rather than
+	manually copying the members
+
+	* src/field_integer.cpp 
+	(Set): New implementation that is sensitive to the type of field, new
+	data members
+	(ParseInteger): New implementation that is sensitive to the fixed
+	length (if any)
+	(RenderInteger): Now renders _integer directly
+
+	* src/field_binary.cpp 
+	(Set): Now returns number of bytes set; doesn't allocate new memory
+	for a fixed-length field
+	(ParseBinary): Change to take advantage of Set's return value
+
+	* src/field.cpp 
+	(ID3_Field): Bug fix; all member variables set appropriately before 
+	calling Clear()
+	(~ID3_Field): No longer calls Clear() to free memory, as Clear() will
+	allocate it for fixed-length fields
+	(Clear): Now ensures fixed-length fields have memory allocated
+	appropriately
+
+	* include/id3/field.h 
+	(class ID3_Field): All Set() and Add() methods now return number of 
+	bytes that were set or added
+
+	* src/field_binary.cpp 
+	(Set): New implementation that is sensitive to the type of field, new
+	data members
+	(Get): New implementation that is sensitive to the type of field, new
+	data members; returns nothing if field isn't binary
+	(FromFile): New implementation that is sensitive to the type of field, 
+	new data members
+	(ToFile): New implementation that is sensitive to the type of field,
+	new data members
+
+	* src/field.cpp 
+	(ID3FD_GeneralText): All language fields changeed back to text strings
+	rather than binary due to improved implementation of text strings
+	(ID3_Field): New constructor implementation w/ID3_FieldDef as param
+	(Clear): New implementation that is sensitive to the type of field
+	(Size, BinSize): new implementations for Size() and BinSize(); Size()
+	calculates the number of characters in a text string or the number of
+	bytes in anythings else, BinSize calculates the number of bytes in the
+	rendered field given the current encoding, etc.
+	(Render): Now calls same rendering function for both types of strings
+	(operator=): Will only assign fields that are the same type; new field
+	type-sensitive implementation
+	(SetEncoding): Now reponsible for changing the underlying encoding of
+	the string if a change is requested
+
+	* include/id3/misc_support.h: 
+	- added ID3_GetString(const ID3_Frame*, ID3FieldID) for retrieving
+	  entire ascii string
+	- ID3_GetString(const ID3_Frame*, ID3_FieldID, size_t) no longer has
+	  default parameter
+
+	* include/id3/field.h 
+	(struct ID3_FieldDef): Renamed members to be consistent with naming
+	convention in rest of library
+	(class ID3_Field): 
+	- Size() no longer implemented in the header
+	- Get() now checks to make sure this is an integer field
+	- added Get(char*, size_t) method for retrieving entire ascii string
+	- removed default parameter of Get(char*, size_t, index_t); indexing
+	  now starts at 0
+	- added Get(unicode_t*, size_t) for retrieving entire unicode string
+	- removed default parameter of Get(unicode_t*, size_t, index_t); 
+	  indexing now starts at 0
+	- Get(uchar*, size_t) now returns the number of bytes retrieved
+	- BinSize() no longer has a parameter
+	- Added Set_i and Add_i methods
+	- Added (private) ID3_Field(const ID3_FieldDef&) constructor
+	- Member variables that don't change are now const
+	- Field data no longer represented by _data; rather, a union of the
+	  various types of representations is used
+	- field size is now a union: _chars for text strings, _bytes for 
+	  everything else
+
 2000-09-11  Scott Haug  <scott@id3.org>
 
 	* include/id3.h

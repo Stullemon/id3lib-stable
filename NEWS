@@ -1,7 +1,8 @@
-$Id: NEWS,v 1.22 2000/09/15 00:03:02 eldamitri Exp $
+$Id: NEWS,v 1.23 2000/09/15 00:04:35 eldamitri Exp $
 
 2000-09-07 Version 3.7.13
 
+* id3com is broken; maintainer has disappeared; anyone care to fix it?
 * Complete reimplementation of ID3_Field: cleaner, safer, faster, clearer, more
   efficient
 * Much more robust MusicMatch parsing
