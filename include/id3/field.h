@@ -1,4 +1,4 @@
-// $Id: field.h,v 1.23 2000/05/09 13:47:22 eldamitri Exp $
+// $Id: field.h,v 1.24 2000/05/10 01:50:14 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -109,7 +109,7 @@ struct ID3_FrameDef
  ** if you only plan to generate 3.0 tags.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: field.h,v 1.23 2000/05/09 13:47:22 eldamitri Exp $
+ ** @version $Id: field.h,v 1.24 2000/05/10 01:50:14 eldamitri Exp $
  ** \sa ID3_Tag
  ** \sa ID3_Frame
  ** \sa ID3_Err 
@@ -353,6 +353,8 @@ public:
   { return __spec_begin <= spec && spec <= __spec_end; }
 
   ID3_FieldID   GetID() const { return __id; }
+  //bool          SetEncoding(ID3_TextEnc enc);
+  //ID3_TextEnc   GetEncoding() const { return __enc; }
 
 private:
   luint         BinSize(bool withExtras = true) const;
@@ -371,7 +373,6 @@ private:
   ID3_V2Spec    __spec_begin;      // spec end
   ID3_V2Spec    __spec_end;        // spec begin
   luint         __flags;           // special field flags
-  //ID3_V2Spec    __spec;            // the spec being rendered
   bool          __changed;         // field changed since last parse/render?
   uchar        *__data;
   luint         __size;
