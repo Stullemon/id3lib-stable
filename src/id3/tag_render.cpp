@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.19 2000/04/08 04:44:37 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.20 2000/04/09 14:03:18 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -325,7 +325,7 @@ void ID3_Tag::RenderV2ToHandle(void)
   }
   else
   {
-#if defined WIN32
+#if !defined HAVE_MKSTEMP
 
     FILE *tempOut = tmpfile();
     if (NULL == tempOut)
@@ -450,6 +450,10 @@ luint ID3_Tag::PaddingSize(luint curSize) const
 
 
 // $Log: tag_render.cpp,v $
+// Revision 1.20  2000/04/09 14:03:18  eldamitri
+// (RenderV2ToHandle): Changed conditional from '#if defined WIN32' to
+// '#if !defined HAVE_MKSTEMP'.
+//
 // Revision 1.19  2000/04/08 04:44:37  eldamitri
 // Changed new ANSI-standard C++ include headers to old-style headers.
 // (RenderV2ToHandle): Added conditional code for rendering in windows.
