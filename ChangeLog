@@ -1,5 +1,25 @@
 2000-06-23  Scott Haug  <scott@id3.org>
 
+	* examples/test_remove.cpp 
+	(main): Now removes all frames to test rendering a frame-less tag.
+
+	* src/tag_render.cpp 
+	(RenderV2ToHandle): If the size of the v2 tag is 0, or there is nothing
+	to Render, then it now behaves just like Strip(ID3TT_ID3V2)
+
+	* examples/Makefile.am 
+	(check_PROGRAMS): Added 'findstr'
+
+	* examples/findstr.cpp: 
+	Initial revision.
+
+	* src/tag_parse_lyrics3.cpp 
+	(ParseLyrics3): Fixed seek value calculation which was giving warnings
+	when compiling under windows.
+
+	* src/tag_find.cpp 
+	(Find): Fixed bug which prevented empty strings from being found.
+
 	* examples/230-syncedlyrics.tag: 
 	Updated based on new conversion rules for lyrics3 v2.00
 
