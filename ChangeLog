@@ -1,3 +1,8 @@
+2000-06-23  Scott Haug  <scott@id3.org>
+
+	* examples/README.txt: 
+	Initial revision
+
 2000-06-23  John Adcock  <johnadcock@hotmail.com>
 
 	* libprj/id3lib.dsp
