@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.15 2000/04/07 04:34:28 eldamitri Exp $
+// $Id: tag_file.cpp,v 1.16 2000/04/08 04:41:38 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,14 +24,14 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#include <cstring>
-#include <iostream>
-#include <cstdio>
+#include <string.h>
+#include <iostream.h>
+#include <stdio.h>
 #include "tag.h"
 
 #if defined WIN32
-#include <windows.h>
-static int truncate(const char *path, off_t length)
+#  include <windows.h>
+static int truncate(const char *path, size_t length)
 {
   int result = -1;
   HANDLE fh;
@@ -54,12 +54,18 @@ static int truncate(const char *path, off_t length)
   
   return result;
 }
+
+// prevents a weird error I was getting compiling this under windows
+#  if defined CreateFile
+#    undef CreateFile
+#  endif
+
 #else
-#include <unistd.h>
+#  include <unistd.h>
 #endif
 
 #if defined HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 bool exists(const char *name)
@@ -81,6 +87,8 @@ bool exists(const char *name)
     
   return doesExist;
 }
+
+
 
 void ID3_Tag::CreateFile(void)
 {
@@ -337,6 +345,10 @@ luint ID3_Tag::Strip(const luint ulTagFlag)
 
 
 // $Log: tag_file.cpp,v $
+// Revision 1.16  2000/04/08 04:41:38  eldamitri
+// Changed new ANSI-standard C++ include headers to old-style headers.
+// Fixed minor problems for windows.
+//
 // Revision 1.15  2000/04/07 04:34:28  eldamitri
 // Added optional parameters to Link to make parsing of id3v1/lyrics3
 // tags optional.
