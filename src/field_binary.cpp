@@ -1,4 +1,4 @@
-// $Id: field_binary.cpp,v 1.10 2000/05/28 03:40:56 eldamitri Exp $
+// $Id: field_binary.cpp,v 1.11 2000/06/06 12:22:19 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -33,7 +33,14 @@
 #include <config.h>
 #endif
 
-void ID3_Field::Set(const uchar *newData, size_t newSize)
+/** Copies the supplied unicode string to the field.
+ ** 
+ ** Again, like the string types, the binary Set() function copies the data
+ ** so you may dispose of the source data after a call to this method.
+ **/
+void ID3_Field::Set(const uchar *newData, //< The data to assign to this field.
+                    size_t newSize        //< The number of bytes to be copied
+                    )
 {
   Clear();
   
@@ -63,7 +70,19 @@ void ID3_Field::Set(const uchar *newData, size_t newSize)
 }
 
 
-void ID3_Field::Get(uchar *buffer, size_t buffLength) const
+/** Copies the field's internal string to the buffer.
+ ** 
+ ** It copies the data in the field into the buffer, for as many bytes as the
+ ** field contains, or the size of buffer, whichever is smaller.
+ ** 
+ ** \code
+ **   uchar buffer[1024];
+ **   myFrame.Field(ID3FN_DATA).Get(buffer, sizeof(buffer));
+ ** \endcode
+ **/
+void ID3_Field::Get(uchar *buffer,    //< Destination of retrieved string
+                    size_t max_bytes //< Max number of bytes to copy
+                    ) const
 {
   if (NULL == buffer)
   {
@@ -72,12 +91,19 @@ void ID3_Field::Get(uchar *buffer, size_t buffLength) const
     
   if (__data != NULL && __size > 0)
   {
-    memcpy(buffer, __data, MIN(buffLength, __size));
+    memcpy(buffer, __data, MIN(max_bytes, __size));
   }
 }
 
 
-void ID3_Field::FromFile(const char *info)
+/** Copies binary data from the file specified to the field.
+ ** 
+ ** \code
+ **   myFrame.Field(ID3FN_DATA).FromFile("mypic.jpg");
+ ** \endcode
+ **/
+void ID3_Field::FromFile(const char *info //< Source filename
+                         )
 {
   if (!info)
   {
@@ -108,7 +134,14 @@ void ID3_Field::FromFile(const char *info)
 }
 
 
-void ID3_Field::ToFile(const char *info) const
+/** Copies binary data from the field to the specified file.
+ ** 
+ ** \code
+ **   myFrame.Field(ID3FN_DATA).ToFile("output.bin");
+ ** \endcode
+ **/
+void ID3_Field::ToFile(const char *info //< Destination filename
+                       ) const
 {
   if (NULL == info)
   {
