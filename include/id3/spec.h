@@ -1,4 +1,4 @@
-// $Id: spec.h,v 1.1 2000/04/26 04:18:38 eldamitri Exp $
+// $Id: spec.h,v 1.2 2000/05/02 21:59:08 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -36,13 +36,13 @@ uchar      ID3_V2SpecToRev(ID3_V2Spec spec);
 class ID3_Speccable
 {
 public:
-  virtual void       SetSpec(const ID3_V2Spec) = 0;
+  virtual bool       SetSpec(ID3_V2Spec) = 0;
   virtual ID3_V2Spec GetSpec() const = 0;
 
   /* The following methods are deprecated */
-  virtual void       SetVersion(uchar ver, uchar rev)
+  virtual bool       SetVersion(uchar ver, uchar rev)
   {
-    this->SetSpec(ID3_VerRevToV2Spec(ver, rev));
+    return this->SetSpec(ID3_VerRevToV2Spec(ver, rev));
   }
   virtual uchar      GetVersion() const
   {
