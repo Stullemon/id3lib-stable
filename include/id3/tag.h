@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.34 2000/06/06 12:22:00 eldamitri Exp $
+// $Id: tag.h,v 1.35 2000/06/25 06:18:04 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -134,6 +134,7 @@ protected:
   size_t     ParseFromHandle();
   void       ParseID3v1();
   void       ParseLyrics3();
+  void       ParseMusicMatch();
   
 private:
   ID3_TagHeader __hdr;          // information relevant to the tag header
