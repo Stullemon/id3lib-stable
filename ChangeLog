@@ -1,5 +1,12 @@
 2000-05-02  Scott Haug  <scott@id3.org>
 
+	* src/field.cpp
+	(ID3_FrameDefs): Descriptions for PCNT, POSS, PRIV, and POPM were not
+	matched up with their appropriate frame def (thanks Daryl Pawluk)
+
+	* src/tag.cpp 
+	(SetPadding): Fixed minor bug (thanks Sasa Ðolic)
+
 	* include/id3.h: 
 	Minor bugfix for #endif (thanks John Southerland)
 
