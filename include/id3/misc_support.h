@@ -1,4 +1,4 @@
-// $Id: misc_support.h,v 1.18 2000/05/12 21:16:11 eldamitri Exp $
+// $Id: misc_support.h,v 1.19 2000/06/22 23:05:19 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -51,8 +51,10 @@ ID3_Frame* ID3_AddYear(ID3_Tag*, const char*, bool replace = false);
 size_t     ID3_RemoveYears(ID3_Tag*);
 
 char*      ID3_GetComment(const ID3_Tag*);
-ID3_Frame* ID3_AddComment(ID3_Tag *, const char*, 
-                          const char* desc = "", bool replace = false);
+ID3_Frame* ID3_AddComment(ID3_Tag*, const char*, bool = false);
+ID3_Frame* ID3_AddComment(ID3_Tag*, const char*, const char*, bool = false);
+ID3_Frame* ID3_AddComment(ID3_Tag*, const char*, const char*, const char*, 
+                          bool = false);
 size_t     ID3_RemoveComments(ID3_Tag*, const char * = NULL);
 
 char*      ID3_GetTrack(const ID3_Tag*);
@@ -68,16 +70,26 @@ ID3_Frame* ID3_AddGenre(ID3_Tag*, size_t ucGenre, bool replace = false);
 size_t     ID3_RemoveGenres(ID3_Tag*);
 
 char*      ID3_GetLyrics(const ID3_Tag*);
-ID3_Frame* ID3_AddLyrics(ID3_Tag*, const char *, bool replace = false);
+ID3_Frame* ID3_AddLyrics(ID3_Tag*, const char*, bool = false);
+ID3_Frame* ID3_AddLyrics(ID3_Tag*, const char*, const char*, bool = false);
+ID3_Frame* ID3_AddLyrics(ID3_Tag*, const char*, const char*, const char*,
+                         bool = false);
 size_t     ID3_RemoveLyrics(ID3_Tag*);
 
 char*      ID3_GetLyricist(const ID3_Tag*);
 ID3_Frame* ID3_AddLyricist(ID3_Tag *, const char *, bool replace = false);
 size_t     ID3_RemoveLyricist(ID3_Tag*);
 
-ID3_Frame* ID3_AddSyncLyrics(ID3_Tag *tag, const char *lang, const char *desc,
-                             const uchar *text, size_t textsize, 
-                             bool bReplace = false);
+ID3_Frame* ID3_AddSyncLyrics(ID3_Tag*, const uchar*, size_t, 
+                             ID3_TimeStampFormat, bool = false);
+ID3_Frame* ID3_AddSyncLyrics(ID3_Tag*, const uchar*, size_t, 
+                             ID3_TimeStampFormat, const char *, bool = false);
+ID3_Frame* ID3_AddSyncLyrics(ID3_Tag*, const uchar*, size_t, 
+                             ID3_TimeStampFormat, const char *, const char *,
+                             bool = false);
+ID3_Frame* ID3_AddSyncLyrics(ID3_Tag*, const uchar*, size_t, 
+                             ID3_TimeStampFormat, const char *, const char *,
+                             ID3_ContentType, bool = false);
 ID3_Frame* ID3_GetSyncLyricsInfo(const ID3_Tag *tag, const char *lang, 
                                  const char *desc, char &stampformat, 
                                  char &type, size_t &size);
