@@ -1,4 +1,4 @@
-// $Id: codepageconvert.cpp,v 1.1 2004/04/11 17:10:01 t1mpy Exp $
+// $Id: codepageconvert.cpp,v 1.2 2004/04/11 18:35:15 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -60,6 +60,7 @@
 using namespace dami;
 
 #if defined(HAVE_MS_CONVERT)
+/* functions for the MS Os'es */
 UINT GetMSCodePage(ID3_TextEnc enc)
 {
   switch(enc)
@@ -82,6 +83,7 @@ UINT GetMSCodePage(ID3_TextEnc enc)
   }
 }
 
+/* called on MS platforms from codepageconvert(), possible errors are in the comment of codepageconvert() */ 
 ID3_Err msconvert( const String *source, String *target, ID3_TextEnc sourceEnc, ID3_TextEnc targetEnc)
 {
   unsigned char *target_str = NULL;
@@ -144,6 +146,7 @@ ID3_Err msconvert( const String *source, String *target, ID3_TextEnc sourceEnc, 
   return ID3E_NoError;
 }
 #else
+/* platforms which have iconv use these two functions */
 const char* getIconvFormat(ID3_TextEnc enc)
 {
   const char* format = NULL;
@@ -166,7 +169,10 @@ const char* getIconvFormat(ID3_TextEnc enc)
   }
   return format;
 }
+
 #define ID3LIB_BUFSIZ 1024
+
+/* converts the actual text, possible errors are in comment of codepageconvert() */
 ID3_Err iconvconvert( const String *source, String *target, ID3_TextEnc sourceEnc, ID3_TextEnc targetEnc)
 {
   ID3_Err e;
@@ -233,6 +239,32 @@ ID3_Err iconvconvert( const String *source, String *target, ID3_TextEnc sourceEn
 #endif //defined(HAVE_MS_CONVERT)
 
 //codepage convert; converts between codepages
+/*
+  Usage:
+    String source;
+    String target;
+    ID3_Err e;
+
+    source = _text;//some text
+    e = codepageconvert(&source, &target, _enc, enc);
+    switch (e)
+    {//possible return codes
+      case ID3E_NoError:
+        _enc = enc;
+        _text = target;
+        break;
+      case ID3E_NoData:
+      case ID3E_NoBuffer:
+      case ID3E_BufferNotEmpty:
+      case ID3E_UnknownEncoding:
+      case ID3E_ConvertInitError:
+      case ID3E_ConvertError:
+      default:
+        break;
+    }
+
+
+*/
 ID3_Err dami::codepageconvert( const String *source, String *target, ID3_TextEnc sourceEnc, ID3_TextEnc targetEnc)
 {
   if (!source || source->size() == 0)
