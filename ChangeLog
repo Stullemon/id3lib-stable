@@ -1,5 +1,43 @@
 2000-05-28  Scott Haug  <scott@id3.org>
 
+	* examples/230-compressed.tag 
+	* examples/230-picture.tag 
+	* examples/230-unicode.tag: 
+	Removed the experimental flag from the tag headers and the file alter 
+	preservation flag from the frame headers
+
+	* examples/Makefile.am 
+	(check_PROGRAMS): Added testunicode and testcompression
+
+	* examples/demo_convert.cpp (main): 
+	* examples/demo_info.cpp (main): 
+	* examples/demo_tag.cpp (main): 
+	argc is now unsigned to prevent compiler warning
+
+	* examples/test_compression.cpp: 
+	* examples/test_unicode.cpp: 
+	Initial revision
+
+	* include/id3/frame.h 
+	(class ID3_Frame): Removed _UpdateStringTypes decl
+
+	* src/frame.cpp: 
+	Removed _UpdateStringTypes implementation (no longer needed)
+	(Size): Updated to not use _UpdateStringTypes
+	(operator=): Fixed to now extract complete info from copied frame
+
+	* src/field_string_unicode.cpp 
+	(RenderUnicodeString): Changed the byte order for rendering the BOM 
+	(this is unlikely to be the right solution, though---the unicode
+	support needs to be much better than this!)
+
+	* src/field.cpp 
+	(BinSize): Fixed bug that was reporting the wrong binary size for 
+	unicode strings
+
+	* include/id3/header_frame.h 
+	(class ID3_FrameHeader): Minor code reformatting
+
 	* src/tag_sync.cpp 
 	(ID3_ReSync): Fixed a bug in ReSync'ing that caused it to improperly
 	handle the last character
