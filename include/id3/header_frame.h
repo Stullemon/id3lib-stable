@@ -1,4 +1,4 @@
-// $Id: header_frame.h,v 1.12 2000/05/23 15:29:53 eldamitri Exp $
+// $Id: header_frame.h,v 1.13 2000/05/29 01:57:41 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -58,13 +58,13 @@ public:
   ID3_FrameHeader&    operator=(const ID3_FrameHeader&);
 
   bool SetCompression(bool b) { return this->SetFlags(COMPRESSION, b); }
-  bool SetEncryption(bool b) { return this->SetFlags(ENCRYPTION, b); }
-  bool SetGrouping(bool b) { return this->SetFlags(GROUPING, b); }
+  bool SetEncryption(bool b)  { return this->SetFlags(ENCRYPTION, b); }
+  bool SetGrouping(bool b)    { return this->SetFlags(GROUPING, b); }
 
   bool GetCompression() const { return __flags.test(COMPRESSION); }
-  bool GetEncryption() const { return __flags.test(ENCRYPTION); }
-  bool GetGrouping() const { return __flags.test(GROUPING); }
-  bool GetReadOnly() const { return __flags.test(READONLY); }
+  bool GetEncryption() const  { return __flags.test(ENCRYPTION); }
+  bool GetGrouping() const    { return __flags.test(GROUPING); }
+  bool GetReadOnly() const    { return __flags.test(READONLY); }
 
 protected:
   bool                SetFlags(uint16 f, bool b)
