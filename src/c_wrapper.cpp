@@ -1,4 +1,4 @@
-// $Id: c_wrapper.cpp,v 1.17 2001/09/08 02:33:41 shadrack Exp $
+// $Id: c_wrapper.cpp,v 1.18 2002/06/29 14:42:39 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -569,7 +569,7 @@ extern "C"
 
   ID3_C_EXPORT size_t
   ID3Field_GetUNICODEItem(const ID3Field *field, unicode_t *buffer, 
-                          size_t maxChars, index_t itemNum)
+                          size_t maxChars, size_t itemNum)
   {
     size_t numChars = 0;
   
@@ -617,7 +617,7 @@ extern "C"
 
   ID3_C_EXPORT size_t
   ID3Field_GetASCIIItem(const ID3Field *field, char *buffer, 
-                        size_t maxChars, index_t itemNum)
+                        size_t maxChars, size_t itemNum)
   {
     size_t numChars = 0;
   

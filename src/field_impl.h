@@ -1,5 +1,5 @@
 // -*- C++ -*- 
-// $Id: field_impl.h,v 1.3 2002/06/27 12:48:40 t1mpy Exp $
+// $Id: field_impl.h,v 1.4 2002/06/29 14:43:00 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -61,13 +61,13 @@ public:
   ID3_Field&    operator= (const char* s) { this->Set(s); return *this; }
   size_t        Set(const char* data);
   size_t        Get(char*, size_t) const;
-  size_t        Get(char*, size_t, index_t) const;
+  size_t        Get(char*, size_t, size_t) const;
   const char*   GetRawText() const;
-  const char*   GetRawTextItem(index_t) const;
+  const char*   GetRawTextItem(size_t) const;
   size_t        Add(const char* data);
 
   dami::String  GetText() const;
-  dami::String  GetTextItem(index_t) const;
+  dami::String  GetTextItem(size_t) const;
   size_t        SetText(dami::String);
   size_t        AddText(dami::String);
 
@@ -75,10 +75,10 @@ public:
   ID3_Field&    operator= (const unicode_t* s) { this->Set(s); return *this; }
   size_t        Set(const unicode_t*);
   size_t        Get(unicode_t *buffer, size_t) const;
-  size_t        Get(unicode_t *buffer, size_t, index_t) const;
+  size_t        Get(unicode_t *buffer, size_t, size_t) const;
   size_t        Add(const unicode_t*);
   const unicode_t* GetRawUnicodeText() const;
-  const unicode_t* GetRawUnicodeTextItem(index_t) const;
+  const unicode_t* GetRawUnicodeTextItem(size_t) const;
 
   // binary field functions
   size_t        Set(const uchar* buf, size_t size);

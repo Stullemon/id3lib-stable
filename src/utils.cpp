@@ -1,4 +1,4 @@
-// $Id: utils.cpp,v 1.20 2002/06/27 12:46:05 t1mpy Exp $
+// $Id: utils.cpp,v 1.21 2002/06/29 14:43:43 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -80,7 +80,7 @@ namespace
   {
     size_t size = data.size();
     String unicode(size * 2, '\0');
-    for (index_t i = 0; i < size; i++)
+    for (size_t i = 0; i < size; i++)
     {
       unicode[i*2+1] = toascii(data[i]);
     }
@@ -93,7 +93,7 @@ namespace
   {
     size_t size = data.size() / 2;
     String ascii(size, '\0');
-    for (index_t i = 0; i < size; i++)
+    for (size_t i = 0; i < size; i++)
     {
       ascii[i] = toascii(data[i*2+1]);
     }

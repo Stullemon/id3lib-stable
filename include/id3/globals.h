@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: globals.h,v 1.44 2001/08/07 11:58:23 shadrack Exp $
+/* $Id: globals.h,v 1.45 2002/06/29 14:44:37 t1mpy Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags Copyright
  * 1999, 2000 Scott Thomas Haug
@@ -93,10 +93,6 @@ typedef long           double ldoub;
 
 typedef uint16                unicode_t;
 typedef uint16                flags_t;
-/* this needs to be done for compatibility with Sun Solaris */
-#if !defined index_t
-#  define index_t               size_t
-#endif
 
 #define NULL_UNICODE ((unicode_t) '\0')
 

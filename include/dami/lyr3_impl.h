@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lyr3_impl.h,v 1.2 2002/06/27 12:49:04 t1mpy Exp $
+// $Id: lyr3_impl.h,v 1.3 2002/06/29 14:41:31 t1mpy Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -67,7 +67,7 @@ namespace dami
         string _title;
         Images _images;
 
-        Images::const_iterator getImage(index_t i) const
+        Images::const_iterator getImage(size_t i) const
         {
           Images::const_iterator end = _images.end();
           if (i < _images.size())
@@ -84,7 +84,7 @@ namespace dami
           return li;
         }
 
-        Images::iterator getImage(index_t i)
+        Images::iterator getImage(size_t i)
         {
           Images::iterator end = _images.end();
           if (i < _images.size())
@@ -132,19 +132,19 @@ namespace dami
           Image img(filename, desc, ts); 
           _images.push_back(img); 
         }
-        string getImageFilename(index_t i) const
+        string getImageFilename(size_t i) const
         { 
           return (i < this->getNumImages()) ? this->getImage(i)->_name : "";
         }
-        string getImageDescription(index_t i) const
+        string getImageDescription(size_t i) const
         { 
           return (i < this->getNumImages()) ? this->getImage(i)->_desc : "";
         }
-        string getImageTimestamp(index_t i) const
+        string getImageTimestamp(size_t i) const
         { 
           return (i < this->getNumImages()) ? this->getImage(i)->_ts : "";
         }
-        bool removeImage(index_t i)
+        bool removeImage(size_t i)
         {
           _images.erase(this->getImage(i));
           return true;

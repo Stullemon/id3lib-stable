@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lyr3.h,v 1.2 2002/06/27 12:49:10 t1mpy Exp $
+// $Id: lyr3.h,v 1.3 2002/06/29 14:41:18 t1mpy Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -95,10 +95,10 @@ namespace dami
 
         virtual size_t getNumImages() const = 0;
         virtual string addImage(string, string, string) = 0;
-        virtual string getImageFilename(index_t) = 0;
-        virtual string getImageDescription(index_t) = 0;
-        virtual string getImageTimestampe(index_t) = 0;
-        virtual bool   removeImage(index_t) = 0;
+        virtual string getImageFilename(size_t) = 0;
+        virtual string getImageDescription(size_t) = 0;
+        virtual string getImageTimestampe(size_t) = 0;
+        virtual bool   removeImage(size_t) = 0;
       };
     };
   };

@@ -1,4 +1,4 @@
-// $Id: frame.cpp,v 1.32 2000/10/24 07:00:08 eldamitri Exp $
+// $Id: frame.cpp,v 1.33 2002/06/29 14:43:18 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -42,7 +42,7 @@
  ** text frame.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: frame.cpp,v 1.32 2000/10/24 07:00:08 eldamitri Exp $
+ ** @version $Id: frame.cpp,v 1.33 2002/06/29 14:43:18 t1mpy Exp $
  ** @see ID3_Tag
  ** @see ID3_Field
  ** @see ID3_Err
@@ -154,7 +154,7 @@ size_t ID3_Frame::NumFields() const
 }
 
 /*
-ID3_Field* ID3_Frame::GetFieldNum(index_t index) const
+ID3_Field* ID3_Frame::GetFieldNum(size_t index) const
 {
   return _impl->GetFieldNum(index);
 }

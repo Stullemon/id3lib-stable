@@ -1,4 +1,4 @@
-// $Id: io_helpers.cpp,v 1.10 2002/06/27 12:45:31 t1mpy Exp $
+// $Id: io_helpers.cpp,v 1.11 2002/06/29 14:43:30 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -182,7 +182,7 @@ String io::readUnicodeText(ID3_Reader& reader, size_t len)
   }
   else
   {
-    for (index_t i = 0; i < len; i += 2)
+    for (size_t i = 0; i < len; i += 2)
     {
       if (!readTwoChars(reader, ch1, ch2))
       {

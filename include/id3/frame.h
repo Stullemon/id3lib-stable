@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: frame.h,v 1.39 2001/07/30 18:22:53 abscess Exp $
+// $Id: frame.h,v 1.40 2002/06/29 14:41:50 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -96,7 +96,7 @@ public:
 
   // Deprecated
   ID3_Field&  Field(ID3_FieldID name) const;
-  //ID3_Field*  GetFieldNum(index_t) const;
+  //ID3_Field*  GetFieldNum(size_t) const;
 };
 
 #endif /* _ID3LIB_FRAME_H_ */

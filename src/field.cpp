@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.43 2001/09/08 23:53:55 shadrack Exp $
+// $Id: field.cpp,v 1.44 2002/06/29 14:42:52 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -847,10 +847,10 @@ static  ID3_FrameDef ID3_FrameDefs[] =
  ** 
  ** Both types of strings support the GetNumTextItems() method.
  ** 
- ** An ASCII string field supports the Get(char*, size_t, index_t)), 
+ ** An ASCII string field supports the Get(char*, size_t, size_t)), 
  ** Set(const char*), Add(const char*), and operator=(const char*) methods.
  ** 
- ** A Unicode field also supports Get(unicode_t*, size_t, index_t),
+ ** A Unicode field also supports Get(unicode_t*, size_t, size_t),
  ** Set(const unicode_t*), Add(const unicode_t*), and 
  ** operator=(const unicode_t*).  Without elaborating, the Unicode
  ** methods behave exactly the same as their ASCII counterparts, taking
@@ -882,7 +882,7 @@ static  ID3_FrameDef ID3_FrameDefs[] =
  ** if you only plan to generate 3.0 tags.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: field.cpp,v 1.43 2001/09/08 23:53:55 shadrack Exp $
+ ** @version $Id: field.cpp,v 1.44 2002/06/29 14:42:52 t1mpy Exp $
  ** \sa ID3_Tag
  ** \sa ID3_Frame
  ** \sa ID3_Err 
@@ -983,7 +983,7 @@ ID3_FieldImpl::HasChanged() const
  ** any NULL-terminator.  The same holds true for Unicode---it returns the
  ** number of characters in the field, not bytes, and this does not include
  ** the Unicode BOM, which isn't put in a Unicode string obtained by the
- ** Get(unicode_t*, size_t, index_t) method anyway.  For binary and
+ ** Get(unicode_t*, size_t, size_t) method anyway.  For binary and
  ** integer fields, this returns the number of bytes in the field.
  ** 
  ** \code
@@ -1081,7 +1081,7 @@ ID3_FrameDef* ID3_FindFrameDef(ID3_FrameID id)
 {
   ID3_FrameDef  *info   = NULL;
 
-  for (index_t cur = 0; ID3_FrameDefs[cur].eID != ID3FID_NOFRAME; cur++)
+  for (size_t cur = 0; ID3_FrameDefs[cur].eID != ID3FID_NOFRAME; cur++)
   {
     if (ID3_FrameDefs[cur].eID == id)
     {
@@ -1098,7 +1098,7 @@ ID3_FindFrameID(const char *id)
 {
   ID3_FrameID fid = ID3FID_NOFRAME;
   
-  for (index_t cur = 0; ID3_FrameDefs[cur].eID != ID3FID_NOFRAME; cur++)
+  for (size_t cur = 0; ID3_FrameDefs[cur].eID != ID3FID_NOFRAME; cur++)
   {
     if (((strcmp(ID3_FrameDefs[cur].sShortTextID, id) == 0) &&
          strlen(id) == 3) ||
@@ -1239,7 +1239,7 @@ bool ID3_FieldImpl::SetEncoding(ID3_TextEnc enc)
  ** \endcode
  **
  ** @author Cedric Tefft
- ** @version $Id: field.cpp,v 1.43 2001/09/08 23:53:55 shadrack Exp $
+ ** @version $Id: field.cpp,v 1.44 2002/06/29 14:42:52 t1mpy Exp $
  **/
 
 
