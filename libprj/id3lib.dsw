@@ -1,9 +1,9 @@
 Microsoft Developer Studio Workspace File, Format Version 6.00
-# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+# WARNUNG: DIESE ARBEITSBEREICHSDATEI DARF NICHT BEARBEITET ODER GELÖSCHT WERDEN!
 
 ###############################################################################
 
-Project: "id3lib"=".\id3lib.dsp" - Package Owner=<4>
+Project: "id3lib"=.\id3lib.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -15,7 +15,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "zlib"=".\zlib\zlib.dsp" - Package Owner=<4>
+Project: "zlib"=..\zlib\prj\zlib.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
