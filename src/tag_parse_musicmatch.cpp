@@ -1,4 +1,4 @@
-// $Id: tag_parse_musicmatch.cpp,v 1.12 2000/10/09 04:30:48 eldamitri Exp $
+// $Id: tag_parse_musicmatch.cpp,v 1.13 2000/10/12 22:36:15 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -243,7 +243,7 @@ bool mm::parse(ID3_TagImpl& tag, ID3_Reader& rdr)
         
       // Our offset will be exactly 256 bytes prior to our potential metadata
       // section
-      int offset = possibleSizes[i] + 256;
+      size_t offset = possibleSizes[i] + 256;
       if (dataWindow.getCur() < offset)
       {
         // if our filesize is less than the offset, then it can't possibly
