@@ -92,7 +92,7 @@ check_PROGRAMS = id3info id3convert
 id3info_SOURCES = demo_info.cpp
 id3convert_SOURCES = demo_convert.cpp
 
-EXTRA_DIST =    ChangeLog               demo_main.cpp           jules.mp3               jules-badtag.mp3        jules-goodtag.mp3       readme.txt
+EXTRA_DIST =    ChangeLog               demo_main.cpp           jules.mp3               jules-badtag.mp3        jules-goodtag.mp3       221-compressed.tag      230-compressed.tag      230-picture.tag         230-unicode.tag         readme.txt
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
