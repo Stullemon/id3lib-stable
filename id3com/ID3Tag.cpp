@@ -150,7 +150,7 @@ STDMETHODIMP CID3Tag::FindFrame(eID3FrameTypes FrameID, VARIANT_BOOL CreateNewIf
 		if(CreateNewIfNotFound == VARIANT_TRUE && pFrame == NULL)
 		{
 			pFrame = new ID3_Frame((enum ID3_FrameID)FrameID);
-			m_ID3Tag->AddFrame(pFrame);
+			m_ID3Tag->AttachFrame(pFrame);
 		}
 		if(pFrame != NULL)
 		{
@@ -726,8 +726,8 @@ STDMETHODIMP CID3Tag::FindFrameString(eID3FrameTypes FrameID, eID3FieldTypes Fie
 		if(CreateNewIfNotFound == VARIANT_TRUE && pFrame == NULL)
 		{
 			pFrame = new ID3_Frame((enum ID3_FrameID)FrameID);
-			m_ID3Tag->AddFrame(pFrame);
 			pFrame->Field((enum ID3_FieldID)FieldType) = FindString;
+                        m_ID3Tag->AttachFrame(pFrame);
 		}
 		if(pFrame != NULL)
 		{
