@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.10 2000/10/03 00:31:44 eldamitri Exp $
+# $Id: Makefile.am,v 1.11 2000/10/08 21:01:20 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -19,7 +19,9 @@ the_headers =                   \
   spec.h                        \
   reader.h                      \
   readers.h                     \
-  tag.h                         
+  tag.h                         \
+  writer.h                      \
+  writers.h                     
 
 id3includedir      = $(includedir)/id3
 id3include_HEADERS = $(the_headers)
@@ -39,4 +41,6 @@ noinst_HEADERS =                \
   readers_compressed.h          \
   strings.h                     \
   uint28.h                      \
-  utils.h
+  utils.h                       \
+  writer_decorators.h           \
+  writers_compressed.h          
