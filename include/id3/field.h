@@ -1,4 +1,4 @@
-// $Id: field.h,v 1.36 2000/09/21 21:28:35 eldamitri Exp $
+// $Id: field.h,v 1.37 2000/09/27 07:51:47 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,6 +28,8 @@
 #define _ID3LIB_FIELD_H_
 
 #include "globals.h"
+
+class ID3_Reader;
 
 class ID3_Field
 {
@@ -78,6 +80,7 @@ public:
 
   virtual size_t        Render(uchar *buffer) const = 0;
   virtual size_t        Parse(const uchar *buffer, size_t buffSize) = 0;
+  virtual void          Parse(ID3_Reader&) = 0;
   virtual bool          HasChanged() const = 0;
 
 protected:
