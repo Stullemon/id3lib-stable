@@ -1,4 +1,4 @@
-// $Id: utils.cpp,v 1.23 2002/06/29 17:37:30 t1mpy Exp $
+// $Id: utils.cpp,v 1.24 2002/07/01 14:03:09 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -42,14 +42,12 @@
 #include "utils.h"
 
 #if defined HAVE_ICONV_H
-#if (defined(__STDC__) && defined(sun))
-// solaris uses a different iconv.h. i do not care so much on which api is better
-// but changing code to make solaris work breaks compilation on some more widely spread operating systems
-// several netsearches conclude that there doesn't seem to be nice macro, and that it's very hard to make to suit all compilers
-#undef HAVE_ICONV_H
-#else
+// check if we have all non-empty unicodes
+#if (defined(ID3_ICONV_FORMAT_UTF16BE) && defined(ID3_ICONV_FORMAT_UTF16) && defined(ID3_ICONV_FORMAT_UTF8) && defined(ID3_ICONV_FORMAT_ASCII))
 # include <iconv.h>
 # include <errno.h>
+#else
+# undef HAVE_ICONV_H
 #endif
 #endif
 
@@ -112,10 +110,13 @@ namespace
   {
     String target;
     size_t source_size = source.size();
-//    const char* source_str = source.data();
+#if defined(ID3LIB_ICONV_OLDSTYLE)
+    const char* source_str = source.data();
+#else
     char * source_str = new char[source.length()+1]; 
     source.copy(source_str, std::string::npos); 
     source_str[source.length()] = 0; 
+#endif
 
 #define ID3LIB_BUFSIZ 1024
     char buf[ID3LIB_BUFSIZ];
