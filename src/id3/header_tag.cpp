@@ -1,4 +1,4 @@
-// $Id: header_tag.cpp,v 1.4 1999/11/04 04:15:55 scott Exp $
+// $Id: header_tag.cpp,v 1.5 1999/11/15 20:19:36 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -13,6 +13,10 @@
 //  terms.
 //
 //  Mon Nov 23 18:34:01 1998
+
+#if defined HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <string.h>
 #include <memory.h>
@@ -43,8 +47,8 @@ luint ID3_TagHeader::Size(void)
 {
   luint bytesUsed = ID3_TAGHEADERSIZE;
   
-  if (info->hasExtHeader)
-    bytesUsed += info->extHeaderBytes + sizeof(luint);
+  if (__pInfo->bHasExtHeader)
+    bytesUsed += __pInfo->ulExtHeaderBytes + sizeof(luint);
     
   return bytesUsed;
 }
@@ -57,31 +61,31 @@ luint ID3_TagHeader::Render(uchar *buffer)
   memcpy(&buffer[bytesUsed], (uchar *) ID3_TAGID, strlen(ID3_TAGID));
   bytesUsed += strlen(ID3_TAGID);
   
-  buffer[bytesUsed++] = version;
-  buffer[bytesUsed++] = revision;
+  buffer[bytesUsed++] = __ucVersion;
+  buffer[bytesUsed++] = __ucRevision;
   
   // do the automatic flags
-  if (info->setExpBit)
-    flags |= ID3HF_EXPERIMENTAL;
+  if (__pInfo->bSetExpBit)
+    __ulFlags |= ID3HF_EXPERIMENTAL;
     
-  if (info->hasExtHeader)
-    flags |= ID3HF_EXTENDEDHEADER;
+  if (__pInfo->bHasExtHeader)
+    __ulFlags |= ID3HF_EXTENDEDHEADER;
     
   // set the flags byte in the header
-  buffer[bytesUsed++] = (uchar)(flags & 0xFF);
+  buffer[bytesUsed++] = (uchar)(__ulFlags & 0xFF);
   
-  int28 temp = dataSize;
+  int28 temp = __ulDataSize;
   
   for (luint i = 0; i < sizeof(luint); i++)
     buffer[bytesUsed++] = temp[i];
     
   // now we render the extended header
-  if (info->hasExtHeader)
+  if (__pInfo->bHasExtHeader)
   {
     luint i;
     
     for (i = 0; i < sizeof(luint); i++)
-      buffer[bytesUsed + i] = (uchar)((info->extHeaderBytes >> 
+      buffer[bytesUsed + i] = (uchar)((__pInfo->ulExtHeaderBytes >> 
                                        ((sizeof(luint) - i - 1) * 8)) & 0xFF);
       
     bytesUsed += i;
@@ -93,6 +97,9 @@ luint ID3_TagHeader::Render(uchar *buffer)
 }
 
 // $Log: header_tag.cpp,v $
+// Revision 1.5  1999/11/15 20:19:36  scott
+// Added include for config.h.  Made variable names more descriptive.
+//
 // Revision 1.4  1999/11/04 04:15:55  scott
 // Added cvs Id and Log tags to beginning and end of file, respectively.
 //
