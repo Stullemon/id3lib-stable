@@ -1,5 +1,33 @@
 2000-06-22  Scott Haug  <scott@id3.org>
 
+	* src/tag_parse_lyrics3.cpp 
+	(ParseLyrics3): 
+	- Makes use of newly defined AddLyrics and AddSyncLyrics functions in 
+	  misc_support
+	- INF field converts to COMM frame, not as the description field for
+	  SYLT
+
+	* src/misc_support.cpp 
+	(ID3_GetString): Catch block now catches an ID3_Error instead of an 
+	ID3_Err
+	(ID3_AddComment): Added several new implementations, varying based on
+	their parameters.  Description now defaults to "", language defaults to
+	"XXX" (for unknown)
+	(ID3_AddLyrics): Added several new implementations, varying based on
+	their parameters.  Description now defaults to "", language defaults to
+	"XXX" (for unknown)
+	(ID3_AddSyncLyrics): Added several new implementations, varying on
+	their parameters.  Description now defaults to "", language defaults to
+	"XXX" (for unknown), content type defaults to LYRICS.  Base function's
+	parameters reordered to be consistent with other functions.
+
+	* include/id3/misc_support.h: 
+	- Added new declarations for ID3_AddComment, ID3_AddLyrics, and
+	  ID3_AddSyncLyrics.  
+	- Reordered original ID3_AddSyncLyrics parameters to be consistent with
+	  rest of the functions.
+	- ID3_GetSyncLyricsInfo parameters' updated to match the enum types
+
 	* src/error.cpp 
 	(ID3_Error): Use strdup rather than strlen + new + strncpy
 	(~ID3_Error): Use array delete to free memory
