@@ -1,4 +1,4 @@
-// $Id: c_wrapper.cpp,v 1.6 2000/05/08 03:10:33 eldamitri Exp $
+// $Id: c_wrapper.cpp,v 1.7 2000/05/28 03:30:37 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -88,7 +88,7 @@ extern "C"
 
 
   ID3_C_EXPORT
-  bool ID3Tag_HasChanged(ID3Tag *tag)
+  bool ID3Tag_HasChanged(const ID3Tag *tag)
   {
     bool changed = false;
   
@@ -96,7 +96,7 @@ extern "C"
     {
       if (tag)
       {
-        changed = ((ID3_Tag * ) tag)->HasChanged();
+        changed = ((const ID3_Tag * ) tag)->HasChanged();
       }
     }
     catch (...)
@@ -172,13 +172,13 @@ extern "C"
 
 
   ID3_C_EXPORT
-  void ID3Tag_AddFrame(ID3Tag *tag, ID3Frame *frame)
+  void ID3Tag_AddFrame(ID3Tag *tag, const ID3Frame *frame)
   {
     try
     {
       if (tag)
       {
-        ((ID3_Tag *) tag)->AddFrame((ID3_Frame *) frame);
+        ((ID3_Tag *) tag)->AddFrame((const ID3_Frame *) frame);
       }
     }
     catch (...)
@@ -204,13 +204,13 @@ extern "C"
 
 
   ID3_C_EXPORT
-  void ID3Tag_AddFrames(ID3Tag *tag, ID3Frame *frames, luint num)
+  void ID3Tag_AddFrames(ID3Tag *tag, const ID3Frame *frames, size_t num)
   {
     try
     {
       if (tag)
       {
-        ((ID3_Tag *) tag)->AddFrames((ID3_Frame *) frames, num);
+        ((ID3_Tag *) tag)->AddFrames((const ID3_Frame *) frames, num);
       }
     }
     catch (...)
@@ -220,24 +220,26 @@ extern "C"
 
 
   ID3_C_EXPORT
-  void ID3Tag_RemoveFrame(ID3Tag *tag, ID3Frame *frame)
+  ID3Frame* ID3Tag_RemoveFrame(ID3Tag *tag, const ID3Frame *frame)
   {
+    ID3_Frame* rem_frame = NULL;
     try
     {
       if (tag)
       {
-        ((ID3_Tag *) tag)->RemoveFrame((ID3_Frame *) frame);
+        rem_frame = (((ID3_Tag *) tag)->RemoveFrame((const ID3_Frame *) frame));
       }
     }
     catch (...)
     {
     }
+    return (ID3Frame*) rem_frame;
   }
 
 
   ID3_C_EXPORT
-  ID3_Err ID3Tag_Parse(ID3Tag *tag, uchar header[ ID3_TAGHEADERSIZE ],
-                       uchar *buffer)
+  ID3_Err ID3Tag_Parse(ID3Tag *tag, const uchar header[ ID3_TAGHEADERSIZE ],
+                       const uchar *buffer)
   {
     try
     {
@@ -255,9 +257,9 @@ extern "C"
 
 
   ID3_C_EXPORT
-  luint ID3Tag_Link(ID3Tag *tag, char *fileName)
+  size_t ID3Tag_Link(ID3Tag *tag, const char *fileName)
   {
-    luint offset = 0;
+    size_t offset = 0;
   
     try
     {
@@ -293,7 +295,7 @@ extern "C"
   }
 
   ID3_C_EXPORT
-  ID3_Err ID3Tag_UpdateByTagType(ID3Tag *tag, const luint tag_type)
+  ID3_Err ID3Tag_UpdateByTagType(ID3Tag *tag, flags_t tag_type)
   {
     try
     {
@@ -312,7 +314,7 @@ extern "C"
 
 
   ID3_C_EXPORT
-  ID3_Err ID3Tag_Strip(ID3Tag *tag, luint ulTagFlags)
+  ID3_Err ID3Tag_Strip(ID3Tag *tag, flags_t ulTagFlags)
   {
     try
     {
@@ -331,7 +333,7 @@ extern "C"
 
 
   ID3_C_EXPORT
-  ID3Frame *ID3Tag_FindFrameWithID(ID3Tag *tag, ID3_FrameID id)
+  ID3Frame *ID3Tag_FindFrameWithID(const ID3Tag *tag, ID3_FrameID id)
   {
     ID3_Frame *frame = NULL;
   
@@ -339,7 +341,7 @@ extern "C"
     {
       if (tag)
       {
-        frame = ((ID3_Tag *) tag)->Find(id);
+        frame = ((const ID3_Tag *) tag)->Find(id);
       }
     }
     catch (...)
@@ -351,8 +353,8 @@ extern "C"
 
 
   ID3_C_EXPORT
-  ID3Frame *ID3Tag_FindFrameWithINT(ID3Tag *tag, ID3_FrameID id, 
-                                    ID3_FieldID fld, luint data)
+  ID3Frame *ID3Tag_FindFrameWithINT(const ID3Tag *tag, ID3_FrameID id, 
+                                    ID3_FieldID fld, uint32 data)
   {
     ID3_Frame *frame = NULL;
   
@@ -360,28 +362,7 @@ extern "C"
     {
       if (tag)
       {
-        frame = ((ID3_Tag *) tag)->Find(id, fld, data);
-      }
-    }
-    catch (...)
-    {
-    }
-    
-    return (ID3Frame *) frame;
-  }
-
-
-  ID3_C_EXPORT
-  ID3Frame *ID3Tag_FindFrameWithASCII(ID3Tag *tag, ID3_FrameID id, 
-                                      ID3_FieldID fld, char *data)
-  {
-    ID3_Frame *frame = NULL;
-  
-    try
-    {
-      if (tag)
-      {
-        frame = ((ID3_Tag *) tag)->Find(id, fld, data);
+        frame = ((const ID3_Tag *) tag)->Find(id, fld, data);
       }
     }
     catch (...)
@@ -393,8 +374,8 @@ extern "C"
 
 
   ID3_C_EXPORT
-  ID3Frame *ID3Tag_FindFrameWithUNICODE(ID3Tag *tag, ID3_FrameID id, 
-                                        ID3_FieldID fld, unicode_t *data)
+  ID3Frame *ID3Tag_FindFrameWithASCII(const ID3Tag *tag, ID3_FrameID id, 
+                                      ID3_FieldID fld, const char *data)
   {
     ID3_Frame *frame = NULL;
   
@@ -402,7 +383,7 @@ extern "C"
     {
       if (tag)
       {
-        frame = ((ID3_Tag *) tag)->Find(id, fld, data);
+        frame = ((const ID3_Tag *) tag)->Find(id, fld, data);
       }
     }
     catch (...)
@@ -414,15 +395,36 @@ extern "C"
 
 
   ID3_C_EXPORT
-  luint ID3Tag_NumFrames(ID3Tag *tag)
+  ID3Frame *ID3Tag_FindFrameWithUNICODE(const ID3Tag *tag, ID3_FrameID id, 
+                                        ID3_FieldID fld, const unicode_t *data)
   {
-    luint num = 0;
+    ID3_Frame *frame = NULL;
   
     try
     {
       if (tag)
       {
-        num = ((ID3_Tag *) tag)->NumFrames();
+        frame = ((const ID3_Tag *) tag)->Find(id, fld, data);
+      }
+    }
+    catch (...)
+    {
+    }
+    
+    return (ID3Frame *) frame;
+  }
+
+
+  ID3_C_EXPORT
+  size_t ID3Tag_NumFrames(const ID3Tag *tag)
+  {
+    size_t num = 0;
+  
+    try
+    {
+      if (tag)
+      {
+        num = ((const ID3_Tag *) tag)->NumFrames();
       }
     }
     catch (...)
@@ -434,7 +436,7 @@ extern "C"
 
 
   ID3_C_EXPORT
-  ID3Frame *ID3Tag_GetFrameNum(ID3Tag *tag, luint num)
+  ID3Frame *ID3Tag_GetFrameNum(const ID3Tag *tag, index_t num)
   {
     ID3_Frame *frame = NULL;
   
@@ -442,7 +444,7 @@ extern "C"
     {
       if (tag)
       {
-        frame = ((ID3_Tag *) tag)->GetFrameNum(num);
+        frame = ((const ID3_Tag *) tag)->GetFrameNum(num);
       }
     }
     catch (...)
@@ -534,7 +536,7 @@ extern "C"
 
 
   ID3_C_EXPORT
-  ID3_FrameID ID3Frame_GetID(ID3Frame *frame)
+  ID3_FrameID ID3Frame_GetID(const ID3Frame *frame)
   {
     ID3_FrameID id = ID3FID_NOFRAME;
   
@@ -542,7 +544,7 @@ extern "C"
     {
       if (frame)
       {
-        id = ((ID3_Frame *) frame)->GetID();
+        id = ((const ID3_Frame *) frame)->GetID();
       }
     }
     catch (...)
@@ -554,7 +556,7 @@ extern "C"
 
 
   ID3_C_EXPORT
-  ID3Field *ID3Frame_GetField(ID3Frame *frame, ID3_FieldID name)
+  ID3Field *ID3Frame_GetField(const ID3Frame *frame, ID3_FieldID name)
   {
     ID3_Field *field = NULL;
   
@@ -562,7 +564,7 @@ extern "C"
     {
       if (frame)
       {
-        field = &( ((ID3_Frame *) frame)->Field(name));
+        field = &( ((const ID3_Frame *) frame)->Field(name));
       }
     }
     catch (...)
@@ -590,13 +592,13 @@ extern "C"
 
 
   ID3_C_EXPORT
-  bool ID3Frame_GetCompression(ID3Frame *frame)
+  bool ID3Frame_GetCompression(const ID3Frame *frame)
   {
     try
     {
       if (frame)
       {
-        return ((ID3_Frame *) frame)->GetCompression();
+        return ((const ID3_Frame *) frame)->GetCompression();
       }
     }
     catch (...)
@@ -626,15 +628,15 @@ extern "C"
 
 
   ID3_C_EXPORT
-  luint ID3Field_Size(ID3Field *field)
+  size_t ID3Field_Size(const ID3Field *field)
   {
-    luint size = 0;
+    size_t size = 0;
   
     try
     {
       if (field)
       {
-        size = ((ID3_Field *) field)->Size();
+        size = ((const ID3_Field *) field)->Size();
       }
     }
     catch (...)
@@ -646,15 +648,15 @@ extern "C"
 
 
   ID3_C_EXPORT
-  luint ID3Field_GetNumTextItems(ID3Field *field)
+  size_t ID3Field_GetNumTextItems(const ID3Field *field)
   {
-    luint items = 0;
+    size_t items = 0;
   
     try
     {
       if (field)
       {
-        items = ((ID3_Field *) field)->GetNumTextItems();
+        items = ((const ID3_Field *) field)->GetNumTextItems();
       }
     }
     catch (...)
@@ -666,7 +668,7 @@ extern "C"
 
 
   ID3_C_EXPORT
-  void ID3Field_SetINT(ID3Field *field, luint data)
+  void ID3Field_SetINT(ID3Field *field, uint32 data)
   {
     try
     {
@@ -682,15 +684,15 @@ extern "C"
 
 
   ID3_C_EXPORT
-  luint ID3Field_GetINT(ID3Field *field)
+  uint32 ID3Field_GetINT(const ID3Field *field)
   {
-    luint value = 0;
+    uint32 value = 0;
   
     try
     {
       if (field)
       {
-        value = ((ID3_Field *) field)->Get();
+        value = ((const ID3_Field *) field)->Get();
       }
     }
     catch (...)
@@ -702,7 +704,7 @@ extern "C"
 
 
   ID3_C_EXPORT
-  void ID3Field_SetUNICODE(ID3Field *field, unicode_t *string)
+  void ID3Field_SetUNICODE(ID3Field *field, const unicode_t *string)
   {
     try
     {
@@ -718,16 +720,16 @@ extern "C"
 
 
   ID3_C_EXPORT
-  luint ID3Field_GetUNICODE(ID3Field *field, unicode_t *buffer, 
-                            luint maxChars, luint itemNum)
+  size_t ID3Field_GetUNICODE(const ID3Field *field, unicode_t *buffer, 
+                             size_t maxChars, index_t itemNum)
   {
-    luint numChars = 0;
+    size_t numChars = 0;
   
     try
     {
       if (field)
       {
-        numChars = ((ID3_Field *) field)->Get(buffer, maxChars, itemNum);
+        numChars = ((const ID3_Field *) field)->Get(buffer, maxChars, itemNum);
       }
     }
     catch (...)
@@ -739,7 +741,7 @@ extern "C"
 
 
   ID3_C_EXPORT
-  void ID3Field_AddUNICODE(ID3Field *field, unicode_t *string)
+  void ID3Field_AddUNICODE(ID3Field *field, const unicode_t *string)
   {
     try
     {
@@ -755,7 +757,7 @@ extern "C"
 
 
   ID3_C_EXPORT
-  void ID3Field_SetASCII(ID3Field *field, char *string)
+  void ID3Field_SetASCII(ID3Field *field, const char *string)
   {
     try
     {
@@ -771,16 +773,16 @@ extern "C"
 
 
   ID3_C_EXPORT
-  luint ID3Field_GetASCII(ID3Field *field, char *buffer, 
-                          luint maxChars, luint itemNum)
+  size_t ID3Field_GetASCII(const ID3Field *field, char *buffer, 
+                           size_t maxChars, index_t itemNum)
   {
-    luint numChars = 0;
+    size_t numChars = 0;
   
     try
     {
       if (field)
       {
-        numChars = ((ID3_Field *) field)->Get(buffer, maxChars, itemNum);
+        numChars = ((const ID3_Field *) field)->Get(buffer, maxChars, itemNum);
       }
     }
     catch (...)
@@ -792,7 +794,7 @@ extern "C"
 
 
   ID3_C_EXPORT
-  void ID3Field_AddASCII(ID3Field *field, char *string)
+  void ID3Field_AddASCII(ID3Field *field, const char *string)
   {
     try
     {
@@ -808,7 +810,7 @@ extern "C"
 
 
   ID3_C_EXPORT
-  void ID3Field_SetBINARY(ID3Field *field, uchar *data, luint size)
+  void ID3Field_SetBINARY(ID3Field *field, const uchar *data, size_t size)
   {
     try
     {
@@ -824,13 +826,13 @@ extern "C"
 
 
   ID3_C_EXPORT
-  void ID3Field_GetBINARY(ID3Field *field, uchar *buffer, luint buffLength)
+  void ID3Field_GetBINARY(const ID3Field *field, uchar *buffer, size_t buffLength)
   {
     try
     {
       if (field)
       {
-        ((ID3_Field *) field)->Get(buffer, buffLength);
+        ((const ID3_Field *) field)->Get(buffer, buffLength);
       }
     }
     catch (...)
@@ -840,7 +842,7 @@ extern "C"
 
 
   ID3_C_EXPORT
-  void ID3Field_FromFile(ID3Field *field, char *fileName)
+  void ID3Field_FromFile(ID3Field *field, const char *fileName)
   {
     try
     {
@@ -856,13 +858,13 @@ extern "C"
 
 
   ID3_C_EXPORT
-  void ID3Field_ToFile(ID3Field *field, char *fileName)
+  void ID3Field_ToFile(const ID3Field *field, const char *fileName)
   {
     try
     {
       if (field)
       {
-        ((ID3_Field *) field)->ToFile(fileName);
+        ((const ID3_Field *) field)->ToFile(fileName);
       }
     }
     catch (...)
