@@ -1,4 +1,4 @@
-# $Id: configure.in,v 1.12 1999/12/13 05:26:20 scott Exp $
+# $Id: configure.in,v 1.13 1999/12/27 06:15:35 scott Exp $
 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -14,12 +14,12 @@ AC_INIT(reconf)
 AM_CONFIG_HEADER(config.h)
 
 id3lib_version=3
-id3lib_revision=6
-id3lib_patch=2
+id3lib_revision=0
+id3lib_patch=6
 
 id3lib_release=$id3lib_version.$id3lib_revision.$id3lib_patch
 id3lib_name=id3lib
-id3lib_date="$Date: 1999/12/13 05:26:20 $UNDEFINED"
+id3lib_date="$Date: 1999/12/27 06:15:35 $UNDEFINED"
 
 AM_INIT_AUTOMAKE($id3lib_name,$id3lib_release)
 lt_ver=`expr $id3lib_version + $id3lib_revision`
@@ -130,6 +130,10 @@ AC_OUTPUT(                      \
 )
 
 # $Log: configure.in,v $
+# Revision 1.13  1999/12/27 06:15:35  scott
+# Changed release information from 3.6.2 to 3.0.6, to prepare for
+# future MusicMatch release to happen Real Soon Now.
+#
 # Revision 1.12  1999/12/13 05:26:20  scott
 # (AC_HAVE_HEADERS): Added check for sys/param.h.
 #
