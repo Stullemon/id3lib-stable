@@ -1,4 +1,4 @@
-// $Id: tag_parse.cpp,v 1.4 2000/04/26 03:42:52 eldamitri Exp $
+// $Id: tag_parse.cpp,v 1.5 2000/04/28 15:59:24 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -222,16 +222,6 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
           delete[] expBin;
         }
         
-        // here is where we call a special handler for this frame type if one
-        // is specified in the frame definition
-        {
-          ID3_FrameDef *frameInfo = ID3_FindFrameDef(id);
-          
-          if (frameInfo != NULL && frameInfo->parseHandler != NULL)
-          {
-            bShouldAttach = frameInfo->parseHandler(frame);
-          }
-        }
       }
       catch (ID3_Error&)
       {
@@ -460,6 +450,10 @@ luint ID3_Tag::ParseFromHandle(void)
 }
 
 // $Log: tag_parse.cpp,v $
+// Revision 1.5  2000/04/28 15:59:24  eldamitri
+// (ProcessBinaries): Removed parseHandler code (never used, and will
+// likely be replaced).
+//
 // Revision 1.4  2000/04/26 03:42:52  eldamitri
 // - Replaced version/revision uchar combination with ID3_V2Spec enums
 // - Deprecated {Get,Set}Version, GetRevision for {Get,Set}Spec
