@@ -1,4 +1,4 @@
-// $Id: reader.h,v 1.6 2000/10/12 22:29:33 eldamitri Exp $
+// $Id: reader.h,v 1.7 2000/10/14 19:13:03 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -27,7 +27,6 @@
 #ifndef _ID3LIB_READER_H_
 #define _ID3LIB_READER_H_
 
-#include "debug.h"
 #include "globals.h"
 
 class ID3_Reader
@@ -84,11 +83,11 @@ class ID3_Reader
    ** the value returned may be less than the number of bytes that the internal
    ** position advances, due to multi-byte characters.
    **/
+  virtual size_type readChars(char_type buf[], size_type len) = 0;
   virtual size_type readChars(char buf[], size_type len)
   {
     return this->readChars(reinterpret_cast<char_type *>(buf), len);
   }
-  virtual size_type readChars(char_type buf[], size_type len) = 0;
   
   /** Skip up to \c len chars in the stream and advance the internal position
    ** accordingly.  Returns the number of characters actually skipped (may be 
@@ -106,27 +105,23 @@ class ID3_Reader
     return len - remaining;
   }
 
-  virtual size_type remainingChars()
+  virtual size_type remainingBytes()
   {
     pos_type end = this->getEnd(), cur = this->getCur();
-    ID3D_NOTICE( "ID3_Reader::remainingChars(): [cur, end] = [" << cur << ", " << end << "]" );
     if (end == pos_type(-1))
     {
       return size_type(-1);
     }
-
+    
     if (end >= cur)
     {
       return end - cur;
     }
-
+    
     return 0;
   }
-
-  virtual bool atEnd()
-  {
-    return this->getCur() >= this->getEnd();
-  }
+  
+  virtual bool atEnd() { return this->getCur() >= this->getEnd(); }
 };
 
 #endif /* _ID3LIB_READER_H_ */
