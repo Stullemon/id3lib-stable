@@ -1,4 +1,4 @@
-// $Id: tag_parse.cpp,v 1.6 1999/11/16 22:50:37 scott Exp $
+// $Id: tag_parse.cpp,v 1.7 1999/11/25 18:41:29 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -194,8 +194,6 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
       if (NULL == frame)
         ID3_THROW(ID3E_NoMemory);
         
-      ID3_Elem *elem, *lastElem;
-      
       frame->SetID(id);
       
       try 
@@ -242,21 +240,21 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
       {
         // if, after all is said and done, we are still supposed to attach our
         // newly parsed frame to the tag, do so
-        elem = new ID3_Elem;
+        ID3_Elem 
+          *elem     = new ID3_Elem, 
+          *lastElem = GetLastElem(__pFrameList);;
         if (NULL == elem)
           ID3_THROW(ID3E_NoMemory);
           
-        elem->pNext = NULL;
-        elem->pFrame = frame;
+        elem->pNext    = NULL;
+        elem->pFrame   = frame;
         elem->acBinary = NULL;
         elem->bTagOwns = true;
         
-        lastElem = GetLastElem(__pFrameList);
-        
-        if (lastElem)
-          lastElem->pNext = elem;
-        else
+        if (NULL == lastElem)
           __pFrameList = elem;
+        else
+          lastElem->pNext = elem;
       }
       
       ID3_Elem *temp = cur;
@@ -395,6 +393,9 @@ luint ID3_Tag::ParseFromHandle(void)
 }
 
 // $Log: tag_parse.cpp,v $
+// Revision 1.7  1999/11/25 18:41:29  scott
+// (ProcessBinaries): Minor code reorg.
+//
 // Revision 1.6  1999/11/16 22:50:37  scott
 // * tag_parse.cpp
 // (ProcessBinaries): Added try/catch block to catch any exceptions so
