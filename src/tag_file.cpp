@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.38 2002/07/02 22:14:32 t1mpy Exp $
+// $Id: tag_file.cpp,v 1.39 2002/07/03 20:36:12 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -205,7 +205,6 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
 
   const char* tagData = tagString.data();
   size_t tagSize = tagString.size();
-
   // if the new tag fits perfectly within the old and the old one
   // actually existed (ie this isn't the first tag this file has had)
   if ((!tag.GetPrependedBytes() && !ID3_GetDataSize(tag)) ||
@@ -217,45 +216,6 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
   else
   {
     String filename = tag.GetFileName();
-#if ((defined(__GNUC__) && __GNUC__ >= 3  ) || !defined(HAVE_MKSTEMP))
-    // This section is for Windows folk && gcc 3.x folk
-
-    FILE *tempOut = tmpfile();
-    if (NULL == tempOut)
-    {
-      // log this
-      return 0;
-      //ID3_THROW(ID3E_ReadOnly);
-    }
-    
-    fwrite(tagData, 1, tagSize, tempOut);
-    
-    file.seekg(tag.GetPrependedBytes(), ios::beg);
-    
-    uchar tmpBuffer[BUFSIZ];
-    while (!file.eof())
-    {
-      file.read((char *)tmpBuffer, BUFSIZ);
-      size_t nBytes = file.gcount();
-      fwrite(tmpBuffer, 1, nBytes, tempOut);
-    }
-    
-    rewind(tempOut);
-    createFile(filename, file);
-    
-    while (!feof(tempOut))
-    {
-      size_t nBytes = fread((char *)tmpBuffer, 1, BUFSIZ, tempOut);
-      file.write((char *)tmpBuffer, nBytes);
-    }
-    
-    fclose(tempOut);
-    
-#else
-
-    // else we gotta make a temp file, copy the tag into it, copy the
-    // rest of the old file after the tag, delete the old file, rename
-    // this new file to the old file's name and update the handle
     String sTmpSuffix = ".XXXXXX";
     if (filename.size() + sTmpSuffix.size() > ID3_PATH_LENGTH)
     {
@@ -266,6 +226,27 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
     char sTempFile[ID3_PATH_LENGTH];
     strcpy(sTempFile, filename.c_str());
     strcat(sTempFile, sTmpSuffix.c_str());
+
+#if ((defined(__GNUC__) && __GNUC__ >= 3  ) || !defined(HAVE_MKSTEMP))
+    // This section is for Windows folk && gcc 3.x folk
+	fstream tmpOut;
+	createFile(sTempFile, tmpOut);
+
+    tmpOut.write(tagData, tagSize);
+    file.seekg(tag.GetPrependedBytes(), ios::beg);
+    char *tmpBuffer[BUFSIZ];
+    while (!file.eof())
+    {
+      file.read((char *)tmpBuffer, BUFSIZ);
+      size_t nBytes = file.gcount();
+      tmpOut.write((char *)tmpBuffer, nBytes);
+    }
+      
+#else //((defined(__GNUC__) && __GNUC__ >= 3  ) || !defined(HAVE_MKSTEMP))
+
+    // else we gotta make a temp file, copy the tag into it, copy the
+    // rest of the old file after the tag, delete the old file, rename
+    // this new file to the old file's name and update the handle
     
     int fd = mkstemp(sTempFile);
     if (fd < 0)
@@ -294,25 +275,27 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
       tmpOut.write(tmpBuffer, nBytes);
     }
       
-    tmpOut.close();
+#endif ////((defined(__GNUC__) && __GNUC__ >= 3  ) || !defined(HAVE_MKSTEMP))
 
+    tmpOut.close();
     file.close();
 
     // the following sets the permissions of the new file
     // to be the same as the original
-#if defined HAVE_SYS_STAT_H
+#if defined(HAVE_SYS_STAT_H)
     struct stat fileStat;
-    if(stat(filename.c_str(), &fileStat) == 0) {
-#endif
+    if(stat(filename.c_str(), &fileStat) == 0)
+	{
+#endif //defined(HAVE_SYS_STAT_H)
       remove(filename.c_str());
       rename(sTempFile, filename.c_str());
-#if defined HAVE_SYS_STAT_H
+#if defined(HAVE_SYS_STAT_H)
       chmod(filename.c_str(), fileStat.st_mode);
     }
-#endif
+#endif //defined(HAVE_SYS_STAT_H)
 
+//	file = tmpOut;
     openWritableFile(filename, file);
-#endif
   }
 
   return tagSize;
