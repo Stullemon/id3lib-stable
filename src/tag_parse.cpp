@@ -1,4 +1,4 @@
-// $Id: tag_parse.cpp,v 1.7 2000/05/02 21:55:38 eldamitri Exp $
+// $Id: tag_parse.cpp,v 1.8 2000/05/03 03:02:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -78,11 +78,11 @@ void ID3_Tag::AddBinary(uchar *buffer, luint size)
   elem->acBinary = newBin;
   elem->bTagOwns = true;
         
-  lastElem = GetLastElem(__pBinaryList);
+  lastElem = GetLastElem(__binaries);
         
   if (NULL == lastElem)
   {
-    __pBinaryList = elem;
+    __binaries = elem;
   }
   else
   {
@@ -141,7 +141,7 @@ void ID3_Tag::ExpandBinaries(uchar *buffer, luint size)
 void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
 {
   ID3_FrameHeader frHeader;
-  ID3_Elem *cur = __pBinaryList;
+  ID3_Elem *cur = __binaries;
 
   frHeader.SetSpec(this->GetSpec());
   
@@ -249,7 +249,7 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
         // newly parsed frame to the tag, do so
         ID3_Elem 
           *elem     = new ID3_Elem, 
-          *lastElem = GetLastElem(__pFrameList);
+          *lastElem = GetLastElem(__frames);
         if (NULL == elem)
         {
           ID3_THROW(ID3E_NoMemory);
@@ -261,7 +261,7 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
         
         if (NULL == lastElem)
         {
-          __pFrameList = elem;
+          __frames = elem;
         }
         else
         {
@@ -272,7 +272,7 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
       ID3_Elem *temp = cur;
       cur = cur->pNext;
       
-      RemoveFromList(temp, &__pBinaryList);
+      RemoveFromList(temp, &__binaries);
     }
   }
   
@@ -383,7 +383,7 @@ void ID3_Tag::Parse(uchar header[ID3_TAGHEADERSIZE], uchar *buffer)
   SetSpec(prev_spec);
   
   // set the flag which says that the tag hasn't changed
-  __bHasChanged = false;
+  __changed = false;
   
   return ;
 }
@@ -393,21 +393,21 @@ luint ID3_Tag::ParseFromHandle(void)
 {
   luint size = 0;
 
-  if (NULL == __fFileHandle)
+  if (NULL == __file_handle)
   {
     ID3_THROW(ID3E_NoData);
   }
 
-  if (__ulTagsToParse & ID3TT_ID3V2)
+  if (__tags_to_parse & ID3TT_ID3V2)
   {
-    if (fseek(__fFileHandle, 0, SEEK_SET) != 0)
+    if (fseek(__file_handle, 0, SEEK_SET) != 0)
     {
       ID3_THROW_DESC(ID3E_NoFile, 
                      "ID3_Tag::ParseFromHandle: Ack! Couldn't seek");
     }
     
     uchar header[ID3_TAGHEADERSIZE];
-    if (fread(header, 1, sizeof(header), __fFileHandle) == 0)
+    if (fread(header, 1, sizeof(header), __file_handle) == 0)
     {
       ID3_THROW_DESC(ID3E_NoFile, 
                      "ID3_Tag::ParseFromHandle: Ack! Couldn't read");
@@ -422,7 +422,7 @@ luint ID3_Tag::ParseFromHandle(void)
         ID3_THROW(ID3E_NoMemory);
       }
       
-      if (fread(bin, 1, tagSize, __fFileHandle) == 0)
+      if (fread(bin, 1, tagSize, __file_handle) == 0)
       {
         ID3_THROW_DESC(ID3E_NoFile, 
                        "ID3_Tag::ParseFromHandle: Ack! Couldn't read");
@@ -435,12 +435,12 @@ luint ID3_Tag::ParseFromHandle(void)
     }
   }
     
-  if (__ulTagsToParse & ID3TT_LYRICS)
+  if (__tags_to_parse & ID3TT_LYRICS)
   {
     ParseLyrics3();
   }
   
-  if (__ulTagsToParse & ID3TT_ID3V1)
+  if (__tags_to_parse & ID3TT_ID3V1)
   {
     ParseID3v1();
   }

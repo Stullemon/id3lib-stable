@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.6 2000/05/02 21:56:01 eldamitri Exp $
+// $Id: tag_file.cpp,v 1.7 2000/05/03 03:02:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -95,18 +95,18 @@ void ID3_Tag::CreateFile(void)
   CloseFile();
 
   // Create a new file
-  __fFileHandle = fopen(__sFileName, "wb+");
+  __file_handle = fopen(__file_name, "wb+");
 
   // Check to see if file could not be created
-  if (NULL == __fFileHandle)
+  if (NULL == __file_handle)
   {
     ID3_THROW(ID3E_ReadOnly);
   }
 
   // Determine the size of the file
-  fseek(__fFileHandle, 0, SEEK_END);
-  __ulFileSize = ftell(__fFileHandle);
-  fseek(__fFileHandle, 0, SEEK_SET);
+  fseek(__file_handle, 0, SEEK_END);
+  __file_size = ftell(__file_handle);
+  fseek(__file_handle, 0, SEEK_SET);
   
   return ;
 }
@@ -115,10 +115,10 @@ ID3_Err ID3_Tag::OpenFileForWriting(void)
 {
   CloseFile();
   
-  if (exists(__sFileName))
+  if (exists(__file_name))
   {
     // Try to open the file for reading and writing.
-    __fFileHandle = fopen(__sFileName, "rb+");
+    __file_handle = fopen(__file_name, "rb+");
   }
   else
   {
@@ -127,16 +127,16 @@ ID3_Err ID3_Tag::OpenFileForWriting(void)
   }
 
   // Check to see if file could not be opened for writing
-  if (NULL == __fFileHandle)
+  if (NULL == __file_handle)
   {
     ID3_THROW(ID3E_ReadOnly);
     return ID3E_ReadOnly;
   }
 
   // Determine the size of the file
-  fseek(__fFileHandle, 0, SEEK_END);
-  __ulFileSize = ftell(__fFileHandle);
-  fseek(__fFileHandle, 0, SEEK_SET);
+  fseek(__file_handle, 0, SEEK_END);
+  __file_size = ftell(__file_handle);
+  fseek(__file_handle, 0, SEEK_SET);
   
   return ID3E_NoError;
 }
@@ -144,30 +144,30 @@ ID3_Err ID3_Tag::OpenFileForWriting(void)
 ID3_Err ID3_Tag::OpenFileForReading(void)
 {
   CloseFile();
-  __ulFileSize = 0;
+  __file_size = 0;
 
-  __fFileHandle = fopen(__sFileName, "rb");
+  __file_handle = fopen(__file_name, "rb");
   
-  if (NULL == __fFileHandle)
+  if (NULL == __file_handle)
   {
     ID3_THROW(ID3E_NoFile);
     return ID3E_NoFile;
   }
 
   // Determine the size of the file
-  fseek(__fFileHandle, 0, SEEK_END);
-  __ulFileSize = ftell(__fFileHandle);
-  fseek(__fFileHandle, 0, SEEK_SET);
+  fseek(__file_handle, 0, SEEK_END);
+  __file_size = ftell(__file_handle);
+  fseek(__file_handle, 0, SEEK_SET);
 
   return ID3E_NoError;
 }
 
 bool ID3_Tag::CloseFile(void)
 {
-  bool bReturn = ((NULL != __fFileHandle) && (0 == fclose(__fFileHandle)));
+  bool bReturn = ((NULL != __file_handle) && (0 == fclose(__file_handle)));
   if (bReturn)
   {
-    __fFileHandle = NULL;
+    __file_handle = NULL;
   }
   return bReturn;
 }
@@ -232,39 +232,39 @@ luint ID3_Tag::Link(char *fileInfo, const luint tag_types)
 {
   luint posn = 0;
   
-  __ulTagsToParse = tag_types;
+  __tags_to_parse = tag_types;
   
   if (NULL == fileInfo)
   {
     ID3_THROW(ID3E_NoData);
   }
 
-  strcpy(__sFileName, fileInfo);
+  strcpy(__file_name, fileInfo);
     
   // if we were attached to some other file then abort
-  if (__fFileHandle != NULL)
+  if (__file_handle != NULL)
   {
     ID3_THROW(ID3E_TagAlreadyAttached);
   }
   
   if (ID3E_NoError != OpenFileForReading())
   {
-    __ulOldTagSize = 0;
+    __orig_tag_size = 0;
   }
   else
   {
-    __ulOldTagSize = ParseFromHandle();
+    __orig_tag_size = ParseFromHandle();
     
     CloseFile();
   }
   
-  if (__ulOldTagSize > 0)
+  if (__orig_tag_size > 0)
   {
-    __ulOldTagSize += ID3_TAGHEADERSIZE;
+    __orig_tag_size += ID3_TAGHEADERSIZE;
   }
 
-  __ulFileSize -= __ulOldTagSize;
-  posn = __ulOldTagSize;
+  __file_size -= __orig_tag_size;
+  posn = __orig_tag_size;
   
   return posn;
 }
@@ -286,7 +286,7 @@ luint ID3_Tag::Update(const luint ulTagFlag)
   OpenFileForWriting();
   luint ulTags = ID3TT_NONE;
 
-  if ((ulTagFlag & ID3TT_ID3V1) && (!__bHasV1Tag || HasChanged()))
+  if ((ulTagFlag & ID3TT_ID3V1) && (!__has_v1_tag || HasChanged()))
   {
     RenderV1ToHandle();
     ulTags |= ID3TT_ID3V1;
@@ -331,23 +331,23 @@ luint ID3_Tag::Strip(const luint ulTagFlag)
     // will mark where to read from next, the other will indicate where to 
     // write to. 
     long nNextRead, nNextWrite;
-    nNextWrite = ftell(__fFileHandle);
+    nNextWrite = ftell(__file_handle);
     // Set the read pointer past the tag
-    fseek(__fFileHandle, __ulOldTagSize, SEEK_CUR);
-    nNextRead = ftell(__fFileHandle);
+    fseek(__file_handle, __orig_tag_size, SEEK_CUR);
+    nNextRead = ftell(__file_handle);
     
     uchar aucBuffer[BUFSIZ];
     
     // The nBytesRemaining variable indicates how many bytes are to be copied
-    size_t nBytesToCopy = __ulFileSize;
+    size_t nBytesToCopy = __file_size;
 
     // Here we reduce the nBytesToCopy by the size of any tags that appear
     // at the end of the file (e.g the id3v1 and lyrics tag).  This isn't
     // strictly necessary, since the truncation stage will remove these,
     // but this check prevents us from copying them unnecessarily.
-    if ((__ulExtraBytes > 0) && (ulTagFlag & ID3TT_ID3V1))
+    if ((__extra_bytes > 0) && (ulTagFlag & ID3TT_ID3V1))
     {
-      nBytesToCopy -= __ulExtraBytes;
+      nBytesToCopy -= __extra_bytes;
     }
     
     // The nBytesRemaining variable indicates how many bytes are left to be 
@@ -357,22 +357,22 @@ luint ID3_Tag::Strip(const luint ulTagFlag)
     size_t 
       nBytesRemaining = nBytesToCopy,
       nBytesCopied = 0;
-    while (! feof(__fFileHandle))
+    while (! feof(__file_handle))
     {
       // Move to the next read position
-      fseek(__fFileHandle, nNextRead, SEEK_SET);
+      fseek(__file_handle, nNextRead, SEEK_SET);
       size_t
         nBytesToRead = MIN(nBytesRemaining - nBytesCopied, BUFSIZ),
-        nBytesRead   = fread(aucBuffer, 1, nBytesToRead, __fFileHandle);
+        nBytesRead   = fread(aucBuffer, 1, nBytesToRead, __file_handle);
       // Now that we've read, mark the current spot as the next spot for
       // reading
-      nNextRead = ftell(__fFileHandle);
+      nNextRead = ftell(__file_handle);
 
       if (nBytesRead > 0)
       {
         // Move to the next write position
-        fseek(__fFileHandle, nNextWrite, SEEK_SET);
-        size_t nBytesWritten = fwrite(aucBuffer, 1, nBytesRead, __fFileHandle);
+        fseek(__file_handle, nNextWrite, SEEK_SET);
+        size_t nBytesWritten = fwrite(aucBuffer, 1, nBytesRead, __file_handle);
         if (nBytesRead > nBytesWritten)
         {
           // TODO: log this
@@ -380,7 +380,7 @@ luint ID3_Tag::Strip(const luint ulTagFlag)
                << "only wrote " << nBytesWritten << endl;
         }
         // Marke the current spot as the next write position
-        nNextWrite = ftell(__fFileHandle);
+        nNextWrite = ftell(__file_handle);
         nBytesCopied += nBytesWritten;
       }
 
@@ -398,28 +398,28 @@ luint ID3_Tag::Strip(const luint ulTagFlag)
     CloseFile();
   }
   
-  size_t nNewFileSize = __ulFileSize;
-  if ((__ulExtraBytes > 0) && (ulTagFlag & ID3TT_ID3V1))
+  size_t nNewFileSize = __file_size;
+  if ((__extra_bytes > 0) && (ulTagFlag & ID3TT_ID3V1))
   {
-    nNewFileSize -= __ulExtraBytes;
+    nNewFileSize -= __extra_bytes;
     ulTags |= ID3TT_ID3V1;
   }
-  if (ulTagFlag & ID3TT_ID3V2 && (__ulOldTagSize > 0))
+  if (ulTagFlag & ID3TT_ID3V2 && (__orig_tag_size > 0))
   {
-    nNewFileSize -= __ulOldTagSize;
+    nNewFileSize -= __orig_tag_size;
     ulTags |= ID3TT_ID3V2;
   }
-  if (ulTags && (truncate(__sFileName, nNewFileSize) == -1))
+  if (ulTags && (truncate(__file_name, nNewFileSize) == -1))
   {
     ID3_THROW(ID3E_NoFile);
   }
 
-  __ulOldTagSize = (ulTags & ID3TT_ID3V2) ? 0 : __ulOldTagSize;
-  __ulExtraBytes = (ulTags & ID3TT_ID3V1) ? 0 : __ulExtraBytes;
+  __orig_tag_size = (ulTags & ID3TT_ID3V2) ? 0 : __orig_tag_size;
+  __extra_bytes = (ulTags & ID3TT_ID3V1) ? 0 : __extra_bytes;
       
-  __bHasV1Tag    = __bHasV1Tag && !(ulTagFlag & ID3TT_ID3V1);
+  __has_v1_tag    = __has_v1_tag && !(ulTagFlag & ID3TT_ID3V1);
         
-  __bHasChanged  = ((ulTags & ID3TT_ID3V1) || (ulTags & ID3TT_ID3V2));
+  __changed  = ((ulTags & ID3TT_ID3V1) || (ulTags & ID3TT_ID3V2));
   
   return ulTags;
 }

@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.4 2000/05/01 13:05:07 eldamitri Exp $
+// $Id: field_string_unicode.cpp,v 1.5 2000/05/03 03:02:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -48,11 +48,11 @@ ID3_Field& ID3_Field::operator= (const unicode_t *string)
 void ID3_Field::Set(const unicode_t *string)
 {
   luint nBytes =
-    (0 == __ulFixedLength) ? ucslen(string) : __ulFixedLength;
+    (0 == __length) ? ucslen(string) : __length;
   
   // we can simply increment the nBytes count here because we just pilfer
   // the NULL which is present in the string which was passed to us
-  if (__ulFlags & ID3FF_NULL)
+  if (__flags & ID3FF_NULL)
   {
     nBytes++;
   }
@@ -62,8 +62,8 @@ void ID3_Field::Set(const unicode_t *string)
   
   Set((uchar *) string, nBytes);
   
-  __eType = ID3FTY_UNICODESTRING;
-  __bHasChanged = true;
+  __type = ID3FTY_UNICODESTRING;
+  __changed = true;
   
   return ;
 }
@@ -71,13 +71,13 @@ void ID3_Field::Set(const unicode_t *string)
 
 void ID3_Field::Add(const unicode_t *string)
 {
-  if (NULL == __sData)
+  if (NULL == __data)
   {
     Set(string);
   }
   else
   {
-    unicode_t *uBuffer = (unicode_t *) __sData;
+    unicode_t *uBuffer = (unicode_t *) __data;
 
     // +1 is for the NULL at the end and the other +1 is for the list divider
     size_t newLen = ucslen(string) + ucslen(uBuffer) + 1 + 1;
@@ -113,11 +113,11 @@ luint ID3_Field::Get(unicode_t *buffer, const luint maxChars, const luint itemNu
   luint charsUsed = 0;
   
   // check to see if there is a string in the frame to copy before we even try
-  if (NULL != __sData)
+  if (NULL != __data)
   {
     lsint nullOffset = 0;
     
-    if (__ulFlags & ID3FF_NULL)
+    if (__flags & ID3FF_NULL)
     {
       nullOffset = -1;
     }
@@ -126,7 +126,7 @@ luint ID3_Field::Get(unicode_t *buffer, const luint maxChars, const luint itemNu
     // before we try to get it
     if (itemNum <= GetNumTextItems() && itemNum > 0)
     {
-      unicode_t *source = (unicode_t *) __sData;
+      unicode_t *source = (unicode_t *) __data;
       luint posn = 0;
       luint sourceLen = 0;
       luint curItemNum = 1;
@@ -135,7 +135,7 @@ luint ID3_Field::Get(unicode_t *buffer, const luint maxChars, const luint itemNu
       while (curItemNum < itemNum)
       {
         while (*source != L'\001' && *source != L'\0' && posn <
-               ((__ulSize / sizeof(unicode_t)) + nullOffset))
+               ((__size / sizeof(unicode_t)) + nullOffset))
         {
           source++, posn++;
         }
@@ -147,7 +147,7 @@ luint ID3_Field::Get(unicode_t *buffer, const luint maxChars, const luint itemNu
       // now that we are positioned at the first character of the string we
       // want, find the end of it
       while (source[sourceLen] != L'\001' && source[sourceLen] != L'\0' &&
-             posn <((__ulSize / sizeof(unicode_t) + nullOffset)))
+             posn <((__size / sizeof(unicode_t) + nullOffset)))
       {
         sourceLen++, posn++;
       }
@@ -176,15 +176,15 @@ luint ID3_Field::GetNumTextItems(void)
 {
   luint numItems = 0;
   
-  if (NULL != __sData)
+  if (NULL != __data)
   {
     luint posn = 0;
     
     numItems++;
     
-    while (posn < __ulSize)
+    while (posn < __size)
     {
-      if (__sData[posn++] == L'\001')
+      if (__data[posn++] == L'\001')
       {
         numItems++;
       }
@@ -200,13 +200,13 @@ ID3_Field::ParseUnicodeString(const uchar *buffer, luint posn, size_t nSize)
 {
   size_t nBytes = 0;
   unicode_t *temp = NULL;
-  if (__ulFixedLength > 0)
+  if (__length > 0)
   {
-    nBytes = __ulFixedLength;
+    nBytes = __length;
   }
   else
   {
-    if (__ulFlags & ID3FF_NULL)
+    if (__flags & ID3FF_NULL)
     {
       while ((posn + nBytes) < nSize &&
              !(buffer[posn + nBytes] == 0 && 
@@ -279,12 +279,12 @@ ID3_Field::ParseUnicodeString(const uchar *buffer, luint posn, size_t nSize)
     delete [] temp;
   }
   
-  if (__ulFlags & ID3FF_NULL)
+  if (__flags & ID3FF_NULL)
   {
     nBytes += sizeof(unicode_t);
   }
     
-  __bHasChanged = false;
+  __changed = false;
   
   return nBytes;
 }
@@ -296,14 +296,14 @@ luint ID3_Field::RenderUnicodeString(uchar *buffer)
   
   nBytes = BinSize();
   
-  if (NULL != __sData && __ulSize && nBytes)
+  if (NULL != __data && __size && nBytes)
   {
     luint i;
     unicode_t *ourString = (unicode_t *) & buffer[sizeof(unicode_t)];
     
     // we render at sizeof(unicode_t) bytes into the buffer because we make
     // room for the Unicode BOM
-    memcpy(&buffer[sizeof(unicode_t)], (uchar *) __sData, 
+    memcpy(&buffer[sizeof(unicode_t)], (uchar *) __data, 
            nBytes - sizeof(unicode_t));
     
     // now we convert the internal dividers to what they are supposed to be
@@ -313,7 +313,7 @@ luint ID3_Field::RenderUnicodeString(uchar *buffer)
       {
         unicode_t sub = L'/';
         
-        if (__ulFlags & ID3FF_NULLDIVIDE)
+        if (__flags & ID3FF_NULLDIVIDE)
         {
           sub = L'\0';
         }
@@ -330,7 +330,7 @@ luint ID3_Field::RenderUnicodeString(uchar *buffer)
     BOM[0] = 0xFEFF;
   }
   
-  if (nBytes == sizeof(unicode_t) && (__ulFlags & ID3FF_NULL))
+  if (nBytes == sizeof(unicode_t) && (__flags & ID3FF_NULL))
   {
     for (size_t i = 0; i < sizeof(unicode_t); i++)
     {
@@ -338,7 +338,7 @@ luint ID3_Field::RenderUnicodeString(uchar *buffer)
     }
   }
     
-  __bHasChanged = false;
+  __changed = false;
   
   return nBytes;
 }

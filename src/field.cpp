@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.11 2000/05/02 22:43:17 eldamitri Exp $
+// $Id: field.cpp,v 1.12 2000/05/03 03:02:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -772,11 +772,11 @@ static  ID3_FrameDef ID3_FrameDefs[] =
   
 ID3_Field::ID3_Field(void)
 {
-  __eName   = ID3FN_NOFIELD;
-  __eType   = ID3FTY_INTEGER;
-  __sData   = NULL;
-  __ulSize  = 0;
-  __ulFlags = 0;
+  __id   = ID3FN_NOFIELD;
+  __type   = ID3FTY_INTEGER;
+  __data   = NULL;
+  __size  = 0;
+  __flags = 0;
   __spec    = ID3V2_LATEST;
   
   Clear();
@@ -790,15 +790,15 @@ ID3_Field::~ID3_Field(void)
 void
 ID3_Field::Clear(void)
 {
-  if (__sData != NULL && __ulSize > 0 && __eType != ID3FTY_INTEGER)
+  if (__data != NULL && __size > 0 && __type != ID3FTY_INTEGER)
   {
-    delete[] __sData;
+    delete[] __data;
   }
     
-  __eType       = ID3FTY_INTEGER;
-  __sData       = NULL;
-  __ulSize      = sizeof (luint);
-  __bHasChanged = true;
+  __type       = ID3FTY_INTEGER;
+  __data       = NULL;
+  __size      = sizeof (luint);
+  __changed = true;
   
   return ;
 }
@@ -807,14 +807,14 @@ void
 ID3_Field::SetSpec(ID3_V2Spec spec)
 {
   // If the version or revision has changed, set the hasChanged flag
-  __bHasChanged = (__bHasChanged || __spec != spec);
+  __changed = (__changed || __spec != spec);
   __spec = spec;
 }
 
 bool
 ID3_Field::HasChanged(void)
 {
-  return __bHasChanged;
+  return __changed;
 }
 
 luint
@@ -828,26 +828,26 @@ ID3_Field::BinSize(const bool withExtras)
 {
   luint bytes   = 0;
 
-  if (__spec >= __eSpecBegin && __spec <= __eSpecEnd)
+  if (__spec >= __spec_begin && __spec <= __spec_end)
   {
-    bytes = __ulSize;
+    bytes = __size;
     
     // check to see if we are within the legal limit for this field 0 means
     // arbitrary length field
-    if (__ulFixedLength > 0)
+    if (__length > 0)
     {
-      bytes = __ulFixedLength;
+      bytes = __length;
     }
     else if (withExtras)
     {
-      if (NULL == __sData && __ulSize > 0)
+      if (NULL == __data && __size > 0)
       {
-        bytes = (__ulFlags & ID3FF_NULL) ? sizeof(unicode_t) : 0;
+        bytes = (__flags & ID3FF_NULL) ? sizeof(unicode_t) : 0;
       }
       
       // if we are a Unicode string, add 2 bytes for the BOM (but only if there
       // is a string to render - regardless of NULL)
-      if (__eType == ID3FTY_UNICODESTRING && __sData != NULL && __ulSize > 0)
+      if (__type == ID3FTY_UNICODESTRING && __data != NULL && __size > 0)
       {
         bytes += sizeof(unicode_t);
       }
@@ -855,12 +855,12 @@ ID3_Field::BinSize(const bool withExtras)
       // if we are an ASCII string, divide by sizeof(unicode_t) because
       // internally we store the string as Unicode, so the ASCII version will
       // only be half as long
-      if (__eType == ID3FTY_ASCIISTRING)
+      if (__type == ID3FTY_ASCIISTRING)
       {
         bytes /= sizeof(unicode_t);
       }
     }
-    else if (__eType == ID3FTY_UNICODESTRING || __eType == ID3FTY_ASCIISTRING)
+    else if (__type == ID3FTY_UNICODESTRING || __type == ID3FTY_ASCIISTRING)
     {
       // because it seems that the application called us via ID3_Field::Size()
       // we are going to return the number of characters, not bytes.  since we
@@ -879,9 +879,9 @@ ID3_Field::Parse(const uchar *buffer, const luint posn, const luint buffSize)
 {
   luint bytesUsed       = 0;
 
-  if (__spec >= __eSpecBegin && __spec <= __eSpecEnd)
+  if (__spec >= __spec_begin && __spec <= __spec_end)
   {
-    switch (__eType)
+    switch (__type)
     {
       case ID3FTY_INTEGER:
         bytesUsed = ParseInteger(buffer, posn, buffSize);
@@ -963,9 +963,9 @@ ID3_Field::Render(uchar *buffer)
 {
   luint bytesUsed = 0;
   
-  if (__spec >= __eSpecBegin && __spec <= __eSpecEnd)
+  if (__spec >= __spec_begin && __spec <= __spec_end)
   {
-    switch (__eType) 
+    switch (__type) 
     {
       case ID3FTY_INTEGER:
         bytesUsed = RenderInteger(buffer);
@@ -995,9 +995,9 @@ ID3_Field::Render(uchar *buffer)
 ID3_Field &
 ID3_Field::operator=( const ID3_Field &rField )
 {
-  if (this != &rField) // && (__spec >= __eSpecBegin && __spec <= __eSpecEnd))
+  if (this != &rField) // && (__spec >= __spec_begin && __spec <= __spec_end))
   {
-    switch (rField.__eType)
+    switch (rField.__type)
     {
       case ID3FTY_INTEGER:
         *this = rField.Get();
@@ -1006,11 +1006,11 @@ ID3_Field::operator=( const ID3_Field &rField )
       case ID3FTY_ASCIISTRING:
       case ID3FTY_UNICODESTRING:
       case ID3FTY_BINARY:
-        Set(rField.__sData, rField.__ulSize);
+        Set(rField.__data, rField.__size);
         break;
     }
   }
-  __eType = rField.__eType;
+  __type = rField.__type;
   __spec  = rField.__spec;
   return *this;
 }

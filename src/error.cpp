@@ -1,4 +1,4 @@
-// $Id: error.cpp,v 1.4 2000/05/01 13:05:07 eldamitri Exp $
+// $Id: error.cpp,v 1.5 2000/05/03 03:02:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -53,41 +53,41 @@ static char *ID3_ErrorDescs[] =
 ID3_Error::ID3_Error(const ID3_Err eCode, const char *sFileName, 
                      const luint nLine, const char *sDesc)
 {
-  __eError = eCode;
-  __nErrLine = nLine;
+  __error = eCode;
+  __line_num = nLine;
   luint nFileNameLen = strlen(sFileName);
   luint nDescLen = strlen(sDesc);
   
-  __sErrFileName = new char[nFileNameLen+1];
-  __sErrDesc     = new char[nDescLen+1];
-  strncpy(__sErrFileName, sFileName, nFileNameLen+1);
-  strncpy(__sErrDesc, sDesc, nDescLen+1);
+  __file_name = new char[nFileNameLen+1];
+  __description     = new char[nDescLen+1];
+  strncpy(__file_name, sFileName, nFileNameLen+1);
+  strncpy(__description, sDesc, nDescLen+1);
 }
 
 
 ID3_Err ID3_Error::GetErrorID(void) const
 {
-  return __eError;
+  return __error;
 }
 
 
 char *ID3_Error::GetErrorType(void) const
 {
-  return ID3_ErrorDescs[__eError];
+  return ID3_ErrorDescs[__error];
 }
 
 char *ID3_Error::GetErrorDesc(void) const
 {
-  return __sErrDesc;
+  return __description;
 }
 
 char *ID3_Error::GetErrorFile(void) const
 {
-  return __sErrFileName;
+  return __file_name;
 }
 
 
 luint ID3_Error::GetErrorLine(void) const
 {
-  return __nErrLine;
+  return __line_num;
 }

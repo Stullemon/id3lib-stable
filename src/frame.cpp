@@ -1,4 +1,4 @@
-// $Id: frame.cpp,v 1.8 2000/05/02 21:58:23 eldamitri Exp $
+// $Id: frame.cpp,v 1.9 2000/05/03 03:02:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -32,40 +32,40 @@
 #endif
 
 ID3_Frame::ID3_Frame(ID3_FrameID id)
-  : __bHasChanged(false),
-    __auiFieldBits(NULL),
-    __ulNumFields(0),
-    __apFields(NULL)
+  : __changed(false),
+    __field_bitset(NULL),
+    __num_fields(0),
+    __fields(NULL)
 {
-  __sEncryptionID[0] = '\0';
-  __sGroupingID[0]   = '\0';
+  __encryption_id[0] = '\0';
+  __grouping_id[0]   = '\0';
   
   InitFieldBits();
   SetID(id);
 }
 
 ID3_Frame::ID3_Frame(const ID3_FrameHeader &hdr)
-  : __bHasChanged(false),
-    __auiFieldBits(NULL),
-    __ulNumFields(0),
-    __apFields(NULL),
-    __FrmHdr(hdr)
+  : __changed(false),
+    __field_bitset(NULL),
+    __num_fields(0),
+    __fields(NULL),
+    __hdr(hdr)
 {
-  __sEncryptionID[0] = '\0';
-  __sGroupingID[0]   = '\0';
+  __encryption_id[0] = '\0';
+  __grouping_id[0]   = '\0';
   
   this->InitFieldBits();
   this->InitFields();
 }
 
 ID3_Frame::ID3_Frame(const ID3_Frame& frame)
-  : __bHasChanged(false),
-    __auiFieldBits(NULL),
-    __ulNumFields(0),
-    __apFields(NULL)
+  : __changed(false),
+    __field_bitset(NULL),
+    __num_fields(0),
+    __fields(NULL)
 {
-  __sEncryptionID[0] = '\0';
-  __sGroupingID[0]   = '\0';
+  __encryption_id[0] = '\0';
+  __grouping_id[0]   = '\0';
   
   InitFieldBits();
   *this = frame;
@@ -81,19 +81,19 @@ void ID3_Frame::InitFieldBits()
     lWordsForFields++;
   }
    
-  if (__auiFieldBits != NULL)
+  if (__field_bitset != NULL)
   {
-    delete [] __auiFieldBits;
+    delete [] __field_bitset;
   }
-  __auiFieldBits = new luint[lWordsForFields];
-  if (NULL == __auiFieldBits)
+  __field_bitset = new luint[lWordsForFields];
+  if (NULL == __field_bitset)
   {
     ID3_THROW(ID3E_NoMemory);
   }
 
   for (luint i = 0; i < lWordsForFields; i++)
   {
-    __auiFieldBits[i] = 0;
+    __field_bitset[i] = 0;
   }
 }
 
@@ -101,75 +101,75 @@ ID3_Frame::~ID3_Frame(void)
 {
   Clear();
   
-  if (__auiFieldBits != NULL)
+  if (__field_bitset != NULL)
   {
-    delete [] __auiFieldBits;
+    delete [] __field_bitset;
   }
 }
 
 
 void ID3_Frame::Clear(void)
 {
-  if (__ulNumFields > 0 && NULL != __apFields)
+  if (__num_fields > 0 && NULL != __fields)
   {
-    for (luint i = 0; i < __ulNumFields; i++)
+    for (luint i = 0; i < __num_fields; i++)
     {
-      delete __apFields[i];
+      delete __fields[i];
     }
       
-    delete [] __apFields;
+    delete [] __fields;
     
-    __bHasChanged = true;
+    __changed = true;
   }
 
-  __FrmHdr.Clear();
-  __sEncryptionID[0] = '\0';
-  __sGroupingID[0]   = '\0';
-  __ulNumFields      = 0;
-  __apFields         = NULL;
+  __hdr.Clear();
+  __encryption_id[0] = '\0';
+  __grouping_id[0]   = '\0';
+  __num_fields      = 0;
+  __fields         = NULL;
 }
 
 void ID3_Frame::InitFields()
 {
-  const ID3_FrameDef* info = __FrmHdr.GetFrameDef();
+  const ID3_FrameDef* info = __hdr.GetFrameDef();
   if (NULL == info)
   {
     ID3_THROW(ID3E_InvalidFrameID);
   }
       
-  __ulNumFields = 0;
+  __num_fields = 0;
       
-  while (info->aeFieldDefs[__ulNumFields].eID != ID3FN_NOFIELD)
+  while (info->aeFieldDefs[__num_fields].eID != ID3FN_NOFIELD)
   {
-    __ulNumFields++;
+    __num_fields++;
   }
       
-  __apFields = new ID3_Field * [__ulNumFields];
-  if (NULL == __apFields)
+  __fields = new ID3_Field * [__num_fields];
+  if (NULL == __fields)
   {
     ID3_THROW(ID3E_NoMemory);
   }
 
-  for (luint i = 0; i < __ulNumFields; i++)
+  for (luint i = 0; i < __num_fields; i++)
   {
-    __apFields[i] = new ID3_Field;
-    if (NULL == __apFields[i])
+    __fields[i] = new ID3_Field;
+    if (NULL == __fields[i])
     {
       ID3_THROW(ID3E_NoMemory);
     }
 
-    __apFields[i]->__eName        = info->aeFieldDefs[i].eID;
-    __apFields[i]->__eType        = info->aeFieldDefs[i].eType;
-    __apFields[i]->__ulFixedLength = info->aeFieldDefs[i].ulFixedLength;
-    __apFields[i]->__eSpecBegin   = info->aeFieldDefs[i].eSpecBegin;
-    __apFields[i]->__eSpecEnd     = info->aeFieldDefs[i].eSpecEnd;
-    __apFields[i]->__ulFlags      = info->aeFieldDefs[i].ulFlags;
+    __fields[i]->__id        = info->aeFieldDefs[i].eID;
+    __fields[i]->__type        = info->aeFieldDefs[i].eType;
+    __fields[i]->__length = info->aeFieldDefs[i].ulFixedLength;
+    __fields[i]->__spec_begin   = info->aeFieldDefs[i].eSpecBegin;
+    __fields[i]->__spec_end     = info->aeFieldDefs[i].eSpecEnd;
+    __fields[i]->__flags      = info->aeFieldDefs[i].ulFlags;
             
     // tell the frame that this field is present
-    BS_SET(__auiFieldBits, __apFields[i]->__eName);
+    BS_SET(__field_bitset, __fields[i]->__id);
   }
         
-  __bHasChanged = true;
+  __changed = true;
 }
 
 void ID3_Frame::SetID(ID3_FrameID id)
@@ -178,7 +178,7 @@ void ID3_Frame::SetID(ID3_FrameID id)
   
   if (id != ID3FID_NOFRAME)
   {
-    __FrmHdr.SetFrameID(id);
+    __hdr.SetFrameID(id);
     this->InitFields();
   }
 }
@@ -186,28 +186,28 @@ void ID3_Frame::SetID(ID3_FrameID id)
 
 ID3_FrameID ID3_Frame::GetID(void) const
 {
-  return __FrmHdr.GetFrameID();
+  return __hdr.GetFrameID();
 }
 
 
 bool ID3_Frame::SetSpec(const ID3_V2Spec spec)
 {
-  return __FrmHdr.SetSpec(spec);
+  return __hdr.SetSpec(spec);
 }
 
 ID3_V2Spec ID3_Frame::GetSpec() const
 {
-  return __FrmHdr.GetSpec();
+  return __hdr.GetSpec();
 }
 
 lsint ID3_Frame::FindField(ID3_FieldID fieldName) const
 {
   
-  if (BS_ISSET(__auiFieldBits, fieldName))
+  if (BS_ISSET(__field_bitset, fieldName))
   {
-    for (lsint num = 0; num < (lsint) __ulNumFields; num++)
+    for (lsint num = 0; num < (lsint) __num_fields; num++)
     {
-      if (__apFields[num]->__eName == fieldName)
+      if (__fields[num]->__id == fieldName)
       {
         return num;
       }
@@ -226,16 +226,16 @@ ID3_Field& ID3_Frame::Field(ID3_FieldID fieldName) const
     ID3_THROW(ID3E_FieldNotFound);
   }
     
-  return *__apFields[fieldNum];
+  return *__fields[fieldNum];
 }
 
 void ID3_Frame::UpdateFieldDeps(void)
 {
-  for (luint i = 0; i < __ulNumFields; i++)
+  for (luint i = 0; i < __num_fields; i++)
   {
-    if (__apFields[i]->__ulFlags & ID3FF_ADJUSTEDBY)
+    if (__fields[i]->__flags & ID3FF_ADJUSTEDBY)
     {
-      switch(__apFields[i]->__eType)
+      switch(__fields[i]->__type)
       {
         case ID3FTY_BITFIELD:
         {
@@ -259,9 +259,9 @@ void ID3_Frame::UpdateFieldDeps(void)
 
 void ID3_Frame::UpdateStringTypes(void)
 {
-  for (luint i = 0; i < __ulNumFields; i++)
+  for (luint i = 0; i < __num_fields; i++)
   {
-    if (__apFields[i]->__ulFlags & ID3FF_ADJUSTENC)
+    if (__fields[i]->__flags & ID3FF_ADJUSTENC)
     {
       ID3_TextEnc enc;
       ID3_FieldType newType;
@@ -283,7 +283,7 @@ void ID3_Frame::UpdateStringTypes(void)
           break;
       }
       
-      __apFields[i]->__eType = newType;
+      __fields[i]->__type = newType;
     }
   }
   
@@ -294,14 +294,14 @@ void ID3_Frame::UpdateStringTypes(void)
 luint ID3_Frame::Size(void)
 {
   luint bytesUsed = 0;
-  bytesUsed += __FrmHdr.Size();
+  bytesUsed += __hdr.Size();
   
-  if (strlen(__sEncryptionID))
+  if (strlen(__encryption_id))
   {
     bytesUsed++;
   }
     
-  if (strlen(__sGroupingID))
+  if (strlen(__grouping_id))
   {
     bytesUsed++;
   }
@@ -310,10 +310,10 @@ luint ID3_Frame::Size(void)
   // as (ASCII or Unicode)
   UpdateStringTypes();
   
-  for (luint i = 0; i < __ulNumFields; i++)
+  for (luint i = 0; i < __num_fields; i++)
   {
-    __apFields[i]->SetSpec(__FrmHdr.GetSpec());
-    bytesUsed += __apFields[i]->BinSize();
+    __fields[i]->SetSpec(__hdr.GetSpec());
+    bytesUsed += __fields[i]->BinSize();
   }
   
   return bytesUsed;
@@ -322,13 +322,13 @@ luint ID3_Frame::Size(void)
 
 bool ID3_Frame::HasChanged(void) const
 {
-  bool changed = __bHasChanged;
+  bool changed = __changed;
   
   if (! changed)
   {
-    for (luint i = 0; i < __ulNumFields && !changed; i++)
+    for (luint i = 0; i < __num_fields && !changed; i++)
     {
-      changed = __apFields[i]->HasChanged();
+      changed = __fields[i]->HasChanged();
     }
   }
   
@@ -342,11 +342,11 @@ ID3_Frame::operator=( const ID3_Frame &rFrame )
   {
     ID3_FrameID eID = rFrame.GetID();
     SetID(eID);
-    for (size_t nIndex = 0; nIndex < __ulNumFields; nIndex++)
+    for (size_t nIndex = 0; nIndex < __num_fields; nIndex++)
     {
-      if (rFrame.__apFields[nIndex] != NULL)
+      if (rFrame.__fields[nIndex] != NULL)
       {
-        *(__apFields[nIndex]) = *(rFrame.__apFields[nIndex]);
+        *(__fields[nIndex]) = *(rFrame.__fields[nIndex]);
       }
     }
   }

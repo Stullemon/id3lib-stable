@@ -1,4 +1,4 @@
-// $Id: frame_parse.cpp,v 1.5 2000/05/02 21:58:07 eldamitri Exp $
+// $Id: frame_parse.cpp,v 1.6 2000/05/03 03:02:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -36,21 +36,21 @@ void ID3_Frame::Parse(uchar *buffer, luint size)
   luint i;
   luint posn = 0;
   
-  for (i = 0; i < __ulNumFields; i++)
+  for (i = 0; i < __num_fields; i++)
   {
-    __apFields[i]->SetSpec(__FrmHdr.GetSpec());
-    posn += __apFields[i]->Parse(buffer, posn, size);
+    __fields[i]->SetSpec(__hdr.GetSpec());
+    posn += __fields[i]->Parse(buffer, posn, size);
     
     // if we just parsed a TEXTENC field, we'd better tell the rest of the
     // concerned string fields in the frame what they are expected to parse
     // (ASCII or Unicode)
-    if (ID3FN_TEXTENC == __apFields[i]->__eName)
+    if (ID3FN_TEXTENC == __fields[i]->__id)
     {
       UpdateStringTypes();
     }
   }
   
-  __bHasChanged = false;
+  __changed = false;
   
   return ;
 }

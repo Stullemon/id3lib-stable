@@ -1,4 +1,4 @@
-// $Id: error.h,v 1.8 2000/04/23 17:36:53 eldamitri Exp $
+// $Id: error.h,v 1.9 2000/05/03 03:02:39 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -91,10 +91,10 @@ public:
   ID3_Error(const ID3_Err eID, const char *sFileName, const luint nLineNum, 
             const char *sDescription);
 private:
-  ID3_Err __eError;
-  luint   __nErrLine;
-  char   *__sErrFileName;
-  char   *__sErrDesc;
+  ID3_Err __error;
+  luint   __line_num;
+  char   *__file_name;
+  char   *__description;
 };
 
 /** Shortcut macro for throwing an error without a description

@@ -1,4 +1,4 @@
-// $Id: field.h,v 1.18 2000/04/28 16:26:25 eldamitri Exp $
+// $Id: field.h,v 1.19 2000/05/03 03:02:39 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -109,7 +109,7 @@ struct ID3_FrameDef
  ** if you only plan to generate 3.0 tags.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: field.h,v 1.18 2000/04/28 16:26:25 eldamitri Exp $
+ ** @version $Id: field.h,v 1.19 2000/05/03 03:02:39 eldamitri Exp $
  ** \sa ID3_Tag
  ** \sa ID3_Frame
  ** \sa ID3_Err 
@@ -119,7 +119,7 @@ class ID3_Field
   friend ID3_Frame;
   friend ID3_Tag;
 public:
-  ~ID3_Field(void);
+  ~ID3_Field();
   
   /** Clears any data and frees any memory associated with the field
    ** 
@@ -349,25 +349,25 @@ public:
 
 private:
   luint         BinSize(const bool withExtras = true);
-  bool          HasChanged(void);
+  bool          HasChanged();
   void          SetSpec(ID3_V2Spec);
   luint         Render(uchar *buffer);
   luint         Parse(const uchar *buffer, const luint posn, const luint buffSize);
 
 private:
   // To prevent public instantiation, the constructor is made private
-  ID3_Field(void);
+  ID3_Field();
 
-  ID3_FieldID   __eName;           // the ID of this field
-  ID3_FieldType __eType;           // what type is this field or should be
-  luint         __ulFixedLength;   // length of field (fixed if positive)
-  ID3_V2Spec    __eSpecBegin;      // spec end
-  ID3_V2Spec    __eSpecEnd;        // spec begin
-  luint         __ulFlags;         // special field flags
+  ID3_FieldID   __id;              // the ID of this field
+  ID3_FieldType __type;            // what type is this field or should be
+  luint         __length;          // length of field (fixed if positive)
+  ID3_V2Spec    __spec_begin;      // spec end
+  ID3_V2Spec    __spec_end;        // spec begin
+  luint         __flags;           // special field flags
   ID3_V2Spec    __spec;            // the spec being rendered
-  bool          __bHasChanged;     // field changed since last parse/render?
-  uchar        *__sData;
-  luint         __ulSize;
+  bool          __changed;         // field changed since last parse/render?
+  uchar        *__data;
+  luint         __size;
 protected:
   luint RenderInteger(uchar *buffer);
   luint RenderASCIIString(uchar *buffer);

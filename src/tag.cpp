@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.11 2000/05/02 22:10:07 eldamitri Exp $
+// $Id: tag.cpp,v 1.12 2000/05/03 03:02:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -86,13 +86,13 @@
  ** 'CDM' frames from the unreleased ID3v2 2.01 draft specification.
  **
  ** \author Dirk Mahoney
- ** \version $Id: tag.cpp,v 1.11 2000/05/02 22:10:07 eldamitri Exp $
+ ** \version $Id: tag.cpp,v 1.12 2000/05/03 03:02:56 eldamitri Exp $
  ** \sa ID3_Frame
  ** \sa ID3_Field
  ** \sa ID3_Err
  **/
 
-luint ID3_Tag::s_ulInstances = 0;
+luint ID3_Tag::__instances = 0;
 
 /** Copies a frame to the tag.  The frame parameter can thus safely be deleted
  ** or allowed to go out of scope.
@@ -142,7 +142,7 @@ ID3_Tag::ID3_Tag(char *name)
 {
   SetupTag(name);
   
-  s_ulInstances++;
+  __instances++;
 }
 
   /** Standard copy constructor.
@@ -154,27 +154,27 @@ ID3_Tag::ID3_Tag(const ID3_Tag &tag)
   SetupTag(NULL);
   *this = tag;
 
-  s_ulInstances++;
+  __instances++;
 }
 
 void ID3_Tag::SetupTag(char *fileInfo)
 {
-  __sFileName       = new char[ID3_PATH_LENGTH];
+  __file_name       = new char[ID3_PATH_LENGTH];
   __spec            = ID3V2_LATEST;
-  __pFrameList      = NULL;
-  __pBinaryList     = NULL;
-  __pFindCursor     = NULL;
-  __fFileHandle     = NULL;
-  __bSyncOn         = false;
-  __bPadding        = true;
-  __bExtendedHeader = true;
-  __bFileWritable   = false;
-  __ulFileSize      = 0;
-  __ulOldTagSize    = 0;
-  __ulExtraBytes    = 0;
-  __bHasV1Tag       = false;
+  __frames      = NULL;
+  __binaries     = NULL;
+  __cursor     = NULL;
+  __file_handle     = NULL;
+  __is_unsync         = false;
+  __is_padded        = true;
+  __is_extended = true;
+  __is_file_writable   = false;
+  __file_size      = 0;
+  __orig_tag_size    = 0;
+  __extra_bytes    = 0;
+  __has_v1_tag       = false;
 
-  __sFileName[0]     = '\0';
+  __file_name[0]     = '\0';
   
   Clear();
   
@@ -192,14 +192,14 @@ ID3_Tag::~ID3_Tag(void)
     
   Clear();
   
-  s_ulInstances--;
+  __instances--;
   
-  if (s_ulInstances == 0)
+  if (__instances == 0)
   {
     // Do something here!
   }
 
-  delete [] __sFileName;
+  delete [] __file_name;
   
 }
 
@@ -210,20 +210,20 @@ ID3_Tag::~ID3_Tag(void)
    **/
 void ID3_Tag::Clear(void)
 {
-  if (NULL != __pFrameList)
+  if (NULL != __frames)
   {
-    ClearList(__pFrameList);
-    __pFrameList = NULL;
+    ClearList(__frames);
+    __frames = NULL;
   }
   
-  if (NULL != __pBinaryList)
+  if (NULL != __binaries)
   {
-    ClearList(__pBinaryList);
-    __pBinaryList = NULL;
+    ClearList(__binaries);
+    __binaries = NULL;
   }
 
-  __pFindCursor = NULL;
-  __bHasChanged = true;
+  __cursor = NULL;
+  __changed = true;
   
   return ;
 }
@@ -245,8 +245,8 @@ void ID3_Tag::DeleteElem(ID3_Elem *cur)
       cur->acBinary = NULL;
     }
     
-    __pFindCursor = NULL;
-    __bHasChanged = true;
+    __cursor = NULL;
+    __changed = true;
     
     delete cur;
   }
@@ -333,15 +333,15 @@ void ID3_Tag::AttachFrame(ID3_Frame *frame)
     ID3_THROW(ID3E_NoMemory);
   }
 
-  elem->pNext = __pFrameList;
+  elem->pNext = __frames;
   elem->pFrame = frame;
   elem->acBinary = NULL;
   elem->bTagOwns = true;
   
-  __pFrameList = elem;
-  __pFindCursor = NULL;
+  __frames = elem;
+  __cursor = NULL;
   
-  __bHasChanged = true;
+  __changed = true;
   
   return ;
 }
@@ -401,7 +401,7 @@ void ID3_Tag::RemoveFrame(ID3_Frame *frame)
   ID3_Elem *elem = Find(frame);
   if (NULL != elem)
   {
-    RemoveFromList(elem, &__pFrameList);
+    RemoveFromList(elem, &__frames);
   }
     
   return ;
@@ -463,11 +463,11 @@ void ID3_Tag::RemoveFromList(ID3_Elem *which, ID3_Elem **list)
    **/
 bool ID3_Tag::HasChanged(void) const
 {
-  bool changed = __bHasChanged;
+  bool changed = __changed;
   
   if (! changed)
   {
-    ID3_Elem *cur = __pFrameList;
+    ID3_Elem *cur = __frames;
     
     while (cur)
     {
@@ -493,7 +493,7 @@ bool ID3_Tag::HasChanged(void) const
 bool ID3_Tag::SetSpec(ID3_V2Spec spec)
 {
   bool changed = (spec != __spec);
-  __bHasChanged = __bHasChanged || changed;
+  __changed = __changed || changed;
   __spec = spec;
   return changed;
 }
@@ -522,12 +522,12 @@ ID3_V2Spec ID3_Tag::GetSpec() const
    **/
 void ID3_Tag::SetUnsync(bool newSync)
 {
-  if (__bSyncOn != newSync)
+  if (__is_unsync != newSync)
   {
-    __bHasChanged = true;
+    __changed = true;
   }
     
-  __bSyncOn = newSync;
+  __is_unsync = newSync;
   
   return ;
 }
@@ -551,12 +551,12 @@ void ID3_Tag::SetUnsync(bool newSync)
    **/
 void ID3_Tag::SetExtendedHeader(bool ext)
 {
-  if (__bExtendedHeader != ext)
+  if (__is_extended != ext)
   {
-    __bHasChanged = true;
+    __changed = true;
   }
     
-  __bExtendedHeader = ext;
+  __is_extended = ext;
   
   return ;
 }
@@ -593,9 +593,9 @@ void ID3_Tag::SetExtendedHeader(bool ext)
  **/
 void ID3_Tag::SetPadding(bool pad)
 {
-  __bHasChanged = __bHasChanged || (__bPadding != pad);
+  __changed = __changed || (__is_padded != pad);
     
-  __bPadding = pad;
+  __is_padded = pad;
   
   return ;
 }
@@ -611,7 +611,7 @@ void ID3_Tag::SetPadding(bool pad)
 luint ID3_Tag::NumFrames(void) const
 {
   luint numFrames = 0;
-  for (ID3_Elem *cur = __pFrameList; NULL != cur; cur = cur->pNext)
+  for (ID3_Elem *cur = __frames; NULL != cur; cur = cur->pNext)
   {
     numFrames++;
   }

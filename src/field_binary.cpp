@@ -1,4 +1,4 @@
-// $Id: field_binary.cpp,v 1.5 2000/05/01 13:05:07 eldamitri Exp $
+// $Id: field_binary.cpp,v 1.6 2000/05/03 03:02:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -39,24 +39,24 @@ void ID3_Field::Set(const uchar *newData, const luint newSize)
   
   if (newSize > 0)
   {
-    __sData = new uchar[newSize];
-    if (NULL == __sData)
+    __data = new uchar[newSize];
+    if (NULL == __data)
     {
       ID3_THROW(ID3E_NoMemory);
     }
     
     if (newData != NULL)
     {
-      memcpy(__sData, newData, newSize);
+      memcpy(__data, newData, newSize);
     }
     else
     {
-      memset(__sData, 0, newSize);
+      memset(__data, 0, newSize);
     }
-    __ulSize = newSize;
+    __size = newSize;
     
-    __eType = ID3FTY_BINARY;
-    __bHasChanged = true;
+    __type = ID3FTY_BINARY;
+    __changed = true;
   }
   
   return ;
@@ -70,11 +70,11 @@ void ID3_Field::Get(uchar *buffer, const luint buffLength)
     ID3_THROW(ID3E_NoBuffer);
   }
     
-  if (__sData != NULL && __ulSize > 0)
+  if (__data != NULL && __size > 0)
   {
-    luint actualBytes = MIN(buffLength, __ulSize);
+    luint actualBytes = MIN(buffLength, __size);
     
-    memcpy(buffer, __sData, actualBytes);
+    memcpy(buffer, __data, actualBytes);
   }
   
   return ;
@@ -123,14 +123,14 @@ void ID3_Field::ToFile(const char *info)
     ID3_THROW(ID3E_NoData);
   }
     
-  if ((__sData != NULL) && (__ulSize > 0))
+  if ((__data != NULL) && (__size > 0))
   {
     FILE *temp;
     
     temp = fopen(info, "wb");
     if (temp != NULL)
     {
-      fwrite(__sData, 1, __ulSize, temp);
+      fwrite(__data, 1, __size, temp);
       fclose(temp);
     }
   }
@@ -144,14 +144,14 @@ ID3_Field::ParseBinary(const uchar *buffer, luint posn, size_t nSize)
 {
   size_t bytesUsed = nSize - posn;
   
-  if (__ulFixedLength > 0)
+  if (__length > 0)
   {
-    bytesUsed = MIN(__ulFixedLength, bytesUsed);
+    bytesUsed = MIN(__length, bytesUsed);
   }
     
   Set(&buffer[posn], bytesUsed);
   
-  __bHasChanged = false;
+  __changed = false;
   
   return bytesUsed;
 }
@@ -163,9 +163,9 @@ ID3_Field::RenderBinary(uchar *buffer)
   luint bytesUsed = 0;
   
   bytesUsed = BinSize();
-  memcpy(buffer, (uchar *) __sData, bytesUsed);
+  memcpy(buffer, (uchar *) __data, bytesUsed);
   
-  __bHasChanged = false;
+  __changed = false;
   
   return bytesUsed;
 }

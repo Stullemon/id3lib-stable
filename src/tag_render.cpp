@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.11 2000/05/02 16:57:46 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.12 2000/05/03 03:02:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -75,7 +75,7 @@ luint ID3_Tag::Render(uchar *buffer)
     ID3_THROW(ID3E_NoBuffer);
   }
 
-  ID3_Elem *cur = __pFrameList;
+  ID3_Elem *cur = __frames;
   ID3_TagHeader header;
     
   this->SetSpec(ID3V2_LATEST);
@@ -98,7 +98,7 @@ luint ID3_Tag::Render(uchar *buffer)
     cur = cur->pNext;
   }
     
-  if (__bSyncOn)
+  if (__is_unsync)
   {
     uchar *tempz;
     luint newTagSize;
@@ -133,7 +133,7 @@ luint ID3_Tag::Render(uchar *buffer)
   header.Render(buffer);
     
   // set the flag which says that the tag hasn't changed
-  __bHasChanged = false;
+  __changed = false;
   
   return bytesUsed;
 }
@@ -171,7 +171,7 @@ luint ID3_Tag::Render(uchar *buffer)
 luint ID3_Tag::Size(void) const
 {
   luint bytesUsed = 0;
-  ID3_Elem *cur = __pFrameList;
+  ID3_Elem *cur = __frames;
   ID3_TagHeader header;
   
   header.SetSpec(this->GetSpec());
@@ -189,7 +189,7 @@ luint ID3_Tag::Size(void) const
   }
   
   // add 30% for sync
-  if (__bSyncOn)
+  if (__is_unsync)
   {
     bytesUsed += bytesUsed / 3;
   }
@@ -310,14 +310,14 @@ void ID3_Tag::RenderV1ToHandle(void)
 
   // We want to check if there is already an id3v1 tag, so we can write over
   // it.  First, seek to the beginning of any possible id3v1 tag
-  if (fseek(__fFileHandle, 0-ID3_V1_LEN, SEEK_END) != 0)
+  if (fseek(__file_handle, 0-ID3_V1_LEN, SEEK_END) != 0)
   {
     // TODO:  This is a bad error message.  Make it more descriptive
     ID3_THROW(ID3E_NoData);
   }
 
   // Read in the TAG characters
-  if (fread(sID, 1, ID3_V1_LEN_ID, __fFileHandle) != ID3_V1_LEN_ID)
+  if (fread(sID, 1, ID3_V1_LEN_ID, __file_handle) != ID3_V1_LEN_ID)
   {
     // TODO:  This is a bad error message.  Make it more descriptive
     ID3_THROW(ID3E_NoData);
@@ -327,7 +327,7 @@ void ID3_Tag::RenderV1ToHandle(void)
   // so we should set the file cursor so we can overwrite it with a new tag.
   if (memcmp(sID, "TAG", ID3_V1_LEN_ID) == 0)
   {
-    if (fseek(__fFileHandle, 0-ID3_V1_LEN, SEEK_END) != 0)
+    if (fseek(__file_handle, 0-ID3_V1_LEN, SEEK_END) != 0)
     {
       // TODO:  This is a bad error message.  Make it more descriptive
       ID3_THROW(ID3E_NoData);
@@ -337,15 +337,15 @@ void ID3_Tag::RenderV1ToHandle(void)
   // the new tag.
   else
   {
-    if (fseek(__fFileHandle, 0, SEEK_END) != 0)
+    if (fseek(__file_handle, 0, SEEK_END) != 0)
     {
       // TODO:  This is a bad error message.  Make it more descriptive
       ID3_THROW(ID3E_NoData);
     }
   }
 
-  fwrite(sTag, 1, ID3_V1_LEN, __fFileHandle);
-  __bHasV1Tag = true;
+  fwrite(sTag, 1, ID3_V1_LEN, __file_handle);
+  __has_v1_tag = true;
 }
 
 void ID3_Tag::RenderV2ToHandle(void)
@@ -353,7 +353,7 @@ void ID3_Tag::RenderV2ToHandle(void)
   uchar *buffer;
   luint size = Size();
   
-  if (NULL == __fFileHandle)
+  if (NULL == __file_handle)
   {
     ID3_THROW(ID3E_NoData);
   }
@@ -378,12 +378,12 @@ void ID3_Tag::RenderV2ToHandle(void)
 
   // if the new tag fits perfectly within the old and the old one
   // actually existed (ie this isn't the first tag this file has had)
-  if ((0 == __ulOldTagSize && 0 == __ulFileSize) || 
-      (size == __ulOldTagSize && size != 0))
+  if ((0 == __orig_tag_size && 0 == __file_size) || 
+      (size == __orig_tag_size && size != 0))
   {
-    fseek(__fFileHandle, 0, SEEK_SET);
-    fwrite(buffer, 1, size, __fFileHandle);
-    __ulOldTagSize = size;
+    fseek(__file_handle, 0, SEEK_SET);
+    fwrite(buffer, 1, size, __file_handle);
+    __orig_tag_size = size;
   }
   else
   {
@@ -398,40 +398,40 @@ void ID3_Tag::RenderV2ToHandle(void)
     
     fwrite(buffer, 1, size, tempOut);
     
-    fseek(__fFileHandle, __ulOldTagSize, SEEK_SET);
+    fseek(__file_handle, __orig_tag_size, SEEK_SET);
     
     uchar buffer2[BUFSIZ];
-    while (! feof(__fFileHandle))
+    while (! feof(__file_handle))
     {
-      size_t nBytes = fread(buffer2, 1, BUFSIZ, __fFileHandle);
+      size_t nBytes = fread(buffer2, 1, BUFSIZ, __file_handle);
       fwrite(buffer2, 1, nBytes, tempOut);
     }
     
     rewind(tempOut);
-    freopen(__sFileName, "wb+", __fFileHandle);
+    freopen(__file_name, "wb+", __file_handle);
     
     while (!feof(tempOut))
     {
       size_t nBytes = fread(buffer2, 1, BUFSIZ, tempOut);
-      fwrite(buffer2, 1, nBytes, __fFileHandle);
+      fwrite(buffer2, 1, nBytes, __file_handle);
     }
     
     fclose(tempOut);
     
-    __ulOldTagSize = size;
+    __orig_tag_size = size;
 #else
 
     // else we gotta make a temp file, copy the tag into it, copy the
     // rest of the old file after the tag, delete the old file, rename
-    // this new file to the old file's name and update the __fFileHandle
+    // this new file to the old file's name and update the __file_handle
 
     const char sTmpSuffix[] = ".XXXXXX";
-    if (strlen(__sFileName) + strlen(sTmpSuffix) > ID3_PATH_LENGTH)
+    if (strlen(__file_name) + strlen(sTmpSuffix) > ID3_PATH_LENGTH)
     {
       ID3_THROW_DESC(ID3E_NoFile, "filename too long");
     }
     char sTempFile[ID3_PATH_LENGTH];
-    strcpy(sTempFile, __sFileName);
+    strcpy(sTempFile, __file_name);
     strcat(sTempFile, sTmpSuffix);
     
     int fd = mkstemp(sTempFile);
@@ -448,21 +448,21 @@ void ID3_Tag::RenderV2ToHandle(void)
       ID3_THROW(ID3E_ReadOnly);
     }
     tmpOut.write(buffer, size);
-    fseek(__fFileHandle, __ulOldTagSize, SEEK_SET);
+    fseek(__file_handle, __orig_tag_size, SEEK_SET);
       
     uchar buffer2[BUFSIZ];
-    while (! feof(__fFileHandle))
+    while (! feof(__file_handle))
     {
-      size_t nBytes = fread(buffer2, 1, BUFSIZ, __fFileHandle);
+      size_t nBytes = fread(buffer2, 1, BUFSIZ, __file_handle);
       tmpOut.write(buffer2, nBytes);
     }
       
     tmpOut.close();
     CloseFile();
-    remove(__sFileName);
-    rename(sTempFile, __sFileName);
+    remove(__file_name);
+    rename(sTempFile, __file_name);
     
-    __ulOldTagSize = size;
+    __orig_tag_size = size;
 #endif
   }
         
@@ -481,7 +481,7 @@ luint ID3_Tag::PaddingSize(luint curSize) const
   luint newSize = 0;
   
   // if padding is switched off or there is no attached file
-  if (! __bPadding || __ulFileSize == 0)
+  if (! __is_padded || __file_size == 0)
   {
     return 0;
   }
@@ -489,14 +489,14 @@ luint ID3_Tag::PaddingSize(luint curSize) const
   // if the old tag was large enough to hold the new tag, then we will simply
   // pad out the difference - that way the new tag can be written without
   // shuffling the rest of the song file around
-  if (__ulOldTagSize && (__ulOldTagSize >= curSize) && 
-      (__ulOldTagSize - curSize) < ID3_PADMAX)
+  if (__orig_tag_size && (__orig_tag_size >= curSize) && 
+      (__orig_tag_size - curSize) < ID3_PADMAX)
   {
-    newSize = __ulOldTagSize;
+    newSize = __orig_tag_size;
   }
   else
   {
-    luint tempSize = curSize + __ulFileSize;
+    luint tempSize = curSize + __file_size;
     
     // this method of automatic padding rounds the COMPLETE FILE up to the
     // nearest 2K.  If the file will already be an even multiple of 2K (with
@@ -504,7 +504,7 @@ luint ID3_Tag::PaddingSize(luint curSize) const
     tempSize = ((tempSize / ID3_PADMULTIPLE) + 1) * ID3_PADMULTIPLE;
     
     // the size of the new tag is the new filesize minus the audio data
-    newSize = tempSize - __ulFileSize;
+    newSize = tempSize - __file_size;
   }
   
   return newSize - curSize;

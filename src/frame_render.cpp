@@ -1,4 +1,4 @@
-// $Id: frame_render.cpp,v 1.5 2000/05/02 21:57:48 eldamitri Exp $
+// $Id: frame_render.cpp,v 1.6 2000/05/03 03:02:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -46,19 +46,19 @@ luint ID3_Frame::Render(uchar *buffer)
   luint extras = 0;
   bool didCompress = false;
     
-  bytesUsed += __FrmHdr.Size();
+  bytesUsed += __hdr.Size();
     
   // here is where we include things like grouping IDs and crypto IDs
-  if (strlen(__sEncryptionID) > 0)
+  if (strlen(__encryption_id) > 0)
   {
-    buffer[bytesUsed] = __sEncryptionID[0];
+    buffer[bytesUsed] = __encryption_id[0];
     bytesUsed++;
     extras++;
   }
     
-  if (strlen(__sGroupingID) > 0)
+  if (strlen(__grouping_id) > 0)
   {
-    buffer[bytesUsed] = __sGroupingID[0];
+    buffer[bytesUsed] = __grouping_id[0];
     bytesUsed++;
     extras++;
   }
@@ -67,18 +67,18 @@ luint ID3_Frame::Render(uchar *buffer)
   // as (ASCII or Unicode)
   UpdateStringTypes();
     
-  for (luint i = 0; i < __ulNumFields; i++)
+  for (luint i = 0; i < __num_fields; i++)
   {
-    __apFields[i]->SetSpec(__FrmHdr.GetSpec());
-    bytesUsed += __apFields[i]->Render(&buffer[bytesUsed]);
+    __fields[i]->SetSpec(__hdr.GetSpec());
+    bytesUsed += __fields[i]->Render(&buffer[bytesUsed]);
   }
     
   // if we can compress frames individually and we have been asked to compress
   // the frames
-  if (__FrmHdr.GetCompression() && __FrmHdr.GetSpec() >= ID3V2_3_0)
+  if (__hdr.GetCompression() && __hdr.GetSpec() >= ID3V2_3_0)
   {
       
-    bytesUsed -= __FrmHdr.Size();
+    bytesUsed -= __hdr.Size();
       
     luint newFrameSize = bytesUsed + (bytesUsed / 10) + 12;
       
@@ -88,7 +88,7 @@ luint ID3_Frame::Render(uchar *buffer)
       ID3_THROW(ID3E_NoMemory);
     }
 
-    if (compress(newTemp, &newFrameSize, &buffer[__FrmHdr.Size() + extras],
+    if (compress(newTemp, &newFrameSize, &buffer[__hdr.Size() + extras],
                  bytesUsed - extras) != Z_OK)
     {
       ID3_THROW(ID3E_zlibError);
@@ -99,7 +99,7 @@ luint ID3_Frame::Render(uchar *buffer)
     {
       luint posn;
             
-      posn = __FrmHdr.Size();
+      posn = __hdr.Size();
       extras += sizeof(uint32);
             
       memcpy(&buffer[posn + sizeof(uint32)], newTemp, newFrameSize);
@@ -110,24 +110,24 @@ luint ID3_Frame::Render(uchar *buffer)
       didCompress = true;
     }
           
-    bytesUsed += __FrmHdr.Size();
+    bytesUsed += __hdr.Size();
         
     delete[] newTemp;
   }
     
   // perform any encryption here
-  if (strlen(__sEncryptionID))
+  if (strlen(__encryption_id))
   {
   }
     
   // determine which flags need to be set
-  __FrmHdr.SetCompression(didCompress);
-  __FrmHdr.SetEncryption(strlen(__sEncryptionID) > 0);
-  __FrmHdr.SetGrouping(strlen(__sGroupingID) > 0);
+  __hdr.SetCompression(didCompress);
+  __hdr.SetEncryption(strlen(__encryption_id) > 0);
+  __hdr.SetGrouping(strlen(__grouping_id) > 0);
       
-  __FrmHdr.SetDataSize(bytesUsed - __FrmHdr.Size());
-  __FrmHdr.Render(buffer);
-  __bHasChanged = false;
+  __hdr.SetDataSize(bytesUsed - __hdr.Size());
+  __hdr.Render(buffer);
+  __changed = false;
     
   return bytesUsed;
 }

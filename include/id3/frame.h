@@ -1,4 +1,4 @@
-// $Id: frame.h,v 1.16 2000/05/02 22:00:08 eldamitri Exp $
+// $Id: frame.h,v 1.17 2000/05/03 03:02:39 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -41,7 +41,7 @@ class ID3_Tag;
  ** the implementation of a complex APIC frame and for a simple text frame.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: frame.h,v 1.16 2000/05/02 22:00:08 eldamitri Exp $
+ ** @version $Id: frame.h,v 1.17 2000/05/03 03:02:39 eldamitri Exp $
  ** @see ID3_Tag
  ** @see ID3_Field
  ** @see ID3_Err
@@ -125,7 +125,7 @@ public:
   luint       Size();
   luint       Render(uchar *buffer);
   bool        Contains(ID3_FieldID fld)
-  { return BS_ISSET(__auiFieldBits, fld); }
+  { return BS_ISSET(__field_bitset, fld); }
   bool        SetSpec(ID3_V2Spec);
 
 protected:
@@ -137,13 +137,13 @@ protected:
   lsint       FindField(ID3_FieldID name) const;
 
 private:
-  char        __sEncryptionID[256]; // encryption method used with this frame
-  char        __sGroupingID[256];   // the group to which this frame belongs
-  bool        __bHasChanged;        // frame changed since last parse/render?
-  bitset      __auiFieldBits;       // which fields are present?
-  luint       __ulNumFields;        // how many fields are in this frame?
-  ID3_Field **__apFields;           // an array of field object pointers
-  ID3_FrameHeader __FrmHdr;         // 
+  char        __encryption_id[256]; // encryption method used with this frame
+  char        __grouping_id[256];   // the group to which this frame belongs
+  bool        __changed;            // frame changed since last parse/render?
+  bitset      __field_bitset;       // which fields are present?
+  luint       __num_fields;         // how many fields are in this frame?
+  ID3_Field **__fields;             // an array of field object pointers
+  ID3_FrameHeader __hdr;            // 
 }
 ;
 

@@ -1,4 +1,4 @@
-// $Id: field_string_ascii.cpp,v 1.4 2000/05/01 13:05:07 eldamitri Exp $
+// $Id: field_string_ascii.cpp,v 1.5 2000/05/03 03:02:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -48,7 +48,7 @@ void ID3_Field::Set(const char *sString)
   if (sString != NULL)
   {
     Clear();
-    size_t nStrLen = (0 == __ulFixedLength) ? strlen(sString) : __ulFixedLength;
+    size_t nStrLen = (0 == __length) ? strlen(sString) : __length;
     unicode_t *temp = new unicode_t[nStrLen + 1];
     if (NULL == temp)
     {
@@ -60,7 +60,7 @@ void ID3_Field::Set(const char *sString)
     Set(temp);
     delete [] temp;
       
-    __eType = ID3FTY_ASCIISTRING;
+    __type = ID3FTY_ASCIISTRING;
   }
   
   return ;
@@ -125,7 +125,7 @@ void ID3_Field::Add(const char *sString)
     Add(temp);
     delete [] temp;
     
-    __eType = ID3FTY_ASCIISTRING;
+    __type = ID3FTY_ASCIISTRING;
   }
   
   return ;
@@ -138,12 +138,12 @@ ID3_Field::ParseASCIIString(const uchar *buffer, luint posn, size_t nSize)
   size_t bytesUsed = 0;
   char *temp = NULL;
   
-  if (__ulFixedLength > 0)
+  if (__length > 0)
   {
     // The string is of fixed length
-    bytesUsed = __ulFixedLength;
+    bytesUsed = __length;
   }
-  else if (!(__ulFlags & ID3FF_NULL) || (__ulFlags & ID3FF_NULLDIVIDE))
+  else if (!(__flags & ID3FF_NULL) || (__flags & ID3FF_NULLDIVIDE))
   {
     // If the string isn't null-terminated or if it is null divided, we're
     // assured this is the last field of of the frame, and we can claim the
@@ -163,7 +163,7 @@ ID3_Field::ParseASCIIString(const uchar *buffer, luint posn, size_t nSize)
     Set("");
   }
   // This check needs to come before the check for ID3FF_NULL
-  else if (__ulFlags & ID3FF_NULLDIVIDE)
+  else if (__flags & ID3FF_NULLDIVIDE)
   {
     char *sBuffer = (char *) &buffer[posn];
     for (size_t nIndex = 0; nIndex < bytesUsed; 
@@ -173,7 +173,7 @@ ID3_Field::ParseASCIIString(const uchar *buffer, luint posn, size_t nSize)
     }
   }
   // This check needs to come after the check for ID3FF_NULLDIVIDE
-  else if (__ulFlags & ID3FF_NULL)
+  else if (__flags & ID3FF_NULL)
   {
     char *sBuffer = (char *) &buffer[posn];
     Set(sBuffer);
@@ -199,12 +199,12 @@ ID3_Field::ParseASCIIString(const uchar *buffer, luint posn, size_t nSize)
     delete [] temp;
   }
   
-  if (__ulFlags & ID3FF_NULL && !(__ulFlags & ID3FF_NULLDIVIDE))
+  if (__flags & ID3FF_NULL && !(__flags & ID3FF_NULLDIVIDE))
   {
     bytesUsed++;
   }
     
-  __bHasChanged = false;
+  __changed = false;
   
   return bytesUsed;
 }
@@ -214,9 +214,9 @@ luint ID3_Field::RenderASCIIString(uchar *buffer)
 {
   luint nChars = BinSize();
 
-  if ((NULL != __sData) && (nChars > 0))
+  if ((NULL != __data) && (nChars > 0))
   {
-    ucstombs((char *) buffer, (unicode_t *) __sData, nChars);
+    ucstombs((char *) buffer, (unicode_t *) __data, nChars);
       
     // now we convert the internal dividers to what they are supposed to be
     for (luint nIndex = 0; nIndex < nChars; nIndex++)
@@ -225,7 +225,7 @@ luint ID3_Field::RenderASCIIString(uchar *buffer)
       {
         char sub = '/';
           
-        if (__ulFlags & ID3FF_NULLDIVIDE)
+        if (__flags & ID3FF_NULLDIVIDE)
         {
           sub = '\0';
         }
@@ -234,12 +234,12 @@ luint ID3_Field::RenderASCIIString(uchar *buffer)
     }
   }
   
-  if ((1 == nChars) && (__ulFlags & ID3FF_NULL))
+  if ((1 == nChars) && (__flags & ID3FF_NULL))
   {
     buffer[0] = '\0';
   }
     
-  __bHasChanged = false;
+  __changed = false;
   
   return nChars;
 }

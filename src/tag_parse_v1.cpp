@@ -1,4 +1,4 @@
-// $Id: tag_parse_v1.cpp,v 1.4 2000/05/01 13:05:07 eldamitri Exp $
+// $Id: tag_parse_v1.cpp,v 1.5 2000/05/03 03:02:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -47,7 +47,7 @@ void ID3_RemoveTrailingSpaces(char *buffer, luint length)
 
 void ID3_Tag::ParseID3v1(void)
 {
-  if (NULL == __fFileHandle)
+  if (NULL == __file_handle)
   {
     ID3_THROW(ID3E_NoData);
   }
@@ -55,7 +55,7 @@ void ID3_Tag::ParseID3v1(void)
   ID3V1_Tag tagID3v1;
     
   // posn ourselves at 128 bytes from the end of the file
-  if (fseek(__fFileHandle, 0-ID3_V1_LEN, SEEK_END) != 0)
+  if (fseek(__file_handle, 0-ID3_V1_LEN, SEEK_END) != 0)
   {
     // TODO:  This is a bad error message.  Make it more descriptive
     ID3_THROW(ID3E_NoData);
@@ -63,7 +63,7 @@ void ID3_Tag::ParseID3v1(void)
     
     
   // read the next 128 bytes in;
-  if (fread(tagID3v1.sID, 1, ID3_V1_LEN_ID, __fFileHandle) != ID3_V1_LEN_ID)
+  if (fread(tagID3v1.sID, 1, ID3_V1_LEN_ID, __file_handle) != ID3_V1_LEN_ID)
   {
     // TODO:  This is a bad error message.  Make it more descriptive
     ID3_THROW(ID3E_NoData);
@@ -77,11 +77,11 @@ void ID3_Tag::ParseID3v1(void)
     // no current equivalent v2 frame, we create the frame, copy the data
     // from the v1 frame and attach it to the tag
       
-    __bHasV1Tag = true;
-    __ulExtraBytes += ID3_V1_LEN;
+    __has_v1_tag = true;
+    __extra_bytes += ID3_V1_LEN;
 
     // the TITLE field/frame
-    if (fread(tagID3v1.sTitle, 1, ID3_V1_LEN_TITLE, __fFileHandle) != ID3_V1_LEN_TITLE)
+    if (fread(tagID3v1.sTitle, 1, ID3_V1_LEN_TITLE, __file_handle) != ID3_V1_LEN_TITLE)
     {
       // TODO:  This is a bad error message.  Make it more descriptive
       ID3_THROW(ID3E_NoData);
@@ -91,7 +91,7 @@ void ID3_Tag::ParseID3v1(void)
     ID3_AddTitle(this, tagID3v1.sTitle);
     
     // the ARTIST field/frame
-    if (fread(tagID3v1.sArtist, 1, ID3_V1_LEN_ARTIST, __fFileHandle) != 
+    if (fread(tagID3v1.sArtist, 1, ID3_V1_LEN_ARTIST, __file_handle) != 
         ID3_V1_LEN_ARTIST)
     {
       // TODO:  This is a bad error message.  Make it more descriptive
@@ -102,7 +102,7 @@ void ID3_Tag::ParseID3v1(void)
     ID3_AddArtist(this, tagID3v1.sArtist);
   
     // the ALBUM field/frame
-    if (fread(tagID3v1.sAlbum, 1, ID3_V1_LEN_ALBUM, __fFileHandle) != ID3_V1_LEN_ALBUM)
+    if (fread(tagID3v1.sAlbum, 1, ID3_V1_LEN_ALBUM, __file_handle) != ID3_V1_LEN_ALBUM)
     {
       // TODO:  This is a bad error message.  Make it more descriptive
       ID3_THROW(ID3E_NoData);
@@ -112,7 +112,7 @@ void ID3_Tag::ParseID3v1(void)
     ID3_AddAlbum(this, tagID3v1.sAlbum);
   
     // the YEAR field/frame
-    if (fread(tagID3v1.sYear, 1, ID3_V1_LEN_YEAR, __fFileHandle) != ID3_V1_LEN_YEAR)
+    if (fread(tagID3v1.sYear, 1, ID3_V1_LEN_YEAR, __file_handle) != ID3_V1_LEN_YEAR)
     {
       // TODO:  This is a bad error message.  Make it more descriptive
       ID3_THROW(ID3E_NoData);
@@ -122,7 +122,7 @@ void ID3_Tag::ParseID3v1(void)
     ID3_AddYear(this, tagID3v1.sYear);
   
     // the COMMENT field/frame
-    if (fread(tagID3v1.sComment, 1, ID3_V1_LEN_COMMENT, __fFileHandle) !=
+    if (fread(tagID3v1.sComment, 1, ID3_V1_LEN_COMMENT, __file_handle) !=
         ID3_V1_LEN_COMMENT)
     {
       // TODO:  This is a bad error message.  Make it more descriptive
@@ -144,7 +144,7 @@ void ID3_Tag::ParseID3v1(void)
     ID3_AddComment(this, tagID3v1.sComment, STR_V1_COMMENT_DESC);
       
     // the GENRE field/frame
-    fread(&tagID3v1.ucGenre, 1, ID3_V1_LEN_GENRE, __fFileHandle);
+    fread(&tagID3v1.ucGenre, 1, ID3_V1_LEN_GENRE, __file_handle);
     ID3_AddGenre(this, tagID3v1.ucGenre);
   }
     

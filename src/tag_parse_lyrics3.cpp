@@ -1,4 +1,4 @@
-// $Id: tag_parse_lyrics3.cpp,v 1.4 2000/05/01 13:05:07 eldamitri Exp $
+// $Id: tag_parse_lyrics3.cpp,v 1.5 2000/05/03 03:02:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -95,15 +95,15 @@ luint ID3_StripTimeStamps(char *buffer, luint size)
 
 void ID3_Tag::ParseLyrics3(void)
 {
-  if (NULL == __fFileHandle)
+  if (NULL == __file_handle)
   {
     ID3_THROW(ID3E_NoData);
   }
 
   uchar buffer[18];
 
-  fseek(__fFileHandle, -143, SEEK_END);
-  fread(buffer, 1, 18, __fFileHandle);
+  fseek(__file_handle, -143, SEEK_END);
+  fread(buffer, 1, 18, __file_handle);
 
   // first check for an ID3v1 tag
   if (memcmp(&buffer[15], "TAG", 3) == 0)
@@ -114,19 +114,19 @@ void ID3_Tag::ParseLyrics3(void)
       // we have a Lyrics3 v1.00 tag
 
       // get the position of LYRICSEND string in file
-      int filelen = __ulFileSize;
+      int filelen = __file_size;
       int lyrendpos = filelen - 137;
 
       // read the maximum Lyrics3 v1.00 tag size (5100 bytes) + some extra byte
       int bytesToRead = 5100 + 100;
-      fseek(__fFileHandle, -(bytesToRead+143), SEEK_END);
+      fseek(__file_handle, -(bytesToRead+143), SEEK_END);
       uchar *bufflyr;
       bufflyr = new uchar[bytesToRead];
       if (NULL == bufflyr)
       {
         ID3_THROW(ID3E_NoMemory);
       }
-      fread(bufflyr, 1, bytesToRead, __fFileHandle);
+      fread(bufflyr, 1, bytesToRead, __file_handle);
 
       // search for LYRICSBEGIN
       bool      bFoundBegin = false;
@@ -160,13 +160,13 @@ void ID3_Tag::ParseLyrics3(void)
       int lyrbeginpos = filelen - ((bytesToRead+143) - pos);
       int lyrsize = lyrendpos - lyrbeginpos;
 
-      fseek(__fFileHandle, lyrbeginpos, SEEK_SET);
+      fseek(__file_handle, lyrbeginpos, SEEK_SET);
       bufflyr = new uchar[lyrsize];
       if (NULL == bufflyr)
       {
         ID3_THROW(ID3E_NoMemory);
       }
-      fread(bufflyr, 1, lyrsize, __fFileHandle);
+      fread(bufflyr, 1, lyrsize, __file_handle);
 
       char *text;
       luint newSize;
@@ -197,15 +197,15 @@ void ID3_Tag::ParseLyrics3(void)
       buffer[6] = 0;
       lyricsSize = atoi((char *) buffer);
 
-      fseek(__fFileHandle, -18 - lyricsSize, SEEK_CUR);
-      fread(buffer, 1, 11, __fFileHandle);
+      fseek(__file_handle, -18 - lyricsSize, SEEK_CUR);
+      fread(buffer, 1, 11, __file_handle);
 
       if (memcmp(buffer, "LYRICSBEGIN", 11) == 0)
       {
         luint bytesToRead = lyricsSize - 11;
         uchar *buff2;
 
-        __ulExtraBytes += lyricsSize + 9 + 6;
+        __extra_bytes += lyricsSize + 9 + 6;
 
         buff2 = new uchar[bytesToRead];
         if (NULL == buff2)
@@ -216,7 +216,7 @@ void ID3_Tag::ParseLyrics3(void)
         luint posn = 0;
         bool stampsUsed = false;
 
-        fread(buff2, 1, bytesToRead, __fFileHandle);
+        fread(buff2, 1, bytesToRead, __file_handle);
 
         while (posn < bytesToRead)
         {

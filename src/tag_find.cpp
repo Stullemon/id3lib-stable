@@ -1,4 +1,4 @@
-// $Id: tag_find.cpp,v 1.6 2000/05/01 15:51:15 eldamitri Exp $
+// $Id: tag_find.cpp,v 1.7 2000/05/03 03:02:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -99,7 +99,7 @@ ID3_Elem *ID3_Tag::Find(ID3_Frame *frame) const
 {
   ID3_Elem *elem = NULL;
   
-  for (ID3_Elem *cur = __pFrameList; NULL != cur; cur = cur->pNext)
+  for (ID3_Elem *cur = __frames; NULL != cur; cur = cur->pNext)
   {
     if (cur->pFrame == frame)
     {
@@ -116,9 +116,9 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id)
   ID3_Frame *frame = NULL;
   
   // reset the cursor if it isn't set
-  if (NULL == __pFindCursor)
+  if (NULL == __cursor)
   {
-    __pFindCursor = __pFrameList;
+    __cursor = __frames;
   }
 
   for (int iCount = 0; iCount < 2 && frame == NULL; iCount++)
@@ -130,8 +130,8 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id)
     // list and, if unsuccessful, start from the beginning of the list and
     // search to the cursor.
     ID3_Elem
-      *pStart  = (0 == iCount ? __pFindCursor : __pFrameList), 
-      *pFinish = (0 == iCount ? NULL          : __pFindCursor);
+      *pStart  = (0 == iCount ? __cursor : __frames), 
+      *pFinish = (0 == iCount ? NULL          : __cursor);
     // search from the cursor to the end
     for (ID3_Elem *cur = pStart; cur != pFinish; cur = cur->pNext)
     {
@@ -139,7 +139,7 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id)
       {
         // We've found a valid frame.  Set the cursor to be the next element
         frame = cur->pFrame;
-        __pFindCursor = cur->pNext;
+        __cursor = cur->pNext;
         break;
       }
     }
@@ -171,8 +171,8 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, unicode_t *data)
   ID3_Frame *frame = NULL;
   
   // reset the cursor if it isn't set
-  if (NULL == __pFindCursor)
-    __pFindCursor = __pFrameList;
+  if (NULL == __cursor)
+    __cursor = __frames;
 
   for (int iCount = 0; iCount < 2 && frame == NULL; iCount++)
   {
@@ -183,8 +183,8 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, unicode_t *data)
     // list and, if unsuccessful, start from the beginning of the list and
     // search to the cursor.
     ID3_Elem
-      *pStart  = (0 == iCount ? __pFindCursor : __pFrameList), 
-      *pFinish = (0 == iCount ? NULL          : __pFindCursor);
+      *pStart  = (0 == iCount ? __cursor : __frames), 
+      *pFinish = (0 == iCount ? NULL          : __cursor);
     // search from the cursor to the end
     for (ID3_Elem *cur = pStart; cur != pFinish; cur = cur->pNext)
     {
@@ -208,7 +208,7 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, unicode_t *data)
         {
           // We've found a valid frame.  Set cursor to be the next element
           frame = cur->pFrame;
-          __pFindCursor = cur->pNext;
+          __cursor = cur->pNext;
           break;
         }
       }
@@ -223,8 +223,8 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, luint data)
   ID3_Frame *frame = NULL;
   
   // reset the cursor if it isn't set
-  if (NULL == __pFindCursor)
-    __pFindCursor = __pFrameList;
+  if (NULL == __cursor)
+    __cursor = __frames;
 
   for (int iCount = 0; iCount < 2 && frame == NULL; iCount++)
   {
@@ -235,8 +235,8 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, luint data)
     // list and, if unsuccessful, start from the beginning of the list and
     // search to the cursor.
     ID3_Elem
-      *pStart  = (0 == iCount ? __pFindCursor : __pFrameList), 
-      *pFinish = (0 == iCount ? NULL          : __pFindCursor);
+      *pStart  = (0 == iCount ? __cursor : __frames), 
+      *pFinish = (0 == iCount ? NULL          : __cursor);
     // search from the cursor to the end
     for (ID3_Elem *cur = pStart; cur != pFinish; cur = cur->pNext)
     {
@@ -245,7 +245,7 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, luint data)
       {
         // We've found a valid frame.  Set the cursor to be the next element
         frame = cur->pFrame;
-        __pFindCursor = cur->pNext;
+        __cursor = cur->pNext;
         break;
       }
     }
@@ -274,7 +274,7 @@ ID3_Frame *ID3_Tag::GetFrameNum(luint num) const
   ID3_Frame *frame = NULL;
 
   luint curNum = 0;
-  for (ID3_Elem *cur = __pFrameList; cur != NULL; cur = cur->pNext)
+  for (ID3_Elem *cur = __frames; cur != NULL; cur = cur->pNext)
     // compare and advance counter
     if (num == curNum++)
     {
