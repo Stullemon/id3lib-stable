@@ -1,4 +1,4 @@
-$Id: THANKS,v 1.20 2003/03/02 16:38:17 t1mpy Exp $
+$Id: THANKS,v 1.21 2004/04/10 14:27:53 t1mpy Exp $
 
 id3lib THANKS file
 
@@ -8,6 +8,7 @@ Since version 3.05a, several individuals have helped further the development of
 id3lib.  They are listed below, in no particular order.  Please inform the
 current project maintainer if anyone has been missed.
 
+* Ralf Engels (ralf-engels@gmx.de) for his help on unicode support
 * Paul-Henri (paul-henri.ferme@noos.fr) and Christopher John Shaker <(cjshaker@shaker-net.com)
   for pointing out where the code could have been more robust in tag_find.cpp.
 * Bradley J. Marker for pointing out that checking for NULL in Set() can
