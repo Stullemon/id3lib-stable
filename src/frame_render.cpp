@@ -1,4 +1,4 @@
-// $Id: frame_render.cpp,v 1.15 2000/10/01 00:39:23 eldamitri Exp $
+// $Id: frame_render.cpp,v 1.16 2000/10/03 04:26:44 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -37,6 +37,9 @@
 #include "tag.h"
 #include "utils.h"
 #include "frame_impl.h"
+#include "error.h"
+
+using namespace dami;
 
 // Ideally, Render should render the frame in the order it is parsed, starting
 // with the header, then any extra info (resulting from header flags), and then
@@ -79,7 +82,6 @@ size_t ID3_FrameImpl::Render(uchar *buffer) const
   {
     // log this
     return 0;
-    //ID3_THROW(ID3E_NoBuffer);
   }
 
   // Return immediately if we have no fields, which (usually) means we're
@@ -130,15 +132,14 @@ size_t ID3_FrameImpl::Render(uchar *buffer) const
     unsigned long new_data_size = data_size + (data_size / 10) + 12;
       
     uchar* compressed_data = new uchar[new_data_size];
-    if (NULL == compressed_data)
-    {
-      ID3_THROW(ID3E_NoMemory);
-    }
 
     if (compress(compressed_data, &new_data_size, &buffer[hdr_size + extras],
                  data_size) != Z_OK)
     {
-      ID3_THROW(ID3E_zlibError);
+      // log this
+      delete [] compressed_data;
+      return 0;
+      //ID3_THROW(ID3E_zlibError);
     }
 
     // if the compression actually saves space...
@@ -166,7 +167,7 @@ size_t ID3_FrameImpl::Render(uchar *buffer) const
   uchar* data = buffer + hdr_size;
   if (decompressed_size)
   {
-    data += id3::renderNumber(data, decompressed_size);
+    data += ::renderNumber(data, decompressed_size);
   }
   if (e_id)
   {
