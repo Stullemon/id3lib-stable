@@ -28,6 +28,7 @@ noinst_HEADERS =                \
   header.h                      \
   header_frame.h                \
   header_tag.h                  \
+  tag_impl.h                    \
   spec.h                        
 
 id3lib_sources =                \
