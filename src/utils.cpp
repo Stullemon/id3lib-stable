@@ -1,4 +1,4 @@
-// $Id: utils.cpp,v 1.5 2000/07/11 04:29:07 eldamitri Exp $
+// $Id: utils.cpp,v 1.6 2000/07/14 07:10:58 adcockj Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -232,7 +232,7 @@ namespace id3
   bool exists(const char *name)
   {
     ifstream file(name, ios::nocreate);
-    return file.is_open();
+    return file.is_open() != 0;
   }
   
   ID3_Err ID3_CreateFile(const char* name, fstream& file)
