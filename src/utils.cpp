@@ -1,4 +1,4 @@
-// $Id: utils.cpp,v 1.21 2002/06/29 14:43:43 t1mpy Exp $
+// $Id: utils.cpp,v 1.22 2002/06/29 17:11:25 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,11 +28,6 @@
 #include <config.h>
 #endif
 
-#if defined HAVE_ICONV_H
-# include <iconv.h>
-# include <errno.h>
-#endif
-
 #include <ctype.h>
 
 #if (defined(__GNUC__) && __GNUC__ == 2)
@@ -45,6 +40,18 @@
 #endif
 
 #include "utils.h"
+
+#if defined HAVE_ICONV_H
+#if (defined(__STDC__) && defined(sun))
+// solaris uses a different iconv.h. i do not care so much on which api is better
+// but changing code to make solaris work breaks compilation on some more widely spread operating systems
+// several netsearches conclude that there doesn't seem to be nice macro, and that it's very hard to make to suit all compilers
+#undef HAVE_ICONV_H
+#else
+# include <iconv.h>
+# include <errno.h>
+#endif
+#endif
 
 using namespace dami;
 
