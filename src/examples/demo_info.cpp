@@ -14,7 +14,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.2 1999/11/19 17:09:02 scott Exp $
+// $Id: demo_info.cpp,v 1.3 1999/11/30 20:05:30 scott Exp $
 
 
 #include <iostream.h>
@@ -37,7 +37,7 @@ void PrintVersion(char *sName)
 {
   cout << sName << " 1.0" << endl;
   cout << "Displays ID3 Tag Information - Written by Scott Thomas Haug" << endl;
-  cout << "Uses " << ID3LIB_NAME << " " << ID3LIB_VERSION << endl << endl;
+  cout << "Uses " << ID3_FullName() << endl << endl;
 }
 
 char *GetDescription(const ID3_FrameID eFrameID)
@@ -347,6 +347,9 @@ int main( int argc, char *argv[])
 }
 
 // $Log: demo_info.cpp,v $
+// Revision 1.3  1999/11/30 20:05:30  scott
+// Updated to reflect changes from version macros to version functions.
+//
 // Revision 1.2  1999/11/19 17:09:02  scott
 // * demo_info.cpp: Added runtime options for version and help.  Minor
 // code cleanup.
