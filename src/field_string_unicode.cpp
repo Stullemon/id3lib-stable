@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.11 2000/05/12 21:07:26 eldamitri Exp $
+// $Id: field_string_unicode.cpp,v 1.12 2000/05/28 03:40:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -108,7 +108,7 @@ void ID3_Field::Add(const unicode_t *string)
 
 // this is Get()
 
-size_t ID3_Field::Get(unicode_t *buffer, size_t maxChars, index_t itemNum)
+size_t ID3_Field::Get(unicode_t *buffer, size_t maxChars, index_t itemNum) const
 {
   size_t charsUsed = 0;
   
