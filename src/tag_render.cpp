@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.17 2000/05/12 03:45:11 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.18 2000/05/12 21:07:39 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -304,34 +304,7 @@ void ID3_Tag::RenderV1ToHandle()
 
   RenderV1(sTag);
 
-  // We want to check if there is already an id3v1 tag, so we can write over
-  // it.  First, seek to the beginning of any possible id3v1 tag
-  if (fseek(__file_handle, 0-ID3_V1_LEN, SEEK_END) != 0)
-  {
-    // TODO:  This is a bad error message.  Make it more descriptive
-    ID3_THROW(ID3E_NoData);
-  }
-
-  // Read in the TAG characters
-  if (fread(sID, 1, ID3_V1_LEN_ID, __file_handle) != ID3_V1_LEN_ID)
-  {
-    // TODO:  This is a bad error message.  Make it more descriptive
-    ID3_THROW(ID3E_NoData);
-  }
-
-  // If those three characters are TAG, then there's a preexisting id3v1 tag,
-  // so we should set the file cursor so we can overwrite it with a new tag.
-  if (memcmp(sID, "TAG", ID3_V1_LEN_ID) == 0)
-  {
-    if (fseek(__file_handle, 0-ID3_V1_LEN, SEEK_END) != 0)
-    {
-      // TODO:  This is a bad error message.  Make it more descriptive
-      ID3_THROW(ID3E_NoData);
-    }
-  }
-  // Otherwise, set the cursor to the end of the file so we can append on 
-  // the new tag.
-  else
+  if (ID3_V1_LEN > __file_size)
   {
     if (fseek(__file_handle, 0, SEEK_END) != 0)
     {
@@ -339,8 +312,46 @@ void ID3_Tag::RenderV1ToHandle()
       ID3_THROW(ID3E_NoData);
     }
   }
+  else
+  {
+    // We want to check if there is already an id3v1 tag, so we can write over
+    // it.  First, seek to the beginning of any possible id3v1 tag
+    if (fseek(__file_handle, 0-ID3_V1_LEN, SEEK_END) != 0)
+    {
+      // TODO:  This is a bad error message.  Make it more descriptive
+      ID3_THROW(ID3E_NoData);
+    }
 
-  fwrite(sTag, 1, ID3_V1_LEN, __file_handle);
+    // Read in the TAG characters
+    if (fread(sID, 1, ID3_V1_LEN_ID, __file_handle) != ID3_V1_LEN_ID)
+    {
+      // TODO:  This is a bad error message.  Make it more descriptive
+      ID3_THROW(ID3E_NoData);
+    }
+
+    // If those three characters are TAG, then there's a preexisting id3v1 tag,
+    // so we should set the file cursor so we can overwrite it with a new tag.
+    if (memcmp(sID, "TAG", ID3_V1_LEN_ID) == 0)
+    {
+      if (fseek(__file_handle, 0-ID3_V1_LEN, SEEK_END) != 0)
+      {
+        // TODO:  This is a bad error message.  Make it more descriptive
+        ID3_THROW(ID3E_NoData);
+      }
+    }
+    // Otherwise, set the cursor to the end of the file so we can append on 
+    // the new tag.
+    else
+    {
+      if (fseek(__file_handle, 0, SEEK_END) != 0)
+      {
+        // TODO:  This is a bad error message.  Make it more descriptive
+        ID3_THROW(ID3E_NoData);
+      }
+    }
+  }
+
+  fwrite(sTag, sizeof(uchar), ID3_V1_LEN, __file_handle);
   __file_tags.add(ID3TT_ID3V1);
 }
 
