@@ -1,4 +1,4 @@
-// $Id: field.h,v 1.22 2000/05/08 04:07:25 eldamitri Exp $
+// $Id: field.h,v 1.23 2000/05/09 13:47:22 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -109,7 +109,7 @@ struct ID3_FrameDef
  ** if you only plan to generate 3.0 tags.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: field.h,v 1.22 2000/05/08 04:07:25 eldamitri Exp $
+ ** @version $Id: field.h,v 1.23 2000/05/09 13:47:22 eldamitri Exp $
  ** \sa ID3_Tag
  ** \sa ID3_Frame
  ** \sa ID3_Err 
@@ -349,12 +349,17 @@ public:
 
   const uchar*  GetBinary() const { return __data; }
 
+  bool          InScope(ID3_V2Spec spec) const
+  { return __spec_begin <= spec && spec <= __spec_end; }
+
+  ID3_FieldID   GetID() const { return __id; }
+
 private:
   luint         BinSize(bool withExtras = true) const;
   bool          HasChanged();
-  void          SetSpec(ID3_V2Spec);
+  //void          SetSpec(ID3_V2Spec);
   luint         Render(uchar *buffer);
-  luint         Parse(const uchar *buffer, luint posn, luint buffSize);
+  luint         Parse(const uchar *buffer, luint buffSize);
 
 private:
   // To prevent public instantiation, the constructor is made private
@@ -366,7 +371,7 @@ private:
   ID3_V2Spec    __spec_begin;      // spec end
   ID3_V2Spec    __spec_end;        // spec begin
   luint         __flags;           // special field flags
-  ID3_V2Spec    __spec;            // the spec being rendered
+  //ID3_V2Spec    __spec;            // the spec being rendered
   bool          __changed;         // field changed since last parse/render?
   uchar        *__data;
   luint         __size;
@@ -376,10 +381,10 @@ protected:
   luint RenderUnicodeString(uchar *buffer);
   luint RenderBinary(uchar *buffer);
   
-  size_t ParseInteger(const uchar *buffer, luint posn, size_t nSize);
-  size_t ParseASCIIString(const uchar *buffer, luint posn, size_t nSize);
-  size_t ParseUnicodeString(const uchar *buffer, luint posn, size_t nSize);
-  size_t ParseBinary(const uchar *buffer, luint posn, size_t nSize);
+  size_t ParseInteger(const uchar *buffer, size_t nSize);
+  size_t ParseASCIIString(const uchar *buffer, size_t nSize);
+  size_t ParseUnicodeString(const uchar *buffer, size_t nSize);
+  size_t ParseBinary(const uchar *buffer, size_t nSize);
   
 };
 
