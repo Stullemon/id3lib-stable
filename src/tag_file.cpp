@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.23 2000/09/11 07:46:32 eldamitri Exp $
+// $Id: tag_file.cpp,v 1.24 2000/09/27 07:47:09 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -251,7 +251,7 @@ size_t RenderV2ToFile(const ID3_Tag& tag, fstream& file)
     }
     
     rewind(tempOut);
-    ID3_OpenWritableFile(tag.GetFileName(), file);
+    id3::openWritableFile(tag.GetFileName(), file);
     
     while (!feof(tempOut))
     {
@@ -310,7 +310,7 @@ size_t RenderV2ToFile(const ID3_Tag& tag, fstream& file)
     remove(tag.GetFileName());
     rename(sTempFile, tag.GetFileName());
 
-    ID3_OpenWritableFile(tag.GetFileName(), file);
+    id3::openWritableFile(tag.GetFileName(), file);
 #endif
   }
 
@@ -340,12 +340,12 @@ flags_t ID3_Tag::Update(flags_t ulTagFlag)
   flags_t tags = ID3TT_NONE;
   
   fstream file;
-  ID3_Err err = ID3_OpenWritableFile(this->GetFileName(), file);
-  _file_size = ID3_GetFileSize(file);
+  ID3_Err err = id3::openWritableFile(this->GetFileName(), file);
+  _file_size = id3::getFileSize(file);
   
   if (err == ID3E_NoFile)
   {
-    err = ID3_CreateFile(this->GetFileName(), file);
+    err = id3::createFile(this->GetFileName(), file);
   }
   if (err == ID3E_ReadOnly)
   {
@@ -377,7 +377,7 @@ flags_t ID3_Tag::Update(flags_t ulTagFlag)
   }
   _changed = false;
   _file_tags.add(tags);
-  _file_size = ID3_GetFileSize(file);
+  _file_size = id3::getFileSize(file);
   file.close();
   return tags;
 }
@@ -397,11 +397,11 @@ flags_t ID3_Tag::Strip(flags_t ulTagFlag)
   if (ulTagFlag & ID3TT_PREPENDED & _file_tags.get())
   {
     fstream file;
-    if (ID3E_NoError != ID3_OpenWritableFile(this->GetFileName(), file))
+    if (ID3E_NoError != id3::openWritableFile(this->GetFileName(), file))
     {
       return ulTags;
     }
-    _file_size = ID3_GetFileSize(file);
+    _file_size = id3::getFileSize(file);
 
     // We will remove the id3v2 tag in place: since it comes at the beginning
     // of the file, we'll effectively move all the data that comes after the

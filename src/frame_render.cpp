@@ -1,4 +1,4 @@
-// $Id: frame_render.cpp,v 1.13 2000/09/11 07:46:32 eldamitri Exp $
+// $Id: frame_render.cpp,v 1.14 2000/09/27 07:49:32 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -162,7 +162,7 @@ size_t ID3_Frame::Render(uchar *buffer) const
   uchar* data = buffer + hdr_size;
   if (decompressed_size)
   {
-    data += RenderNumber(data, decompressed_size);
+    data += id3::renderNumber(data, decompressed_size);
   }
   if (e_id)
   {

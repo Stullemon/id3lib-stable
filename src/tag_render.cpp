@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.29 2000/09/21 23:37:03 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.30 2000/09/27 07:47:09 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -201,7 +201,7 @@ size_t ID3_Tag::RenderV2(uchar *buffer) const
   
   if (this->GetUnsync())
   {
-    size_t newTagSize = ID3_GetUnSyncSize(&buffer[hdr_size], 
+    size_t newTagSize = id3::getUnSyncSize(&buffer[hdr_size], 
                                          bytesUsed - hdr_size);
     if (newTagSize > 0 && (newTagSize + hdr_size) > bytesUsed)
     {
@@ -212,8 +212,8 @@ size_t ID3_Tag::RenderV2(uchar *buffer) const
         //ID3_THROW(ID3E_NoMemory);
       }
 
-      ID3_UnSync(tempz, newTagSize, &buffer[hdr_size],
-                 bytesUsed - hdr_size);
+      id3::unsync(tempz, newTagSize, &buffer[hdr_size],
+                  bytesUsed - hdr_size);
       hdr.SetUnsync(true);
 
       memcpy(&buffer[hdr_size], tempz, newTagSize);

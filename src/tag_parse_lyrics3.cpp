@@ -1,4 +1,4 @@
-// $Id: tag_parse_lyrics3.cpp,v 1.20 2000/08/26 20:25:29 eldamitri Exp $
+// $Id: tag_parse_lyrics3.cpp,v 1.21 2000/09/27 07:47:09 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -87,7 +87,7 @@ luint ID3_RenderTimeStamp(char* buffer, luint ms, bool lf)
   *dest++ = '\0';
   
   // put timestamp
-  dest += RenderNumber((uchar *)dest, ms, sizeof(uint32));
+  dest += id3::renderNumber((uchar *)dest, ms, sizeof(uint32));
   if (lf)
   {
     // put the LF
@@ -161,7 +161,7 @@ luint ID3_Lyrics3ToSylt(char *buffer, luint size)
   return dest - buffer;
 }
 
-size_t ParseLyrics3(ID3_Tag& tag, fstream& file)
+size_t ParseLyrics3(ID3_Tag& tag, ifstream& file)
 {
   size_t tag_bytes = 0;
   if (!file)
@@ -227,7 +227,7 @@ size_t ParseLyrics3(ID3_Tag& tag, fstream& file)
         return tag_bytes;
       }
 
-      size_t lyr_size = ID3_CRLFtoLF(lyr_begin, MAX(0, lyr_end - lyr_begin));
+      size_t lyr_size = id3::CRLFtoLF(lyr_begin, MAX(0, lyr_end - lyr_begin));
 
       lyr_begin[lyr_size] = '\0';
 
@@ -239,7 +239,7 @@ size_t ParseLyrics3(ID3_Tag& tag, fstream& file)
   return tag_bytes;
 }
 
-size_t ParseLyrics3v2(ID3_Tag& tag, fstream& file)
+size_t ParseLyrics3v2(ID3_Tag& tag, ifstream& file)
 {
   size_t tag_bytes = 0;
   if (!file)
@@ -375,7 +375,7 @@ size_t ParseLyrics3v2(ID3_Tag& tag, fstream& file)
         // the INFORMATION field
         else if (memcmp(fld_id, "INF", 3) == 0)
         {
-          size_t adj_size = ID3_CRLFtoLF(fld_data, fld_size);
+          size_t adj_size = id3::CRLFtoLF(fld_data, fld_size);
 
           char* text = new char[adj_size + 1];
           text[adj_size] = '\0';
@@ -389,7 +389,7 @@ size_t ParseLyrics3v2(ID3_Tag& tag, fstream& file)
         // the LYRICS field
         else if (memcmp(fld_id, "LYR", 3) == 0)
         {
-          size_t adj_size = ID3_CRLFtoLF(fld_data, fld_size);
+          size_t adj_size = id3::CRLFtoLF(fld_data, fld_size);
 
           // if already found an INF field, use it as description
           const char* desc =  "Converted from Lyrics3 v2.00";

@@ -1,4 +1,4 @@
-// $Id: tag_parse_musicmatch.cpp,v 1.8 2000/09/11 07:46:32 eldamitri Exp $
+// $Id: tag_parse_musicmatch.cpp,v 1.9 2000/09/27 07:47:09 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -45,7 +45,7 @@ size_t MM_ParseNum(const char* arr, size_t numBytes)
   return val;
 }
 
-ID3_Frame* MM_ParseTextField(fstream& file, ID3_FrameID id, const char* desc = "")
+ID3_Frame* MM_ParseTextField(ifstream& file, ID3_FrameID id, const char* desc = "")
 {
   char size_bytes[2];
   size_t size = 0;
@@ -59,7 +59,7 @@ ID3_Frame* MM_ParseTextField(fstream& file, ID3_FrameID id, const char* desc = "
     file.read(text, size);
     if (ID3FID_SONGLEN == id)
     {
-      size_t len = ID3_TimeToSeconds(text, size) * 1000;
+      size_t len = id3::timeToSeconds(text, size) * 1000;
       size_t digits = 1;
       for (size_t max = 10; max < len; digits++, max *= 10)
       {
@@ -72,7 +72,7 @@ ID3_Frame* MM_ParseTextField(fstream& file, ID3_FrameID id, const char* desc = "
     }
     else
     {
-      size = ID3_CRLFtoLF(text, size);
+      size = id3::CRLFtoLF(text, size);
       text[size] = '\0';
     }
     frame = new ID3_Frame(id);
@@ -100,7 +100,7 @@ ID3_Frame* MM_ParseTextField(fstream& file, ID3_FrameID id, const char* desc = "
   return frame;
 }
 
-size_t ParseMusicMatch(ID3_Tag& tag, fstream& file)
+size_t ParseMusicMatch(ID3_Tag& tag, ifstream& file)
 {
   char sig[8];
   size_t tag_bytes = 0;
@@ -256,7 +256,7 @@ size_t ParseMusicMatch(ID3_Tag& tag, fstream& file)
   char sImgExt[4+1];
   sImgExt[4] = '\0';
   file.read(sImgExt, 4);
-  RemoveTrailingSpaces(sImgExt, 4);
+  id3::removeTrailingSpaces(sImgExt, 4);
 
   // Parse the image binary at offset 1
   file.seekg(offsets[1]);

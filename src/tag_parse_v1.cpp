@@ -1,4 +1,4 @@
-// $Id: tag_parse_v1.cpp,v 1.11 2000/07/11 04:27:11 eldamitri Exp $
+// $Id: tag_parse_v1.cpp,v 1.12 2000/09/27 07:47:09 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -34,7 +34,7 @@
 #include <config.h>
 #endif
 
-size_t ParseID3v1(ID3_Tag& tag, fstream& file)
+size_t ParseID3v1(ID3_Tag& tag, ifstream& file)
 {
   size_t num_bytes = 0;
   if (!file)
@@ -81,41 +81,41 @@ size_t ParseID3v1(ID3_Tag& tag, fstream& file)
 
     memcpy(tagID3v1.sTitle, &tag_bytes[offset], ID3_V1_LEN_TITLE);
     tagID3v1.sTitle[ID3_V1_LEN_TITLE] = '\0';
-    RemoveTrailingSpaces(tagID3v1.sTitle,  ID3_V1_LEN_TITLE);
+    id3::removeTrailingSpaces(tagID3v1.sTitle,  ID3_V1_LEN_TITLE);
     ID3_AddTitle(&tag, tagID3v1.sTitle);
     offset += ID3_V1_LEN_TITLE;
 
     memcpy(tagID3v1.sArtist, &tag_bytes[offset], ID3_V1_LEN_ARTIST);
     tagID3v1.sTitle[ID3_V1_LEN_ARTIST] = '\0';
-    RemoveTrailingSpaces(tagID3v1.sArtist,  ID3_V1_LEN_ARTIST);
+    id3::removeTrailingSpaces(tagID3v1.sArtist,  ID3_V1_LEN_ARTIST);
     ID3_AddArtist(&tag, tagID3v1.sArtist);
     offset += ID3_V1_LEN_ARTIST;
 
     memcpy(tagID3v1.sAlbum, &tag_bytes[offset], ID3_V1_LEN_ALBUM);
     tagID3v1.sTitle[ID3_V1_LEN_ALBUM] = '\0';
-    RemoveTrailingSpaces(tagID3v1.sAlbum,  ID3_V1_LEN_ALBUM);
+    id3::removeTrailingSpaces(tagID3v1.sAlbum,  ID3_V1_LEN_ALBUM);
     ID3_AddAlbum(&tag, tagID3v1.sAlbum);
     offset += ID3_V1_LEN_ALBUM;
 
     memcpy(tagID3v1.sYear, &tag_bytes[offset], ID3_V1_LEN_YEAR);
     tagID3v1.sTitle[ID3_V1_LEN_YEAR] = '\0';
-    RemoveTrailingSpaces(tagID3v1.sYear,  ID3_V1_LEN_YEAR);
+    id3::removeTrailingSpaces(tagID3v1.sYear,  ID3_V1_LEN_YEAR);
     ID3_AddYear(&tag, tagID3v1.sYear);
     offset += ID3_V1_LEN_YEAR;
     
     memcpy(tagID3v1.sComment, &tag_bytes[offset], ID3_V1_LEN_COMMENT);
     tagID3v1.sTitle[ID3_V1_LEN_COMMENT] = '\0';
-    RemoveTrailingSpaces(tagID3v1.sComment,  ID3_V1_LEN_COMMENT);
+    id3::removeTrailingSpaces(tagID3v1.sComment,  ID3_V1_LEN_COMMENT);
     if ('\0' != tagID3v1.sComment[ID3_V1_LEN_COMMENT - 2] ||
         '\0' == tagID3v1.sComment[ID3_V1_LEN_COMMENT - 1])
     {
-      RemoveTrailingSpaces(tagID3v1.sComment, ID3_V1_LEN_COMMENT);
+      id3::removeTrailingSpaces(tagID3v1.sComment, ID3_V1_LEN_COMMENT);
     }
     else
     {
       // This is an id3v1.1 tag.  The last byte of the comment is the track
       // number.  
-      RemoveTrailingSpaces(tagID3v1.sComment, ID3_V1_LEN_COMMENT - 1);
+      id3::removeTrailingSpaces(tagID3v1.sComment, ID3_V1_LEN_COMMENT - 1);
       ID3_AddTrack(&tag, tagID3v1.sComment[ID3_V1_LEN_COMMENT - 1]);
     }
     ID3_AddComment(&tag, tagID3v1.sComment, STR_V1_COMMENT_DESC);
