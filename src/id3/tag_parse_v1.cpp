@@ -1,4 +1,4 @@
-// $Id: tag_parse_v1.cpp,v 1.10 1999/12/05 05:34:27 scott Exp $
+// $Id: tag_parse_v1.cpp,v 1.11 1999/12/16 14:40:31 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -12,7 +12,7 @@
 // submissions may be altered, and will be included and released under these
 // terms.
 
-#if HAVE_CONFIG_H
+#if defined HAVE_CONFIG_H
 #include <config.h>
 #endif
 
@@ -25,7 +25,9 @@
 void ID3_RemoveTrailingSpaces(char *buffer, luint length)
 {
   for (lsint i = length - 1; i > -1 && 0x20 == buffer[i]; i--)
+  {
     buffer[i] = '\0';
+  }
       
   return ;
 }
@@ -34,20 +36,26 @@ void ID3_RemoveTrailingSpaces(char *buffer, luint length)
 void ID3_Tag::ParseID3v1(void)
 {
   if (NULL == __fFileHandle)
+  {
     ID3_THROW(ID3E_NoData);
+  }
 
   ID3V1_Tag tagID3v1;
     
   // posn ourselves at 128 bytes from the end of the file
   if (fseek(__fFileHandle, 0-LEN_V1, SEEK_END) != 0)
+  {
     // TODO:  This is a bad error message.  Make it more descriptive
     ID3_THROW(ID3E_NoData);
+  }
     
     
   // read the next 128 bytes in;
   if (fread(tagID3v1.sID, 1, LEN_V1_ID, __fFileHandle) != LEN_V1_ID)
+  {
     // TODO:  This is a bad error message.  Make it more descriptive
     ID3_THROW(ID3E_NoData);
+  }
     
   // check to see if it was a tag
   if (memcmp(tagID3v1.sID, "TAG", LEN_V1_ID) == 0)
@@ -62,32 +70,41 @@ void ID3_Tag::ParseID3v1(void)
 
     // the TITLE field/frame
     if (fread(tagID3v1.sTitle, 1, LEN_V1_TITLE, __fFileHandle) != LEN_V1_TITLE)
+    {
       // TODO:  This is a bad error message.  Make it more descriptive
       ID3_THROW(ID3E_NoData);
+    }
     tagID3v1.sTitle[LEN_V1_TITLE] = '\0';
     ID3_RemoveTrailingSpaces(tagID3v1.sTitle,  LEN_V1_TITLE);
     ID3_AddTitle(this, tagID3v1.sTitle);
     
     // the ARTIST field/frame
-    if (fread(tagID3v1.sArtist, 1, LEN_V1_ARTIST, __fFileHandle) != LEN_V1_ARTIST)
+    if (fread(tagID3v1.sArtist, 1, LEN_V1_ARTIST, __fFileHandle) != 
+        LEN_V1_ARTIST)
+    {
       // TODO:  This is a bad error message.  Make it more descriptive
       ID3_THROW(ID3E_NoData);
+    }
     tagID3v1.sArtist[LEN_V1_ARTIST] = '\0';
     ID3_RemoveTrailingSpaces(tagID3v1.sArtist, LEN_V1_ARTIST);
     ID3_AddArtist(this, tagID3v1.sArtist);
   
     // the ALBUM field/frame
     if (fread(tagID3v1.sAlbum, 1, LEN_V1_ALBUM, __fFileHandle) != LEN_V1_ALBUM)
+    {
       // TODO:  This is a bad error message.  Make it more descriptive
       ID3_THROW(ID3E_NoData);
+    }
     tagID3v1.sAlbum[LEN_V1_ALBUM] = '\0';
     ID3_RemoveTrailingSpaces(tagID3v1.sAlbum,  LEN_V1_ALBUM);
     ID3_AddAlbum(this, tagID3v1.sAlbum);
   
     // the YEAR field/frame
     if (fread(tagID3v1.sYear, 1, LEN_V1_YEAR, __fFileHandle) != LEN_V1_YEAR)
+    {
       // TODO:  This is a bad error message.  Make it more descriptive
       ID3_THROW(ID3E_NoData);
+    }
     tagID3v1.sYear[LEN_V1_YEAR] = '\0';
     ID3_RemoveTrailingSpaces(tagID3v1.sYear,   LEN_V1_YEAR);
     ID3_AddYear(this, tagID3v1.sYear);
@@ -95,12 +112,16 @@ void ID3_Tag::ParseID3v1(void)
     // the COMMENT field/frame
     if (fread(tagID3v1.sComment, 1, LEN_V1_COMMENT, __fFileHandle) !=
         LEN_V1_COMMENT)
+    {
       // TODO:  This is a bad error message.  Make it more descriptive
       ID3_THROW(ID3E_NoData);
+    }
     tagID3v1.sComment[LEN_V1_COMMENT] = '\0';
     if ('\0' != tagID3v1.sComment[LEN_V1_COMMENT - 2] ||
         '\0' == tagID3v1.sComment[LEN_V1_COMMENT - 1])
+    {
       ID3_RemoveTrailingSpaces(tagID3v1.sComment, LEN_V1_COMMENT);
+    }
     else
     {
       // This is an id3v1.1 tag.  The last byte of the comment is the track
@@ -119,6 +140,9 @@ void ID3_Tag::ParseID3v1(void)
 }
 
 // $Log: tag_parse_v1.cpp,v $
+// Revision 1.11  1999/12/16 14:40:31  scott
+// Fixed inclusion config.h (thanks Alexander Voronin).
+//
 // Revision 1.10  1999/12/05 05:34:27  scott
 // (ParseID3v1): Added STR_V1_COMMENT_DESC as description parameter to
 // call to ID3_AddComment

@@ -1,3 +1,11 @@
+1999-12-16  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* src/id3/tag_parse_v1.cpp: 
+	Fixed inclusion config.h (thanks Alexander Voronin).
+
+	* src/id3/tag_parse_lyrics3.cpp 
+	(ID3_CRLFtoLF): Fixed memory allocation bug (thanks Alexander Voronin).
+
 1999-12-15  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* include/id3/field.h: 
