@@ -1,4 +1,4 @@
-// $Id: tag_parse_lyrics3.cpp,v 1.8 2000/05/06 21:16:06 eldamitri Exp $
+// $Id: tag_parse_lyrics3.cpp,v 1.9 2000/05/08 13:57:16 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -490,24 +490,48 @@ void ID3_Tag::ParseLyrics3()
               ID3_THROW(ID3E_NoMemory);
             }
       
-            pLyrFrame->SetID(ID3FID_SYNCEDLYRICS);
-            AttachFrame(pLyrFrame);
-            pLyrFrame->Field(ID3FN_LANGUAGE) = "eng";
-            pLyrFrame->Field(ID3FN_TIMESTAMPFORMAT) = 2;
-            pLyrFrame->Field(ID3FN_CONTENTTYPE) = 1;
-            pLyrFrame->Field(ID3FN_DATA).Set ((const uchar *) text, newSize);
-
+            // if already found an INF field, use it as description
+            char  *descriptor; 
+            int    descsize; 
+            /*
+              pLyrFrame->SetID(ID3FID_SYNCEDLYRICS);
+              AttachFrame(pLyrFrame);
+              pLyrFrame->Field(ID3FN_LANGUAGE) = "eng";
+              pLyrFrame->Field(ID3FN_TIMESTAMPFORMAT) = 2;
+              pLyrFrame->Field(ID3FN_CONTENTTYPE) = 1;
+              pLyrFrame->Field(ID3FN_DATA).Set ((const uchar *) text, newSize);
+            */
             // if already found an INF field, use it as description
             if (NULL != textInf)
             {
-              pLyrFrame->Field(ID3FN_DESCRIPTION) = textInf;
+              descsize = strlen (textInf); 
+              descriptor = new char[descsize]; 
+              if (NULL == descriptor) 
+              { 
+                ID3_THROW(ID3E_NoMemory); 
+              } 
+              memcpy (descriptor, textInf, descsize); 
+              //pLyrFrame->Field(ID3FN_DESCRIPTION) = textInf;
             }
             else
             {
-              pLyrFrame->Field(ID3FN_DESCRIPTION) = 
-                "Converted from Lyrics3 v2.00";
+              descsize = strlen ("Converted from Lyrics3 v2.00");
+              descriptor = new char[descsize];
+              if (NULL == descriptor)
+              {
+                ID3_THROW(ID3E_NoMemory);
+              }
+              memcpy (descriptor, "Converted from Lyrics3 v2.00", descsize);
+
+              //pLyrFrame->Field(ID3FN_DESCRIPTION) = 
+              //  "Converted from Lyrics3 v2.00";
             }
 
+            pLyrFrame = ID3_AddSyncLyrics(this, "eng", descriptor, text, newSize);
+            pLyrFrame->Field(ID3FN_TIMESTAMPFORMAT) = ID3TSF_MS;
+            pLyrFrame->Field(ID3FN_CONTENTTYPE) = ID3CT_LYRICS;
+            
+            delete[] descriptor;
             delete[] text;
           }
 

@@ -1,4 +1,4 @@
-/* $Id: globals.h,v 1.18 2000/05/06 05:42:27 eldamitri Exp $
+/* $Id: globals.h,v 1.19 2000/05/08 13:57:09 eldamitri Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags Copyright
  * 1999, 2000 Scott Thomas Haug
@@ -268,7 +268,7 @@ ID3_ENUM(ID3_V1Lengths)
  **
  ** @author Dirk Mahoney (dirk@id3.org)
  ** @author Scott Thomas Haug (sth2@cs.wustl.edu)
- ** @version $Id: globals.h,v 1.18 2000/05/06 05:42:27 eldamitri Exp $
+ ** @version $Id: globals.h,v 1.19 2000/05/08 13:57:09 eldamitri Exp $
  ** @see ID3_Tag
  **/
 ID3_STRUCT(ID3V1_Tag)
@@ -330,15 +330,21 @@ ID3_ENUM(ID3_Err)
 
 };
 
-ID3_ENUM(ID3_LyricsContent)
+ID3_ENUM(ID3_ContentType)
 {
-  ID3LC_OTHER = 0,
-  ID3LC_LYRICS,
-  ID3LC_TEXT,
-  ID3LC_MOVEMENT,
-  ID3LC_EVENTS,
-  ID3LC_CHORD,
-  ID3LC_TRIVIA
+  ID3CT_OTHER = 0,
+  ID3CT_LYRICS,
+  ID3CT_TEXTTRANSCRIPTION,
+  ID3CT_MOVEMENT,
+  ID3CT_EVENTS,
+  ID3CT_CHORD,
+  ID3CT_TRIVIA
+};
+
+ID3_ENUM(ID3_TimeStampFormat)
+{
+  ID3TSF_FRAME  = 1,
+  ID3TSF_MS
 };
 
 #define BS_SIZE (sizeof(luint)*8)

@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.8 2000/05/08 03:08:06 eldamitri Exp $
+// $Id: misc_support.cpp,v 1.9 2000/05/08 13:57:16 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -719,3 +719,136 @@ size_t ID3_RemoveLyricist(ID3_Tag *tag)
 
   return nRemoved;
 }
+
+ID3_Frame* ID3_AddSyncLyrics(ID3_Tag *tag, const char *lang, const char *desc,
+                             const char *text, luint textsize, bool bReplace)
+{
+  ID3_Frame* pFrame = NULL;
+  // language and descriptor should be mandatory
+  if ((NULL == lang) || (NULL == desc))
+  {
+    return NULL;
+  }
+
+  // check if a SYLT frame of this language or descriptor already exists
+  ID3_Frame* pFrameExist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_LANGUAGE, 
+                                     (char *) lang);
+  if (!pFrameExist)
+  {
+    pFrameExist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_DESCRIPTION, 
+                            (char *) desc);
+  }
+
+  if (NULL != tag && NULL != text && strlen(text) > 0)
+  {
+    if (bReplace && pFrameExist)
+    {
+      tag->RemoveFrame (pFrameExist);
+      pFrameExist = NULL;
+    }
+
+    // if the frame still exist, cannot continue
+    if (pFrameExist)
+    {
+      return NULL;
+    }
+
+    ID3_Frame* pFrame = new ID3_Frame(ID3FID_SYNCEDLYRICS);
+    if (NULL == pFrame)
+    {
+      ID3_THROW(ID3E_NoMemory);
+    }
+
+    pFrame->Field(ID3FN_LANGUAGE) = lang;
+    pFrame->Field(ID3FN_DESCRIPTION) = desc;
+    pFrame->Field(ID3FN_DATA).Set ((const uchar *) text, textsize);
+    tag->AttachFrame(pFrame);
+  }
+
+  return pFrame;
+}
+
+ID3_Frame *ID3_GetSyncLyricsInfo(ID3_Tag *tag, const char *lang, const char *desc,
+                                 luint *pstampformat, luint *ptype, luint *psize)
+{
+  // check if a SYLT frame of this language or descriptor exists
+  ID3_Frame* pFrameExist = NULL;
+  if (NULL != lang)
+  {
+    // search through language
+    pFrameExist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_LANGUAGE, (char *) lang);
+  }
+  else if (NULL != desc)
+  {
+    // search through descriptor
+    pFrameExist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_DESCRIPTION, (char *) desc);
+  }
+  else
+  {
+    // both language and description not specified, search the first SYLT frame
+    pFrameExist = tag->Find(ID3FID_SYNCEDLYRICS);
+  }
+
+  if (NULL == pFrameExist)
+  {
+    *pstampformat = 0;
+    *ptype = 0;
+    *psize = 0;
+    return NULL;
+  }
+  
+  // get the lyrics time stamp format
+  *pstampformat = pFrameExist->Field (ID3FN_TIMESTAMPFORMAT).Get ();
+
+  // get the lyrics content type
+  *ptype = pFrameExist->Field (ID3FN_CONTENTTYPE).Get ();
+
+  // get the lyrics size
+  *psize = pFrameExist->Field (ID3FN_DATA).Size ();
+
+  // return the frame pointer for further uses
+  return pFrameExist;
+}
+
+ID3_Frame *ID3_GetSyncLyrics(ID3_Tag *tag, const char *lang, const char *desc,
+						char *pData, luint *psize)
+{
+  // check if a SYLT frame of this language or descriptor exists
+  ID3_Frame* pFrameExist = NULL;
+  if (NULL != lang)
+  {
+    // search through language
+    pFrameExist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_LANGUAGE, (char *) lang);
+  }
+  else if (NULL != desc)
+  {
+    // search through descriptor
+    pFrameExist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_DESCRIPTION, (char *) desc);
+  }
+  else
+  {
+    // both language and description not specified, search the first SYLT frame
+    pFrameExist = tag->Find(ID3FID_SYNCEDLYRICS);
+  }
+
+  if (NULL == pFrameExist)
+  {
+    *psize = 0;
+    return NULL;
+  }
+  
+  // get the lyrics size
+  luint	maxsize = *psize;
+  luint datasize = pFrameExist->Field (ID3FN_DATA).Size ();
+  if (datasize > maxsize)
+    *psize = maxsize;
+  else
+    *psize = datasize;
+
+  // get the lyrics data
+  pFrameExist->Field (ID3FN_DATA).Get (pData, *psize);
+
+  // return the frame pointer for further uses
+  return pFrameExist;
+}
+
