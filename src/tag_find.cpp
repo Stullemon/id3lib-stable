@@ -1,4 +1,4 @@
-// $Id: tag_find.cpp,v 1.22 2000/10/16 07:00:59 eldamitri Exp $
+// $Id: tag_find.cpp,v 1.23 2000/10/16 08:55:12 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,6 +28,8 @@
 #include <config.h>
 #endif
 
+#include "debug.h"
+
 #include <string.h>
 
 #include "tag_impl.h"
@@ -36,20 +38,34 @@
 
 using namespace dami;
 
-ID3_Elem *ID3_TagImpl::Find(const ID3_Frame *frame) const
+ID3_TagImpl::const_iterator ID3_TagImpl::Find(const ID3_Frame *frame) const
 {
-  ID3_Elem *elem = NULL;
+  const_iterator cur = _frames.begin();
   
-  for (ID3_Elem *cur = _frames; NULL != cur; cur = cur->pNext)
+  for (; cur != _frames.end(); ++cur)
   {
-    if (cur->pFrame == frame)
+    if (*cur == frame)
     {
-      elem = cur;
       break;
     }
   }
   
-  return elem;
+  return cur;
+}
+
+ID3_TagImpl::iterator ID3_TagImpl::Find(const ID3_Frame *frame)
+{
+  iterator cur = _frames.begin();
+  
+  for (; cur != _frames.end(); ++cur)
+  {
+    if (*cur == frame)
+    {
+      break;
+    }
+  }
+  
+  return cur;
 }
 
 ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id) const
@@ -57,30 +73,31 @@ ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id) const
   ID3_Frame *frame = NULL;
   
   // reset the cursor if it isn't set
-  if (NULL == _cursor)
+  if (_frames.end() == _cursor)
   {
-    _cursor = _frames;
+    _cursor = _frames.begin();
   }
+
 
   for (int iCount = 0; iCount < 2 && frame == NULL; iCount++)
   {
     // We want to cycle through the list to find the matching frame.  We
-    // should start from the cursor, search each successive frame, wrapping
+    // should begin from the cursor, search each successive frame, wrapping
     // if necessary.  The enclosing loop and the assignment statments below
-    // ensure that we first start at the cursor and search to the end of the
+    // ensure that we first begin at the cursor and search to the end of the
     // list and, if unsuccessful, start from the beginning of the list and
     // search to the cursor.
-    ID3_Elem
-      *pStart  = (0 == iCount ? _cursor : _frames), 
-      *pFinish = (0 == iCount ? NULL          : _cursor);
+    const_iterator
+      begin  = (0 == iCount ? _cursor       : _frames.begin()), 
+      end    = (0 == iCount ? _frames.end() : _cursor);
     // search from the cursor to the end
-    for (ID3_Elem *cur = pStart; cur != pFinish; cur = cur->pNext)
+    for (const_iterator cur = begin; cur != end; ++cur)
     {
-      if ((cur->pFrame != NULL) && (cur->pFrame->GetID() == id))
+      if ((*cur != NULL) && ((*cur)->GetID() == id))
       {
         // We've found a valid frame.  Set the cursor to be the next element
-        frame = cur->pFrame;
-        _cursor = cur->pNext;
+        frame = *cur;
+        _cursor = ++cur;
         break;
       }
     }
@@ -89,53 +106,52 @@ ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id) const
   return frame;
 }
 
-ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, const char *data) const
+ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, String data) const
 {
   ID3_Frame *frame = NULL;
+  ID3D_NOTICE( "Find: looking for comment with data = " << data.c_str() );
   
   // reset the cursor if it isn't set
-  if (NULL == _cursor)
+  if (_frames.end() == _cursor)
   {
-    _cursor = _frames;
-  }
-
-  if (NULL == data)
-  {
-    return frame;
+    _cursor = _frames.begin();
+    ID3D_NOTICE( "Find: resetting cursor" );
   }
 
   for (int iCount = 0; iCount < 2 && frame == NULL; iCount++)
   {
+    ID3D_NOTICE( "Find: iCount = " << iCount );
     // We want to cycle through the list to find the matching frame.  We
-    // should start from the cursor, search each successive frame, wrapping
+    // should begin from the cursor, search each successive frame, wrapping
     // if necessary.  The enclosing loop and the assignment statments below
-    // ensure that we first start at the cursor and search to the end of the
+    // ensure that we first begin at the cursor and search to the end of the
     // list and, if unsuccessful, start from the beginning of the list and
     // search to the cursor.
-    ID3_Elem
-      *pStart  = (0 == iCount ? _cursor : _frames), 
-      *pFinish = (0 == iCount ? NULL     : _cursor);
+    const_iterator
+      begin  = (0 == iCount ? _cursor       : _frames.begin()), 
+      end    = (0 == iCount ? _frames.end() : _cursor);
     // search from the cursor to the end
-    for (ID3_Elem *cur = pStart; cur != pFinish; cur = cur->pNext)
+    for (const_iterator cur = begin; cur != end; ++cur)
     {
-      if ((cur->pFrame != NULL) && (cur->pFrame->GetID() == id) &&
-          cur->pFrame->Contains(fldID))
+      ID3D_NOTICE( "Find: frame = 0x" << hex << (uint32) *cur << dec );
+      if ((*cur != NULL) && ((*cur)->GetID() == id) &&
+          (*cur)->Contains(fldID))
       {
-        ID3_Field* fld = cur->pFrame->GetField(fldID);
+        ID3_Field* fld = (*cur)->GetField(fldID);
         if (NULL == fld)
         {
           continue;
+          ID3D_NOTICE( "Find: didn't have the right field" );
         }
 
-        const char* text = fld->GetText();
-        size_t fldSize = fld->Size();
+        String text(fld->GetText(), fld->Size());
+        ID3D_NOTICE( "Find: text = " << text.c_str() );
 
-        if ((text == NULL && ::strlen(data) == 0) ||
-            (text != NULL && ::strcmp(fld->GetText(), data) == 0))
+        if (text == data)
         {
           // We've found a valid frame.  Set cursor to be the next element
-          frame = cur->pFrame;
-          _cursor = cur->pNext;
+          frame = *cur;
+          _cursor = ++cur;
           break;
         }
       }
@@ -145,49 +161,45 @@ ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, const char *data
   return frame;
 }
 
-ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, const unicode_t *data) const
+ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, WString data) const
 {
   ID3_Frame *frame = NULL;
   
   // reset the cursor if it isn't set
-  if (NULL == _cursor)
+  if (_frames.end() == _cursor)
   {
-    _cursor = _frames;
-  }
-
-  if (NULL == data)
-  {
-    return frame;
+    _cursor = _frames.begin();
   }
 
   for (int iCount = 0; iCount < 2 && frame == NULL; iCount++)
   {
     // We want to cycle through the list to find the matching frame.  We
-    // should start from the cursor, search each successive frame, wrapping
+    // should begin from the cursor, search each successive frame, wrapping
     // if necessary.  The enclosing loop and the assignment statments below
-    // ensure that we first start at the cursor and search to the end of the
+    // ensure that we first begin at the cursor and search to the end of the
     // list and, if unsuccessful, start from the beginning of the list and
     // search to the cursor.
-    ID3_Elem
-      *pStart  = (0 == iCount ? _cursor : _frames), 
-      *pFinish = (0 == iCount ? NULL     : _cursor);
+    const_iterator
+      begin  = (0 == iCount ? _cursor       : _frames.begin()), 
+      end    = (0 == iCount ? _frames.end() : _cursor);
     // search from the cursor to the end
-    for (ID3_Elem *cur = pStart; cur != pFinish; cur = cur->pNext)
+    for (const_iterator cur = begin; cur != end; ++cur)
     {
-      if ((cur->pFrame != NULL) && (cur->pFrame->GetID() == id) &&
-          cur->pFrame->Contains(fldID))
+      if ((*cur != NULL) && ((*cur)->GetID() == id) &&
+          (*cur)->Contains(fldID))
       {
-        ID3_Field* fld = cur->pFrame->GetField(fldID);
+        ID3_Field* fld = (*cur)->GetField(fldID);
         if (NULL == fld)
         {
           continue;
         }
+        WString text = toWString(fld->GetUnicodeText(), fld->Size());
 
-        if (ucscmp(fld->GetUnicodeText(), data) == 0)
+        if (text == data)
         {
           // We've found a valid frame.  Set cursor to be the next element
-          frame = cur->pFrame;
-          _cursor = cur->pNext;
+          frame = *cur;
+          _cursor = ++cur;
           break;
         }
       }
@@ -202,29 +214,31 @@ ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, uint32 data) con
   ID3_Frame *frame = NULL;
   
   // reset the cursor if it isn't set
-  if (NULL == _cursor)
-    _cursor = _frames;
+  if (_frames.end() == _cursor)
+  {
+    _cursor = _frames.begin();
+  }
 
   for (int iCount = 0; iCount < 2 && frame == NULL; iCount++)
   {
     // We want to cycle through the list to find the matching frame.  We
-    // should start from the cursor, search each successive frame, wrapping
+    // should begin from the cursor, search each successive frame, wrapping
     // if necessary.  The enclosing loop and the assignment statments below
-    // ensure that we first start at the cursor and search to the end of the
+    // ensure that we first begin at the cursor and search to the end of the
     // list and, if unsuccessful, start from the beginning of the list and
     // search to the cursor.
-    ID3_Elem
-      *pStart  = (0 == iCount ? _cursor : _frames), 
-      *pFinish = (0 == iCount ? NULL          : _cursor);
+    const_iterator
+      begin  = (0 == iCount ? _cursor       : _frames.begin()), 
+      end    = (0 == iCount ? _frames.end() : _cursor);
     // search from the cursor to the end
-    for (ID3_Elem *cur = pStart; cur != pFinish; cur = cur->pNext)
+    for (const_iterator cur = begin; cur != end; ++cur)
     {
-      if ((cur->pFrame != NULL) && (cur->pFrame->GetID() == id) &&
-          (cur->pFrame->GetField(fldID)->Get() == data))
+      if ((*cur != NULL) && ((*cur)->GetID() == id) &&
+          ((*cur)->GetField(fldID)->Get() == data))
       {
         // We've found a valid frame.  Set the cursor to be the next element
-        frame = cur->pFrame;
-        _cursor = cur->pNext;
+        frame = *cur;
+        _cursor = ++cur;
         break;
       }
     }
@@ -235,20 +249,21 @@ ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, uint32 data) con
 
 ID3_Frame *ID3_TagImpl::GetFrameNum(index_t num) const
 {
-  const size_t num_frames = this->NumFrames();
-  if (num >= num_frames)
+  const size_t numFrames = this->NumFrames();
+  if (num >= numFrames)
   {
     return NULL;
   }
 
   ID3_Frame *frame = NULL;
-  index_t curNum = num_frames;
-  for (ID3_Elem *cur = _frames; cur != NULL; cur = cur->pNext)
+  index_t curNum = numFrames;
+  // search from the cursor to the end
+  for (const_iterator cur = _frames.begin(); cur != _frames.end(); ++cur)
   {
     // compare and advance counter
     if (num == --curNum)
     {
-      frame = cur->pFrame;
+      frame = *cur;
       break;
     }
   }
