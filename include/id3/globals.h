@@ -1,4 +1,4 @@
-/* $Id: globals.h,v 1.30 2000/07/02 23:03:41 eldamitri Exp $
+/* $Id: globals.h,v 1.31 2000/07/04 21:27:20 eldamitri Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags Copyright
  * 1999, 2000 Scott Thomas Haug
@@ -131,6 +131,7 @@ ID3_ENUM(ID3_V2Spec)
   ID3V2_2_0 = 0,
   ID3V2_2_1,
   ID3V2_3_0,
+  ID3V2_4_0,
   ID3V2_EARLIEST = ID3V2_2_0,
   ID3V2_LATEST = ID3V2_3_0  
 };
@@ -289,7 +290,7 @@ ID3_ENUM(ID3_V1Lengths)
  **
  ** @author Dirk Mahoney (dirk@id3.org)
  ** @author Scott Thomas Haug (sth2@cs.wustl.edu)
- ** @version $Id: globals.h,v 1.30 2000/07/02 23:03:41 eldamitri Exp $
+ ** @version $Id: globals.h,v 1.31 2000/07/04 21:27:20 eldamitri Exp $
  ** @see ID3_Tag
  **/
 ID3_STRUCT(ID3V1_Tag)
