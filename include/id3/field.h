@@ -1,4 +1,4 @@
-// $Id: field.h,v 1.2 1999/12/02 22:45:28 scott Exp $
+// $Id: field.h,v 1.3 1999/12/09 02:45:41 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -144,7 +144,7 @@ struct ID3_FrameDef
     if you only plan to generate 3.0 tags.
 
     @author Dirk Mahoney
-    @version $Id: field.h,v 1.2 1999/12/02 22:45:28 scott Exp $
+    @version $Id: field.h,v 1.3 1999/12/09 02:45:41 scott Exp $
     @see ID3_Tag
     @see ID3_Frame
     @see ID3_Err */
@@ -205,7 +205,7 @@ public:
      
      @return The value of the integer field
    */
-  luint         Get(void);
+  luint         Get(void) const;
   // ASCII string field functions
   /** Shortcut for the Set operator.
 
@@ -374,6 +374,8 @@ public:
   */
   void          ToFile(const char *sInfo);
   
+  ID3_Field    &operator=( const ID3_Field & );
+
 private:
   luint         BinSize(const bool withExtras = true);
   bool          HasChanged(void);
@@ -416,6 +418,10 @@ ID3_FrameID   ID3_FindFrameID(const char *id);
 #endif
 
 // $Log: field.h,v $
+// Revision 1.3  1999/12/09 02:45:41  scott
+// (class ID3_Field): Added const to Get method.  Added operator= method
+// declaration.
+//
 // Revision 1.2  1999/12/02 22:45:28  scott
 // Changed all of the #include <id3/*> to #include "*" to help ensure that
 // the sources are searched for in the right places.
