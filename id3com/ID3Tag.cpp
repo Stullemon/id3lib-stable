@@ -981,9 +981,9 @@ STDMETHODIMP CID3Tag::get_VersionString(BSTR *pVal)
 		// for some unexplained reason
 		// if the size is small you get what?
 		char Buffer[1024];
-		sprintf(Buffer, "id3com %d.%d.%d Compiled %s %s", __ID3LIB_MAJOR_VERSION,
-														__ID3LIB_MINOR_VERSION,
-														__ID3LIB_PATCH_VERSION,
+		sprintf(Buffer, "id3com %d.%d.%d Compiled %s %s", _ID3LIB_MAJOR_VERSION,
+														_ID3LIB_MINOR_VERSION,
+														_ID3LIB_PATCH_VERSION,
 														__DATE__,
 														__TIME__);
 		*pVal = A2OLE(Buffer);
