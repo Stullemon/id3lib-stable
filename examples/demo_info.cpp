@@ -14,12 +14,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.3 2000/04/20 03:27:47 eldamitri Exp $
-
-
-#if defined HAVE_CONFIG_H
-#include <config.h>
-#endif
+// $Id: demo_info.cpp,v 1.4 2000/04/23 17:36:36 eldamitri Exp $
 
 #include <iostream.h>
 #include <id3/tag.h>
@@ -439,6 +434,9 @@ int main( int argc, char *argv[])
 }
 
 // $Log: demo_info.cpp,v $
+// Revision 1.4  2000/04/23 17:36:36  eldamitri
+// - Removed dependency on config.h
+//
 // Revision 1.3  2000/04/20 03:27:47  eldamitri
 // Replaced call to ID3_FullName with ID3LIB_FULL_NAME constant
 //
