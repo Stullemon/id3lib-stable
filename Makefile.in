@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.31 2000/07/08 00:11:22 eldamitri Exp $
+# $Id: Makefile.in,v 1.32 2000/08/27 22:16:18 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -92,7 +92,6 @@ ID3LIB_MINOR_VERSION = @ID3LIB_MINOR_VERSION@
 ID3LIB_NAME = @ID3LIB_NAME@
 ID3LIB_PATCH_VERSION = @ID3LIB_PATCH_VERSION@
 ID3LIB_VERSION = @ID3LIB_VERSION@
-LD = @LD@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 LT_AGE = @LT_AGE@
@@ -101,7 +100,6 @@ LT_RELEASE = @LT_RELEASE@
 LT_REVISION = @LT_REVISION@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
-NM = @NM@
 OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
@@ -109,9 +107,15 @@ VERSION = @VERSION@
 
 AUTOMAKE_OPTIONS = 1.4
 
-EXTRA_DIST =  	HISTORY                         config.h.win32                  config.h.win32.in       	id3lib.spec                     id3lib.spec.in                  reconf
+EXTRA_DIST =          HISTORY                         config.h.win32                  config.h.win32.in               id3lib.spec                     id3lib.spec.in                  reconf
 
-SUBDIRS = . m4 zlib doc include src examples
+@ID3_NEEDZLIB_TRUE@zlib_subdir = zlib
+@ID3_NEEDZLIB_FALSE@zlib_subdir = 
+@ID3_NEEDPOPT_TRUE@popt_subdir = popt
+@ID3_NEEDPOPT_FALSE@popt_subdir = 
+
+SUBDIRS = . m4 $(popt_subdir) $(zlib_subdir) doc include src examples
+DIST_SUBDIRS = . m4 popt zlib doc include src examples
 
 INCLUDES = @ID3LIB_DEBUG_FLAGS@
 
@@ -317,7 +321,7 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-	for subdir in $(SUBDIRS); do \
+	for subdir in $(DIST_SUBDIRS); do \
 	  if test "$$subdir" = .; then :; else \
 	    test -d $(distdir)/$$subdir \
 	    || mkdir $(distdir)/$$subdir \

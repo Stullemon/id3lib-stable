@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.26 2000/07/08 00:11:27 eldamitri Exp $
+# $Id: Makefile.in,v 1.27 2000/08/27 22:16:54 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -90,7 +90,6 @@ ID3LIB_MINOR_VERSION = @ID3LIB_MINOR_VERSION@
 ID3LIB_NAME = @ID3LIB_NAME@
 ID3LIB_PATCH_VERSION = @ID3LIB_PATCH_VERSION@
 ID3LIB_VERSION = @ID3LIB_VERSION@
-LD = @LD@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
 LT_AGE = @LT_AGE@
@@ -99,19 +98,18 @@ LT_RELEASE = @LT_RELEASE@
 LT_REVISION = @LT_REVISION@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
-NM = @NM@
 OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
 
-the_headers =    error.h                         field.h                         flags.h                         frame.h                         globals.h                       header.h                        header_frame.h                  header_tag.h                    misc_support.h                  sized_types.h                   spec.h                          tag.h                           utils.h
+the_headers =    error.h                         field.h                         flags.h                         frame.h                         globals.h                       header.h                        header_frame.h                  header_tag.h                    misc_support.h                  sized_types.h                   spec.h                          tag.h                         
 
 
 id3includedir = $(includedir)/id3
 id3include_HEADERS = $(the_headers)
 
-noinst_HEADERS =    uint28.h       
+noinst_HEADERS =    uint28.h         utils.h
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h

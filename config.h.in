@@ -57,6 +57,9 @@
 /* Define if you have the <memory.h> header file.  */
 #undef HAVE_MEMORY_H
 
+/* Define if you have the <popt.h> header file.  */
+#undef HAVE_POPT_H
+
 /* Define if you have the <stdio.h> header file.  */
 #undef HAVE_STDIO_H
 
@@ -71,6 +74,9 @@
 
 /* Define if you have the <zlib.h> header file.  */
 #undef HAVE_ZLIB_H
+
+/* Define if you have the popt library (-lpopt).  */
+#undef HAVE_LIBPOPT
 
 /* Define if you have the z library (-lz).  */
 #undef HAVE_LIBZ
