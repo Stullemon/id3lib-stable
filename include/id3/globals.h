@@ -1,4 +1,4 @@
-/* $Id: globals.h,v 1.27 2000/06/25 06:16:05 eldamitri Exp $
+/* $Id: globals.h,v 1.28 2000/06/25 18:12:10 eldamitri Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags Copyright
  * 1999, 2000 Scott Thomas Haug
@@ -89,7 +89,8 @@ typedef uint16                flags_t;
 #if !defined index_t
 #define index_t               size_t
 #endif
-const unicode_t NULL_UNICODE = (unicode_t) '\0';
+
+#define NULL_UNICODE ((unicode_t) '\0')
 
 /* These macros are used to make the C and C++ declarations for enums and
  * structs have the same syntax.  Basically, it allows C users to refer to an
@@ -280,7 +281,7 @@ ID3_ENUM(ID3_V1Lengths)
  **
  ** @author Dirk Mahoney (dirk@id3.org)
  ** @author Scott Thomas Haug (sth2@cs.wustl.edu)
- ** @version $Id: globals.h,v 1.27 2000/06/25 06:16:05 eldamitri Exp $
+ ** @version $Id: globals.h,v 1.28 2000/06/25 18:12:10 eldamitri Exp $
  ** @see ID3_Tag
  **/
 ID3_STRUCT(ID3V1_Tag)
