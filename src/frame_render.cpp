@@ -1,4 +1,4 @@
-// $Id: frame_render.cpp,v 1.7 2000/05/06 21:22:48 eldamitri Exp $
+// $Id: frame_render.cpp,v 1.8 2000/05/09 13:17:35 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -65,12 +65,14 @@ luint ID3_Frame::Render(uchar *buffer)
     
   // this call is to tell the string fields what they should be rendered/parsed
   // as (ASCII or Unicode)
-  UpdateStringTypes();
+  this->_UpdateStringTypes();
     
-  for (luint i = 0; i < __num_fields; i++)
+  for (ID3_Field** fi = __fields; fi != __fields + __num_fields; fi++)
   {
-    __fields[i]->SetSpec(__hdr.GetSpec());
-    bytesUsed += __fields[i]->Render(&buffer[bytesUsed]);
+    if (*fi && (*fi)->InScope(this->GetSpec()))
+    {
+      bytesUsed += (*fi)->Render(&buffer[bytesUsed]);
+    }
   }
     
   // if we can compress frames individually and we have been asked to compress
