@@ -1,4 +1,4 @@
-# $Id: id3lib.spec.in,v 1.6 2000/04/21 19:52:52 eldamitri Exp $
+# $Id: id3lib.spec.in,v 1.7 2000/04/22 04:50:12 eldamitri Exp $
 
 %define name    @PACKAGE@
 %define	version	@VERSION@
@@ -59,7 +59,12 @@ software library for ID3v1 and ID3v2 tag maniuplation.
 
 %build
 CXXFLAGS="$RPM_OPT_FLAGS -fexceptions" ./configure --prefix=%prefix
+
+%ifnarch noarch
+
 uname -a|grep SMP && make -j 2 || make
+
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -74,7 +79,7 @@ make docs
  
 # strip down the doc and examples directories so we can copy w/impunity
 for i in doc/ examples/; do \
-  find $i 
+  find $i                   \
   \(  -name 'Makefile*' -or \
       -name '*.ps.gz'   -or \
       -name '*.pdf'         \
