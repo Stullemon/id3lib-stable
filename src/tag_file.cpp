@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.25 2000/10/03 04:51:27 eldamitri Exp $
+// $Id: tag_file.cpp,v 1.26 2000/10/09 04:29:28 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -27,6 +27,8 @@
 #include <string.h>
 #include <fstream.h>
 #include "utils.h"
+#include "writers.h"
+#include "writer_decorators.h"
 
 #if !defined HAVE_MKSTEMP
 #  include <stdio.h>
@@ -113,10 +115,7 @@ size_t RenderV1ToFile(ID3_TagImpl& tag, fstream& file)
     return 0;
   }
 
-  uchar sTag[ID3_V1_LEN];
-  size_t tag_size = tag.Render(sTag, ID3TT_ID3V1);
-
-  if (tag_size > tag.GetAppendedBytes())
+  if (ID3_V1_LEN > tag.GetAppendedBytes())
   {
     file.seekp(0, ios::end);
   }
@@ -124,7 +123,7 @@ size_t RenderV1ToFile(ID3_TagImpl& tag, fstream& file)
   {
     // We want to check if there is already an id3v1 tag, so we can write over
     // it.  First, seek to the beginning of any possible id3v1 tag
-    file.seekg(0-tag_size, ios::end);
+    file.seekg(0-ID3_V1_LEN, ios::end);
     char sID[ID3_V1_LEN_ID];
 
     // Read in the TAG characters
@@ -144,45 +143,37 @@ size_t RenderV1ToFile(ID3_TagImpl& tag, fstream& file)
     }
   }
   
-  file.write(sTag, tag_size);
+  ID3_IOStreamWriter out(file);
+  
+  id3::v1::render(out, tag);
 
-  return tag_size;
+  return ID3_V1_LEN;
 }
 
 size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
 {
-  uchar *buffer = NULL;
-  
+  ID3D_NOTICE( "RenderV2ToFile: starting" );
   if (!file)
   {
+    ID3D_WARNING( "RenderV2ToFile: error in file" );
     return 0;
   }
 
-  // Size() returns an over-estimate of the size needed for the tag
-  size_t tag_size = 0;
-  size_t size_est = tag.Size();
-  if (size_est)
-  {
-    buffer = new uchar[size_est];
-    tag_size = tag.Render(buffer, ID3TT_ID3V2);
-    if (!tag_size)
-    {
-      delete [] buffer;
-      buffer = NULL;
-    }
-  }
-  
+  String tagString; 
+  io::StringWriter writer(tagString);
+  id3::v2::render(writer, tag);
+  ID3D_NOTICE( "RenderV2ToFile: rendered v2" );
+
+  const char* tagData = tagString.data();
+  size_t tagSize = tagString.size();
 
   // if the new tag fits perfectly within the old and the old one
   // actually existed (ie this isn't the first tag this file has had)
   if ((!tag.GetPrependedBytes() && !ID3_GetDataSize(tag)) ||
-      (tag_size == tag.GetPrependedBytes()))
+      (tagSize == tag.GetPrependedBytes()))
   {
     file.seekp(0, ios::beg);
-    if (buffer)
-    {
-      file.write(buffer, tag_size);
-    }
+    file.write(tagData, tagSize);
   }
   else
   {
@@ -197,19 +188,16 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
       //ID3_THROW(ID3E_ReadOnly);
     }
     
-    if (buffer)
-    {
-      fwrite(buffer, 1, tag_size, tempOut);
-    }
+    fwrite(tagData, 1, tagSize, tempOut);
     
     file.seekg(tag.GetPrependedBytes(), ios::beg);
     
-    uchar buffer2[BUFSIZ];
+    uchar tmpBuffer[BUFSIZ];
     while (!file)
     {
-      file.read(buffer2, BUFSIZ);
+      file.read(tmpBuffer, BUFSIZ);
       size_t nBytes = file.gcount();
-      fwrite(buffer2, 1, nBytes, tempOut);
+      fwrite(tmpBuffer, 1, nBytes, tempOut);
     }
     
     rewind(tempOut);
@@ -217,8 +205,8 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
     
     while (!feof(tempOut))
     {
-      size_t nBytes = fread(buffer2, 1, BUFSIZ, tempOut);
-      file.write(buffer2, nBytes);
+      size_t nBytes = fread(tmpBuffer, 1, BUFSIZ, tempOut);
+      file.write(tmpBuffer, nBytes);
     }
     
     fclose(tempOut);
@@ -244,7 +232,7 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
     if (fd < 0)
     {
       remove(sTempFile);
-      ID3_THROW_DESC(ID3E_NoFile, "couldn't open temp file");
+      //ID3_THROW_DESC(ID3E_NoFile, "couldn't open temp file");
     }
 
     ofstream tmpOut(fd);
@@ -256,17 +244,15 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
       // log this
       //ID3_THROW(ID3E_ReadOnly);
     }
-    if (buffer)
-    {
-      tmpOut.write(buffer, tag_size);
-    }
+
+    tmpOut.write(tagData, tagSize);
     file.seekg(tag.GetPrependedBytes(), ios::beg);
-    uchar buffer2[BUFSIZ];
+    uchar tmpBuffer[BUFSIZ];
     while (file)
     {
-      file.read(buffer2, BUFSIZ);
+      file.read(tmpBuffer, BUFSIZ);
       size_t nBytes = file.gcount();
-      tmpOut.write(buffer2, nBytes);
+      tmpOut.write(tmpBuffer, nBytes);
     }
       
     tmpOut.close();
@@ -280,12 +266,7 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
 #endif
   }
 
-  if (buffer)
-  {
-    delete [] buffer;
-  }
-
-  return tag_size;
+  return tagSize;
 }
 
 
