@@ -1,3 +1,49 @@
+2000-04-28  Scott Haug  <scott@id3.org>
+
+	* THANKS: 
+	Added mention of Severino's contribution, other minor fixes
+
+	* doc/Doxyfile.in: 
+	Removed source browser
+
+	* doc/index.html.in: 
+	Updated to emphasize tagging for both ID3v1 and ID3v2, now mentions
+	C interface, added link to javpc project, slight rewording in places.
+
+	* examples/demo_info.cpp: 
+	Updated to use ID3_GetFrameDescription.
+
+	* id3com/ID3Frame.cpp
+	* id3com/ID3Tag.cpp
+	* id3com/ID3Tag.h
+	* id3com/id3com.idl: 
+	More id3com fixes and usage of new frame descriptions (thanks John
+	Adcock)
+	
+	* include/id3/field.h 
+	(struct ID3_FrameDef): Added sDescription field (thanks John Adcock)
+	(ID3_GetFrameDescription): Added declaration
+
+	* src/field.cpp: 
+	Added frame descriptions (thanks John Adcock) and 
+	ID3_GetFrameDescription implementation.
+
+	* include/id3/frame.h 
+	* src/frame.cpp: 
+	InitFields method no longer accepts a parameter.
+
+	* include/id3/tag.h 
+	* src/tag.cpp: 
+	Updated documentation.
+
+	* src/tag_parse.cpp 
+	(ProcessBinaries): Removed parseHandler code (never used, and will 
+	likely be replaced).
+
+	* src/tag_parse_lyrics3.cpp 
+	(ParseLyrics3): Added code for parsing Lyrics3 v1.00 tags (thanks
+	Severino Delaurenti)
+
 2000-04-27  Scott Haug  <scott@id3.org>
 
 	* src/tag_render.cpp 
