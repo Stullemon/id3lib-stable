@@ -32,12 +32,6 @@ int main( int argc, char *argv[])
       ID3_Tag myTag;
       luint argNum = 1;
 
-      if(argv[ 1 ][ 0 ] == '-')
-      {
-        argNum++;
-        myTag.SetVersion(argv[ 1 ][ 1 ] - '0', 0);
-      }
-
       myTag.Link(argv[argNum]);
       myTag.Strip();
       myTag.Update();
@@ -50,12 +44,9 @@ int main( int argc, char *argv[])
   }
   else
   {
-    cout << "Usage: ID3Convert [-version] <file>" << endl << endl;
+    cout << "Usage: ID3Convert <file>" << endl << endl;
 
-    cout << "Where: * 'version' specifies which version of the ID3v2 tag" << endl;
-    cout << "         standard to which you wish to convert.  Valid numbers" << endl;
-    cout << "         and 2 and 3 (default is 3)." << endl;
-    cout << "       * 'file' is the file you wish to convert." << endl << endl;
+    cout << "Where: 'file' is the file you wish to convert." << endl << endl;
   }
 
   return 0;
