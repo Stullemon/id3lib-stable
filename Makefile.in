@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.15 2000/05/06 21:42:59 eldamitri Exp $
+# $Id: Makefile.in,v 1.16 2000/05/10 16:28:23 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -111,7 +111,7 @@ AUTOMAKE_OPTIONS = 1.4
 
 EXTRA_DIST =  	HISTORY                         config.h.win32                  config.h.win32.in       	id3lib.spec                     id3lib.spec.in                  reconf
 
-SUBDIRS = . m4 doc src include zlib examples
+SUBDIRS = . m4 zlib doc include src examples
 
 INCLUDES = @ID3LIB_DEBUG_FLAGS@
 

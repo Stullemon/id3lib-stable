@@ -25,9 +25,9 @@ zlib_sources = \
   zutil.c
 
 if ID3_NEEDZLIB
-lib_LTLIBRARIES = libid3.la
+lib_LTLIBRARIES = libz.la
 INCLUDES = -I$(top_srcdir)/zlib/include
-libid3_la_SOURCES = $(zlib_sources)
+libz_la_SOURCES = $(zlib_sources)
 endif
 
 EXTRA_DIST = $(zlib_sources)

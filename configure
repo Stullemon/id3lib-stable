@@ -21,9 +21,9 @@ ac_default_prefix=/usr/local
 #
 ID3LIB_MAJOR_VERSION=3
 ID3LIB_MINOR_VERSION=7
-ID3LIB_PATCH_VERSION=6
+ID3LIB_PATCH_VERSION=7
 ID3LIB_INTERFACE_AGE=0
-ID3LIB_BINARY_AGE=0
+ID3LIB_BINARY_AGE=1
 ID3LIB_VERSION=$ID3LIB_MAJOR_VERSION.$ID3LIB_MINOR_VERSION.$ID3LIB_PATCH_VERSION
 ac_help="$ac_help
   --enable-shared[=PKGS]  build shared libraries [default=yes]"
@@ -595,7 +595,7 @@ LT_AGE=`expr $ID3LIB_BINARY_AGE - $ID3LIB_INTERFACE_AGE`
 VERSION=$ID3LIB_VERSION
 PACKAGE=$ID3LIB_NAME
 
-ID3LIB_DATE="$Date: 2000/05/06 21:42:59 $ID3LIB_UNDEFINED"
+ID3LIB_DATE="$Date: 2000/05/10 16:28:23 $ID3LIB_UNDEFINED"
 ID3LIB_FULLNAME=$ID3LIB_NAME-$ID3LIB_VERSION
 
 
@@ -2814,16 +2814,16 @@ ac_given_INSTALL="$INSTALL"
 trap 'rm -fr `echo "\
   Makefile                      \
   doc/Makefile                  \
-  examples/Makefile             \
-  include/Makefile              \
-  include/id3/Makefile          \
   m4/Makefile                   \
-  src/Makefile                  \
   zlib/Makefile                 \
   zlib/include/Makefile         \
   zlib/lib/Makefile             \
   zlib/prj/Makefile             \
   zlib/src/Makefile             \
+  include/Makefile              \
+  include/id3/Makefile          \
+  src/Makefile                  \
+  examples/Makefile             \
  config.h" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
@@ -2954,16 +2954,16 @@ cat >> $CONFIG_STATUS <<EOF
 CONFIG_FILES=\${CONFIG_FILES-"\
   Makefile                      \
   doc/Makefile                  \
-  examples/Makefile             \
-  include/Makefile              \
-  include/id3/Makefile          \
   m4/Makefile                   \
-  src/Makefile                  \
   zlib/Makefile                 \
   zlib/include/Makefile         \
   zlib/lib/Makefile             \
   zlib/prj/Makefile             \
   zlib/src/Makefile             \
+  include/Makefile              \
+  include/id3/Makefile          \
+  src/Makefile                  \
+  examples/Makefile             \
 "}
 EOF
 cat >> $CONFIG_STATUS <<\EOF
