@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.24 2000/06/06 12:22:12 eldamitri Exp $
+// $Id: field.cpp,v 1.25 2000/06/14 16:37:04 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -43,7 +43,8 @@ static ID3_FieldDef ID3FD_Unimplemented[] =
     ID3V2_LATEST,                       // ENDING SPEC
     ID3FF_NONE,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
-  }
+  },
+  { ID3FN_NOFIELD }
 };
 
 const ID3_FieldDef* ID3_FieldDef::DEFAULT = ID3FD_Unimplemented;
@@ -872,7 +873,7 @@ static  ID3_FrameDef ID3_FrameDefs[] =
  ** if you only plan to generate 3.0 tags.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: field.cpp,v 1.24 2000/06/06 12:22:12 eldamitri Exp $
+ ** @version $Id: field.cpp,v 1.25 2000/06/14 16:37:04 eldamitri Exp $
  ** \sa ID3_Tag
  ** \sa ID3_Frame
  ** \sa ID3_Err 
@@ -1024,8 +1025,7 @@ size_t ID3_Field::Parse(const uchar *buffer, size_t buffSize)
   return bytesUsed;
 }
 
-ID3_FrameDef *
-ID3_FindFrameDef(const ID3_FrameID id)
+ID3_FrameDef* ID3_FindFrameDef(ID3_FrameID id)
 {
   ID3_FrameDef  *info   = NULL;
 
