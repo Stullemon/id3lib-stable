@@ -1,4 +1,4 @@
-// $Id: utils.h,v 1.9 2000/09/11 07:46:32 eldamitri Exp $
+// $Id: utils.h,v 1.10 2000/09/27 08:16:52 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,17 +28,14 @@
 #define _ID3LIB_UTILS_H_
 
 #if defined HAVE_CONFIG_H
-#  include <config.h>
+#include <config.h>
 #endif
 
 #include "globals.h"
 #include <fstream.h>
 
-#if defined ID3_UNDEFINED
 namespace id3
 {
-#endif /* ID3_UNDEFINED */
-
 #ifdef  MAXPATHLEN
 #  define ID3_PATH_LENGTH   (MAXPATHLEN + 1)
 #elif   defined (PATH_MAX)
@@ -47,14 +44,32 @@ namespace id3
 #  define ID3_PATH_LENGTH   (2048 + 1)
 #endif  /* !MAXPATHLEN && !PATH_MAX */
 
-  size_t ID3_TimeToSeconds(const char*, size_t);
-  bool ID3_IsCRLF(const char*, const char*);
-  size_t ID3_CRLFtoLF(char *, size_t);
+  template<typename T>
+  const T& min(const T& a, const T& b)
+  {
+    return (a < b) ? a : b;
+  }
 
-  void   RemoveTrailingSpaces(char*, size_t);
+  template<typename T>
+  const T& max(const T& a, const T& b)
+  {
+    return (b < a) ? a : b;
+  }
+
+  template<typename T>
+  T abs(const T& a)
+  {
+    return (a < T(0)) ? -a : a;
+  }
+
+  size_t timeToSeconds(const char*, size_t);
+  bool isCRLF(const char*, const char*);
+  size_t CRLFtoLF(char *, size_t);
+
+  void   removeTrailingSpaces(char*, size_t);
   
-  uint32 ParseNumber(const uchar *buffer, size_t size = sizeof(uint32));
-  size_t RenderNumber(uchar *buffer, uint32 val, size_t size = sizeof(uint32));
+  uint32 parseNumber(const uchar *buffer, size_t size = sizeof(uint32));
+  size_t renderNumber(uchar *buffer, uint32 val, size_t size = sizeof(uint32));
   
   void   mbstoucs(unicode_t *unicode, const char *ascii, const size_t len);
   void   ucstombs(char *ascii, const unicode_t *unicode, const size_t len);
@@ -65,19 +80,20 @@ namespace id3
   int    ucsncmp(const unicode_t *s1, const unicode_t *s2, size_t len);
 
   // these can be utility functions
-  size_t     ID3_GetUnSyncSize(uchar *, size_t);
-  void       ID3_UnSync(uchar *, size_t, const uchar *, size_t);
-  size_t     ID3_ReSync(uchar *, size_t);
+  size_t     getUnSyncSize(uchar *, size_t);
+  void       unsync(uchar *, size_t, const uchar *, size_t);
+  size_t     resync(uchar *, size_t);
 
   // file utils
-  size_t ID3_GetFileSize(fstream&);
-  ID3_Err ID3_CreateFile(const char*, fstream&);
-  ID3_Err ID3_OpenWritableFile(const char*, fstream&);
-  ID3_Err ID3_OpenReadableFile(const char*, fstream&);
+  size_t getFileSize(fstream&);
+  size_t getFileSize(ifstream&);
+  size_t getFileSize(ofstream&);
+  ID3_Err createFile(const char*, fstream&);
+  ID3_Err openWritableFile(const char*, fstream&);
+  ID3_Err openWritableFile(const char*, ofstream&);
+  ID3_Err openReadableFile(const char*, fstream&);
+  ID3_Err openReadableFile(const char*, ifstream&);
 
-#if defined ID3_UNDEFINED
 }
-#endif  /* ID3_UNDEFINED */
-  
   
 #endif /* _ID3LIB_UTILS_H_ */
