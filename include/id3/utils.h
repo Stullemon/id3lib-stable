@@ -1,4 +1,4 @@
-// $Id: utils.h,v 1.15 2000/10/16 08:46:43 eldamitri Exp $
+// $Id: utils.h,v 1.16 2000/10/21 07:09:30 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -45,29 +45,37 @@ namespace dami
 #  define ID3_PATH_LENGTH   (2048 + 1)
 #endif  /* !MAXPATHLEN && !PATH_MAX */
 
+#ifndef min
   template<typename T>
   const T& min(const T& a, const T& b)
   {
     return (a < b) ? a : b;
   }
+#endif
 
+#ifndef max
   template<typename T>
   const T& max(const T& a, const T& b)
   {
     return (b < a) ? a : b;
   }
+#endif
 
+#ifndef mid
   template<typename T>
   const T& mid(const T& lo, const T& mid, const T& hi)
   {
     return max(lo, min(mid, hi));
   }
+#endif
 
+#ifndef abs
   template<typename T>
   T abs(const T& a)
   {
     return (a < T(0)) ? -a : a;
   }
+#endif
 
   size_t renderNumber(uchar *buffer, uint32 val, size_t size = sizeof(uint32));
   String renderNumber(uint32 val, size_t size = sizeof(uint32));
@@ -75,23 +83,19 @@ namespace dami
   String toString(uint32 val);
   WString toWString(const unicode_t[], size_t);
   
-  void   mbstoucs(unicode_t *unicode, const char *ascii, const size_t len);
-  void   ucstombs(char *ascii, const unicode_t *unicode, const size_t len);
   size_t ucslen(const unicode_t *unicode);
-  void   ucscpy(unicode_t *dest, const unicode_t *src);
-  void   ucsncpy(unicode_t *dest, const unicode_t *src, size_t len);
-  int    ucscmp(const unicode_t *s1, const unicode_t *s2);
-  int    ucsncmp(const unicode_t *s1, const unicode_t *s2, size_t len);
+  String ucstombs(String);
+  String mbstoucs(String);
 
   // file utils
   size_t getFileSize(fstream&);
   size_t getFileSize(ifstream&);
   size_t getFileSize(ofstream&);
-  ID3_Err createFile(const char*, fstream&);
-  ID3_Err openWritableFile(const char*, fstream&);
-  ID3_Err openWritableFile(const char*, ofstream&);
-  ID3_Err openReadableFile(const char*, fstream&);
-  ID3_Err openReadableFile(const char*, ifstream&);
+  ID3_Err createFile(String, fstream&);
+  ID3_Err openWritableFile(String, fstream&);
+  ID3_Err openWritableFile(String, ofstream&);
+  ID3_Err openReadableFile(String, fstream&);
+  ID3_Err openReadableFile(String, ifstream&);
 
 };
   
