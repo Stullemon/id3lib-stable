@@ -1,4 +1,4 @@
-/* $Id: globals.h,v 1.21 2000/05/10 03:39:56 eldamitri Exp $
+/* $Id: globals.h,v 1.22 2000/05/12 04:25:32 eldamitri Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags Copyright
  * 1999, 2000 Scott Thomas Haug
@@ -80,6 +80,8 @@ typedef long  unsigned int    luint;
 typedef long           double ldoub;
 typedef long  unsigned int *  bitset;
 typedef uint16                unicode_t;
+typedef size_t                index_t;
+typedef uint16                flags_t;
 const unicode_t NULL_UNICODE = (unicode_t) '\0';
 
 /* These macros are used to make the C and C++ declarations for enums and
@@ -270,7 +272,7 @@ ID3_ENUM(ID3_V1Lengths)
  **
  ** @author Dirk Mahoney (dirk@id3.org)
  ** @author Scott Thomas Haug (sth2@cs.wustl.edu)
- ** @version $Id: globals.h,v 1.21 2000/05/10 03:39:56 eldamitri Exp $
+ ** @version $Id: globals.h,v 1.22 2000/05/12 04:25:32 eldamitri Exp $
  ** @see ID3_Tag
  **/
 ID3_STRUCT(ID3V1_Tag)
