@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.11 2000/10/08 21:01:20 eldamitri Exp $
+# $Id: Makefile.am,v 1.12 2000/10/14 18:48:33 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -37,10 +37,9 @@ noinst_HEADERS =                \
   header.h                      \
   header_frame.h                \
   header_tag.h                  \
-  reader_decorators.h           \
-  readers_compressed.h          \
+  io_decorators.h               \
+  io_helpers.h                  \
+  io_strings.h                  \
   strings.h                     \
   uint28.h                      \
-  utils.h                       \
-  writer_decorators.h           \
-  writers_compressed.h          
+  utils.h                       
