@@ -1,4 +1,4 @@
-// $Id: tag_find.cpp,v 1.13 2000/04/10 16:58:05 eldamitri Exp $
+// $Id: tag_find.cpp,v 1.2 2000/04/18 22:13:15 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -209,6 +209,9 @@ ID3_Frame *ID3_Tag::operator[](luint num) const
 }
 
 // $Log: tag_find.cpp,v $
+// Revision 1.2  2000/04/18 22:13:15  eldamitri
+// Moved tag_find.cpp from src/id3/ to src/
+//
 // Revision 1.13  2000/04/10 16:58:05  eldamitri
 // Added inclusion of string.h
 //
