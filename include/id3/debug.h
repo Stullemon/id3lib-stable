@@ -1,4 +1,4 @@
-// $Id: debug.h,v 1.2 2000/09/27 04:19:28 eldamitri Exp $
+// $Id: debug.h,v 1.3 2000/10/13 18:17:50 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -41,6 +41,8 @@
 #define ID3D_WARNING(x)     Dout( dc::warning, x )
 
 #else
+
+#error "shouldn't be here"
 
 #  define ID3D_INIT_DOUT()
 #  define ID3D_INIT_WARNING()
