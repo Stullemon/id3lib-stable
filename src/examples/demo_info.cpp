@@ -14,11 +14,31 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.1 1999/11/16 05:25:52 scott Exp $
+// $Id: demo_info.cpp,v 1.2 1999/11/19 17:09:02 scott Exp $
 
 
 #include <iostream.h>
 #include <id3/tag.h>
+#include <id3/misc_support.h>
+#include <getopt.h>
+
+void PrintUsage(char *sName)
+{
+  cout << "Usage: " << sName << " [OPTION]... [FILE]..." << endl;
+  cout << "Display the id3 (both v1 and v2) tag information for a file." << endl;
+  cout << endl;
+  cout << "  -h, --help      Display this help and exit" << endl;
+  cout << "  -v, --version   Display version information and exit" << endl;
+  cout << endl;
+  cout << "Will not differentiate between the two types of tags" << endl;
+}
+
+void PrintVersion(char *sName)
+{
+  cout << sName << " 1.0" << endl;
+  cout << "Displays ID3 Tag Information - Written by Scott Thomas Haug" << endl;
+  cout << "Uses " << ID3LIB_NAME << " " << ID3LIB_VERSION << endl << endl;
+}
 
 char *GetDescription(const ID3_FrameID eFrameID)
 {
@@ -78,227 +98,259 @@ char *GetDescription(const ID3_FrameID eFrameID)
   }
 }
 
-char *GetText(const ID3_Frame *frame, const ID3_FieldID fldName)
-{
-  char *sText = NULL;
-  if (NULL != frame)
-  {
-    size_t nText = frame->Field(fldName).Size();
-    sText = new char[nText + 1];
-    frame->Field(fldName).Get(sText, nText);
-    sText[nText] = '\0';
-  }
-  return sText;
-}
-
 int main( int argc, char *argv[])
 {
-  if (argc > 1)
+
+  int iOpt;
+  bool bError = false;
+  while (true)
   {
-    try
+    int option_index = 0;
+    int iLongOpt = 0;
+    static struct option long_options[] = 
+    { 
+      { "version", no_argument, &iLongOpt, 'v' },
+      { "help",    no_argument, &iLongOpt, 'h' },
+      { 0, 0, 0, 0 }
+    };
+    iOpt = getopt_long (argc, argv, "vh", long_options, &option_index);
+
+    if (iOpt == -1)
+      break;
+
+    if (iOpt == 0) iOpt = iLongOpt;
+
+    switch (iOpt)
     {
-      ID3_Tag myTag;
-      luint argNum = 1;
+      case 'v':
+        PrintVersion(argv[0]);
+        exit (0);
+        break;
+        
 
-      myTag.Link(argv[argNum]);
+      case 'h':
+        PrintUsage(argv[0]);
+        exit (0);
+        break;
 
-      for (size_t iFrames = 0; iFrames < myTag.NumFrames(); iFrames++)
+      case '?':
+        bError = true;
+        break;
+
+      default:
+        cout << "?? getopt returned character code " << iOpt << " ??" << endl;
+    }
+  }
+  if (bError)
+  {
+    cout << "Try `" << argv[0] << " --help' for more information." << endl;
+  }
+  else
+    for (size_t nIndex = optind; nIndex < argc; nIndex++)
+    {
+      try
       {
-        ID3_Frame *myFrame = myTag[iFrames];
-        if (NULL != myFrame)
-        { 
-          ID3_FrameID eFrameID = myFrame->GetID();
-          cout << "*** " << GetDescription(eFrameID) << ": ";
-          switch (eFrameID)
-          {
-            case ID3FID_ENCODEDBY:
-            case ID3FID_ORIGALBUM:
-            case ID3FID_PUBLISHER:
-            case ID3FID_ENCODERSETTINGS:
-            case ID3FID_ORIGFILENAME:
-            case ID3FID_LANGUAGE:
-            case ID3FID_PARTINSET:
-            case ID3FID_DATE:
-            case ID3FID_TIME:
-            case ID3FID_RECORDINGDATES:
-            case ID3FID_MEDIATYPE:
-            case ID3FID_FILETYPE:
-            case ID3FID_NETRADIOSTATION:
-            case ID3FID_NETRADIOOWNER:
-            case ID3FID_LYRICIST:
-            case ID3FID_ORIGARTIST:
-            case ID3FID_ORIGLYRICIST:
-            case ID3FID_CONTENTGROUP:
-            case ID3FID_TITLE:
-            case ID3FID_SUBTITLE:
-            case ID3FID_LEADARTIST:
-            case ID3FID_BAND:
-            case ID3FID_CONDUCTOR:
-            case ID3FID_MIXARTIST:
-            case ID3FID_ALBUM:
-            case ID3FID_YEAR:
-            case ID3FID_COMPOSER:
-            case ID3FID_COPYRIGHT:
-            case ID3FID_CONTENTTYPE:
-            case ID3FID_TRACKNUM:
-            {
-              char *sText = GetText(myFrame, ID3FN_TEXT);
-              cout << sText << endl;
-              delete [] sText;
-              break;
-            }
-            case ID3FID_USERTEXT:
-            {
-              char 
-                *sText = GetText(myFrame, ID3FN_TEXT), 
-                *sDesc = GetText(myFrame, ID3FN_DESCRIPTION);
-              cout << "(" << sDesc << "): " << sText << endl;
-              delete [] sText;
-              delete [] sDesc;
-              break;
-            }
-            case ID3FID_COMMENT:
-            case ID3FID_UNSYNCEDLYRICS:
-            {
-              char 
-                *sText = GetText(myFrame, ID3FN_TEXT), 
-                *sDesc = GetText(myFrame, ID3FN_DESCRIPTION), 
-                *sLang = GetText(myFrame, ID3FN_LANGUAGE);
-              cout << "(" << sDesc << ")[" << sLang << "]: "
-                   << sText << endl;
-              delete [] sText;
-              delete [] sDesc;
-              delete [] sLang;
-              break;
-            }
-            case ID3FID_WWWAUDIOFILE:
-            case ID3FID_WWWARTIST:
-            case ID3FID_WWWAUDIOSOURCE:
-            case ID3FID_WWWCOMMERCIALINFO:
-            case ID3FID_WWWCOPYRIGHT:
-            case ID3FID_WWWPUBLISHER:
-            case ID3FID_WWWPAYMENT:
-            case ID3FID_WWWRADIOPAGE:
-            {
-              char *sURL = GetText(myFrame, ID3FN_URL);
-              cout << sURL << endl;
-              delete [] sURL;
-              break;
-            }
-            case ID3FID_WWWUSER:
-            {
-              char 
-                *sURL = GetText(myFrame, ID3FN_URL),
-                *sDesc = GetText(myFrame, ID3FN_DESCRIPTION);
-              cout << "(" << sDesc << "): " << sURL << endl;
-              delete [] sURL;
-              delete [] sDesc;
-              break;
-            }
-            case ID3FID_INVOLVEDPEOPLE:
-            {
-              // This isn't the right way to do it---will only get first person
-              char *sPeople = GetText(myFrame, ID3FN_TEXT);
-              cout << sPeople << endl;
-              delete [] sPeople;
-              break;
-            }
-            case ID3FID_PICTURE:
-            {
-              char
-                *sMimeType = GetText(myFrame, ID3FN_MIMETYPE),
-                *sDesc     = GetText(myFrame, ID3FN_DESCRIPTION),
-                *sFormat   = GetText(myFrame, ID3FN_IMAGEFORMAT);
-              size_t
-                nPicType   = myFrame->Field(ID3FN_PICTURETYPE).Get(),
-                nDataSize  = myFrame->Field(ID3FN_DATA).Size();
-              cout << "(" << sDesc << ")[" << sFormat << ", "
-                   << nPicType << "]: " << sMimeType << ", " << nDataSize
-                   << " bytes" << endl;
-              delete [] sMimeType;
-              delete [] sDesc;
-              delete [] sFormat;
-              break;
-            }
-            case ID3FID_GENERALOBJECT:
-            {
-              char 
-                *sMimeType = GetText(myFrame, ID3FN_TEXT), 
-                *sDesc = GetText(myFrame, ID3FN_DESCRIPTION), 
-                *sFileName = GetText(myFrame, ID3FN_FILENAME);
-              size_t 
-                nDataSize = myFrame->Field(ID3FN_DATA).Size();
-              cout << "(" << sDesc << ")[" 
-                   << sFileName << "]: " << sMimeType << ", " << nDataSize
-                   << " bytes" << endl;
-              delete [] sMimeType;
-              delete [] sDesc;
-              delete [] sFileName;
-              break;
-            }
-            case ID3FID_UNIQUEFILEID:
-            {
-              char *sOwner = GetText(myFrame, ID3FN_TEXT);
-              size_t nDataSize = myFrame->Field(ID3FN_DATA).Size();
-              cout << sOwner << ", " << nDataSize
-                   << " bytes" << endl;
-              delete [] sOwner;
-              break;
-            }
-            case ID3FID_PLAYCOUNTER:
-            {
-              size_t nCounter = myFrame->Field(ID3FN_COUNTER).Get();
-              cout << nCounter << endl;
-              break;
-            }
-            case ID3FID_POPULARIMETER:
-            {
-              char *sEmail = GetText(myFrame, ID3FN_EMAIL);
-              size_t
-                nCounter = myFrame->Field(ID3FN_COUNTER).Get(),
-                nRating = myFrame->Field(ID3FN_RATING).Get();
-              cout << sEmail << ", counter=" 
-                   << nCounter << " rating=" << nRating;
-              delete [] sEmail;
-              break;
-            }
-            case ID3FID_CRYPTOREG:
-            case ID3FID_GROUPINGREG:
-            {
-              char *sOwner = GetText(myFrame, ID3FN_OWNER);
-              size_t 
-                nSymbol = myFrame->Field(ID3FN_SYMBOL).Get(),
-                nDataSize = myFrame->Field(ID3FN_DATA).Size();
-              cout << "(" << nSymbol << "): " << sOwner
-                   << ", " << nDataSize << " bytes";
+        ID3_Tag myTag;
 
-              break;
-            }
-            default:
+        myTag.Link(argv[nIndex]);
+        
+        cout << endl << "*** Tag information for " << argv[nIndex] << endl;
+        for (size_t nFrames = 0; nFrames < myTag.NumFrames(); nFrames++)
+        {
+          ID3_Frame *myFrame = myTag[nFrames];
+          if (NULL != myFrame)
+          { 
+            ID3_FrameID eFrameID = myFrame->GetID();
+            cout << "=== " << GetDescription(eFrameID) << ": ";
+            switch (eFrameID)
             {
-              cout << " frame" << endl;
-              break;
+              case ID3FID_ENCODEDBY:
+              case ID3FID_ORIGALBUM:
+              case ID3FID_PUBLISHER:
+              case ID3FID_ENCODERSETTINGS:
+              case ID3FID_ORIGFILENAME:
+              case ID3FID_LANGUAGE:
+              case ID3FID_PARTINSET:
+              case ID3FID_DATE:
+              case ID3FID_TIME:
+              case ID3FID_RECORDINGDATES:
+              case ID3FID_MEDIATYPE:
+              case ID3FID_FILETYPE:
+              case ID3FID_NETRADIOSTATION:
+              case ID3FID_NETRADIOOWNER:
+              case ID3FID_LYRICIST:
+              case ID3FID_ORIGARTIST:
+              case ID3FID_ORIGLYRICIST:
+              case ID3FID_CONTENTGROUP:
+              case ID3FID_TITLE:
+              case ID3FID_SUBTITLE:
+              case ID3FID_LEADARTIST:
+              case ID3FID_BAND:
+              case ID3FID_CONDUCTOR:
+              case ID3FID_MIXARTIST:
+              case ID3FID_ALBUM:
+              case ID3FID_YEAR:
+              case ID3FID_COMPOSER:
+              case ID3FID_COPYRIGHT:
+              case ID3FID_CONTENTTYPE:
+              case ID3FID_TRACKNUM:
+              {
+                char *sText = ID3_GetString(myFrame, ID3FN_TEXT);
+                cout << sText << endl;
+                delete [] sText;
+                break;
+              }
+              case ID3FID_USERTEXT:
+              {
+                char 
+                  *sText = ID3_GetString(myFrame, ID3FN_TEXT), 
+                  *sDesc = ID3_GetString(myFrame, ID3FN_DESCRIPTION);
+                cout << "(" << sDesc << "): " << sText << endl;
+                delete [] sText;
+                delete [] sDesc;
+                break;
+              }
+              case ID3FID_COMMENT:
+              case ID3FID_UNSYNCEDLYRICS:
+              {
+                char 
+                  *sText = ID3_GetString(myFrame, ID3FN_TEXT), 
+                  *sDesc = ID3_GetString(myFrame, ID3FN_DESCRIPTION), 
+                  *sLang = ID3_GetString(myFrame, ID3FN_LANGUAGE);
+                cout << "(" << sDesc << ")[" << sLang << "]: "
+                     << sText << endl;
+                delete [] sText;
+                delete [] sDesc;
+                delete [] sLang;
+                break;
+              }
+              case ID3FID_WWWAUDIOFILE:
+              case ID3FID_WWWARTIST:
+              case ID3FID_WWWAUDIOSOURCE:
+              case ID3FID_WWWCOMMERCIALINFO:
+              case ID3FID_WWWCOPYRIGHT:
+              case ID3FID_WWWPUBLISHER:
+              case ID3FID_WWWPAYMENT:
+              case ID3FID_WWWRADIOPAGE:
+              {
+                char *sURL = ID3_GetString(myFrame, ID3FN_URL);
+                cout << sURL << endl;
+                delete [] sURL;
+                break;
+              }
+              case ID3FID_WWWUSER:
+              {
+                char 
+                  *sURL = ID3_GetString(myFrame, ID3FN_URL),
+                  *sDesc = ID3_GetString(myFrame, ID3FN_DESCRIPTION);
+                cout << "(" << sDesc << "): " << sURL << endl;
+                delete [] sURL;
+                delete [] sDesc;
+                break;
+              }
+              case ID3FID_INVOLVEDPEOPLE:
+              {
+                // This isn't the right way to do it---will only get first person
+                char *sPeople = ID3_GetString(myFrame, ID3FN_TEXT);
+                cout << sPeople << endl;
+                delete [] sPeople;
+                break;
+              }
+              case ID3FID_PICTURE:
+              {
+                char
+                  *sMimeType = ID3_GetString(myFrame, ID3FN_MIMETYPE),
+                  *sDesc     = ID3_GetString(myFrame, ID3FN_DESCRIPTION),
+                  *sFormat   = ID3_GetString(myFrame, ID3FN_IMAGEFORMAT);
+                size_t
+                  nPicType   = myFrame->Field(ID3FN_PICTURETYPE).Get(),
+                  nDataSize  = myFrame->Field(ID3FN_DATA).Size();
+                cout << "(" << sDesc << ")[" << sFormat << ", "
+                     << nPicType << "]: " << sMimeType << ", " << nDataSize
+                     << " bytes" << endl;
+                delete [] sMimeType;
+                delete [] sDesc;
+                delete [] sFormat;
+                break;
+              }
+              case ID3FID_GENERALOBJECT:
+              {
+                char 
+                  *sMimeType = ID3_GetString(myFrame, ID3FN_TEXT), 
+                  *sDesc = ID3_GetString(myFrame, ID3FN_DESCRIPTION), 
+                  *sFileName = ID3_GetString(myFrame, ID3FN_FILENAME);
+                size_t 
+                  nDataSize = myFrame->Field(ID3FN_DATA).Size();
+                cout << "(" << sDesc << ")[" 
+                     << sFileName << "]: " << sMimeType << ", " << nDataSize
+                     << " bytes" << endl;
+                delete [] sMimeType;
+                delete [] sDesc;
+                delete [] sFileName;
+                break;
+              }
+              case ID3FID_UNIQUEFILEID:
+              {
+                char *sOwner = ID3_GetString(myFrame, ID3FN_TEXT);
+                size_t nDataSize = myFrame->Field(ID3FN_DATA).Size();
+                cout << sOwner << ", " << nDataSize
+                     << " bytes" << endl;
+                delete [] sOwner;
+                break;
+              }
+              case ID3FID_PLAYCOUNTER:
+              {
+                size_t nCounter = myFrame->Field(ID3FN_COUNTER).Get();
+                cout << nCounter << endl;
+                break;
+              }
+              case ID3FID_POPULARIMETER:
+              {
+                char *sEmail = ID3_GetString(myFrame, ID3FN_EMAIL);
+                size_t
+                  nCounter = myFrame->Field(ID3FN_COUNTER).Get(),
+                  nRating = myFrame->Field(ID3FN_RATING).Get();
+                cout << sEmail << ", counter=" 
+                     << nCounter << " rating=" << nRating;
+                delete [] sEmail;
+                break;
+              }
+              case ID3FID_CRYPTOREG:
+              case ID3FID_GROUPINGREG:
+              {
+                char *sOwner = ID3_GetString(myFrame, ID3FN_OWNER);
+                size_t 
+                  nSymbol = myFrame->Field(ID3FN_SYMBOL).Get(),
+                  nDataSize = myFrame->Field(ID3FN_DATA).Size();
+                cout << "(" << nSymbol << "): " << sOwner
+                     << ", " << nDataSize << " bytes";
+
+                break;
+              }
+              default:
+              {
+                cout << " frame" << endl;
+                break;
+              }
             }
           }
         }
       }
+      catch(ID3_Error err)
+      {
+        cout << err.GetErrorFile() << " (" << err.GetErrorLine() << "): "
+             << err.GetErrorType() << ": " << err.GetErrorDesc() << endl;
+      }
     }
-
-    catch(ID3_Error err)
-    {
-      cout << err.GetErrorFile() << " (" << err.GetErrorLine() << "): "
-           << err.GetErrorType() << ": " << err.GetErrorDesc() << endl;
-    }
-  }
-  else
-  {
-    cout << "Usage: " << argv[0] << " <file>" << endl << endl;
-  }
 
   return 0;
 }
 
 // $Log: demo_info.cpp,v $
+// Revision 1.2  1999/11/19 17:09:02  scott
+// * demo_info.cpp: Added runtime options for version and help.  Minor
+// code cleanup.
+//
 // Revision 1.1  1999/11/16 05:25:52  scott
 // Initial revision.
 //
