@@ -1,4 +1,4 @@
-// $Id: tag_parse.cpp,v 1.15 2000/05/10 03:24:53 eldamitri Exp $
+// $Id: tag_parse.cpp,v 1.16 2000/05/12 03:48:42 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -36,7 +36,7 @@
 #include <config.h>
 #endif
 
-size_t ID3_Tag::ParseFrames(const uchar* const data, size_t size) 
+size_t ID3_ParseFrames(ID3_Tag& tag, const uchar* const data, size_t size) 
 { 
   const uchar* const data_end = data + size; 
   size_t total_size = 0; 
@@ -44,7 +44,7 @@ size_t ID3_Tag::ParseFrames(const uchar* const data, size_t size)
   for (const uchar* p = data; p < data_end && *p != '\0'; p += frame_size) 
   { 
     ID3_Frame* f = new ID3_Frame; 
-    f->SetSpec(__hdr.GetSpec());
+    f->SetSpec(tag.GetSpec());
     frame_size = f->Parse(p, data_end - p); 
     total_size += frame_size; 
      
@@ -66,7 +66,7 @@ size_t ID3_Tag::ParseFrames(const uchar* const data, size_t size)
     else if (f->GetID() != ID3FID_METACOMPRESSION) 
     { 
       // a good, uncompressed frame.  attach away! 
-      this->AttachFrame(f); 
+      tag.AttachFrame(f); 
     } 
     else 
     { 
@@ -82,13 +82,13 @@ size_t ID3_Tag::ParseFrames(const uchar* const data, size_t size)
       { 
         uint32 new_size = ParseNumber(&bin[1]); 
          
-        uchar *uncompressed = new uchar[new_size]; 
+        uchar* uncompressed = new uchar[new_size]; 
          
         uncompress(uncompressed, (luint *) &new_size, 
                    &bin[1 + sizeof(uint32)], 
                    f->GetDataSize() - sizeof(uint32) - 1); 
 
-        if (this->ParseFrames(uncompressed, new_size) != new_size) 
+        if (ID3_ParseFrames(tag, uncompressed, new_size) != new_size) 
         { 
           // hmm.  it didn't parse the entire uncompressed data.  wonder why. 
           // TODO: log this. 
@@ -158,11 +158,11 @@ size_t ID3_Tag::Parse(const uchar header[ID3_TagHeader::SIZE],
   {
     unsynced_data = new uchar[data_size];
     memcpy(unsynced_data, buffer, data_size);
-    data_size = ReSync(unsynced_data, data_size);
+    data_size = ID3_ReSync(unsynced_data, data_size);
     buffer = unsynced_data;
   }
 
-  size_t parsed = this->ParseFrames(buffer, data_size);
+  size_t parsed = ID3_ParseFrames(*this, buffer, data_size);
 
   // reset the version parameters which were in effect before the parse
   //SetSpec(prev_spec);
@@ -176,16 +176,16 @@ size_t ID3_Tag::Parse(const uchar header[ID3_TagHeader::SIZE],
 }
 
 
-luint ID3_Tag::ParseFromHandle(void)
+size_t ID3_Tag::ParseFromHandle()
 {
-  luint size = 0;
+  size_t size = 0;
 
   if (NULL == __file_handle)
   {
     ID3_THROW(ID3E_NoData);
   }
 
-  if (__tags_to_parse & ID3TT_ID3V2)
+  if (__tags_to_parse.test(ID3TT_ID3V2))
   {
     if (fseek(__file_handle, 0, SEEK_SET) != 0)
     {
@@ -222,12 +222,12 @@ luint ID3_Tag::ParseFromHandle(void)
     }
   }
     
-  if (__tags_to_parse & ID3TT_LYRICS)
+  if (__tags_to_parse.test(ID3TT_LYRICS))
   {
     ParseLyrics3();
   }
   
-  if (__tags_to_parse & ID3TT_ID3V1)
+  if (__tags_to_parse.test(ID3TT_ID3V1))
   {
     ParseID3v1();
   }
