@@ -1,5 +1,16 @@
 2000-04-19  Scott Haug  <scott@id3.org>
 
+	* NEWS
+	* configure.in: 
+	Updated for 3.7.1 release
+
+	* id3lib.spec.in: 
+	Added HISTORY to all %doc's
+
+	* id3com/ID3Field.h: 
+	* id3com/ID3Frame.h: 
+	Changed #include <id3/dll.h> to #include <id3.h>
+
 	* id3lib.spec.in: 
 	- Removed zlib-devel requirement from devel
 	- Added doc package to distribute documentation
@@ -99,25 +110,21 @@
 	* configure.in 
 	(AC_OUTPUT): Added examples/Makefile, removed src/id3/Makefile and 
 	src/examples/Makefile
+	(EXTRA_DIST): Added HISTORY and id3lib.spec[.in]
+	(id3lib.spec): Added rule for generating from id3lib.spec.in
+	(release): Now depends on id3lib.spec
 
 	* Makefile.am 
 	(SUBDIRS): Added 'examples'
+
+	* id3lib.spec.in: 
+	Added
 
 	* id3com/id3com.dsp
 	* libprj/id3lib.dsp
 	* prj/id3lib.dsp
 	* prj/id3lib.mak: 
 	Updated for new file paths.
-
-2000-04-18  Scott Thomas Haug  <sth2@cs.wustl.edu>
-
-	* Makefile.am 
-	(EXTRA_DIST): Added HISTORY and id3lib.spec[.in]
-	(id3lib.spec): Added rule for generating from id3lib.spec.in
-	(release): Now depends on id3lib.spec
-
-	* id3lib.spec.in: 
-	Added
 
 2000-04-17  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
