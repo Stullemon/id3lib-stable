@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.8 2000/05/01 13:05:07 eldamitri Exp $
+// $Id: field.cpp,v 1.9 2000/05/02 21:58:43 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,7 +24,6 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#include <iostream.h>
 #include <string.h>
 #include "field.h"
 
@@ -232,7 +231,7 @@ static ID3_FieldDef ID3FD_LinkedInfo[] =
     ID3FTY_INTEGER,                     // FIELD TYPE
     3,                                  // FIXED LEN
     ID3V2_EARLIEST,                     // INITIAL SPEC
-    ID3V2_2_0,                          // ENDING SPEC
+    ID3V2_2_1,                          // ENDING SPEC
     ID3FF_NONE,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -241,7 +240,7 @@ static ID3_FieldDef ID3FD_LinkedInfo[] =
     ID3FTY_ASCIISTRING,                 // FIELD TYPE
     3,                                  // FIXED LEN
     ID3V2_EARLIEST,                     // INITIAL SPEC
-    ID3V2_2_0,                          // ENDING SPEC
+    ID3V2_2_1,                          // ENDING SPEC
     ID3FF_NONE,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -291,7 +290,7 @@ static ID3_FieldDef ID3FD_Picture[] =
     ID3FTY_ASCIISTRING,                 // FIELD TYPE
     3,                                  // FIXED LEN
     ID3V2_EARLIEST,                     // INITIAL SPEC
-    ID3V2_2_0,                          // ENDING SPEC
+    ID3V2_2_1,                          // ENDING SPEC
     ID3FF_NONE,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -531,6 +530,20 @@ static ID3_FieldDef ID3FD_InvolvedPeople[] =
   },
   { ID3FN_NOFIELD }
 };
+
+static ID3_FieldDef ID3FD_CDM[] =
+{
+  {
+    ID3FN_DATA,                         // FIELD NAME
+    ID3FTY_BINARY,                      // FIELD TYPE
+    0,                                  // FIXED LEN
+    ID3V2_2_1,                          // INITIAL SPEC
+    ID3V2_2_1,                          // ENDING SPEC
+    ID3FF_NONE,                         // FLAGS
+    ID3FN_NOFIELD                       // LINKED FIELD
+  }
+};
+
 /*
  * Currently unused
  */
@@ -657,6 +670,7 @@ static ID3_FieldDef ID3FD_Volume[] =
 // WPAY  WRA  ID3FID_WWWPAYMENT        Payment
 // WPUB  WPY  ID3FID_WWWPUBLISHER      Official publisher webpage
 // WXXX  WXX  ID3FID_WWWUSER           User defined URL link
+//       CDM  ID3FID_METACOMPRESSION   Compressed data meta frame
 
 // **** Currently unimplemented frames
 // AENC  CRA  ID3FID_AUDIOCRYPTO       Audio encryption
@@ -681,21 +695,21 @@ static  ID3_FrameDef ID3_FrameDefs[] =
   {ID3FID_AUDIOCRYPTO,       "CRA", "AENC", 0, false, false, NULL, ID3FD_Unimplemented, "Audio encryption"},
   {ID3FID_PICTURE,           "PIC", "APIC", 0, false, false, NULL, ID3FD_Picture,       "Attached picture"},
   {ID3FID_COMMENT,           "COM", "COMM", 0, false, false, NULL, ID3FD_GeneralText,   "Comments"},
-  {ID3FID_COMMERCIAL,        "   ", "COMR", 0, false, false, NULL, ID3FD_Unimplemented, "Commercial"},
-  {ID3FID_CRYPTOREG,         "   ", "ENCR", 0, false, false, NULL, ID3FD_Registration,  "Encryption method registration"},
+  {ID3FID_COMMERCIAL,        ""   , "COMR", 0, false, false, NULL, ID3FD_Unimplemented, "Commercial"},
+  {ID3FID_CRYPTOREG,         ""   , "ENCR", 0, false, false, NULL, ID3FD_Registration,  "Encryption method registration"},
   {ID3FID_EQUALIZATION,      "EQU", "EQUA", 0, false, true,  NULL, ID3FD_Unimplemented, "Equalization"},
   {ID3FID_EVENTTIMING,       "ETC", "ETCO", 0, false, true,  NULL, ID3FD_Unimplemented, "Event timing codes"},
   {ID3FID_GENERALOBJECT,     "GEO", "GEOB", 0, false, false, NULL, ID3FD_GEO,           "General encapsulated object"},
-  {ID3FID_GROUPINGREG,       "   ", "GRID", 0, false, false, NULL, ID3FD_Registration,  "Group identification registration"},
+  {ID3FID_GROUPINGREG,       ""   , "GRID", 0, false, false, NULL, ID3FD_Registration,  "Group identification registration"},
   {ID3FID_INVOLVEDPEOPLE,    "IPL", "IPLS", 0, false, false, NULL, ID3FD_InvolvedPeople,"Involved people list"},
   {ID3FID_LINKEDINFO,        "LNK", "LINK", 0, false, false, NULL, ID3FD_LinkedInfo,    "Linked information"},
   {ID3FID_CDID,              "MCI", "MCDI", 0, false, false, NULL, ID3FD_Unimplemented, "Music CD identifier"},
   {ID3FID_MPEGLOOKUP,        "MLL", "MLLT", 0, false, true,  NULL, ID3FD_Unimplemented, "MPEG location lookup table"},
-  {ID3FID_OWNERSHIP,         "   ", "OWNE", 0, false, false, NULL, ID3FD_Unimplemented, "Ownership frame"},
+  {ID3FID_OWNERSHIP,         ""   , "OWNE", 0, false, false, NULL, ID3FD_Unimplemented, "Ownership frame"},
   {ID3FID_PLAYCOUNTER,       "CNT", "PCNT", 0, false, false, NULL, ID3FD_PlayCounter,   "Private frame"},
   {ID3FID_POPULARIMETER,     "POP", "POPM", 0, false, false, NULL, ID3FD_Popularimeter, "Play counter"},
-  {ID3FID_POSITIONSYNC,      "   ", "POSS", 0, false, true,  NULL, ID3FD_Unimplemented, "Popularimeter"},
-  {ID3FID_PRIVATE,           "   ", "PRIV", 0, false, false, NULL, ID3FD_Private,       "Position synchronisation frame"},
+  {ID3FID_POSITIONSYNC,      ""   , "POSS", 0, false, true,  NULL, ID3FD_Unimplemented, "Popularimeter"},
+  {ID3FID_PRIVATE,           ""   , "PRIV", 0, false, false, NULL, ID3FD_Private,       "Position synchronisation frame"},
   {ID3FID_BUFFERSIZE,        "BUF", "RBUF", 0, false, false, NULL, ID3FD_Unimplemented, "Recommended buffer size"},
   {ID3FID_VOLUMEADJ,         "RVA", "RVAD", 0, false, true,  NULL, ID3FD_Unimplemented, "Relative volume adjustment"},
   {ID3FID_REVERB,            "REV", "RVRB", 0, false, false, NULL, ID3FD_Unimplemented, "Reverb"},
@@ -724,7 +738,7 @@ static  ID3_FrameDef ID3_FrameDefs[] =
   {ID3FID_ORIGLYRICIST,      "TOL", "TOLY", 0, false, false, NULL, ID3FD_Text,          "Original lyricist(s)/text writer(s)"},
   {ID3FID_ORIGARTIST,        "TOA", "TOPE", 0, false, false, NULL, ID3FD_Text,          "Original artist(s)/performer(s)"},
   {ID3FID_ORIGYEAR,          "TOR", "TORY", 0, false, false, NULL, ID3FD_Text,          "Original release year"},
-  {ID3FID_FILEOWNER,         "   ", "TOWN", 0, false, false, NULL, ID3FD_Text,          "File owner/licensee"},
+  {ID3FID_FILEOWNER,         ""   , "TOWN", 0, false, false, NULL, ID3FD_Text,          "File owner/licensee"},
   {ID3FID_LEADARTIST,        "TP1", "TPE1", 0, false, false, NULL, ID3FD_Text,          "Lead performer(s)/Soloist(s)"},
   {ID3FID_BAND,              "TP2", "TPE2", 0, false, false, NULL, ID3FD_Text,          "Band/orchestra/accompaniment"},
   {ID3FID_CONDUCTOR,         "TP3", "TPE3", 0, false, false, NULL, ID3FD_Text,          "Conductor/performer refinement"},
@@ -741,7 +755,7 @@ static  ID3_FrameDef ID3_FrameDefs[] =
   {ID3FID_USERTEXT,          "TXX", "TXXX", 0, false, false, NULL, ID3FD_UserText,      "User defined text information"},
   {ID3FID_YEAR,              "TYE", "TYER", 0, false, false, NULL, ID3FD_Text,          "Year"},
   {ID3FID_UNIQUEFILEID,      "UFI", "UFID", 0, false, false, NULL, ID3FD_UFI,           "Unique file identifier"},
-  {ID3FID_TERMSOFUSE,        "   ", "USER", 0, false, false, NULL, ID3FD_TermsOfUse,    "Terms of use"},
+  {ID3FID_TERMSOFUSE,        ""   , "USER", 0, false, false, NULL, ID3FD_TermsOfUse,    "Terms of use"},
   {ID3FID_UNSYNCEDLYRICS,    "ULT", "USLT", 0, false, false, NULL, ID3FD_GeneralText,   "Unsynchronized lyric/text transcription"},
   {ID3FID_WWWCOMMERCIALINFO, "WCM", "WCOM", 0, false, false, NULL, ID3FD_URL,           "Commercial information"},
   {ID3FID_WWWCOPYRIGHT,      "WCP", "WCOP", 0, false, false, NULL, ID3FD_URL,           "Copyright/Legal infromation"},
@@ -752,7 +766,8 @@ static  ID3_FrameDef ID3_FrameDefs[] =
   {ID3FID_WWWPAYMENT,        "WPY", "WPAY", 0, false, false, NULL, ID3FD_URL,           "Payment"},
   {ID3FID_WWWPUBLISHER,      "WPB", "WPUB", 0, false, false, NULL, ID3FD_URL,           "Official publisher webpage"},
   {ID3FID_WWWUSER,           "WXX", "WXXX", 0, false, false, NULL, ID3FD_UserURL,       "User defined URL link"},
-  {ID3FID_METACRYPTO,        "CRM", "    ", 0, false, false, NULL, ID3FD_Unimplemented, "Encrypted meta frame"},
+  {ID3FID_METACRYPTO,        "CRM", ""    , 0, false, false, NULL, ID3FD_Unimplemented, "Encrypted meta frame"},
+  {ID3FID_METACOMPRESSION,   "CDM", ""    , 0, false, false, NULL, ID3FD_CDM,           "Compressed data meta frame"},
   {ID3FID_NOFRAME}
 };
   
