@@ -17,4 +17,12 @@ LF_CONFIGURE_CXX
 LF_HOST_TYPE
 LF_SET_WARNINGS
 AC_PROG_RANLIB
-AC_OUTPUT(Makefile doc/Makefile m4/Makefile src/Makefile src/id3/Makefile)
+AC_OUTPUT(                      \
+  Makefile                      \
+  doc/Makefile                  \
+  m4/Makefile                   \
+  src/Makefile                  \
+  src/id3/Makefile              \
+  src/zlib/Makefile             \
+  src/examples/Makefile         \
+)
