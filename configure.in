@@ -1,4 +1,4 @@
-# $Id: configure.in,v 1.16 2000/04/07 04:46:37 eldamitri Exp $
+# $Id: configure.in,v 1.17 2000/04/08 04:49:54 eldamitri Exp $
 
 # Copyright 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -30,10 +30,10 @@ AC_DIVERT_PUSH(AC_DIVERSION_NOTICE)dnl
 # set ID3LIB_BINARY_AGE _and_ ID3LIB_INTERFACE_AGE to 0.
 #
 ID3LIB_MAJOR_VERSION=3
-ID3LIB_MINOR_VERSION=0
-ID3LIB_PATCH_VERSION=6
-ID3LIB_INTERFACE_AGE=6
-ID3LIB_BINARY_AGE=6
+ID3LIB_MINOR_VERSION=7
+ID3LIB_PATCH_VERSION=0
+ID3LIB_INTERFACE_AGE=0
+ID3LIB_BINARY_AGE=0
 ID3LIB_VERSION=$ID3LIB_MAJOR_VERSION.$ID3LIB_MINOR_VERSION.$ID3LIB_PATCH_VERSION
 AC_DIVERT_POP()dnl
 
@@ -58,7 +58,11 @@ VERSION=$ID3LIB_VERSION
 PACKAGE=id3lib
 
 dnl This is a hack to get the release date using cvs checkin macros
-ID3LIB_RELEASE_DATE="$Date: 2000/04/07 04:46:37 $ID3LIB_UNDEFINED"
+ID3LIB_DATE="$Date: 2000/04/08 04:49:54 $ID3LIB_UNDEFINED"
+ID3LIB_FULLNAME="$PACKAGE-$VERSION"
+
+AC_SUBST(ID3LIB_DATE)
+AC_SUBST(ID3LIB_FULLNAME)
 
 AM_INIT_AUTOMAKE($PACKAGE,$VERSION)
 AM_CONFIG_HEADER(config.h)
@@ -129,15 +133,12 @@ AC_HAVE_HEADERS(                \
 )
 AC_LANG_SAVE
 AC_LANG_CPLUSPLUS
-AC_HAVE_HEADERS(                \
-  iostream.h                    \
-  ,,AC_MSG_ERROR([Missing a vital header file for id3lib])
-)
+AC_CHECK_HEADER(iostream.h)
 
 dnl Check for functions.
 AC_FUNC_MEMCMP
 AC_HAVE_FUNCS(
-  ftruncate                     \
+  truncate                      \
   ,,AC_MSG_ERROR([Missing a vital function for id3lib])
 )
 
@@ -187,8 +188,9 @@ AC_DEFINE_UNQUOTED(ID3LIB_MINOR_VERSION, $ID3LIB_MINOR_VERSION)
 AC_DEFINE_UNQUOTED(ID3LIB_PATCH_VERSION, $ID3LIB_PATCH_VERSION)
 AC_DEFINE_UNQUOTED(ID3LIB_INTERFACE_AGE, $ID3LIB_INTERFACE_AGE)
 AC_DEFINE_UNQUOTED(ID3LIB_BINARY_AGE, $ID3LIB_BINARY_AGE)
-AC_DEFINE_UNQUOTED(ID3LIB_FULLNAME, "$PACKAGE-$ID3LIB_RELEASE")
+AC_DEFINE_UNQUOTED(ID3LIB_FULLNAME, "$ID3LIB_FULLNAME")
 AC_DEFINE_UNQUOTED(ID3_COMPILED_WITH_DEBUGGING, "${enable_debug}")
+AC_DEFINE_UNQUOTED(ID3LIB_DATE, "$ID3LIB_DATE")
 
 AC_OUTPUT(                      \
   Makefile                      \
@@ -212,6 +214,10 @@ AC_OUTPUT(                      \
 )
 
 # $Log: configure.in,v $
+# Revision 1.17  2000/04/08 04:49:54  eldamitri
+# Updated to version 3.7.0, per Kamran's (MusicMatch) suggestion.  Other
+# minor updates.
+#
 # Revision 1.16  2000/04/07 04:46:37  eldamitri
 # Changed occurrences of 'micro' to 'patch'.
 #
