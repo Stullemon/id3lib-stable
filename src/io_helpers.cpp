@@ -1,4 +1,4 @@
-// $Id: io_helpers.cpp,v 1.3 2000/10/15 06:39:26 eldamitri Exp $
+// $Id: io_helpers.cpp,v 1.4 2000/10/21 22:17:03 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -67,30 +67,132 @@ String io::readText(ID3_Reader& reader, size_t len)
   return str;
 }
 
-String io::readUnicodeString(ID3_Reader& reader)
+namespace
 {
-  String str;
-  while (!reader.atEnd())
+  bool isNull(unsigned char ch1, unsigned char ch2)
   {
-    ID3_Reader::char_type ch1 = reader.readChar();
+    return ch1 == '\0' && ch2 == '\0';
+  }
+
+  int isBOM(unsigned char ch1, unsigned char ch2)
+  {
+  // The following is taken from the following URL:
+  // http://community.roxen.com/developers/idocs/rfc/rfc2781.html
+  /* The Unicode Standard and ISO 10646 define the character "ZERO WIDTH
+     NON-BREAKING SPACE" (0xFEFF), which is also known informally as
+     "BYTE ORDER MARK" (abbreviated "BOM"). The latter name hints at a
+     second possible usage of the character, in addition to its normal
+     use as a genuine "ZERO WIDTH NON-BREAKING SPACE" within text. This
+     usage, suggested by Unicode section 2.4 and ISO 10646 Annex F
+     (informative), is to prepend a 0xFEFF character to a stream of
+     Unicode characters as a "signature"; a receiver of such a serialized
+     stream may then use the initial character both as a hint that the
+     stream consists of Unicode characters and as a way to recognize the
+     serialization order. In serialized UTF-16 prepended with such a
+     signature, the order is big-endian if the first two octets are 0xFE
+     followed by 0xFF; if they are 0xFF followed by 0xFE, the order is
+     little-endian. Note that 0xFFFE is not a Unicode character,
+     precisely to preserve the usefulness of 0xFEFF as a byte-order
+     mark. */
+
+    if (ch1 == 0xFE && ch2 == 0xFF)
+    {
+      return 1;
+    }
+    else if (ch1 == 0xFF && ch2 == 0xFE)
+    {
+      return -1;
+    }
+    return 0;
+  }
+
+  bool readTwoChars(ID3_Reader& reader, 
+                    ID3_Reader::char_type& ch1, 
+                    ID3_Reader::char_type& ch2)
+  {
     if (reader.atEnd())
     {
-      break;
+      return false;
     }
-    ID3_Reader::char_type ch2 = reader.readChar();
-    if (ch1 == '\0' && ch2 == '\0')
+    io::ExitTrigger et(reader);
+    ch1 = reader.readChar();
+    if (reader.atEnd())
+    {
+      return false;
+    }
+    et.release();
+    ch2 = reader.readChar();
+    return true;
+  }
+}
+
+String io::readUnicodeString(ID3_Reader& reader)
+{
+  String unicode;
+  ID3_Reader::char_type ch1, ch2;
+  if (!readTwoChars(reader, ch1, ch2) || isNull(ch1, ch2))
+  {
+    return unicode;
+  }
+  int bom = isBOM(ch1, ch2);
+  if (!bom)
+  {
+    unicode += static_cast<char>(ch1);
+    unicode += static_cast<char>(ch2);
+  }
+  while (!reader.atEnd())
+  {
+    if (!readTwoChars(reader, ch1, ch2) || isNull(ch1, ch2))
     {
       break;
     }
-    str += static_cast<char>(ch1);
-    str += static_cast<char>(ch2);
+    if (bom == -1)
+    {
+      unicode += static_cast<char>(ch2);
+      unicode += static_cast<char>(ch1);
+    }
+    else
+    {
+      unicode += static_cast<char>(ch1);
+      unicode += static_cast<char>(ch2);
+    }
   }
-  return str;
+  return unicode;
 }
 
 String io::readUnicodeText(ID3_Reader& reader, size_t len)
 {
-  return readText(reader, len * 2);
+  String unicode;
+  ID3_Reader::char_type ch1, ch2;
+  if (!readTwoChars(reader, ch1, ch2))
+  {
+    return unicode;
+  }
+  len -= 2;
+  int bom = isBOM(ch1, ch2);
+  if (!bom)
+  {
+    unicode += ch1;
+    unicode += ch2;
+    unicode += readText(reader, len);
+  }
+  else if (bom == 1)
+  {
+    unicode = readText(reader, len);
+  }
+  else
+  {
+    for (index_t i = 0; i < len; i += 2)
+    {
+      if (!readTwoChars(reader, ch1, ch2))
+      {
+        break;
+      }
+      unicode += ch2;
+      unicode += ch1;
+    }
+  }
+  return unicode;
 }
 
 BString io::readAllBinary(ID3_Reader& reader)
@@ -228,4 +330,45 @@ size_t io::writeUInt28(ID3_Writer& writer, uint32 val)
   
   // Should always render 4 bytes
   return writer.writeChars(data, sizeof(uint32));
+}
+
+size_t io::writeString(ID3_Writer& writer, String data)
+{
+  size_t size = writeText(writer, data);
+  writer.writeChar('\0');
+  return size + 1;
+}
+
+size_t io::writeText(ID3_Writer& writer, String data)
+{
+  ID3_Writer::pos_type beg = writer.getCur();
+  writer.writeChars(data.data(), data.size());
+  return writer.getCur() - beg;
+}
+
+size_t io::writeUnicodeString(ID3_Writer& writer, String data)
+{
+  size_t size = writeUnicodeText(writer, data);
+  unicode_t null = NULL_UNICODE;
+  writer.writeChars((const unsigned char*) &null, 2);
+  return size + 2;
+}
+
+size_t io::writeUnicodeText(ID3_Writer& writer, String data)
+{
+  ID3_Writer::pos_type beg = writer.getCur();
+  size_t size = (data.size() / 2) * 2;
+  if (size == 0)
+  {
+    return 0;
+  }
+  // Write the BOM: 0xFEFF
+  unicode_t bom = 0xFEFF;
+  writer.writeChars((const unsigned char*) &bom, 2);
+  for (size_t i = 0; i < size; i += 2)
+  {
+    unicode_t ch = (data[i] << 8) | data[i+1];
+    writer.writeChars((const unsigned char*) &ch, 2);
+  }
+  return writer.getCur() - beg;
 }
