@@ -1,4 +1,4 @@
-// $Id: frame.cpp,v 1.14 2000/05/12 21:07:26 eldamitri Exp $
+// $Id: frame.cpp,v 1.15 2000/05/23 15:27:57 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -35,10 +35,10 @@ ID3_Frame::ID3_Frame(ID3_FrameID id)
   : __changed(false),
     __field_bitset(NULL),
     __num_fields(0),
+    __encryption_id('\0'),
+    __grouping_id('\0'),
     __fields(NULL)
 {
-  __encryption_id[0] = '\0';
-  __grouping_id[0]   = '\0';
   
   _InitFieldBits();
   SetID(id);
@@ -49,11 +49,10 @@ ID3_Frame::ID3_Frame(const ID3_FrameHeader &hdr)
     __field_bitset(NULL),
     __num_fields(0),
     __fields(NULL),
+    __encryption_id('\0'),
+    __grouping_id('\0'),
     __hdr(hdr)
 {
-  __encryption_id[0] = '\0';
-  __grouping_id[0]   = '\0';
-  
   this->_InitFieldBits();
   this->_InitFields();
 }
@@ -62,11 +61,10 @@ ID3_Frame::ID3_Frame(const ID3_Frame& frame)
   : __changed(false),
     __field_bitset(NULL),
     __num_fields(0),
+    __encryption_id('\0'),
+    __grouping_id('\0'),
     __fields(NULL)
 {
-  __encryption_id[0] = '\0';
-  __grouping_id[0]   = '\0';
-  
   _InitFieldBits();
   *this = frame;
 }
@@ -135,8 +133,8 @@ void ID3_Frame::Clear()
 {
   this->_ClearFields();
   __hdr.Clear();
-  __encryption_id[0] = '\0';
-  __grouping_id[0]   = '\0';
+  __encryption_id = '\0';
+  __grouping_id   = '\0';
   __num_fields      = 0;
   __fields         = NULL;
 }
@@ -274,12 +272,12 @@ size_t ID3_Frame::Size()
 {
   size_t bytesUsed = __hdr.Size();
   
-  if (strlen(__encryption_id))
+  if (this->_GetEncryptionID())
   {
     bytesUsed++;
   }
     
-  if (strlen(__grouping_id))
+  if (this->_GetGroupingID())
   {
     bytesUsed++;
   }
