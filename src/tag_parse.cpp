@@ -1,4 +1,4 @@
-// $Id: tag_parse.cpp,v 1.6 2000/05/01 13:05:07 eldamitri Exp $
+// $Id: tag_parse.cpp,v 1.7 2000/05/02 21:55:38 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -29,7 +29,7 @@
 #include <memory.h>
 #include <zlib.h>
 #include "tag.h"
-#include "int28.h"
+#include "uint28.h"
 #include "misc_support.h"
 
 #if defined HAVE_CONFIG_H
@@ -101,10 +101,10 @@ void ID3_Tag::ExpandBinaries(uchar *buffer, luint size)
   while (posn < (size - 6) && buffer[posn] != 0)
   {
     frHeader.SetSpec(this->GetSpec());
-    
-    posn += frHeader.Parse(&buffer[posn]);
+    posn += frHeader.Parse(&buffer[posn], size - posn);
+
     // firstly, let's check to see if we are parsing a CDM.
-    if (strcmp(frHeader.GetTextID(), "CDM") != 0)
+    if (frHeader.GetFrameID() != ID3FID_METACOMPRESSION)
     {
       AddBinary(&buffer[posn - frHeader.Size()], 
                 frHeader.Size() + frHeader.GetDataSize());
@@ -157,28 +157,28 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
     bool bShouldAttach = attach;
     bool bReadOnly = false;
     
-    posn = frHeader.Parse(cur->acBinary);
+    posn = frHeader.Parse(cur->acBinary, 0);
     frHeader.SetSpec(this->GetSpec());
     
-    if (frHeader.GetFlags() & ID3FL_COMPRESSION)
+    if (frHeader.GetCompression())
     {
       expandedSize = ParseNumber(&(cur->acBinary[posn]));
       extras += sizeof(luint);
     }
     
-    if (frHeader.GetFlags() & ID3FL_ENCRYPTION)
+    if (frHeader.GetEncryption())
     {
       encryptionID = cur->acBinary[posn];
       posn++, extras++;
     }
     
-    if (frHeader.GetFlags() & ID3FL_GROUPING)
+    if (frHeader.GetGrouping())
     {
       groupingID = cur->acBinary[posn];
       posn++, extras++;
     }
 
-    bReadOnly = ((frHeader.GetFlags() & ID3FL_READONLY) != 0);
+    bReadOnly = ((frHeader.GetReadOnly()) != 0);
 
     id = frHeader.GetFrameID();
     
@@ -191,7 +191,7 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
     {
       uchar *expBin = NULL;
       
-      if (frHeader.GetFlags() & ID3FL_COMPRESSION)
+      if (frHeader.GetCompression())
       {
         expBin = new uchar[expandedSize];
         if (NULL == expBin)
@@ -322,25 +322,25 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
 void ID3_Tag::Parse(uchar header[ID3_TAGHEADERSIZE], uchar *buffer)
 {
   luint tagSize = 0;
-  int28 temp = &header[6];
+  uint28 temp = &header[6];
   luint posn = 0;
   ID3_V2Spec prev_spec = this->GetSpec();
   
   Clear();
   
-  tagSize = temp.get();
+  tagSize = temp.to_uint32();
   this->SetSpec(ID3_VerRevToV2Spec(header[3], header[4]));
   
-  if (header[5] & ID3HF_UNSYNC)
+  if (header[5] & ID3_TagHeader::UNSYNC)
   {
     tagSize = ReSync(buffer, tagSize);
   }
-    
+  
   // okay, if we are ID3v2.2.1, then let's skip over the extended header for now
   // because I am lazy
   if (this->GetSpec() == ID3V2_2_1)
   {
-    if (header[5] & ID3HF_EXTENDEDHEADER)
+    if (header[5] & ID3_TagHeader::EXTENDED)
     {
       uint32 extSize = ParseNumber(buffer);
       posn = extSize + sizeof(luint);
@@ -351,7 +351,7 @@ void ID3_Tag::Parse(uchar header[ID3_TAGHEADERSIZE], uchar *buffer)
   // now, we skip it because we are lazy)
   if (this->GetSpec() == ID3V2_3_0)
   {
-    if (header[5] & ID3HF_EXTENDEDHEADER)
+    if (header[5] & ID3_TagHeader::EXTENDED)
     {
       uint32 extSize = ParseNumber(buffer);
       posn = extSize + sizeof(luint);
