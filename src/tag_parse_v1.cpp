@@ -1,4 +1,4 @@
-// $Id: tag_parse_v1.cpp,v 1.6 2000/05/12 03:45:55 eldamitri Exp $
+// $Id: tag_parse_v1.cpp,v 1.7 2000/05/12 21:07:49 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -57,8 +57,9 @@ void ID3_Tag::ParseID3v1(void)
   // posn ourselves at 128 bytes from the end of the file
   if (fseek(__file_handle, 0-ID3_V1_LEN, SEEK_END) != 0)
   {
+    return;
     // TODO:  This is a bad error message.  Make it more descriptive
-    ID3_THROW(ID3E_NoData);
+    //ID3_THROW(ID3E_NoData);
   }
     
     
