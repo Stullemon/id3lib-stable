@@ -14,7 +14,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.11 2000/05/29 02:19:43 eldamitri Exp $
+// $Id: demo_info.cpp,v 1.12 2000/06/14 16:11:10 eldamitri Exp $
 
 #include <iostream.h>
 #include <id3/tag.h>
@@ -47,7 +47,9 @@ void PrintInformation(const ID3_Tag &myTag)
     ID3_Frame *myFrame = myTag[nFrames];
     if (NULL != myFrame)
     { 
-      cout << "=== " << myFrame->GetDescription() << ": ";
+      const char* desc = myFrame->GetDescription();
+      if (!desc) desc = "";
+      cout << "=== " << myFrame->GetTextID() << " (" << desc << "): ";
       ID3_FrameID eFrameID = myFrame->GetID();
       switch (eFrameID)
       {
