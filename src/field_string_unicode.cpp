@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.12 2000/05/28 03:40:56 eldamitri Exp $
+// $Id: field_string_unicode.cpp,v 1.13 2000/05/28 22:55:32 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -263,7 +263,7 @@ ID3_Field::ParseUnicodeString(const uchar *buffer, size_t nSize)
       */
       if (temp[0] == 0xFEFF)
       {
-        for (index_t i = loc; i < (int) ucslen(temp); i++)
+        for (index_t i = loc; i < ucslen(temp); i++)
         {
           uchar
             u1 = ((uchar *)(&temp[i]))[0],
