@@ -1,5 +1,24 @@
 2000-05-29  Scott Haug  <scott@id3.org>
 
+	* examples/findeng.cpp: 
+	Initial revision
+
+	* examples/Makefile.am 
+	(check_PROGRAMS): Added findeng
+
+	* id3lib.spec.in: 
+	Fixed the date format, even though my way is better...
+
+	* config.h.win32.in: 
+	Apparently VC++ 6.0 has buggy for loops
+
+	* src/frame.cpp 
+	(_ClearFields): Minor fix to for loop variable to allow compilation
+	in compilers with buggy for loops
+
+	* src/tag_find.cpp 
+	(Find): Fix for finding strings w/o their own null terminator
+
 	* NEWS: 
 	Further updates for 3.7.9 release (hopefully this is it!)
 
