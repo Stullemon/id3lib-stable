@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.8 1999/12/01 05:00:32 scott Exp $
+# $Id: Makefile.in,v 1.9 1999/12/01 18:03:28 scott Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -92,23 +92,16 @@ lt_ver = @lt_ver@
 
 LTVERSION = @lt_ver@:@lt_rev@:@lt_age@
 
-INCLUDES = -I$(srcdir)/..
+INCLUDES = -I$(top_srcdir)/include/id3
 
 the_sources =    dll_wrapper.cpp                 error.cpp                       field.cpp                       field_binary.cpp                field_integer.cpp               field_string_ascii.cpp          field_string_unicode.cpp        frame.cpp                       frame_parse.cpp                 frame_render.cpp                header.cpp                      header_frame.cpp                header_tag.cpp                  int28.cpp                       misc_support.cpp                tag.cpp                         tag_file.cpp                    tag_find.cpp                    tag_parse.cpp                   tag_parse_lyrics3.cpp           tag_parse_v1.cpp                tag_render.cpp                  tag_sync.cpp                    version.cpp                   
-
-
-the_headers =    dll.h                           error.h                         externals.h                     field.h                         frame.h                         globals.h                       header.h                        header_frame.h                  header_tag.h                    int28.h                         misc_support.h                  sized_types.h                   tag.h                           types.h                         version.h
 
 
 lib_LTLIBRARIES = libid3.la 
 
 libid3_la_SOURCES = $(the_sources)
-# CXXFLAGS = -Wall
 libid3_la_LIBADD = -lz
 libid3_la_LDFLAGS = -version-info $(LTVERSION)
-
-id3includedir = $(includedir)/id3
-id3include_HEADERS = $(the_headers)
 
 EXTRA_DIST = ChangeLog
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -133,8 +126,6 @@ CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
-HEADERS =  $(id3include_HEADERS)
-
 DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 
@@ -227,21 +218,6 @@ libid3.la: $(libid3_la_OBJECTS) $(libid3_la_DEPENDENCIES)
 	$(CXXCOMPILE) -c $<
 .cpp.lo:
 	$(LTCXXCOMPILE) -c $<
-
-install-id3includeHEADERS: $(id3include_HEADERS)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(id3includedir)
-	@list='$(id3include_HEADERS)'; for p in $$list; do \
-	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
-	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(id3includedir)/$$p"; \
-	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(id3includedir)/$$p; \
-	done
-
-uninstall-id3includeHEADERS:
-	@$(NORMAL_UNINSTALL)
-	list='$(id3include_HEADERS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(id3includedir)/$$p; \
-	done
 
 tags: TAGS
 
@@ -354,20 +330,20 @@ installcheck: installcheck-am
 install-exec-am: install-libLTLIBRARIES
 install-exec: install-exec-am
 
-install-data-am: install-id3includeHEADERS
+install-data-am:
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-libLTLIBRARIES uninstall-id3includeHEADERS
+uninstall-am: uninstall-libLTLIBRARIES
 uninstall: uninstall-am
-all-am: Makefile $(LTLIBRARIES) $(HEADERS)
+all-am: Makefile $(LTLIBRARIES)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(id3includedir)
+	$(mkinstalldirs)  $(DESTDIR)$(libdir)
 
 
 mostlyclean-generic:
@@ -411,8 +387,7 @@ clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
 uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
 distclean-compile clean-compile maintainer-clean-compile \
 mostlyclean-libtool distclean-libtool clean-libtool \
-maintainer-clean-libtool uninstall-id3includeHEADERS \
-install-id3includeHEADERS tags mostlyclean-tags distclean-tags \
+maintainer-clean-libtool tags mostlyclean-tags distclean-tags \
 clean-tags maintainer-clean-tags distdir mostlyclean-depend \
 distclean-depend clean-depend maintainer-clean-depend info-am info \
 dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
@@ -423,8 +398,10 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 # $Log: Makefile.in,v $
-# Revision 1.8  1999/12/01 05:00:32  scott
-# *** empty log message ***
+# Revision 1.9  1999/12/01 18:03:28  scott
+# (INCLUDES): Now points to new, toplevel include directory.
+# (the_headers, id3includedir, id3include_HEADERS): Removed.  Headers are
+# no longer in this directory.
 #
 # Revision 1.6  1999/11/30 20:08:16  scott
 # (the_headers): Added sized_headers.h
