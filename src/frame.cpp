@@ -1,4 +1,4 @@
-// $Id: frame.cpp,v 1.11 2000/05/03 17:13:28 eldamitri Exp $
+// $Id: frame.cpp,v 1.12 2000/05/09 13:26:52 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -40,7 +40,7 @@ ID3_Frame::ID3_Frame(ID3_FrameID id)
   __encryption_id[0] = '\0';
   __grouping_id[0]   = '\0';
   
-  InitFieldBits();
+  _InitFieldBits();
   SetID(id);
 }
 
@@ -54,8 +54,8 @@ ID3_Frame::ID3_Frame(const ID3_FrameHeader &hdr)
   __encryption_id[0] = '\0';
   __grouping_id[0]   = '\0';
   
-  this->InitFieldBits();
-  this->InitFields();
+  this->_InitFieldBits();
+  this->_InitFields();
 }
 
 ID3_Frame::ID3_Frame(const ID3_Frame& frame)
@@ -67,11 +67,11 @@ ID3_Frame::ID3_Frame(const ID3_Frame& frame)
   __encryption_id[0] = '\0';
   __grouping_id[0]   = '\0';
   
-  InitFieldBits();
+  _InitFieldBits();
   *this = frame;
 }
 
-void ID3_Frame::InitFieldBits()
+void ID3_Frame::_InitFieldBits()
 {
   luint lWordsForFields =
     (((luint) ID3FN_LASTFIELDID) - 1) / (sizeof(luint) * 8);
@@ -107,21 +107,33 @@ ID3_Frame::~ID3_Frame(void)
   }
 }
 
+bool ID3_Frame::_ClearFields()
+{
+  if (!__num_fields || !__fields)
+  {
+    return false;
+  }
+  for (luint i = 0; i < __num_fields; i++)
+  {
+    delete __fields[i];
+  }
+   
+  if (__field_bitset)
+  {
+    delete [] __field_bitset;
+    __field_bitset = NULL;
+  }
+   
+  delete [] __fields;
+  __fields = NULL;
+    
+  __changed = true;
+  return true;
+}
 
 void ID3_Frame::Clear(void)
 {
-  if (__num_fields > 0 && NULL != __fields)
-  {
-    for (luint i = 0; i < __num_fields; i++)
-    {
-      delete __fields[i];
-    }
-      
-    delete [] __fields;
-    
-    __changed = true;
-  }
-
+  this->_ClearFields();
   __hdr.Clear();
   __encryption_id[0] = '\0';
   __grouping_id[0]   = '\0';
@@ -129,7 +141,7 @@ void ID3_Frame::Clear(void)
   __fields         = NULL;
 }
 
-void ID3_Frame::InitFields()
+void ID3_Frame::_InitFields()
 {
   const ID3_FrameDef* info = __hdr.GetFrameDef();
   if (NULL == info)
@@ -157,32 +169,39 @@ void ID3_Frame::InitFields()
     {
       ID3_THROW(ID3E_NoMemory);
     }
-
-    __fields[i]->__id        = info->aeFieldDefs[i].eID;
-    __fields[i]->__type        = info->aeFieldDefs[i].eType;
-    __fields[i]->__length = info->aeFieldDefs[i].ulFixedLength;
+    
+    __fields[i]->__id           = info->aeFieldDefs[i].eID;
+    __fields[i]->__type         = info->aeFieldDefs[i].eType;
+    __fields[i]->__length       = info->aeFieldDefs[i].ulFixedLength;
     __fields[i]->__spec_begin   = info->aeFieldDefs[i].eSpecBegin;
     __fields[i]->__spec_end     = info->aeFieldDefs[i].eSpecEnd;
-    __fields[i]->__flags      = info->aeFieldDefs[i].ulFlags;
+    __fields[i]->__flags        = info->aeFieldDefs[i].ulFlags;
             
     // tell the frame that this field is present
     BS_SET(__field_bitset, __fields[i]->__id);
   }
-        
+  
   __changed = true;
 }
 
-void ID3_Frame::SetID(ID3_FrameID id)
+bool ID3_Frame::SetID(ID3_FrameID id)
 {
-  Clear();
-  
-  if (id != ID3FID_NOFRAME)
+  bool changed = (this->GetID() != id);
+  if (changed)
   {
-    __hdr.SetFrameID(id);
-    this->InitFields();
+    this->_SetID(id);
+    __changed = true;
   }
+  return changed;
 }
 
+bool ID3_Frame::_SetID(ID3_FrameID id)
+{
+  bool changed = this->_ClearFields();
+  changed = __hdr.SetFrameID(id) || changed;
+  this->_InitFields();
+  return changed;
+}
 
 ID3_FrameID ID3_Frame::GetID(void) const
 {
@@ -200,7 +219,7 @@ ID3_V2Spec ID3_Frame::GetSpec() const
   return __hdr.GetSpec();
 }
 
-lsint ID3_Frame::FindField(ID3_FieldID fieldName) const
+lsint ID3_Frame::_FindField(ID3_FieldID fieldName) const
 {
   
   if (BS_ISSET(__field_bitset, fieldName))
@@ -219,7 +238,7 @@ lsint ID3_Frame::FindField(ID3_FieldID fieldName) const
 
 ID3_Field& ID3_Frame::Field(ID3_FieldID fieldName) const
 {
-  lsint fieldNum = FindField(fieldName);
+  lsint fieldNum = _FindField(fieldName);
   
   if (fieldNum < 0)
   {
@@ -229,7 +248,7 @@ ID3_Field& ID3_Frame::Field(ID3_FieldID fieldName) const
   return *__fields[fieldNum];
 }
 
-void ID3_Frame::UpdateFieldDeps(void)
+void ID3_Frame::_UpdateFieldDeps(void)
 {
   for (luint i = 0; i < __num_fields; i++)
   {
@@ -257,7 +276,7 @@ void ID3_Frame::UpdateFieldDeps(void)
 }
 
 
-void ID3_Frame::UpdateStringTypes(void)
+void ID3_Frame::_UpdateStringTypes(void)
 {
   for (luint i = 0; i < __num_fields; i++)
   {
@@ -308,12 +327,14 @@ luint ID3_Frame::Size(void)
     
   // this call is to tell the string fields what they should be rendered/parsed
   // as (ASCII or Unicode)
-  UpdateStringTypes();
+  this->_UpdateStringTypes();
   
-  for (luint i = 0; i < __num_fields; i++)
+  for (ID3_Field** fi = __fields; fi != __fields + __num_fields; fi++)
   {
-    __fields[i]->SetSpec(__hdr.GetSpec());
-    bytesUsed += __fields[i]->BinSize();
+    if (*fi && (*fi)->InScope(this->GetSpec()))
+    {
+      bytesUsed += (*fi)->BinSize();
+    }
   }
   
   return bytesUsed;
@@ -324,11 +345,11 @@ bool ID3_Frame::HasChanged(void) const
 {
   bool changed = __changed;
   
-  if (! changed)
+  for (ID3_Field** fi = __fields; !changed && fi != __fields + __num_fields; fi++)
   {
-    for (luint i = 0; i < __num_fields && !changed; i++)
+    if (*fi && (*fi)->InScope(this->GetSpec()))
     {
-      changed = __fields[i]->HasChanged();
+      changed = (*fi)->HasChanged();
     }
   }
   
