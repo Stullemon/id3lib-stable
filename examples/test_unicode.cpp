@@ -1,11 +1,7 @@
-// $Id: test_unicode.cpp,v 1.1 2000/05/29 02:18:14 eldamitri Exp $
+// $Id: test_unicode.cpp,v 1.2 2000/05/29 06:49:42 eldamitri Exp $
 
 #include <iostream.h>
-#include <getopt.h>
-#include <stdlib.h>
-
 #include <id3/tag.h>
-#include <id3/misc_support.h>
 
 int main( int argc, char *argv[])
 {
