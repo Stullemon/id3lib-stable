@@ -1,4 +1,4 @@
-// $Id: tag_find.cpp,v 1.13 2000/05/29 15:58:29 eldamitri Exp $
+// $Id: tag_find.cpp,v 1.14 2000/06/23 15:49:45 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -176,6 +176,11 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, const unicode_t *data)
     __cursor = __frames;
   }
 
+  if (NULL == data)
+  {
+    return frame;
+  }
+
   for (int iCount = 0; iCount < 2 && frame == NULL; iCount++)
   {
     // We want to cycle through the list to find the matching frame.  We
@@ -191,7 +196,6 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, const unicode_t *data)
     for (ID3_Elem *cur = pStart; cur != pFinish; cur = cur->pNext)
     {
       if ((cur->pFrame != NULL) && (cur->pFrame->GetID() == id) &&
-          (data != NULL) && ucslen(data) > 0 && 
           cur->pFrame->Contains(fld))
       {
         size_t ulSize = cur->pFrame->Field(fld).Size();
