@@ -18,6 +18,12 @@ popt_lib = -lpopt
 popt_include =
 endif
 
+if ID3_NEEDDEBUG
+ID3_DEBUG_LIBS =  -lcwd -lbfd -liberty
+else
+ID3_DEBUG_LIBS =
+endif
+
 if ID3_NEEDZLIB
 zlib_lib = $(top_builddir)/zlib/src/libz.la
 zlib_include = -I$(top_srcdir)/zlib/include
@@ -26,9 +32,9 @@ zlib_lib = -lz
 zlib_include =
 endif
 
-LDADD =  $(top_builddir)/src/libid3.la $(popt_lib) $(zlib_lib)
+LDADD =  $(top_builddir)/src/libid3.la $(popt_lib) $(zlib_lib) $(ID3_DEBUG_LIBS)
 
-INCLUDES = -I$(top_srcdir)/include $(popt_include)
+INCLUDES = @ID3LIB_DEBUG_FLAGS@ -I$(top_srcdir)/include $(popt_include)
 
 bin_PROGRAMS            = id3info id3convert id3tag id3cp
 check_PROGRAMS          = \
@@ -37,6 +43,7 @@ check_PROGRAMS          = \
   testunicode             \
   testcompression         \
   testremove              \
+  testreader              \
   get_pic                 \
   findstr                 \
   findeng
@@ -49,6 +56,7 @@ testpic_SOURCES         = test_pic.cpp
 testunicode_SOURCES     = test_unicode.cpp
 testcompression_SOURCES = test_compression.cpp
 testremove_SOURCES      = test_remove.cpp
+testreader_SOURCES      = test_reader.cpp
 get_pic_SOURCES         = get_pic.cpp
 findeng_SOURCES         = findeng.cpp
 findstr_SOURCES         = findstr.cpp
