@@ -1,4 +1,4 @@
-// $Id: field_binary.cpp,v 1.14 2000/09/14 17:59:09 eldamitri Exp $
+// $Id: field_binary.cpp,v 1.15 2000/09/14 21:54:08 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -38,27 +38,27 @@
  ** Again, like the string types, the binary Set() function copies the data
  ** so you may dispose of the source data after a call to this method.
  **/
-void ID3_Field::Set(const uchar *newData, //< The data to assign to this field.
-                    size_t newSize        //< The number of bytes to be copied
-                    )
+size_t ID3_Field::Set(const uchar *newData, //< data to assign to this field.
+                      size_t newSize          //< number of bytes to be copied
+                      )
 {
   if (this->GetType() == ID3FTY_BINARY)
   {
     this->Clear();
     
-    if (newSize == 0 || newData == NULL)
+    if (newSize > 0 && newData != NULL)
     {
-      _bytes = 0;
-      _binary = NULL;
-    }
-    else
-    {
-      _bytes = newSize;
-      _binary = new uchar[_bytes];
-      ::memcpy(_binary, newData, _bytes);
+      size_t fixed = this->Size();
+      if (fixed == 0)
+      {
+        _bytes = newSize;
+        _binary = new uchar[_bytes];
+      }
+      ::memcpy(_binary, newData, MIN(_bytes, newSize));
     }
     _changed = true;
   }
+  return MIN(_bytes, newSize);
 }
 
 
@@ -103,27 +103,25 @@ void ID3_Field::FromFile(const char *info //< Source filename
     return;
   }
     
-  FILE* temp_file = fopen(info, "rb");
+  FILE* temp_file = ::fopen(info, "rb");
   if (temp_file != NULL)
   {
-    fseek(temp_file, 0, SEEK_END);
-    size_t fileSize = ftell(temp_file);
-    fseek(temp_file, 0, SEEK_SET);
+    ::fseek(temp_file, 0, SEEK_END);
+    size_t fileSize = ::ftell(temp_file);
+    ::fseek(temp_file, 0, SEEK_SET);
     
     uchar* buffer = new uchar[fileSize];
     if (buffer != NULL)
     {
-      fread(buffer, 1, fileSize, temp_file);
+      ::fread(buffer, 1, fileSize, temp_file);
       
       this->Set(buffer, fileSize);
       
       delete [] buffer;
     }
     
-    fclose(temp_file);
+    ::fclose(temp_file);
   }
-  
-  return ;
 }
 
 
@@ -144,7 +142,7 @@ void ID3_Field::ToFile(const char *info //< Destination filename
   size_t size = this->Size();
   if ((_binary != NULL) && (size > 0))
   {
-    FILE* temp_file = fopen(info, "wb");
+    FILE* temp_file = ::fopen(info, "wb");
     if (temp_file != NULL)
     {
       ::fwrite(_binary, 1, size, temp_file);
@@ -161,10 +159,7 @@ ID3_Field::ParseBinary(const uchar *buffer, size_t size)
 {
   // copy the remaining bytes, unless we're fixed length, in which case copy
   // the minimum of the remaining bytes vs. the fixed length
-  this->Clear();
-  size_t fixed = this->Size();
-  size_t bytesUsed = (fixed > 0) ? MIN(size, fixed) : size;
-  this->Set(buffer, bytesUsed);
+  size_t bytesUsed = this->Set(buffer, size);
   _changed = false;
   
   return bytesUsed;
@@ -173,8 +168,8 @@ ID3_Field::ParseBinary(const uchar *buffer, size_t size)
 
 size_t ID3_Field::RenderBinary(uchar *buffer) const
 {
-  size_t bytesUsed = this->Size();
-  memcpy(buffer, _binary, bytesUsed);
+  size_t bytesUsed = this->BinSize();
+  ::memcpy(buffer, _binary, bytesUsed);
   _changed = false;
   return bytesUsed;
 }
