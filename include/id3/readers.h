@@ -1,4 +1,4 @@
-// $Id: readers.h,v 1.2 2000/09/30 22:09:43 eldamitri Exp $
+// $Id: readers.h,v 1.3 2000/10/03 01:21:45 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -29,186 +29,117 @@
 
 #include <fstream.h>
 #include "reader.h"
-#include "utils.h"
-#include <zlib.h>
 
-namespace id3
+class ID3_IStreamReader : public ID3_Reader
 {
-  typedef unsigned char uchar;
-  typedef unsigned long int luint;
-
-  class IStreamReader : public ID3_Reader
-  {
-    istream& _stream;
-   protected:
-    istream& getReader() const { return _stream; }
-   public:
-    IStreamReader(istream& reader) : _stream(reader) { ; }
-    virtual ~IStreamReader() { ; }
-    virtual void close() { ; }
-    
-    virtual int_type peekChar() { return _stream.peek(); }
-    
-    /** Read up to \c len chars into buf and advance the internal position
-     ** accordingly.  Returns the number of characters read into buf.
-     **/
-    virtual streamsize readChars(char_type buf[], streamsize len)
-    {
-      _stream.read(buf, len);
-      return _stream.gcount();
-    }
-
-    virtual pos_type getBeg() { return 0; }
-    virtual pos_type getCur() { return _stream.tellg(); }
-    virtual pos_type getEnd() 
-    { 
-      pos_type cur = this->getCur();
-      _stream.seekg(0, ios::end);
-      pos_type end = this->getCur();
-      this->setCur(cur);
-      return end;
-    }
-    
-    /** Set the value of the internal position for reading.
-     **/
-    virtual pos_type setCur(pos_type pos) { _stream.seekg(pos); return pos; }
-  };
+  istream& _stream;
+ protected:
+  istream& getReader() const { return _stream; }
+ public:
+  ID3_IStreamReader(istream& reader) : _stream(reader) { ; }
+  virtual ~ID3_IStreamReader() { ; }
+  virtual void close() { ; }
   
-  class IFStreamReader : public IStreamReader
-  {
-   public:
-    IFStreamReader(ifstream& reader) : IStreamReader(reader) { ; }
+  virtual int_type peekChar() { return _stream.peek(); }
     
-    virtual void close() 
-    { 
-      dynamic_cast<ifstream&>(this->getReader()).close(); 
-    }
-  };
+  /** Read up to \c len chars into buf and advance the internal position
+   ** accordingly.  Returns the number of characters read into buf.
+   **/
+  virtual streamsize readChars(char_type buf[], streamsize len)
+  {
+    _stream.read(buf, len);
+    return _stream.gcount();
+  }
+
+  virtual pos_type getBeg() { return 0; }
+  virtual pos_type getCur() { return _stream.tellg(); }
+  virtual pos_type getEnd() 
+  { 
+    pos_type cur = this->getCur();
+    _stream.seekg(0, ios::end);
+    pos_type end = this->getCur();
+    this->setCur(cur);
+    return end;
+  }
+    
+  /** Set the value of the internal position for reading.
+   **/
+  virtual pos_type setCur(pos_type pos) { _stream.seekg(pos); return pos; }
+};
   
-  class MemoryReader : public ID3_Reader
-  {
-    const char* _beg;
-    const char* _cur;
-    const char* _end;
-   protected:
-    void setBuffer(const char* buf, size_t size)
-    {
-      _beg = buf;
-      _cur = buf;
-      _end = buf + size;
-    };
-    MemoryReader()
-    {
-      this->setBuffer(NULL, 0);
-    }
-   public:
-    MemoryReader(const char* buf, size_t size)
-    {
-      this->setBuffer(buf, size);
-    };
-    virtual ~MemoryReader() { ; }
-    virtual void close() { ; }
+class ID3_IFStreamReader : public ID3_IStreamReader
+{
+ public:
+  ID3_IFStreamReader(ifstream& reader) : ID3_IStreamReader(reader) { ; }
     
-    virtual int_type peekChar() 
-    { 
-      if (!this->atEnd())
-      {
-        return *_cur; 
-      }
-      return END_OF_READER;
-    }
-    
-    /** Read up to \c len chars into buf and advance the internal position
-     ** accordingly.  Returns the number of characters read into buf.
-     **/
-    virtual streamsize readChars(char_type buf[], streamsize len)
-    {
-      streamsize size = id3::min<streamsize>(len, _end - _cur);
-      ::memcpy(buf, _cur, size);
-      _cur += size;
-      return size;
-    }
-    
-    virtual pos_type getCur() 
-    { 
-      return _cur - _beg; 
-    }
-    
-    virtual pos_type getBeg()
-    {
-      return _beg - _beg;
-    }
-    
-    virtual pos_type getEnd()
-    {
-      return _end - _beg;
-    }
-    
-    /** Set the value of the internal position for reading.
-     **/
-    virtual pos_type setCur(pos_type pos) 
-    {
-      _cur = _beg + id3::min(pos, this->getEnd());
-      return this->getCur();
-    }
-  };
+  virtual void close() 
+  { 
+    dynamic_cast<ifstream&>(this->getReader()).close(); 
+  }
+};
   
-  class CompressedMemoryReader : public MemoryReader
+class ID3_MemoryReader : public ID3_Reader
+{
+  const char* _beg;
+  const char* _cur;
+  const char* _end;
+ protected:
+  void setBuffer(const char* buf, size_t size)
   {
-    char* _uncompressed;
-   public:
-    
-    CompressedMemoryReader(const char* buffer, size_t size, size_t new_size)
-    : _uncompressed(new char[new_size])
-    {
-      ::uncompress(reinterpret_cast<uchar*>(_uncompressed),
-                   reinterpret_cast<luint*>(&new_size),
-                   reinterpret_cast<const uchar*>(buffer),
-                   size);
-      this->setBuffer(_uncompressed, new_size);
-    }
-    
-    CompressedMemoryReader(const uchar* buffer, size_t size, size_t new_size)
-    : _uncompressed(new char[new_size])
-    {
-      ::uncompress(reinterpret_cast<uchar*>(_uncompressed),
-                   reinterpret_cast<luint*>(&new_size), buffer,
-                   size);
-      this->setBuffer(_uncompressed, new_size);
-    }
-
-    virtual ~CompressedMemoryReader() 
-    { 
-      delete [] _uncompressed; 
-    }
-
+    _beg = buf;
+    _cur = buf;
+    _end = buf + size;
   };
-
-  class CompressedStreamReader : public MemoryReader
+ public:
+  ID3_MemoryReader()
   {
-    char* _uncompressed;
-   public:
-    
-    CompressedStreamReader(ID3_Reader& reader, streamsize new_size)
-    : _uncompressed(new char[new_size])
-    {
-      size_t old_size = reader.remainingChars();
-      uchar* buffer = new uchar[old_size];
-      reader.readChars(buffer, old_size);
-      ::uncompress(reinterpret_cast<uchar*>(_uncompressed),
-                   reinterpret_cast<luint*>(&new_size),
-                   reinterpret_cast<const uchar*>(buffer),
-                   old_size);
-      this->setBuffer(_uncompressed, new_size);
-      delete [] buffer;
-    }
-    
-    virtual ~CompressedStreamReader() 
-    { 
-      delete [] _uncompressed; 
-    }
-
+    this->setBuffer(NULL, 0);
+  }
+  ID3_MemoryReader(const char* buf, size_t size)
+  {
+    this->setBuffer(buf, size);
   };
+  virtual ~ID3_MemoryReader() { ; }
+  virtual void close() { ; }
+    
+  virtual int_type peekChar() 
+  { 
+    if (!this->atEnd())
+    {
+      return *_cur; 
+    }
+    return END_OF_READER;
+  }
+    
+  /** Read up to \c len chars into buf and advance the internal position
+   ** accordingly.  Returns the number of characters read into buf.
+   **/
+  virtual streamsize readChars(char_type buf[], streamsize len);
+    
+  virtual pos_type getCur() 
+  { 
+    return _cur - _beg; 
+  }
+    
+  virtual pos_type getBeg()
+  {
+    return _beg - _beg;
+  }
+    
+  virtual pos_type getEnd()
+  {
+    return _end - _beg;
+  }
+    
+  /** Set the value of the internal position for reading.
+   **/
+  virtual pos_type setCur(pos_type pos)
+  {
+    pos_type end = this->getEnd();
+    size_t size = (pos < end) ? pos : end;
+    _cur = _beg + size;
+    return this->getCur();
+  }
 };
 
 #endif /* _ID3LIB_READERS_H_ */
