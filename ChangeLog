@@ -1,5 +1,22 @@
 1999-12-01  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
+	* src/id3/tag_render.cpp
+	(RenderV1ToHandle): Removed reference to tagV1---not used.  Other
+	minor windows-compatibility fixes.  (thanks elrod)
+
+	* src/id3/tag_parse_v1.cpp
+	(ParseID3v1): Minor fix for windows compatibility (thanks elrod).
+
+	* src/id3/tag_file.cpp 
+	(truncate): Added.  Defined only for windows, which doesn't have
+	unistd.h available (thanks elrod).
+
+	* src/id3/misc_support.cpp
+	(ucslen): Now returns 0 if input is NULL (thanks elrod).
+
+	* include/id3/misc_support.h: 
+	Minor declaraction problem (thanks elrod).
+
 	* configure.in: Upped the patch number to 1.
 
 	* include/id3/Makefile.am
@@ -32,12 +49,12 @@
 	the date part of it.
 
 	* Makefile.am
- 	(EXTRA_DIST): Removed ChangeLog, configure, HISTORY, and TODO.  
+	(EXTRA_DIST): Removed ChangeLog, configure, HISTORY, and TODO.  
 	These are included in the distribution automatically.
 
 	* configure.in: 
 	Generalized versioning mechanism so it only has to be changed in this
- 	file to be propagated throughout rest of source code.  Used a hack to
+	file to be propagated throughout rest of source code.  Used a hack to
 	make libtool version coincide with release versioning.  This is
 	expressly warned against in the libtool docs, so it might be changed.
 	However, it also seems to be a common practice amongst other library
@@ -47,7 +64,7 @@
 1999-11-29  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* configure.in:
- 	Added doc/*/Makefile to AC_OUPUT
+	Added doc/*/Makefile to AC_OUPUT
 
 	* AUTHORS: 
 	Included text from contact.txt in original distribution.
@@ -62,7 +79,7 @@
 	* AUTHORS: Minor clarification.
 
 	* COPYING: Change from the GPL to the original statement about being
- 	in the Public Domain.
+	in the Public Domain.
 
 	* TODO, HISTORY: Initial revision.
 
