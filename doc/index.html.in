@@ -1,4 +1,4 @@
-<!-- $Id: index.html.in,v 1.8 2000/09/07 21:53:38 eldamitri Exp $ -->
+<!-- $Id: index.html.in,v 1.9 2000/09/21 23:45:03 eldamitri Exp $ -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
@@ -301,7 +301,16 @@
               support.
               
               <br><br>
+
+            <li>
               
+              <a href="http://www.empeg.com">empeg</a>, creators of the 
+              world-renowned in-car MP3 player, uses id3lib for reading and
+              writing <a href="http://www.id3.org">ID3v1/v2</a> tags in their 
+              various tools and utilities.
+              
+              <br><br>
+
             <li>
               
               <a href="http://id3v2.sourceforge.net">The id3v2 tagger</a> is
