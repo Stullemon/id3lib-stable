@@ -32,6 +32,9 @@
 
 2000-06-23  Scott Haug  <scott@id3.org>
 
+	* NEWS: 
+	Updated with new changes for 3.7.10.
+
 	* examples/test_remove.cpp 
 	(main): Now removes all frames to test rendering a frame-less tag.
 
