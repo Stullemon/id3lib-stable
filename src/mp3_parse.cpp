@@ -71,7 +71,7 @@ uint16 calcCRC(char *pFrame, size_t audiodatasize)
 
 Mp3Info::Mp3Info()
 {
-  _mp3_header_output = new Mp3_Header;
+  _mp3_header_output = new Mp3_Headerinfo;
 }
 
 Mp3Info::~Mp3Info()
@@ -79,7 +79,7 @@ Mp3Info::~Mp3Info()
   this->Clean();
 }
 
-Mp3_Header *Mp3Info::GetMp3Header()
+Mp3_Headerinfo* Mp3Info::GetMp3HeaderInfo()
 {
   return _mp3_header_output;
 }

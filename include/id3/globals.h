@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: globals.h,v 1.49 2002/07/22 17:56:57 t1mpy Exp $
+/* $Id: globals.h,v 1.50 2002/07/23 13:20:29 t1mpy Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags
  * Copyright 1999, 2000 Scott Thomas Haug
@@ -446,7 +446,7 @@ ID3_ENUM(Mp3_Crc)
   MP3CRC_OK = 1
 };
 
-ID3_STRUCT(Mp3_Header)
+ID3_STRUCT(Mp3_Headerinfo)
 {
   Mpeg_Layers layer;
   Mpeg_Version version;

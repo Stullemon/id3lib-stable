@@ -14,7 +14,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.30 2002/06/29 17:20:11 t1mpy Exp $
+// $Id: demo_info.cpp,v 1.31 2002/07/23 13:20:30 t1mpy Exp $
 
 
 #ifdef HAVE_CONFIG_H
@@ -33,7 +33,7 @@ using namespace dami;
 using std::cout;
 using std::endl;
 
-static String VERSION_NUMBER = "$Revision: 1.30 $";
+static String VERSION_NUMBER = "$Revision: 1.31 $";
 
 void PrintUsage(const char *sName)
 {
@@ -341,6 +341,9 @@ int main( unsigned int argc, char * const argv[])
     ID3_Tag myTag;
     
     myTag.Link(filename, ID3TT_ALL);
+    Mp3_Headerinfo* mp3info;
+    mp3info = myTag.GetMp3HeaderInfo();
+
     cout << endl << "*** Tag information for " << filename << endl;
     if (!args.assign_given)
     {
@@ -352,6 +355,45 @@ int main( unsigned int argc, char * const argv[])
       ID3_Tag tmpTag(myTag);
       PrintInformation(tmpTag);
     }
+    if (mp3info)
+    {
+      cout << "*** mp3 info\n";
+
+      switch (mp3info->version)
+      {
+      case MPEGVERSION_2_5:
+        cout << "MPEG2.5/";
+        break;
+      case MPEGVERSION_2:
+        cout << "MPEG2/";
+        break;
+      case MPEGVERSION_1:
+        cout << "MPEG1/";
+        break;
+      default:
+        break;
+      }
+
+      switch (mp3info->layer)
+      {
+      case MPEGLAYER_III:
+        cout << "layer III\n";
+        break;
+      case MPEGLAYER_II:
+        cout << "layer II\n";
+        break;
+      case MPEGLAYER_I:
+        cout << "layer I\n";
+        break;
+      default:
+        break;
+      }
+
+      cout << "Bitrate: " << mp3info->bitrate/1000 << "KBps\n";
+      cout << "Frequency: " << mp3info->frequency/1000 << "KHz\n";
+    }
+
+
   }
 
   return 0;
