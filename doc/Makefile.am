@@ -35,9 +35,12 @@ index.html: $(srcdir)/index.html.in  $(top_builddir)/config.status
 
 docsdistdir = $(PACKAGE)-doc-$(VERSION)
 
-docs: Doxyfile index.html id3lib.css
-	-rm -rf @DOX_DIR_HTML@ @DOX_DIR_LATEX@ $(docsdistdir).*
+dox: Doxyfile
+	-rm -rf @DOX_DIR_HTML@ @DOX_DIR_LATEX@
 	cd $(srcdir) && doxygen Doxyfile
+
+docs: dox index.html id3lib.css
+	-rm -rf $(docsdistdir).*
 	cd $(srcdir)/@DOX_DIR_LATEX@ && \
 	make pdf && \
 	(cp *.pdf ../$(docsdistdir).pdf || true) && \
