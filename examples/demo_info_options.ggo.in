@@ -1,8 +1,0 @@
-# $Id: demo_info_options.ggo.in,v 1.1 2000/10/10 04:03:44 eldamitri Exp $
-
-package "id3info"
-version "@VERSION@"
-
-option  "assign"        a "Test the assignment operator"        flag    off
-option  "warning"       w "Turn on warnings (for debugging)"    flag    off
-option  "notice"        n "Turn on notices (for debugging)"     flag    off
