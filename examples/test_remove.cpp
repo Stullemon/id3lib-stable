@@ -1,4 +1,4 @@
-// $Id: test_remove.cpp,v 1.2 2000/06/23 00:35:07 eldamitri Exp $
+// $Id: test_remove.cpp,v 1.3 2000/06/23 16:34:16 eldamitri Exp $
 
 #include <iostream.h>
 #include <id3/tag.h>
@@ -35,6 +35,7 @@ int main( int argc, char *argv[])
     tag.Update(ID3TT_ID3V2);
 
     cerr << "removed " << ID3_RemoveArtists(&tag) << " artist frames" << endl;
+    cerr << "removed " << ID3_RemoveTitles(&tag) << " title frames" << endl;
     tag.Update();
   }   
   catch(const ID3_Error& err)
