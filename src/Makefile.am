@@ -29,6 +29,7 @@ noinst_HEADERS =                \
   header.h                      \
   header_frame.h                \
   header_tag.h                  \
+  mp3_header.h                  \
   tag_impl.h                    \
   spec.h                        
 
@@ -52,6 +53,7 @@ id3lib_sources =                \
   io_decorators.cpp             \
   io_helpers.cpp                \
   misc_support.cpp              \
+  mp3_parse.cpp                 \
   readers.cpp                   \
   spec.cpp                      \
   tag.cpp                       \

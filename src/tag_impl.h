@@ -1,8 +1,9 @@
 // -*- C++ -*-
-// $Id: tag_impl.h,v 1.3 2002/07/02 22:14:58 t1mpy Exp $
+// $Id: tag_impl.h,v 1.4 2002/07/22 17:56:57 t1mpy Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
+// Copyright 2002 Thijmen Klok (thijmen@id3lib.org)
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -30,12 +31,9 @@
 
 #include <list>
 #include <stdio.h>
-#include "tag.h"
+#include "tag.h" // has frame.h, field.h
 #include "header_tag.h"
-#include "frame.h"
-#include "field.h"
-#include "spec.h"
-#include "id3/utils.h" // has <config.h> "id3/id3lib_streams.h" "id3/globals.h" "id3/id3lib_strings.h"
+#include "mp3_header.h" //has io_decorators.h
 
 class ID3_Reader;
 class ID3_Writer;
@@ -125,6 +123,8 @@ public:
   
   static size_t IsV2Tag(ID3_Reader&);
 
+  Mp3_Header *GetMp3Header() const { if (_mp3_info) return _mp3_info->GetMp3Header(); else return NULL; }
+
   iterator         begin()       { return _frames.begin(); }
   iterator         end()         { return _frames.end(); }
   const_iterator   begin() const { return _frames.begin(); }
@@ -165,6 +165,7 @@ private:
   bool       _is_file_writable;// is the associated file (via Link) writable?
   ID3_Flags  _tags_to_parse;   // which tag types should attempt to be parsed
   ID3_Flags  _file_tags;       // which tag types does the file contain
+  Mp3Info    *_mp3_info;   // class used to retrieve _mp3_header
 };
 
 size_t     ID3_GetDataSize(const ID3_TagImpl&);

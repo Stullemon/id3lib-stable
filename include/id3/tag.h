@@ -1,8 +1,9 @@
 // -*- C++ -*-
-// $Id: tag.h,v 1.55 2002/06/29 17:43:48 t1mpy Exp $
+// $Id: tag.h,v 1.56 2002/07/22 17:56:57 t1mpy Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
+// Copyright 2002 Thijmen Klok (thijmen@id3lib.org)
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -98,6 +99,8 @@ public:
   ID3_Frame* Find(ID3_FrameID, ID3_FieldID, const unicode_t*) const;
   
   size_t     NumFrames() const;
+
+  Mp3_Header* GetMp3Header() const;
 
   Iterator*  CreateIterator();
   ConstIterator* CreateIterator() const;

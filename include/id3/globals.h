@@ -1,8 +1,9 @@
 // -*- C++ -*-
-/* $Id: globals.h,v 1.48 2002/07/02 22:10:38 t1mpy Exp $
+/* $Id: globals.h,v 1.49 2002/07/22 17:56:57 t1mpy Exp $
 
- * id3lib: a C++ library for creating and manipulating id3v1/v2 tags Copyright
- * 1999, 2000 Scott Thomas Haug
+ * id3lib: a C++ library for creating and manipulating id3v1/v2 tags
+ * Copyright 1999, 2000 Scott Thomas Haug
+ * Copyright 2002 Thijmen Klok (thijmen@id3lib.org)
 
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Library General Public License as published by
@@ -345,6 +346,122 @@ ID3_ENUM(ID3_TimeStampFormat)
 {
   ID3TSF_FRAME  = 1,
   ID3TSF_MS
+};
+
+ID3_ENUM(MP3_BitRates)
+{
+  MP3BITRATE_FALSE = -1,
+  MP3BITRATE_NONE = 0,
+  MP3BITRATE_8K   = 8000,
+  MP3BITRATE_16K  = 16000,
+  MP3BITRATE_24K  = 24000,
+  MP3BITRATE_32K  = 32000,
+  MP3BITRATE_40K  = 40000,
+  MP3BITRATE_48K  = 48000,
+  MP3BITRATE_56K  = 56000,
+  MP3BITRATE_64K  = 64000,
+  MP3BITRATE_80K  = 80000,
+  MP3BITRATE_96K  = 96000,
+  MP3BITRATE_112K = 112000,
+  MP3BITRATE_128K = 128000,
+  MP3BITRATE_144K = 144000,
+  MP3BITRATE_160K = 160000,
+  MP3BITRATE_176K = 176000,
+  MP3BITRATE_192K = 192000,
+  MP3BITRATE_224K = 224000,
+  MP3BITRATE_256K = 256000,
+  MP3BITRATE_288K = 288000,
+  MP3BITRATE_320K = 320000,
+  MP3BITRATE_352K = 352000,
+  MP3BITRATE_384K = 384000,
+  MP3BITRATE_416K = 416000,
+  MP3BITRATE_448K = 448000
+};
+
+ID3_ENUM(Mpeg_Layers)
+{
+  MPEGLAYER_FALSE = -1,
+  MPEGLAYER_UNDEFINED,
+  MPEGLAYER_III,
+  MPEGLAYER_II,
+  MPEGLAYER_I
+};
+
+ID3_ENUM(Mpeg_Version)
+{
+  MPEGVERSION_FALSE = -1,
+  MPEGVERSION_2_5,
+  MPEGVERSION_Reserved,
+  MPEGVERSION_2,
+  MPEGVERSION_1
+};
+
+ID3_ENUM(Mp3_Frequencies)
+{
+  MP3FREQUENCIES_FALSE = -1,
+  MP3FREQUENCIES_Reserved = 0,
+  MP3FREQUENCIES_8000HZ = 8000,
+  MP3FREQUENCIES_11025HZ = 11025,
+  MP3FREQUENCIES_12000HZ = 12000,
+  MP3FREQUENCIES_16000HZ = 16000,
+  MP3FREQUENCIES_22050HZ = 22050,
+  MP3FREQUENCIES_24000HZ = 24000,
+  MP3FREQUENCIES_32000HZ = 32000,
+  MP3FREQUENCIES_48000HZ = 48000,
+  MP3FREQUENCIES_44100HZ = 44100,
+};
+
+ID3_ENUM(Mp3_ChannelMode)
+{
+  MP3CHANNELMODE_FALSE = -1,
+  MP3CHANNELMODE_STEREO,
+  MP3CHANNELMODE_JOINT_STEREO,
+  MP3CHANNELMODE_DUAL_CHANNEL,
+  MP3CHANNELMODE_SINGLE_CHANNEL
+};
+
+ID3_ENUM(Mp3_ModeExt)
+{
+  MP3MODEEXT_FALSE = -1,
+  MP3MODEEXT_0,
+  MP3MODEEXT_1,
+  MP3MODEEXT_2,
+  MP3MODEEXT_3
+};
+
+ID3_ENUM(Mp3_Emphasis)
+{
+  MP3EMPHASIS_FALSE = -1,
+  MP3EMPHASIS_NONE,
+  MP3EMPHASIS_50_15MS,
+  MP3EMPHASIS_Reserved,
+  MP3EMPHASIS_CCIT_J17
+};
+
+ID3_ENUM(Mp3_Crc)
+{
+  MP3CRC_ERROR_SIZE = -2,
+  MP3CRC_MISMATCH = -1,
+  MP3CRC_NONE = 0,
+  MP3CRC_OK = 1
+};
+
+ID3_STRUCT(Mp3_Header)
+{
+  Mpeg_Layers layer;
+  Mpeg_Version version;
+  MP3_BitRates bitrate;
+  Mp3_ChannelMode channelmode;
+  Mp3_ModeExt modeext;
+  Mp3_Emphasis emphasis;
+  Mp3_Crc crc;
+  uint32 frequency;             // samplerate
+  uint32 framesize;
+  uint32 frames;                // nr of frames
+  uint32 time;                  // nr of seconds in song
+  bool privatebit;
+  bool copyrighted;
+  bool original;
 };
 
 #define MASK(bits) ((1 << (bits)) - 1)

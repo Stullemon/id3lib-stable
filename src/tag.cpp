@@ -1,7 +1,8 @@
-// $Id: tag.cpp,v 1.47 2002/07/02 22:14:25 t1mpy Exp $
+// $Id: tag.cpp,v 1.48 2002/07/22 17:56:57 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
+// Copyright 2002 Thijmen Klok (thijmen@id3lib.org)
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -24,7 +25,7 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#include "readers.h"
+//#include "readers.h"
 #include "writers.h"
 #include "tag_impl.h" //has <stdio.h> "tag.h" "header_tag.h" "frame.h" "field.h" "spec.h" "id3lib_strings.h" "utils.h"
 
@@ -270,7 +271,7 @@ using namespace dami;
  ** formatted 'CDM' frames from the unreleased ID3v2 2.01 draft specification.
  **
  ** \author Dirk Mahoney
- ** \version $Id: tag.cpp,v 1.47 2002/07/02 22:14:25 t1mpy Exp $
+ ** \version $Id: tag.cpp,v 1.48 2002/07/22 17:56:57 t1mpy Exp $
  ** \sa ID3_Frame
  ** \sa ID3_Field
  ** \sa ID3_Err
@@ -709,6 +710,16 @@ size_t ID3_Tag::Link(const char *fileInfo, flags_t flags)
 flags_t ID3_Tag::Update(flags_t flags)
 {
   return _impl->Update(flags);
+}
+
+/**
+ ** Get's the mp3 Info like bitrate, mpeg version, etc.
+ ** Can be run after Link(<filename>)
+ **
+ **/
+Mp3_Header* ID3_Tag::GetMp3Header() const
+{
+  return _impl->GetMp3Header();
 }
 
 /** Strips the tag(s) from the attached file. The type of tag stripped

@@ -1,7 +1,8 @@
-// $Id: tag_parse.cpp,v 1.41 2002/07/05 12:33:21 t1mpy Exp $
+// $Id: tag_parse.cpp,v 1.42 2002/07/22 17:56:57 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
+// Copyright 2002 Thijmen Klok (thijmen@id3lib.org)
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -24,18 +25,16 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#if defined HAVE_CONFIG_H
-#include <config.h> // Must include before zlib.h to compile on WinCE
-#endif
+//#if defined HAVE_CONFIG_H
+//#include <config.h> // Must include before zlib.h to compile on WinCE
+//#endif
 
-
-
-#include <zlib.h>
+//#include <zlib.h>
 //#include <string.h>
-#include <memory.h>
+//#include <memory.h>
 
 #include "tag_impl.h" //has <stdio.h> "tag.h" "header_tag.h" "frame.h" "field.h" "spec.h" "id3lib_strings.h" "utils.h"
-#include "id3/io_decorators.h" //has "readers.h" "io_helpers.h" "utils.h"
+//#include "id3/io_decorators.h" //has "readers.h" "io_helpers.h" "utils.h"
 #include "io_strings.h"
 
 using namespace dami;
@@ -203,6 +202,7 @@ bool id3::v2::parse(ID3_TagImpl& tag, ID3_Reader& reader)
 void ID3_TagImpl::ParseFile()
 {
   ifstream file;
+  size_t mp3_core_size;
   if (ID3E_NoError != openReadableFile(this->GetFileName(), file))
   {
     // log this...
@@ -276,7 +276,29 @@ void ID3_TagImpl::ParseFile()
     }
     cur = wr.getCur();
   } while (cur != last);
-  file.close();
   _appended_bytes = end - cur;
+// Now get the mp3 header
+  mp3_core_size = (_file_size - _appended_bytes) - _prepended_bytes;
+  if (mp3_core_size >= 4)
+  { //it has at least the size for a mp3 header (a mp3 header is 4 bytes)
+    wr.setBeg(_prepended_bytes);
+    wr.setCur(_prepended_bytes);
+	wr.setEnd(_file_size - _appended_bytes);
+
+    _mp3_info = new Mp3Info;
+    ID3D_NOTICE( "ID3_TagImpl::ParseFile(): mp3header? cur = " << wr.getCur() );
+
+    if (_mp3_info->Parse(wr, mp3_core_size))
+    {
+      ID3D_NOTICE( "ID3_TagImpl::ParseFile(): mp3header! cur = " << wr.getCur() );
+    }
+    else
+    {
+      delete _mp3_info;
+      _mp3_info = NULL;
+	}
+
+  }
+ file.close();
 }
 

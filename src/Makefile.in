@@ -135,6 +135,7 @@ noinst_HEADERS = \
   header.h                      \
   header_frame.h                \
   header_tag.h                  \
+  mp3_header.h                  \
   tag_impl.h                    \
   spec.h                        
 
@@ -159,6 +160,7 @@ id3lib_sources = \
   io_decorators.cpp             \
   io_helpers.cpp                \
   misc_support.cpp              \
+  mp3_parse.cpp                 \
   readers.cpp                   \
   spec.cpp                      \
   tag.cpp                       \
@@ -196,10 +198,10 @@ am__objects_1 = c_wrapper.lo field.lo field_binary.lo field_integer.lo \
 	field_string_ascii.lo field_string_unicode.lo frame.lo \
 	frame_impl.lo frame_parse.lo frame_render.lo globals.lo \
 	header.lo header_frame.lo header_tag.lo helpers.lo io.lo \
-	io_decorators.lo io_helpers.lo misc_support.lo readers.lo \
-	spec.lo tag.lo tag_file.lo tag_find.lo tag_impl.lo tag_parse.lo \
-	tag_parse_lyrics3.lo tag_parse_musicmatch.lo tag_parse_v1.lo \
-	tag_render.lo utils.lo writers.lo
+	io_decorators.lo io_helpers.lo misc_support.lo mp3_parse.lo \
+	readers.lo spec.lo tag.lo tag_file.lo tag_find.lo tag_impl.lo \
+	tag_parse.lo tag_parse_lyrics3.lo tag_parse_musicmatch.lo \
+	tag_parse_v1.lo tag_render.lo utils.lo writers.lo
 am_libid3_la_OBJECTS = $(am__objects_1)
 libid3_la_OBJECTS = $(am_libid3_la_OBJECTS)
 
@@ -224,10 +226,10 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/io.Plo ./$(DEPDIR)/io_decorators.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/io_helpers.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/misc_support.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/readers.Plo ./$(DEPDIR)/spec.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/tag.Plo ./$(DEPDIR)/tag_file.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/tag_find.Plo ./$(DEPDIR)/tag_impl.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/tag_parse.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/mp3_parse.Plo ./$(DEPDIR)/readers.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/spec.Plo ./$(DEPDIR)/tag.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/tag_file.Plo ./$(DEPDIR)/tag_find.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/tag_impl.Plo ./$(DEPDIR)/tag_parse.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/tag_parse_lyrics3.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/tag_parse_musicmatch.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/tag_parse_v1.Plo \
@@ -313,6 +315,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/io_decorators.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/io_helpers.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/misc_support.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mp3_parse.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readers.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/spec.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tag.Plo@am__quote@
