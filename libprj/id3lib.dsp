@@ -85,95 +85,95 @@ LIB32=link.exe -lib
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\src\id3\error.cpp
+SOURCE=..\src\error.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\field.cpp
+SOURCE=..\src\field.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\field_binary.cpp
+SOURCE=..\src\field_binary.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\field_integer.cpp
+SOURCE=..\src\field_integer.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\field_string_ascii.cpp
+SOURCE=..\src\field_string_ascii.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\field_string_unicode.cpp
+SOURCE=..\src\field_string_unicode.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\frame.cpp
+SOURCE=..\src\frame.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\frame_parse.cpp
+SOURCE=..\src\frame_parse.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\frame_render.cpp
+SOURCE=..\src\frame_render.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\header.cpp
+SOURCE=..\src\header.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\header_frame.cpp
+SOURCE=..\src\header_frame.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\header_tag.cpp
+SOURCE=..\src\header_tag.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\int28.cpp
+SOURCE=..\src\int28.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\misc_support.cpp
+SOURCE=..\src\misc_support.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\tag.cpp
+SOURCE=..\src\tag.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\tag_file.cpp
+SOURCE=..\src\tag_file.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\tag_find.cpp
+SOURCE=..\src\tag_find.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\tag_parse.cpp
+SOURCE=..\src\tag_parse.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\tag_parse_lyrics3.cpp
+SOURCE=..\src\tag_parse_lyrics3.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\tag_parse_v1.cpp
+SOURCE=..\src\tag_parse_v1.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\tag_render.cpp
+SOURCE=..\src\tag_render.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\tag_sync.cpp
+SOURCE=..\src\tag_sync.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\version.cpp
+SOURCE=..\src\version.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"

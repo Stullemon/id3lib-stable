@@ -359,117 +359,117 @@ SOURCE=.\ID3Tag.rgs
 # PROP Default_Filter "cpp"
 # Begin Source File
 
-SOURCE=..\src\id3\error.cpp
+SOURCE=..\src\error.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\field.cpp
+SOURCE=..\src\field.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\field_binary.cpp
+SOURCE=..\src\field_binary.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\field_integer.cpp
+SOURCE=..\src\field_integer.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\field_string_ascii.cpp
+SOURCE=..\src\field_string_ascii.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\field_string_unicode.cpp
+SOURCE=..\src\field_string_unicode.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\frame.cpp
+SOURCE=..\src\frame.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\frame_parse.cpp
+SOURCE=..\src\frame_parse.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\frame_render.cpp
+SOURCE=..\src\frame_render.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\header.cpp
+SOURCE=..\src\header.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\header_frame.cpp
+SOURCE=..\src\header_frame.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\header_tag.cpp
+SOURCE=..\src\header_tag.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\int28.cpp
+SOURCE=..\src\int28.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\misc_support.cpp
+SOURCE=..\src\misc_support.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\tag.cpp
+SOURCE=..\src\tag.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\tag_file.cpp
+SOURCE=..\src\tag_file.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\tag_find.cpp
+SOURCE=..\src\tag_find.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\tag_parse.cpp
+SOURCE=..\src\tag_parse.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\tag_parse_lyrics3.cpp
+SOURCE=..\src\tag_parse_lyrics3.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\tag_parse_v1.cpp
+SOURCE=..\src\tag_parse_v1.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\tag_render.cpp
+SOURCE=..\src\tag_render.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\tag_sync.cpp
+SOURCE=..\src\tag_sync.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\id3\version.cpp
+SOURCE=..\src\version.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # End Group
