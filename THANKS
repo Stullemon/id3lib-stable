@@ -1,4 +1,4 @@
-$Id: THANKS,v 1.6 2000/04/27 02:55:48 eldamitri Exp $
+$Id: THANKS,v 1.7 2000/04/28 16:56:39 eldamitri Exp $
 
 id3lib THANKS file
 
@@ -13,7 +13,7 @@ current project maintainer if anyone has been missed.
   id3lib.
 * Alexander Voronin (av@oskarsb.ru) has submitted several patches to fix a 
   variety of bugs.
-* John Adcock (John.Adcock@commerzbank.co.uk) provided the COM wrapper and lib 
+* John Adcock (johnadcock@hotmail.com) provided the COM wrapper and lib 
   projects for id3lib, the VB test app for id3com.dll, as well as several
   bugfixes and improvements.
 * Myers W. Carpenter (myers@fil.org) has submitted a patch for improving the
@@ -25,9 +25,11 @@ current project maintainer if anyone has been missed.
 * Scott Moser (smoser@brickies.net) provided the php translation of the 
   original ID3Lib manual
 * Robert Moon (rob@emusic.com) provided tremendous help getting the C interface
-  up to speed, as well as providing bugfixes for the Windows projects
+  up to speed, as well as providing bugfixes for the Windows projects.
 * Lothar Egger (lothar.egger@chello.at) also assisted in fixing the Windows
-  projects, as well providing assistance for testing the dlls under Windows
+  projects, as well as providing assistance for testing the dlls under Windows
+* Severino Delaurenti (id3lib@castlems.com) added functionality for parsing
+  Lyrics3 v1.0 frames.
 
 Dirk Mahoney included the following at the end of his documentation on ID3Lib
 3.05a.  It is included in verbatim here.
