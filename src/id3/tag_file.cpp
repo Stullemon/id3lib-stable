@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.10 1999/12/09 03:32:33 scott Exp $
+// $Id: tag_file.cpp,v 1.11 1999/12/13 04:44:23 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -24,7 +24,7 @@
 
 #include "tag.h"
 
-bool exists(char *name)
+bool exists(const char *name)
 {
   bool doesExist = false;
   FILE *in = NULL;
@@ -99,6 +99,7 @@ void ID3_Tag::OpenFileForReading(void)
   CloseFile();
 
   __fFileHandle = fopen(__sFileName, "rb");
+  
   if (NULL == __fFileHandle)
   {
     ID3_THROW(ID3E_NoFile);
@@ -131,14 +132,7 @@ luint ID3_Tag::Link(char *fileInfo)
     ID3_THROW(ID3E_NoData);
   }
 
-  size_t nLen = strlen(fileInfo) + 1;
-  if (NULL != __sFileName)
-  {
-    delete [] __sFileName;
-    __sFileName = NULL;
-  }
-  __sFileName = new char[nLen];
-  strncpy(__sFileName, fileInfo, nLen);
+  strcpy(__sFileName, fileInfo);
     
   // if we were attached to some other file then abort
   if (__fFileHandle != NULL)
@@ -179,7 +173,7 @@ luint ID3_Tag::Update(luint ulTagFlag)
     ulTags |= V2_TAG;
   }
 
-  CloseFile();
+  //CloseFile();
     
   return ulTags;
 }
@@ -220,7 +214,6 @@ luint ID3_Tag::Strip(const luint ulTagFlag)
 
   if (!(ulTagFlag & V1_TAG) && !(ulTagFlag & V2_TAG))
   {
-    cerr << "--- No tag to strip. exiting." << endl;
     return ulTags;
   }
 
@@ -243,7 +236,7 @@ luint ID3_Tag::Strip(const luint ulTagFlag)
     fseek(__fFileHandle, __ulOldTagSize, SEEK_CUR);
     nNextRead = ftell(__fFileHandle);
     
-    uchar aucBuffer[BUFF_SIZE];
+    uchar aucBuffer[BUFSIZ];
     
     // The nBytesRemaining variable indicates how many bytes are to be copied
     size_t nBytesToCopy = __ulFileSize;
@@ -269,7 +262,7 @@ luint ID3_Tag::Strip(const luint ulTagFlag)
       // Move to the next read position
       fseek(__fFileHandle, nNextRead, SEEK_SET);
       size_t
-        nBytesToRead = MIN(nBytesRemaining - nBytesCopied, BUFF_SIZE),
+        nBytesToRead = MIN(nBytesRemaining - nBytesCopied, BUFSIZ),
         nBytesRead   = fread(aucBuffer, 1, nBytesToRead, __fFileHandle);
       // Now that we've read, mark the current spot as the next spot for
       // reading
@@ -295,7 +288,7 @@ luint ID3_Tag::Strip(const luint ulTagFlag)
       {
         break;
       }
-      if (nBytesToRead < BUFF_SIZE)
+      if (nBytesToRead < BUFSIZ)
       {
         break;
       }
@@ -333,6 +326,10 @@ luint ID3_Tag::Strip(const luint ulTagFlag)
 
 
 // $Log: tag_file.cpp,v $
+// Revision 1.11  1999/12/13 04:44:23  scott
+// (exists): Add const qualifier to parameter.
+// (Link): Change to reflect new __sFileName type.
+//
 // Revision 1.10  1999/12/09 03:32:33  scott
 // Minor code cleanup.
 //
