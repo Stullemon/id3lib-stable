@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.16 2000/06/06 12:22:42 eldamitri Exp $
+// $Id: field_string_unicode.cpp,v 1.17 2000/06/23 00:37:33 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -281,24 +281,27 @@ ID3_Field::ParseUnicodeString(const uchar *buffer, size_t nSize)
     {
       loc++;
         
-      // if we need to swap the byte order
-      /* TODO: Determine if this the correct check to make sure bytes should
-         be swapped.  For example, the example tag 230-unicode.tag (found in 
-         the distrubitution) has two unicode sections, each that begin with
-         the FEFF magic number.  Each unicode character is, as usual, two
-         bytes.  The first byte is the ascii equivalent; the second is null.
-         Is this the "correct" encoding?  When a little-endian parses each of
-         those characters, the bytes are swapped, so they essentially end up
-         as the ascii equivalent automatically.  The FEFF magic number is also
-         swapped, so the number is evaluated as FFFE.  The original code below
-         forced byteswapping if the value of the first unicode character was
-         not equal to 0xFEFF.  This doesn't work for a little-endian machine,
-         though, since, as the rest of the code now stands, swapping the bytes
-         will not create a correct parse.  Therefore, the code swaps bytes
-         only when the value is equal to FEFF.
-      */
-      if (temp[0] == 0xFEFF)
+      // The following is taken from the following URL:
+      // http://community.roxen.com/developers/idocs/rfc/rfc2781.html
+      /* The Unicode Standard and ISO 10646 define the character "ZERO WIDTH
+         NON-BREAKING SPACE" (0xFEFF), which is also known informally as "BYTE
+         ORDER MARK" (abbreviated "BOM"). The latter name hints at a second
+         possible usage of the character, in addition to its normal use as a
+         genuine "ZERO WIDTH NON-BREAKING SPACE" within text. This usage,
+         suggested by Unicode section 2.4 and ISO 10646 Annex F (informative),
+         is to prepend a 0xFEFF character to a stream of Unicode characters as
+         a "signature"; a receiver of such a serialized stream may then use the
+         initial character both as a hint that the stream consists of Unicode
+         characters and as a way to recognize the serialization order. In
+         serialized UTF-16 prepended with such a signature, the order is
+         big-endian if the first two octets are 0xFE followed by 0xFF; if they
+         are 0xFF followed by 0xFE, the order is little-endian. Note that
+         0xFFFE is not a Unicode character, precisely to preserve the
+         usefulness of 0xFEFF as a byte-order mark. */
+
+      if (0xFFFE == temp[0])
       {
+        // we need to swap the byte order...
         for (index_t i = loc; i < ucslen(temp); i++)
         {
           uchar
@@ -360,7 +363,7 @@ size_t ID3_Field::RenderUnicodeString(uchar *buffer) const
   {
     // render the BOM
     unicode_t *BOM = (unicode_t *) buffer;
-    BOM[0] = 0xFFFE;
+    BOM[0] = 0xFEFF;
   }
   
   if (nBytes == sizeof(unicode_t) && (__flags & ID3FF_CSTR))
