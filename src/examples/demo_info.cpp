@@ -14,8 +14,12 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.4 1999/12/09 02:48:54 scott Exp $
+// $Id: demo_info.cpp,v 1.5 1999/12/23 15:56:26 scott Exp $
 
+
+#if defined HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <iostream.h>
 #include <id3/tag.h>
@@ -375,6 +379,9 @@ int main( int argc, char *argv[])
 }
 
 // $Log: demo_info.cpp,v $
+// Revision 1.5  1999/12/23 15:56:26  scott
+// Added check and include for config.h.
+//
 // Revision 1.4  1999/12/09 02:48:54  scott
 // (PrintInformation): Separated out information printing code into this
 // separate function.
