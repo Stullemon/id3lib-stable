@@ -1,4 +1,4 @@
-// $Id: frame.h,v 1.5 1999/12/26 16:40:08 scott Exp $
+// $Id: frame.h,v 1.6 1999/12/27 06:14:22 scott Exp $
 //  
 // This program is free software; you can distribute it and/or modify it under 
 // the terms discussed in the COPYING file, which should have been included  
@@ -28,7 +28,7 @@ class ID3_Tag;
     the implementation of a complex APIC frame and for a simple text frame.
     
     @author Dirk Mahoney
-    @version $Id: frame.h,v 1.5 1999/12/26 16:40:08 scott Exp $
+    @version $Id: frame.h,v 1.6 1999/12/27 06:14:22 scott Exp $
     @see ID3_Tag
     @see ID3_Field
     @see ID3_Err
@@ -50,6 +50,7 @@ public:
      @see SetID
   */
   ID3_Frame(ID3_FrameID id = ID3FID_NOFRAME);
+  ID3_Frame(const ID3_FrameHeader &);
 
   /// Destructor.
   ~ID3_Frame(void);
@@ -114,20 +115,10 @@ public:
   
   ID3_Frame  &operator=( const ID3_Frame &rFrame );
 
-private:
-  char        __sEncryptionID[256]; // encryption method used with this frame
-  char        __sGroupingID[256];   // the group to which this frame belongs
-  bool        __bCompression;       // should we try to compress?
-  bool        __bReadOnly;          // Is the tag read only?
-  bool        __bHasChanged;        // frame changed since last parse/render?
-  bitset      __auiFieldBits;       // which fields are present?
-  ID3_FrameID __FrameID;            // what frame are we?
-  uchar       __ucVersion;          // what version tag?
-  uchar       __ucRevision;         // what revision tag?
-  luint       __ulNumFields;        // how many fields are in this frame?
-  ID3_Field **__apFields;           // an array of field object pointers
 protected:
-  bool        HasChanged(void ) const;
+  void        InitFields(const ID3_FrameDef *);
+  void        InitFieldBits(void);
+  bool        HasChanged(void) const;
   void        SetVersion(uchar ver, uchar rev);
   void        Parse(uchar *buffer, luint size);
   void        UpdateStringTypes(void);
@@ -135,10 +126,25 @@ protected:
   luint       Size(void);
   luint       Render(uchar *buffer);
   lsint       FindField(ID3_FieldID name) const;
+
+private:
+  char        __sEncryptionID[256]; // encryption method used with this frame
+  char        __sGroupingID[256];   // the group to which this frame belongs
+  bool        __bHasChanged;        // frame changed since last parse/render?
+  bitset      __auiFieldBits;       // which fields are present?
+  luint       __ulNumFields;        // how many fields are in this frame?
+  ID3_Field **__apFields;           // an array of field object pointers
+  ID3_FrameHeader __FrmHdr;         // 
 }
 ;
 
 // $Log: frame.h,v $
+// Revision 1.6  1999/12/27 06:14:22  scott
+// (class ID3_Frame): Added declaration for constructor which accepts a
+// frame header to copy.  Removed redundant data members that are now
+// encapsulated within new frame header member.  Added declaration for
+// new methods InitFields and InitFieldBits.
+//
 // Revision 1.5  1999/12/26 16:40:08  scott
 // (class ID3_Frame): Added bReadOnly property.
 //
