@@ -1,4 +1,4 @@
-<!-- $Id: index.html.in,v 1.7 2000/05/08 13:54:17 eldamitri Exp $ -->
+<!-- $Id: index.html.in,v 1.8 2000/09/07 21:53:38 eldamitri Exp $ -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
@@ -296,8 +296,9 @@
             <li>
               
               <a href="http://www.freeamp.org">FreeAmp</a> is a
-              cross-platform mp3 player and is planning on using id3lib for
-              their <a href="http://www.id3.org">ID3v1/v2</a> support
+              cross-platform mp3 player and, as of version 2.1, is using
+              id3lib for their <a href="http://www.id3.org">ID3v1/v2</a>
+              support.
               
               <br><br>
               
@@ -331,6 +332,14 @@
               a collection of small but powerful tools integrated in one
               application that organizes and prepares your mp3 files for
               publishing on CDROM
+
+              <br><br>
+
+            <li>
+
+              <a href="http://ampbar.tripod.com">AmpBar</a> uses a modified
+               version of the 3.05a library in their MP3 player and ID3v2 tag
+               editor.
 
           </ul>
           
