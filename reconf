@@ -16,7 +16,7 @@ aclocal -I m4
 echo "- autoconf."
 autoconf
 echo "- acconfig."
-acconfig
+./acconfig
 echo "- autoheader."
 autoheader
 echo "- automake."
