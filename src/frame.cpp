@@ -1,4 +1,4 @@
-// $Id: frame.cpp,v 1.28 2000/10/01 00:21:50 eldamitri Exp $
+// $Id: frame.cpp,v 1.29 2000/10/09 04:26:41 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -74,7 +74,7 @@ ID3_V2Spec ID3_Frame::GetSpec() const
 
 ID3_Field& ID3_Frame::Field(ID3_FieldID fieldName) const
 {
-  return *_impl->GetField(fieldName);
+  return *this->GetField(fieldName);
 }
 
 ID3_Field* ID3_Frame::GetField(ID3_FieldID fieldName) const
@@ -82,14 +82,14 @@ ID3_Field* ID3_Frame::GetField(ID3_FieldID fieldName) const
   return _impl->GetField(fieldName);
 }
 
-size_t ID3_Frame::GetNumFields() const
+size_t ID3_Frame::NumFields() const
 {
-  return _impl->GetNumFields();
+  return _impl->NumFields();
 }
 
-ID3_Field* ID3_Frame::GetFieldAt(index_t index) const
+ID3_Field* ID3_Frame::GetFieldNum(index_t index) const
 {
-  return _impl->GetFieldAt(index);
+  return _impl->GetFieldNum(index);
 }
 
 size_t ID3_Frame::Size()
@@ -132,9 +132,9 @@ bool ID3_Frame::Parse(ID3_Reader& reader)
   return _impl->Parse(reader);
 }
 
-size_t ID3_Frame::Render(uchar* buffer) const
+void ID3_Frame::Render(ID3_Writer& writer) const
 {
-  return _impl->Render(buffer);
+  return _impl->Render(writer);
 }
 
 bool ID3_Frame::Contains(ID3_FieldID id) const
