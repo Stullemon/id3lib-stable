@@ -1,4 +1,4 @@
-// $Id: tag_parse.cpp,v 1.8 2000/05/03 03:02:56 eldamitri Exp $
+// $Id: tag_parse.cpp,v 1.9 2000/05/06 21:16:25 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -30,7 +30,7 @@
 #include <zlib.h>
 #include "tag.h"
 #include "uint28.h"
-#include "misc_support.h"
+#include "utils.h"
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
