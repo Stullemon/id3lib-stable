@@ -38,6 +38,7 @@
 #include "stdafx.h"
 #include "ID3COM.h"
 #include "ID3Tag.h"
+#include "config.h"
 #include "ID3Frame.h"
 #include "EnumFields.h"
 #include "misc_support.h"
@@ -636,7 +637,7 @@ STDMETHODIMP CID3Tag::get_HasV1Tag(VARIANT_BOOL *pVal)
 	try
 	{
 		*pVal = VARIANT_FALSE;
-		if (m_ID3Tag->HasV1Tag())
+		if (m_ID3Tag->HasTagType(ID3TT_ID3V1))
 		{
 			*pVal = VARIANT_TRUE;
 		}	
@@ -661,7 +662,7 @@ STDMETHODIMP CID3Tag::get_HasV2Tag(VARIANT_BOOL *pVal)
 	try
 	{
 		*pVal = VARIANT_FALSE;
-		if (m_ID3Tag->HasV2Tag())
+		if (m_ID3Tag->HasTagType(ID3TT_ID3V2))
 		{
 			*pVal = VARIANT_TRUE;
 		}	
@@ -685,9 +686,7 @@ STDMETHODIMP CID3Tag::get_HasLyrics(VARIANT_BOOL *pVal)
 {
 	try
 	{
-		*pVal = VARIANT_FALSE;
-		ID3_Frame *pFrame = m_ID3Tag->Find(ID3FID_UNSYNCEDLYRICS);
-		if (pFrame != NULL)
+		if (m_ID3Tag->HasTagType(ID3TT_LYRICS))
 		{
 			*pVal = VARIANT_TRUE;
 		}	
@@ -954,11 +953,11 @@ STDMETHODIMP CID3Tag::put_Padding(VARIANT_BOOL newVal)
 	}
 }
 
-STDMETHODIMP CID3Tag::put_Compression(VARIANT_BOOL newVal)
+STDMETHODIMP CID3Tag::put_UnSync(VARIANT_BOOL newVal)
 {
 	try
 	{
-		m_ID3Tag->SetCompression(newVal == VARIANT_TRUE);
+		m_ID3Tag->SetUnsync(newVal == VARIANT_TRUE);
 		return S_OK;
 	}
 	catch (ID3_Error err)
@@ -971,11 +970,21 @@ STDMETHODIMP CID3Tag::put_Compression(VARIANT_BOOL newVal)
 	}
 }
 
-STDMETHODIMP CID3Tag::put_UnSync(VARIANT_BOOL newVal)
+STDMETHODIMP CID3Tag::get_VersionString(BSTR *pVal)
 {
+	USES_CONVERSION;
 	try
 	{
-		m_ID3Tag->SetUnsync(newVal == VARIANT_TRUE);
+		// this buffer needs to be overly large
+		// for some unexplained reason
+		// if the size is small you get
+		char Buffer[1024];
+		sprintf(Buffer, "id3com %d.%d.%d Compiled %s %s", __ID3LIB_MAJOR_VERSION,
+														__ID3LIB_MINOR_VERSION,
+														__ID3LIB_PATCH_VERSION,
+														__DATE__,
+														__TIME__);
+		*pVal = A2OLE(Buffer);
 		return S_OK;
 	}
 	catch (ID3_Error err)

@@ -1,6 +1,6 @@
 Type=Exe
-Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#..\..\..\..\..\..\WINNT\System32\STDOLE2.TLB#OLE Automation
-Reference=*\G{AEBA98B0-C36C-11D3-841B-0008C782A257}#1.0#0#..\Debug\id3com.dll#ID3libCOM 1.0 Type Library
+Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#..\..\..\..\..\WINNT\System32\stdole2.tlb#OLE Automation
+Reference=*\G{AEBA98B0-C36C-11D3-841B-0008C782A257}#1.0#0#..\Release\id3com.dll#ID3libCOM 1.0 Type Library
 Form=frmID3Test.frm
 Startup="frmID3Test"
 ExeName32="ID3Test.exe"
@@ -29,3 +29,6 @@ Unattended=0
 Retained=0
 ThreadPerObject=0
 MaxNumberOfThreads=1
+
+[MS Transaction Server]
+AutoRefresh=1

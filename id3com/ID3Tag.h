@@ -68,8 +68,8 @@ END_COM_MAP()
 
 // IID3ComTag
 public:
+	STDMETHOD(get_VersionString)(/*[out, retval]*/ BSTR *pVal);
 	STDMETHOD(put_UnSync)(/*[in]*/ VARIANT_BOOL newVal);
-	STDMETHOD(put_Compression)(/*[in]*/ VARIANT_BOOL newVal);
 	STDMETHOD(put_Padding)(/*[in]*/ VARIANT_BOOL newVal);
 	STDMETHOD(get_PercentVolumeAdjust)(/*[out, retval]*/ double *pVal);
 	STDMETHOD(put_PercentVolumeAdjust)(/*[in]*/ double newVal);

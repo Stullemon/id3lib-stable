@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.21 2000/05/28 23:25:06 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.22 2000/06/10 16:09:39 adcockj Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -501,6 +501,9 @@ void ID3_Tag::RenderV2ToHandle()
     __starting_bytes = size;
 #endif
   }
+
+  // make sure that the v2 flag is on
+  __file_tags.add(ID3TT_ID3V2);
         
   delete[] buffer;
     

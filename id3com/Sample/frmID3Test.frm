@@ -1,14 +1,22 @@
 VERSION 5.00
 Begin VB.Form frmID3Test 
    Caption         =   "ID3 Test"
-   ClientHeight    =   5580
+   ClientHeight    =   5595
    ClientLeft      =   60
    ClientTop       =   345
-   ClientWidth     =   7875
+   ClientWidth     =   7845
    LinkTopic       =   "Form1"
-   ScaleHeight     =   5580
-   ScaleWidth      =   7875
+   ScaleHeight     =   5595
+   ScaleWidth      =   7845
    StartUpPosition =   3  'Windows Default
+   Begin VB.CommandButton cmdVersion 
+      Caption         =   "Show ID3COM Version"
+      Height          =   375
+      Left            =   5640
+      TabIndex        =   8
+      Top             =   2160
+      Width           =   2175
+   End
    Begin VB.CommandButton cmdRemoveV2 
       Caption         =   "Remove ID3v2"
       Height          =   375
@@ -116,6 +124,12 @@ Private Sub cmdRemoveV2_Click()
     End If
 End Sub
 
+Private Sub cmdVersion_Click()
+    If Not oTag Is Nothing Then
+        MsgBox oTag.VersionString
+    End If
+End Sub
+
 Private Sub Dir1_Change()
     On Error Resume Next
     File1.Path = Dir1.Path
@@ -148,6 +162,10 @@ Private Sub File1_Click()
         If Not oField Is Nothing Then
             FrameLine = FrameLine & " - " & oField.Text(1)
         End If
+        Set oField = oFrame.Field(ID3_FIELD_EMAIL)
+        If Not oField Is Nothing Then
+            FrameLine = FrameLine & " - " & oField.Text(1)
+        End If
         Set oField = oFrame.Field(ID3_FIELD_TEXT)
         If Not oField Is Nothing Then
             For n = 1 To oField.NumTextItems
@@ -158,3 +176,4 @@ Private Sub File1_Click()
         List1.AddItem FrameLine
     Next
 End Sub
+

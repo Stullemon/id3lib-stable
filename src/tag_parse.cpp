@@ -1,4 +1,4 @@
-// $Id: tag_parse.cpp,v 1.18 2000/05/28 23:08:54 eldamitri Exp $
+// $Id: tag_parse.cpp,v 1.19 2000/06/10 16:09:39 adcockj Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -165,6 +165,9 @@ size_t ID3_Tag::Parse(const uchar header[ID3_TagHeader::SIZE],
   // set the flag which says that the tag hasn't changed
   __changed = false;
 
+  // say we have v2 tags
+  __file_tags.add(ID3TT_ID3V2);
+    
   delete [] unsynced_data;
   
   return hdr_size + data_size;

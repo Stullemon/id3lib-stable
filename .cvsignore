@@ -7,3 +7,4 @@ config.status
 id3lib.spec
 stamp-h
 tmp
+libtool

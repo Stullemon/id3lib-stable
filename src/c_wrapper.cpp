@@ -1,4 +1,4 @@
-// $Id: c_wrapper.cpp,v 1.7 2000/05/28 03:30:37 eldamitri Exp $
+// $Id: c_wrapper.cpp,v 1.8 2000/06/10 16:09:39 adcockj Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -138,23 +138,6 @@ extern "C"
     }
   }
   
-  
-  ID3_C_EXPORT 
-  void ID3Tag_SetCompression(ID3Tag *tag, bool comp) 
-  { 
-    try 
-    { 
-      if (tag) 
-      { 
-        ((ID3_Tag *) tag)->SetCompression(comp); 
-      } 
-    } 
-    catch (...) 
-    { 
-    } 
-  } 
-
-
   ID3_C_EXPORT
   void ID3Tag_SetPadding(ID3Tag *tag, bool pad)
   {

@@ -1,4 +1,4 @@
-// $Id: tag_parse_lyrics3.cpp,v 1.11 2000/05/12 03:46:39 eldamitri Exp $
+// $Id: tag_parse_lyrics3.cpp,v 1.12 2000/06/10 16:09:39 adcockj Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -277,11 +277,16 @@ void ID3_Tag::ParseLyrics3()
       }
 
       delete[] text;
+
+      // if we got to here we must have some lyrics
+	  __file_tags.add(ID3TT_LYRICS);
     }
   
     else if (memcmp(&buffer[6], "LYRICS200", 9) == 0)
     {
       // we have a Lyrics3 v2.00 tag
+	  __file_tags.add(ID3TT_LYRICS);
+
       luint lyricsSize;
 
       ID3_Frame *pLyrFrame = NULL;
