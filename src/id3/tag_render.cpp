@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.12 1999/12/13 04:44:28 scott Exp $
+// $Id: tag_render.cpp,v 1.13 1999/12/16 14:39:44 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -28,7 +28,9 @@ luint ID3_Tag::Render(uchar *buffer)
   luint bytesUsed = 0;
   
   if (NULL == buffer)
+  {
     ID3_THROW(ID3E_NoBuffer);
+  }
 
   ID3_Elem *cur = __pFrameList;
   ID3_TagHeader header;
@@ -65,7 +67,9 @@ luint ID3_Tag::Render(uchar *buffer)
     {
       tempz = new uchar[newTagSize];
       if (NULL == tempz)
+      {
         ID3_THROW(ID3E_NoMemory);
+      }
 
       UnSync(tempz, newTagSize, &buffer[header.Size()],
              bytesUsed - header.Size());
@@ -114,7 +118,9 @@ luint ID3_Tag::Size(void) const
   
   // add 30% for sync
   if (__bSyncOn)
+  {
     bytesUsed += bytesUsed / 3;
+  }
     
   bytesUsed += PaddingSize(bytesUsed);
   
@@ -125,7 +131,8 @@ luint ID3_Tag::Size(void) const
 void ID3_Tag::RenderExtHeader(uchar *buffer)
 {
   if (__ucVersion == 3 && __ucRevision == 0)
-  {}
+  {
+  }
   
   return ;
 }
@@ -135,7 +142,9 @@ luint ID3_Tag::RenderV1(char *buffer)
 {
   // Sanity check our buffer
   if (NULL == buffer)
+  {
     ID3_THROW(ID3E_NoBuffer);
+  }
 
   // pCur is used to mark where to next write in the buffer
   // sTemp is used as a temporary string pointer for functions that return
@@ -224,29 +233,37 @@ void ID3_Tag::RenderV1ToHandle(void)
   // We want to check if there is already an id3v1 tag, so we can write over
   // it.  First, seek to the beginning of any possible id3v1 tag
   if (fseek(__fFileHandle, 0-LEN_V1, SEEK_END) != 0)
+  {
     // TODO:  This is a bad error message.  Make it more descriptive
     ID3_THROW(ID3E_NoData);
+  }
 
   // Read in the TAG characters
   if (fread(sID, 1, LEN_V1_ID, __fFileHandle) != LEN_V1_ID)
+  {
     // TODO:  This is a bad error message.  Make it more descriptive
     ID3_THROW(ID3E_NoData);
+  }
 
   // If those three characters are TAG, then there's a preexisting id3v1 tag,
   // so we should set the file cursor so we can overwrite it with a new tag.
   if (memcmp(sID, "TAG", LEN_V1_ID) == 0)
   {
     if (fseek(__fFileHandle, 0-LEN_V1, SEEK_END) != 0)
+    {
       // TODO:  This is a bad error message.  Make it more descriptive
       ID3_THROW(ID3E_NoData);
+    }
   }
   // Otherwise, set the cursor to the end of the file so we can append on 
   // the new tag.
   else
   {
     if (fseek(__fFileHandle, 0, SEEK_END) != 0)
+    {
       // TODO:  This is a bad error message.  Make it more descriptive
       ID3_THROW(ID3E_NoData);
+    }
   }
 
   fwrite(sTag, 1, LEN_V1, __fFileHandle);
@@ -259,14 +276,20 @@ void ID3_Tag::RenderV2ToHandle(void)
   luint size = Size();
   
   if (NULL == __fFileHandle)
+  {
     ID3_THROW(ID3E_NoData);
+  }
 
   if (size == 0)
+  {
     return;
+  }
 
   buffer = new uchar[size];
   if (NULL == buffer)
+  {
     ID3_THROW(ID3E_NoMemory);
+  }
 
   size = Render(buffer);      
   if (0 == size)
@@ -346,7 +369,9 @@ luint ID3_Tag::PaddingSize(luint curSize) const
   
   // if padding is switched off or there is no attached file
   if (! __bPadding || __ulFileSize == 0)
+  {
     return 0;
+  }
     
   // if the old tag was large enough to hold the new tag, then we will simply
   // pad out the difference - that way the new tag can be written without
@@ -375,6 +400,9 @@ luint ID3_Tag::PaddingSize(luint curSize) const
 
 
 // $Log: tag_render.cpp,v $
+// Revision 1.13  1999/12/16 14:39:44  scott
+// Minor formatting cleanup.
+//
 // Revision 1.12  1999/12/13 04:44:28  scott
 // (RenderV2ToHandle): Cleaned up creation of temp files.  Now ensures
 // temp file will be in same directory as original file, thereby ensuring
