@@ -1,3 +1,17 @@
+2000-05-22  Scott Haug  <scott@id3.org>
+
+	* src/frame_parse.cpp 
+	(Parse): Fixed bug that wasn't dealing with compressed frames correctly
+
+	* src/header_frame.cpp 
+	(SetUnknownFrame): Minor change to return if allocation fails
+
+2000-05-15  Scott Haug  <scott@id3.org>
+
+	* src/misc_support.cpp: 
+	Replaced all frame->SetID() calls with constructor calls that pass in
+	the appropriate ID.
+
 2000-05-12  Scott Haug  <scott@id3.org>
 
 	* include/id3/field.h: 
