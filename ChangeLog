@@ -1,5 +1,10 @@
 2000-05-11  Scott Haug  <scott@id3.org>
 
+	* NEWS 
+	* configure.in
+	* id3lib.spec.in: 
+	Updated for 3.7.8 release
+
 	* src/field.cpp (Render): 
 	* src/field_string_ascii.cpp (Add, Set): 
 	* src/field_string_unicode.cpp (Set):
