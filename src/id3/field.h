@@ -1,4 +1,4 @@
-// $Id: field.h,v 1.6 1999/11/15 20:15:36 scott Exp $
+// $Id: field.h,v 1.7 1999/11/19 17:19:58 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -174,31 +174,31 @@ public:
   luint         Size(void);
   luint         GetNumTextItems(void);
   // integer field functions
-  ID3_Field    &operator= (luint newData);
-  void          Set(luint newData);
+  ID3_Field    &operator= (const luint newData);
+  void          Set(const luint newData);
   luint         Get(void);
   // Unicode string field functions
-  ID3_Field    &operator= (wchar_t *string);
-  void          Set(wchar_t *string);
-  luint         Get(wchar_t *buffer, luint maxChars, luint itemNum = 1);
-  void          Add(wchar_t *string);
+  ID3_Field    &operator= (const wchar_t *string);
+  void          Set(const wchar_t *string);
+  luint         Get(wchar_t *buffer, const luint maxChars, const luint itemNum = 1);
+  void          Add(const wchar_t *string);
   // ASCII string field functions
-  ID3_Field    &operator= (char *string);
-  void          Set(char *string);
-  luint         Get(char *buffer, luint maxChars, luint itemNum = 1);
-  void          Add(char *string );
+  ID3_Field    &operator= (const char *string);
+  void          Set(const char *string);
+  luint         Get(char *buffer, const luint maxChars, const luint itemNum = 1);
+  void          Add(const char *string );
   // binary field functions
-  void          Set(uchar *newData, luint newSize);
-  void          Get(uchar *buffer, luint buffLength);
-  void          FromFile(char *info);
-  void          ToFile(char *info);
+  void          Set(const uchar *newData, const luint newSize);
+  void          Get(uchar *buffer, const luint buffLength);
+  void          FromFile(const char *info);
+  void          ToFile(const char *info);
   
 private:
-  luint         BinSize(bool withExtras = true);
+  luint         BinSize(const bool withExtras = true);
   bool          HasChanged(void);
-  void          SetVersion(uchar ver, uchar rev);
+  void          SetVersion(const uchar ver, const uchar rev);
   luint         Render(uchar *buffer);
-  luint         Parse(uchar *buffer, luint posn, luint buffSize);
+  luint         Parse(const uchar *buffer, const luint posn, const luint buffSize);
 
 private:
   ID3_FieldID   __eName;           // the ID of this field
@@ -219,19 +219,23 @@ protected:
   luint RenderUnicodeString(uchar *buffer);
   luint RenderBinary(uchar *buffer);
   
-  luint ParseInteger(uchar *buffer, luint posn, luint buffSize);
-  luint ParseASCIIString(uchar *buffer, luint posn, luint buffSize);
-  luint ParseUnicodeString(uchar *buffer, luint posn, luint buffSize);
-  luint ParseBinary(uchar *buffer, luint posn, luint buffSize);
+  luint ParseInteger(const uchar *buffer, const luint posn, const luint buffSize);
+  luint ParseASCIIString(const uchar *buffer, const luint posn, const luint buffSize);
+  luint ParseUnicodeString(const uchar *buffer, const luint posn, const luint buffSize);
+  luint ParseBinary(const uchar *buffer, const luint posn, const luint buffSize);
   
 };
 
-ID3_FrameDef *ID3_FindFrameDef(ID3_FrameID id);
-ID3_FrameID   ID3_FindFrameID(char *id);
+ID3_FrameDef *ID3_FindFrameDef(const ID3_FrameID id);
+ID3_FrameID   ID3_FindFrameID(const char *id);
 
 #endif
 
 // $Log: field.h,v $
+// Revision 1.7  1999/11/19 17:19:58  scott
+// * field.h (class ID3_Field): Updated method interfaces to make
+// appropriate parameters const.
+//
 // Revision 1.6  1999/11/15 20:15:36  scott
 // Made ID3_Frame and ID3_Tag friends of the ID3_Field class to allow
 // access to the private members in ID3_Field.  Made ID3FF field
