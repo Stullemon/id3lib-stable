@@ -539,11 +539,11 @@ fi
 
 id3lib_version=3
 id3lib_revision=6
-id3lib_patch=0
+id3lib_patch=1
 
 id3lib_release=$id3lib_version.$id3lib_revision.$id3lib_patch
 id3lib_name=id3lib
-id3lib_date="$Date: 1999/12/01 18:10:43 $UNDEFINED"
+id3lib_date="$Date: 1999/12/01 19:13:10 $UNDEFINED"
 
 ac_aux_dir=
 for ac_dir in $srcdir $srcdir/.. $srcdir/../..; do
@@ -2909,8 +2909,11 @@ test "$no_create" = yes || $SHELL $CONFIG_STATUS || exit 1
 
 
 # $Log: configure,v $
-# Revision 1.12  1999/12/01 18:10:43  scott
-# *** empty log message ***
+# Revision 1.13  1999/12/01 19:13:10  scott
+# Upped the patch number to 1.
+#
+# Revision 1.9  1999/12/01 18:12:52  scott
+# (AC_OUTPUT): Added include/Makefile and include/id3/Makefile
 #
 # Revision 1.8  1999/11/30 20:01:36  scott
 # * configure.in:
@@ -2929,3 +2932,4 @@ test "$no_create" = yes || $SHELL $CONFIG_STATUS || exit 1
 # writers, so I'm torn.  Added versioning macro definitions normally
 # found in version.h.  Probably not the best place for this...
 #
+

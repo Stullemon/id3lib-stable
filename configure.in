@@ -1,4 +1,4 @@
-# $Id: configure.in,v 1.9 1999/12/01 18:12:52 scott Exp $
+# $Id: configure.in,v 1.10 1999/12/01 19:13:10 scott Exp $
 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -15,11 +15,11 @@ AM_CONFIG_HEADER(config.h)
 
 id3lib_version=3
 id3lib_revision=6
-id3lib_patch=0
+id3lib_patch=1
 
 id3lib_release=$id3lib_version.$id3lib_revision.$id3lib_patch
 id3lib_name=id3lib
-id3lib_date="$Date: 1999/12/01 18:12:52 $UNDEFINED"
+id3lib_date="$Date: 1999/12/01 19:13:10 $UNDEFINED"
 
 AM_INIT_AUTOMAKE($id3lib_name,$id3lib_release)
 lt_ver=`expr $id3lib_version + $id3lib_revision`
@@ -123,6 +123,9 @@ AC_OUTPUT(                      \
 )
 
 # $Log: configure.in,v $
+# Revision 1.10  1999/12/01 19:13:10  scott
+# Upped the patch number to 1.
+#
 # Revision 1.9  1999/12/01 18:12:52  scott
 # (AC_OUTPUT): Added include/Makefile and include/id3/Makefile
 #
