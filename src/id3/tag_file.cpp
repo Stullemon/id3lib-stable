@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.5 1999/11/19 19:09:12 scott Exp $
+// $Id: tag_file.cpp,v 1.6 1999/11/25 18:39:29 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -19,6 +19,7 @@
 #endif
 
 #include <string.h>
+#include <unistd.h>
 #include <id3/tag.h>
 
 bool exists(char *name)
@@ -37,36 +38,70 @@ bool exists(char *name)
   return doesExist;
 }
 
-void ID3_Tag::OpenLinkedFile(void)
+void ID3_Tag::CreateFile(void)
 {
-  if (!exists(__sFileName))
-    // Create a new file if the filename doesn't exist
-    __fFileHandle = fopen(__sFileName, "wb+");
-  else
-  {
-    // Try to open the file for reading and writing. If that doesn't work, open
-    // it for just reading.
-    __fFileHandle = fopen(__sFileName, "rb+");
-    __bFileWritable = (__fFileHandle != NULL);
-    if (!__bFileWritable)
-    {
-      __fFileHandle = fopen(__sFileName, "rb");
-    }
-  }
-  
+  CloseFile();
+
+  // Create a new file
+  __fFileHandle = fopen(__sFileName, "wb+");
+
+  // Check to see if file could not be created
   if (NULL == __fFileHandle)
-    // File could not be opened, either for reading or writing
-    ID3_THROW(ID3E_NoFile);
-  else
-  {
-    fseek(__fFileHandle, 0, SEEK_END);
-    __ulFileSize = ftell(__fFileHandle);
-    fseek(__fFileHandle, 0, SEEK_SET);
-  }
+    ID3_THROW(ID3E_ReadOnly);
+
+  // Determine the size of the file
+  fseek(__fFileHandle, 0, SEEK_END);
+  __ulFileSize = ftell(__fFileHandle);
+  fseek(__fFileHandle, 0, SEEK_SET);
   
   return ;
 }
 
+void ID3_Tag::OpenFileForWriting(void)
+{
+  CloseFile();
+  
+  if (exists(__sFileName))
+    // Try to open the file for reading and writing.
+    __fFileHandle = fopen(__sFileName, "rb+");
+  else
+    // No such file to open
+    ID3_THROW(ID3E_NoFile);
+
+  // Check to see if file could not be opened for writing
+  if (NULL == __fFileHandle)
+    ID3_THROW(ID3E_ReadOnly);
+
+  // Determine the size of the file
+  fseek(__fFileHandle, 0, SEEK_END);
+  __ulFileSize = ftell(__fFileHandle);
+  fseek(__fFileHandle, 0, SEEK_SET);
+  
+  return ;
+}
+
+void ID3_Tag::OpenFileForReading(void)
+{
+  CloseFile();
+
+  __fFileHandle = fopen(__sFileName, "rb");
+  if (NULL == __fFileHandle)
+    ID3_THROW(ID3E_NoFile);
+
+  // Determine the size of the file
+  fseek(__fFileHandle, 0, SEEK_END);
+  __ulFileSize = ftell(__fFileHandle);
+  fseek(__fFileHandle, 0, SEEK_SET);
+
+  return ;
+}
+
+bool ID3_Tag::CloseFile(void)
+{
+  bool bReturn = ((NULL != __fFileHandle) && (0 == fclose(__fFileHandle)));
+  if (bReturn) __fFileHandle = NULL;
+  return bReturn;
+}
 
 luint ID3_Tag::Link(char *fileInfo)
 {
@@ -75,16 +110,21 @@ luint ID3_Tag::Link(char *fileInfo)
   if (NULL == fileInfo)
     ID3_THROW(ID3E_NoData);
 
-  strncpy(__sFileName, fileInfo, 256);
+  size_t nLen = strlen(fileInfo) + 1;
+  if (NULL != __sFileName)
+    delete [] __sFileName;
+  __sFileName = new char[nLen];
+  strncpy(__sFileName, fileInfo, nLen);
     
   // if we were attached to some other file then abort
   if (__fFileHandle != NULL)
     ID3_THROW(ID3E_TagAlreadyAttached);
-      
-  OpenLinkedFile();
-  if (__bFileWritable)
-    GenerateTempName();
+
+  OpenFileForReading();
+
   __ulOldTagSize = ParseFromHandle();
+
+  CloseFile();
     
   if (__ulOldTagSize > 0)
     __ulOldTagSize += ID3_TAGHEADERSIZE;
@@ -95,112 +135,162 @@ luint ID3_Tag::Link(char *fileInfo)
   return posn;
 }
 
-
-void ID3_Tag::Update(luint ulTagFlag)
+luint ID3_Tag::Update(luint ulTagFlag)
 {
-  if (!__bFileWritable)
-    ID3_THROW_DESC(ID3E_NoFile, "ID3_Tag::Update: File not writable.");
+  OpenFileForWriting();
+  luint ulTags = NO_TAG;
 
   if ((ulTagFlag & V1_TAG) && (!__bHasV1Tag || HasChanged()))
+  {
     RenderV1ToHandle();
+    ulTags |= V1_TAG;
+  }
   if ((ulTagFlag & V2_TAG) && HasChanged())
+  {
     RenderV2ToHandle();
+    ulTags |= V2_TAG;
+  }
+
+  CloseFile();
     
-  return ;
+  return ulTags;
 }
 
-
-void ID3_Tag::Strip(const luint ulTagFlag)
+luint ID3_Tag::Strip(const luint ulTagFlag)
 {
-  FILE *tempOut;
-  
-  if (!__bFileWritable)
-    ID3_THROW_DESC(ID3E_NoFile, "ID3_Tag::Strip: File not writable.");
+  luint ulTags = NO_TAG;
 
   if (!(ulTagFlag & V1_TAG) && !(ulTagFlag & V2_TAG))
   {
     cerr << "--- No tag to strip. exiting." << endl;
-    return;
+    return ulTags;
   }
 
-  if (strlen(__sTempName) == 0)
+  // First remove the v2 tag, if requested
+  if (ulTagFlag & V2_TAG)
   {
-    cerr << "--- No temp name.  Exiting." << endl;
-  }
-  else
-  {
-    tempOut = fopen(__sTempName, "wb");
-    if (NULL == tempOut)
-    {
-      ID3_THROW_DESC(ID3E_NoData, "Ack! Couldn't open temp file.");
-    }
-    else
-    {
-      uchar * buffer2;
-      luint ulOffset = (ulTagFlag & V2_TAG) ? __ulOldTagSize : 0;
+    OpenFileForWriting();
 
-      fseek(__fFileHandle, ulOffset, SEEK_SET);
-      
-      buffer2 = new uchar[BUFF_SIZE];
-      if (NULL == buffer2)
-        ID3_THROW(ID3E_NoMemory);
+    // We will remove the id3v2 tag in place: since it comes at the beginning
+    // of the file, we'll effectively move all the data that comes after the
+    // tag back n bytes, where n is the size of the id3v2 tag.  Once we've
+    // copied the data, we'll truncate the file.
+    //
+    // To copy the data, we'll need to keep two "pointers" in the file: one
+    // will mark where to read from next, the other will indicate where to 
+    // write to. 
+    long nNextRead, nNextWrite;
+    nNextWrite = ftell(__fFileHandle);
+    // Set the read pointer past the tag
+    fseek(__fFileHandle, __ulOldTagSize, SEEK_CUR);
+    nNextRead = ftell(__fFileHandle);
+    
+    uchar aucBuffer[BUFF_SIZE];
+    
+    // The nBytesRemaining variable indicates how many bytes are to be copied
+    size_t nBytesToCopy = __ulFileSize;
 
-      bool done = false;
-      luint bytesCopied = 0;
-      luint bytesToCopy = __ulFileSize;
-      size_t i;
-        
-      if (!(ulTagFlag & V2_TAG))
-      {
-        cerr << "+++ keeping old v2 tag" << endl;
-        bytesToCopy += __ulOldTagSize;
-      }
-      if (__bHasV1Tag && (ulTagFlag & V1_TAG))
-      {
-        cerr << "+++ removing old v1 tag" << endl;
-        bytesToCopy -= __ulExtraBytes;
-      }
-          
-      while (! feof(__fFileHandle) && ! done)
-      {
-        luint size = BUFF_SIZE;
-          
-        if ((bytesToCopy - bytesCopied) < BUFF_SIZE)
-        {
-          size = bytesToCopy - bytesCopied;
-          done = true;
-        }
-          
-        i = fread(buffer2, 1, size, __fFileHandle);
-        if (i > 0)
-          fwrite(buffer2, 1, i, tempOut);
-            
-        bytesCopied += i;
-      }
-        
-      delete[] buffer2;
-      
-      fclose(tempOut);
-      fclose(__fFileHandle);
-      remove(__sFileName);
-      rename(__sTempName, __sFileName);
-      OpenLinkedFile();
-      
-      __ulOldTagSize = 0;
-      __ulExtraBytes = 0;
-      
-      __bHasV1Tag = __bHasV1Tag && !(ulTagFlag & V1_TAG);
-        
-      __bHasChanged = true;
+    // Here we reduce the nBytesToCopy by the size of any tags that appear
+    // at the end of the file (e.g the id3v1 and lyrics tag).  This isn't
+    // strictly necessary, since the truncation stage will remove these,
+    // but this check prevents us from copying them unnecessarily.
+    if ((__ulExtraBytes > 0) && (ulTagFlag & V1_TAG))
+    {
+      nBytesToCopy -= __ulExtraBytes;
     }
+    
+    // The nBytesRemaining variable indicates how many bytes are left to be 
+    // moved in the actual file.
+    // The nBytesCopied variable keeps track of how many actual bytes were
+    // copied (or moved) so far.
+    size_t 
+      nBytesRemaining = nBytesToCopy,
+      nBytesCopied = 0;
+    while (! feof(__fFileHandle))
+    {
+      // Move to the next read position
+      fseek(__fFileHandle, nNextRead, SEEK_SET);
+      size_t
+        nBytesToRead = MIN(nBytesRemaining - nBytesCopied, BUFF_SIZE),
+        nBytesRead   = fread(aucBuffer, 1, nBytesToRead, __fFileHandle);
+      // Now that we've read, mark the current spot as the next spot for
+      // reading
+      nNextRead = ftell(__fFileHandle);
+
+      if (nBytesRead > 0)
+      {
+        // Move to the next write position
+        fseek(__fFileHandle, nNextWrite, SEEK_SET);
+        size_t nBytesWritten = fwrite(aucBuffer, 1, nBytesRead, __fFileHandle);
+        if (nBytesRead > nBytesWritten)
+          cerr << "--- attempted to write " << nBytesRead << " bytes, "
+               << "only wrote " << nBytesWritten << endl;
+        // Marke the current spot as the next write position
+        nNextWrite = ftell(__fFileHandle);
+        nBytesCopied += nBytesWritten;
+      }
+
+
+      if (nBytesCopied == nBytesToCopy)
+        break;
+      if (nBytesToRead < BUFF_SIZE)
+        break;
+    }
+
+    CloseFile();
   }
   
-  return ;
+  size_t nNewFileSize = __ulFileSize;
+  if ((__ulExtraBytes > 0) && (ulTagFlag & V1_TAG))
+  {
+    nNewFileSize -= __ulExtraBytes;
+    ulTags |= V1_TAG;
+  }
+  if (ulTagFlag & V2_TAG && (__ulOldTagSize > 0))
+  {
+    nNewFileSize -= __ulOldTagSize;
+    ulTags |= V2_TAG;
+  }
+  if (ulTags && (truncate(__sFileName, nNewFileSize) == -1))
+    ID3_THROW(ID3E_NoFile);
+
+  __ulOldTagSize = (ulTags & V2_TAG) ? 0 : __ulOldTagSize;
+  __ulExtraBytes = (ulTags & V1_TAG) ? 0 : __ulExtraBytes;
+      
+  __bHasV1Tag    = __bHasV1Tag && !(ulTagFlag & V1_TAG);
+        
+  __bHasChanged  = ((ulTags & V1_TAG) || (ulTags & V2_TAG));
+  
+  return ulTags;
 }
 
 
 
 // $Log: tag_file.cpp,v $
+// Revision 1.6  1999/11/25 18:39:29  scott
+// (OpenLinkedFile): Removed method.  Replaced with CreateFile,
+// OpenFileForReading, and OpenFileForWriting.
+// (CreateFile): New method.  Creates a new file with file name sFileName.
+// Throws if unable to.
+// (OpenFileForWriting): New method.  Opens a file with write permissions.
+// Throws if unable to.
+// (OpenFileForReading): New method.  Opens a file with read permissions.
+// Throws if unable to.
+// (CloseFile): New method.  Closes a file.  Returns true if successful,
+// false otherwise.
+// (Link): Now dynamically allocate sFileName.  Make use of new method
+// OpenFileForReading rather than OpenLinkedFile.  Closes the file
+// when done.
+// (Update): Now returns a flag indicating which tags were actually
+// written.  Calls OpenFileForWriting to open the file appropriately.
+// Closes the file when done.
+// (Strip): Now returns a flag indicating which tags were actually
+// written.  Now strips a file "in place," by copying the non-stripped
+// information to the beginning of the file and using ftruncate to chop
+// off the rest.  Prevents having to create a temporary file.  Calls
+// OpenFileForWriting to open the file appropriately.  Closes the file
+// when done.
+//
 // Revision 1.5  1999/11/19 19:09:12  scott
 // (Update): Changed parameter to be a flag which indicates which type of
 // tag to update, either V1_TAG, V2_TAG, or BOTH_TAGS.  Updated method to
