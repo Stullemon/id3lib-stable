@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.5 1999/11/15 20:21:29 scott Exp $
+// $Id: tag_render.cpp,v 1.6 1999/11/19 19:27:27 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -147,8 +147,97 @@ void ID3_Tag::GenerateTempName(void)
   return ;
 }
 
+void ID3_Tag::RenderV1ToHandle(void)
+{
+  ID3V1_Tag tagV1;
+  char sTag[LEN_V1], *pCur = sTag, *sTemp = NULL;
 
-void ID3_Tag::RenderToHandle(void)
+  for (int i = 0; i < LEN_V1; i++)
+    sTag[i] = '\0';
+
+  strncpy(pCur, "TAG", LEN_V1_ID);
+  pCur = &pCur[LEN_V1_ID];
+
+  sTemp = ID3_GetTitle(this);
+  if (sTemp != NULL)
+  {
+    strncpy(pCur, sTemp, LEN_V1_TITLE);
+    delete [] sTemp;
+  }
+  pCur = &pCur[LEN_V1_TITLE];
+
+  sTemp = ID3_GetArtist(this);
+  if (sTemp != NULL)
+  {
+    strncpy(pCur, sTemp, LEN_V1_ARTIST);
+    delete [] sTemp;
+  }
+  pCur = &pCur[LEN_V1_ARTIST];
+
+  sTemp = ID3_GetAlbum(this);
+  if (sTemp != NULL)
+  {
+    strncpy(pCur, sTemp, LEN_V1_ALBUM);
+    delete [] sTemp;
+  }
+  pCur = &pCur[LEN_V1_ALBUM];
+
+  sTemp = ID3_GetYear(this);
+  if (sTemp != NULL)
+  {
+    strncpy(pCur, sTemp, LEN_V1_YEAR);
+    delete [] sTemp;
+  }
+  pCur = &pCur[LEN_V1_YEAR];
+
+  sTemp = ID3_GetComment(this);
+  if (sTemp != NULL)
+  {
+    strncpy(pCur, sTemp, LEN_V1_COMMENT);
+    delete [] sTemp;
+  }
+  pCur = &pCur[LEN_V1 - 2];
+
+  sTemp = ID3_GetTrack(this);
+  if (sTemp != NULL)
+  {
+    uchar ucTrack = (uchar) atoi(sTemp);
+    pCur[0] = '\0';
+    pCur[1] = ucTrack;
+    delete [] sTemp;
+  }
+
+  char sID[LEN_V1_ID];
+
+  // We want to check if there is already an id3v1 tag, so we can write over
+  // it.  First, seek to the beginning of any possible id3v1 tag
+  if (fseek(__fFileHandle, -LEN_V1, SEEK_END) != 0)
+    // TODO:  This is a bad error message.  Make it more descriptive
+    ID3_THROW(ID3E_NoData);
+
+  // Read in the TAG characters
+  if (fread(sID, 1, LEN_V1_ID, __fFileHandle) != LEN_V1_ID)
+    // TODO:  This is a bad error message.  Make it more descriptive
+    ID3_THROW(ID3E_NoData);
+
+  // If those three characters are TAG, then there's a preexisting id3v1 tag,
+  // so we should set the file cursor so we can overwrite it with a new tag.
+  if (memcmp(sID, "TAG", LEN_V1_ID) == 0)
+    if (fseek(__fFileHandle, -LEN_V1, SEEK_END) != 0)
+      // TODO:  This is a bad error message.  Make it more descriptive
+      ID3_THROW(ID3E_NoData);
+  // Otherwise, set the cursor to the end of the file so we can append on 
+  // the new tag.
+  else
+    if (fseek(__fFileHandle, 0, SEEK_END) != 0)
+      // TODO:  This is a bad error message.  Make it more descriptive
+      ID3_THROW(ID3E_NoData);
+
+  fwrite(sTag, 1, LEN_V1, __fFileHandle);
+  __bHasV1Tag = true;
+}
+
+void ID3_Tag::RenderV2ToHandle(void)
 {
   uchar *buffer;
   luint size = Size();
@@ -262,6 +351,11 @@ luint ID3_Tag::PaddingSize(luint curSize) const
 
 
 // $Log: tag_render.cpp,v $
+// Revision 1.6  1999/11/19 19:27:27  scott
+// (RenderV1ToHandle): Added.  Adds or overwrites an id3v1 tag to a file
+// handle.  Needs testing.
+// (RenderV2ToHandle): Renamed from RenderToHandle.
+//
 // Revision 1.5  1999/11/15 20:21:29  scott
 // Added include for config.h.  Minor code cleanup.  Removed
 // assignments from if checks; first makes assignment, then checks
