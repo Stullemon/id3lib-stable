@@ -1,4 +1,4 @@
-// $Id: field_integer.cpp,v 1.17 2000/10/14 19:24:38 eldamitri Exp $
+// $Id: field_integer.cpp,v 1.18 2000/10/21 15:35:11 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -51,6 +51,11 @@ using namespace dami;
  **/
 void ID3_FieldImpl::Set(uint32 val)
 {
+  this->SetInteger(val);
+}
+
+void ID3_FieldImpl::SetInteger(uint32 val)
+{
   if (this->GetType() == ID3FTY_INTEGER)
   {
     this->Clear();
@@ -69,16 +74,20 @@ void ID3_FieldImpl::Set(uint32 val)
  **
  ** \return The value of the integer field
  **/
+uint32 ID3_FieldImpl::Get() const
+{
+  return this->GetInteger();
+}
 
-/** \fn uint32 ID3_Field::Get() const
- ** \brief Returns the value of the integer field.
- ** 
- ** \code
- **   uint32 picType = myFrame.GetField(ID3FN_PICTURETYPE)->Get();
- ** \endcode
- **
- ** \return The value of the integer field
- **/
+uint32 ID3_FieldImpl::GetInteger() const
+{
+  uint32 val = 0;
+  if (this->GetType() == ID3FTY_INTEGER)
+  {
+    val = _integer;
+  }
+  return val;
+}
 
 bool ID3_FieldImpl::ParseInteger(ID3_Reader& reader)
 {
