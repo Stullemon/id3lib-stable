@@ -1,4 +1,4 @@
-// $Id: utils.h,v 1.14 2000/10/10 04:16:52 eldamitri Exp $
+// $Id: utils.h,v 1.15 2000/10/16 08:46:43 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -73,6 +73,7 @@ namespace dami
   String renderNumber(uint32 val, size_t size = sizeof(uint32));
 
   String toString(uint32 val);
+  WString toWString(const unicode_t[], size_t);
   
   void   mbstoucs(unicode_t *unicode, const char *ascii, const size_t len);
   void   ucstombs(char *ascii, const unicode_t *unicode, const size_t len);

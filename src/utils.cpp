@@ -1,4 +1,4 @@
-// $Id: utils.cpp,v 1.11 2000/10/09 04:33:03 eldamitri Exp $
+// $Id: utils.cpp,v 1.12 2000/10/16 08:46:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -305,4 +305,16 @@ String dami::toString(uint32 val)
     val /= 10;
   }
   return text;
+}
+
+WString dami::toWString(const unicode_t buf[], size_t len)
+{
+  WString str;
+  str.reserve(len);
+
+  for (size_t i = 0; i < len; ++i)
+  {
+    str += static_cast<WString::value_type>(buf[i]);
+  }
+  return str;
 }
