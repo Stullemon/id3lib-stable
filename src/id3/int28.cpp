@@ -1,4 +1,4 @@
-// $Id: int28.cpp,v 1.4 1999/11/04 04:15:55 scott Exp $
+// $Id: int28.cpp,v 1.5 1999/11/15 20:19:47 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -14,9 +14,11 @@
 //
 //  Mon Nov 23 18:34:01 1998
 
+#if defined HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <id3/int28.h>
-
 
 int28::int28(luint val)
 {
@@ -26,14 +28,14 @@ int28::int28(luint val)
 
 int28::int28(uchar *val)
 {
-  for (int i = 0; i < sizeof(luint); i++)
+  for (luint i = 0; i < sizeof(luint); i++)
     value[i] = val[i];
 }
 
 
 void int28::set(luint val)
 {
-  for (int i = 0; i < sizeof(luint); i++)
+  for (luint i = 0; i < sizeof(luint); i++)
     value[sizeof(luint) - 1 - i] = (uchar)((val >> (i * 7)) & 127) & 0xFF;
     
   return ;
@@ -83,6 +85,10 @@ istream& operator>>(istream& in, int28& val)
 }
 
 // $Log: int28.cpp,v $
+// Revision 1.5  1999/11/15 20:19:47  scott
+// Added include for config.h. Changed some ints to luints to avoid
+// compiler warnings.
+//
 // Revision 1.4  1999/11/04 04:15:55  scott
 // Added cvs Id and Log tags to beginning and end of file, respectively.
 //
