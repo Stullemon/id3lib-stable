@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.28 2000/09/11 07:46:32 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.29 2000/09/21 23:37:03 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -50,7 +50,8 @@ size_t RenderV1(const ID3_Tag& tag, uchar *buffer)
   // Sanity check our buffer
   if (NULL == buffer)
   {
-    ID3_THROW(ID3E_NoBuffer);
+    return 0;
+    //ID3_THROW(ID3E_NoBuffer);
   }
 
   // pCur is used to mark where to next write in the buffer
@@ -207,7 +208,8 @@ size_t ID3_Tag::RenderV2(uchar *buffer) const
       uchar* tempz = new uchar[newTagSize];
       if (NULL == tempz)
       {
-        ID3_THROW(ID3E_NoMemory);
+        return 0;
+        //ID3_THROW(ID3E_NoMemory);
       }
 
       ID3_UnSync(tempz, newTagSize, &buffer[hdr_size],
