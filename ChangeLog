@@ -1,3 +1,15 @@
+2000-04-22  Scott Haug  <scott@id3.org>
+
+	* include/id3.h: 
+	Added declaration from ID3Tag_UpdateType
+
+	* src/c_wrapper.cpp:
+	Added implementations for ID3Tag_UpdateType and 
+	ID3_Frame{New,NewID,Delete}.
+
+	* doc/index.html.in: 
+	Updated DOCTYPE.
+
 2000-04-21  Scott Haug  <scott@id3.org>
 
 	* NEWS 
