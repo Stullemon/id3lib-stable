@@ -1,4 +1,4 @@
-// $Id: tag_find.cpp,v 1.12 2000/05/28 03:48:33 eldamitri Exp $
+// $Id: tag_find.cpp,v 1.13 2000/05/29 15:58:29 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -150,16 +150,16 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id) const
 
 ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, const char *data) const
 {
-  ID3_Frame *frame = NULL;
-  unicode_t *temp;
-  
-  temp = new unicode_t[strlen(data) + 1];
+  size_t len = strlen(data) + 1;
+  unicode_t *temp = new unicode_t[len];
   if (NULL == temp)
+  {
     ID3_THROW(ID3E_NoMemory);
+  }
 
-  mbstoucs(temp, data, strlen(data) + 1);
+  mbstoucs(temp, data, len);
     
-  frame = Find(id, fld, temp);
+  ID3_Frame* frame = Find(id, fld, temp);
     
   delete[] temp;
   
@@ -172,7 +172,9 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, const unicode_t *data)
   
   // reset the cursor if it isn't set
   if (NULL == __cursor)
+  {
     __cursor = __frames;
+  }
 
   for (int iCount = 0; iCount < 2 && frame == NULL; iCount++)
   {
@@ -184,7 +186,7 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, const unicode_t *data)
     // search to the cursor.
     ID3_Elem
       *pStart  = (0 == iCount ? __cursor : __frames), 
-      *pFinish = (0 == iCount ? NULL          : __cursor);
+      *pFinish = (0 == iCount ? NULL     : __cursor);
     // search from the cursor to the end
     for (ID3_Elem *cur = pStart; cur != pFinish; cur = cur->pNext)
     {
@@ -192,12 +194,14 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, const unicode_t *data)
           (data != NULL) && ucslen(data) > 0 && 
           cur->pFrame->Contains(fld))
       {
-        size_t ulSize = cur->pFrame->Field(fld).BinSize();
-        unicode_t *wsBuffer = new unicode_t[ulSize];
-          
+        size_t ulSize = cur->pFrame->Field(fld).Size();
+        unicode_t *wsBuffer = new unicode_t[ulSize + 1];
+        
         if (NULL == wsBuffer)
+        {
           ID3_THROW(ID3E_NoMemory);
-          
+        }
+        wsBuffer[ulSize] = NULL_UNICODE;
         cur->pFrame->Field(fld).Get(wsBuffer, ulSize);
           
         bool bInFrame = (ucscmp(wsBuffer, data) == 0);
