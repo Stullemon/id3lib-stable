@@ -1,4 +1,4 @@
-// $Id: frame_parse.cpp,v 1.8 2000/05/09 13:18:20 eldamitri Exp $
+// $Id: frame_parse.cpp,v 1.9 2000/05/10 01:45:23 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -86,6 +86,7 @@ size_t ID3_Frame::Parse(const uchar * const buffer, luint size)
         continue; 
       }
       
+      //(*fi)->SetEncoding(enc);
       size_t frame_size = (*fi)->Parse(data, remainder); 
       
       if (0 == frame_size) 
