@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.28 2000/05/08 04:07:25 eldamitri Exp $
+// $Id: tag.h,v 1.29 2000/05/09 13:35:27 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -124,6 +124,7 @@ public:
   void       AddFrames(const ID3_Frame *, luint);
 
 protected:
+  size_t     ParseFrames(const uchar*, size_t);
   void       AddFrame(ID3_Frame , bool);
   void       AddFrames(ID3_Frame *, luint, bool);
   void       SetupTag(char *);
@@ -168,6 +169,7 @@ private:
   bool       __has_v1_tag;      // does the file have an ID3v1 tag attached?
   luint      __tags_to_parse;   // which tag types should be parsed
   char*      __file_name;       // name of the file we are linked to
+  ID3_TagHeader __hdr;
   static luint __instances;     // how many ID3_Tag objects are floating around in this app?
 };
 
