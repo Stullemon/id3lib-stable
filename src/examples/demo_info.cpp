@@ -14,7 +14,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.5 1999/12/23 15:56:26 scott Exp $
+// $Id: demo_info.cpp,v 1.6 1999/12/26 00:29:55 scott Exp $
 
 
 #if defined HAVE_CONFIG_H
@@ -48,57 +48,82 @@ char *GetDescription(const ID3_FrameID eFrameID)
 {
   switch (eFrameID)
   {
-    case ID3FID_ENCODEDBY:              return "Encoded by";
-    case ID3FID_ORIGALBUM:              return "Original album";
-    case ID3FID_PUBLISHER:              return "Publisher";
-    case ID3FID_ENCODERSETTINGS:        return "Encoder settings";
-    case ID3FID_ORIGFILENAME:           return "Original filename";
-    case ID3FID_LANGUAGE:               return "Language";
-    case ID3FID_PARTINSET:              return "";
-    case ID3FID_DATE:                   return "Date";
-    case ID3FID_TIME:                   return "Time";
-    case ID3FID_RECORDINGDATES:         return "Recording dates";
-    case ID3FID_MEDIATYPE:              return "Media type";
-    case ID3FID_FILETYPE:               return "File type";
-    case ID3FID_NETRADIOSTATION:        return "Net radio station";
-    case ID3FID_NETRADIOOWNER:          return "Net radio owner";
-    case ID3FID_LYRICIST:               return "Lyricist";
-    case ID3FID_ORIGARTIST:             return "Original artist";
-    case ID3FID_ORIGLYRICIST:           return "Original lyricist";
-    case ID3FID_CONTENTGROUP:           return "Content group";
-    case ID3FID_TITLE:                  return "Title";
-    case ID3FID_SUBTITLE:               return "Subtitle";
-    case ID3FID_LEADARTIST:             return "Lead artist";
-    case ID3FID_BAND:                   return "Band";
-    case ID3FID_CONDUCTOR:              return "Conductor";
-    case ID3FID_MIXARTIST:              return "Mix artist";
-    case ID3FID_ALBUM:                  return "Album";
-    case ID3FID_YEAR:                   return "Year";
-    case ID3FID_COMPOSER:               return "Composer";
-    case ID3FID_COPYRIGHT:              return "Copyright";
-    case ID3FID_CONTENTTYPE:            return "Content type";
-    case ID3FID_TRACKNUM:               return "Track number";
-    case ID3FID_USERTEXT:               return "User text";
-    case ID3FID_COMMENT:                return "Comment";
-    case ID3FID_UNSYNCEDLYRICS:         return "Lyrics (unsynced)";
-    case ID3FID_WWWAUDIOFILE:           return "Audiofile URL";
-    case ID3FID_WWWARTIST:              return "Artist's URL";
-    case ID3FID_WWWAUDIOSOURCE:         return "Audio source URL";
-    case ID3FID_WWWCOMMERCIALINFO:      return "Commercial info URL";
-    case ID3FID_WWWCOPYRIGHT:           return "Copyright URL";
-    case ID3FID_WWWPUBLISHER:           return "Publisher URL";
-    case ID3FID_WWWPAYMENT:             return "Payment URL";
-    case ID3FID_WWWRADIOPAGE:           return "Radio page URL";
-    case ID3FID_WWWUSER:                return "User URL";
-    case ID3FID_INVOLVEDPEOPLE:         return "Involved people";
-    case ID3FID_PICTURE:                return "Picture";
-    case ID3FID_GENERALOBJECT:          return "General object";
-    case ID3FID_UNIQUEFILEID:           return "Unique file ID";
-    case ID3FID_PLAYCOUNTER:            return "Play counter";
-    case ID3FID_POPULARIMETER:          return "Popularimeter";
-    case ID3FID_CRYPTOREG:              return "Crypto registration";
-    case ID3FID_GROUPINGREG:            return "Grouping registration";
-    default:                            return "Unknown";
+    /* AENC */ case ID3FID_AUDIOCRYPTO:       return "Audio encryption";
+    /* APIC */ case ID3FID_PICTURE:           return "Attached picture";
+    /* COMM */ case ID3FID_COMMENT:           return "Comments";
+    /* COMR */
+    /* ENCR */ case ID3FID_CRYPTOREG:         return "Encryption method registration";
+    /* EQUA */ case ID3FID_EQUALIZATION:      return "Equalization";
+    /* ETCO */ case ID3FID_EVENTTIMING:       return "Event timing codes";
+    /* GEOB */ case ID3FID_GENERALOBJECT:     return "General encapsulated object";
+    /* GRID */ case ID3FID_GROUPINGREG:       return "Group identification registration";
+    /* IPLS */ case ID3FID_INVOLVEDPEOPLE:    return "Involved people list";
+    /* LINK */ case ID3FID_LINKEDINFO:        return "Linked information";
+    /* MCDI */ case ID3FID_CDID:              return "Music CD identifier";
+    /* MLLT */ case ID3FID_MPEGLOOKUP:        return "MPEG location lookup table";
+    /* OWNE */ case ID3FID_OWNERSHIP:         return "Ownership frame";
+    /* PRIV */ case ID3FID_PRIVATE:           return "Private frame";
+    /* PCNT */ case ID3FID_PLAYCOUNTER:       return "Play counter";
+    /* POPM */ case ID3FID_POPULARIMETER:     return "Popularimeter";
+    /* POSS */ case ID3FID_POSITIONSYNC:      return "Position synchronisation frame";
+    /* RBUF */ case ID3FID_BUFFERSIZE:        return "Recommended buffer size";
+    /* RVAD */ case ID3FID_VOLUMEADJ:         return "Relative volume adjustment";
+    /* RVRB */ case ID3FID_REVERB:            return "Reverb";
+    /* SYLT */ case ID3FID_SYNCEDLYRICS:      return "Synchronized lyric/text";
+    /* SYTC */ case ID3FID_SYNCEDTEMPO:       return "Synchronized tempo codes";
+    /* TALB */ case ID3FID_ALBUM:             return "Album/Movie/Show title";
+    /* TBPM */ case ID3FID_BPM:               return "BPM (beats per minute)";
+    /* TCOM */ case ID3FID_COMPOSER:          return "Composer";
+    /* TCON */ case ID3FID_CONTENTTYPE:       return "Content type";
+    /* TCOP */ case ID3FID_COPYRIGHT:         return "Copyright message";
+    /* TDAT */ case ID3FID_DATE:              return "Date";
+    /* TDLY */ case ID3FID_PLAYLISTDELAY:     return "Playlist delay";
+    /* TENC */ case ID3FID_ENCODEDBY:         return "Encoded by";
+    /* TEXT */ case ID3FID_LYRICIST:          return "Lyricist/Text writer";
+    /* TFLT */ case ID3FID_FILETYPE:          return "File type";
+    /* TIME */ case ID3FID_TIME:              return "Time";
+    /* TIT1 */ case ID3FID_CONTENTGROUP:      return "Content group description";
+    /* TIT2 */ case ID3FID_TITLE:             return "Title/songname/content description";
+    /* TIT3 */ case ID3FID_SUBTITLE:          return "Subtitle/Description refinement";
+    /* TKEY */ case ID3FID_INITIALKEY:        return "Initial key";
+    /* TLAN */ case ID3FID_LANGUAGE:          return "Language(s)";
+    /* TLEN */ case ID3FID_SONGLEN:           return "Length";
+    /* TMED */ case ID3FID_MEDIATYPE:         return "Media type";
+    /* TOAL */ case ID3FID_ORIGALBUM:         return "Original album/movie/show title";
+    /* TOFN */ case ID3FID_ORIGFILENAME:      return "Original filename";
+    /* TOLY */ case ID3FID_ORIGLYRICIST:      return "Original lyricist(s)/text writer(s)";
+    /* TOPE */ case ID3FID_ORIGARTIST:        return "Original artist(s)/performer(s)";
+    /* TORY */ case ID3FID_ORIGYEAR:          return "Original release year";
+    /* TOWN */ case ID3FID_FILEOWNER:         return "File owner/licensee";
+    /* TPE1 */ case ID3FID_LEADARTIST:        return "Lead performer(s)/Soloist(s)";
+    /* TPE2 */ case ID3FID_BAND:              return "Band/orchestra/accompaniment";
+    /* TPE3 */ case ID3FID_CONDUCTOR:         return "Conductor/performer refinement";
+    /* TPE4 */ case ID3FID_MIXARTIST:         return "Interpreted, remixed, or otherwise modified by";
+    /* TPOS */ case ID3FID_PARTINSET:         return "Part of a set";
+    /* TPUB */ case ID3FID_PUBLISHER:         return "Publisher";
+    /* TRCK */ case ID3FID_TRACKNUM:          return "Track number/Position in set";
+    /* TRDA */ case ID3FID_RECORDINGDATES:    return "Recording dates";
+    /* TRSN */ case ID3FID_NETRADIOSTATION:   return "Internet radio station name";
+    /* TRSO */ case ID3FID_NETRADIOOWNER:     return "Internet radio station owner";
+    /* TSIZ */ case ID3FID_SIZE:              return "Size";
+    /* TSRC */ case ID3FID_ISRC:              return "ISRC (international standard recording code)";
+    /* TSSE */ case ID3FID_ENCODERSETTINGS:   return "Software/Hardware and settings used for encoding";
+    /* TXXX */ case ID3FID_USERTEXT:          return "User defined text information";
+    /* TYER */ case ID3FID_YEAR:              return "Year";
+    /* UFID */ case ID3FID_UNIQUEFILEID:      return "Unique file identifier";
+    /* USER */ case ID3FID_TERMSOFUSE:        return "Terms of use";
+    /* USLT */ case ID3FID_UNSYNCEDLYRICS:    return "Unsynchronized lyric/text transcription";
+    /* WCOM */ case ID3FID_WWWCOMMERCIALINFO: return "Commercial information";
+    /* WCOP */ case ID3FID_WWWCOPYRIGHT:      return "Copyright/Legal infromation";
+    /* WOAF */ case ID3FID_WWWAUDIOFILE:      return "Official audio file webpage";
+    /* WOAR */ case ID3FID_WWWARTIST:         return "Official artist/performer webpage";
+    /* WOAS */ case ID3FID_WWWAUDIOSOURCE:    return "Official audio source webpage";
+    /* WORS */ case ID3FID_WWWRADIOPAGE:      return "Official internet radio station homepage";
+    /* WPAY */ case ID3FID_WWWPAYMENT:        return "Payment";
+    /* WPUB */ case ID3FID_WWWPUBLISHER:      return "Official publisher webpage";
+    /* WXXX */ case ID3FID_WWWUSER:           return "User defined URL link";
+    /*      */ case ID3FID_METACRYPTO:        return "Encrypted meta frame";
+    /* ???? */ default:                       return "Unknown";
   }
 }
 
@@ -113,36 +138,44 @@ void PrintInformation(ID3_Tag &myTag)
       cout << "=== " << GetDescription(eFrameID) << ": ";
       switch (eFrameID)
       {
-        case ID3FID_ENCODEDBY:
-        case ID3FID_ORIGALBUM:
-        case ID3FID_PUBLISHER:
-        case ID3FID_ENCODERSETTINGS:
-        case ID3FID_ORIGFILENAME:
-        case ID3FID_LANGUAGE:
-        case ID3FID_PARTINSET:
+        case ID3FID_ALBUM:
+        case ID3FID_BPM:
+        case ID3FID_COMPOSER:
+        case ID3FID_CONTENTTYPE:
+        case ID3FID_COPYRIGHT:
         case ID3FID_DATE:
-        case ID3FID_TIME:
-        case ID3FID_RECORDINGDATES:
-        case ID3FID_MEDIATYPE:
-        case ID3FID_FILETYPE:
-        case ID3FID_NETRADIOSTATION:
-        case ID3FID_NETRADIOOWNER:
+        case ID3FID_PLAYLISTDELAY:
+        case ID3FID_ENCODEDBY:
         case ID3FID_LYRICIST:
-        case ID3FID_ORIGARTIST:
-        case ID3FID_ORIGLYRICIST:
+        case ID3FID_FILETYPE:
+        case ID3FID_TIME:
         case ID3FID_CONTENTGROUP:
         case ID3FID_TITLE:
         case ID3FID_SUBTITLE:
+        case ID3FID_INITIALKEY:
+        case ID3FID_LANGUAGE:
+        case ID3FID_SONGLEN:
+        case ID3FID_MEDIATYPE:
+        case ID3FID_ORIGALBUM:
+        case ID3FID_ORIGFILENAME:
+        case ID3FID_ORIGLYRICIST:
+        case ID3FID_ORIGARTIST:
+        case ID3FID_ORIGYEAR:
+        case ID3FID_FILEOWNER:
         case ID3FID_LEADARTIST:
         case ID3FID_BAND:
         case ID3FID_CONDUCTOR:
         case ID3FID_MIXARTIST:
-        case ID3FID_ALBUM:
-        case ID3FID_YEAR:
-        case ID3FID_COMPOSER:
-        case ID3FID_COPYRIGHT:
-        case ID3FID_CONTENTTYPE:
+        case ID3FID_PARTINSET:
+        case ID3FID_PUBLISHER:
         case ID3FID_TRACKNUM:
+        case ID3FID_RECORDINGDATES:
+        case ID3FID_NETRADIOSTATION:
+        case ID3FID_NETRADIOOWNER:
+        case ID3FID_SIZE:
+        case ID3FID_ISRC:
+        case ID3FID_ENCODERSETTINGS:
+        case ID3FID_YEAR:
         {
           char *sText = ID3_GetString(myFrame, ID3FN_TEXT);
           cout << sText << endl;
@@ -282,7 +315,24 @@ void PrintInformation(ID3_Tag &myTag)
             nDataSize = myFrame->Field(ID3FN_DATA).Size();
           cout << "(" << nSymbol << "): " << sOwner
                << ", " << nDataSize << " bytes";
-
+          break;
+        }
+        case ID3FID_AUDIOCRYPTO:
+        case ID3FID_EQUALIZATION:
+        case ID3FID_EVENTTIMING:
+        case ID3FID_CDID:
+        case ID3FID_MPEGLOOKUP:
+        case ID3FID_OWNERSHIP:
+        case ID3FID_PRIVATE:
+        case ID3FID_POSITIONSYNC:
+        case ID3FID_BUFFERSIZE:
+        case ID3FID_VOLUMEADJ:
+        case ID3FID_REVERB:
+        case ID3FID_SYNCEDLYRICS:
+        case ID3FID_SYNCEDTEMPO:
+        case ID3FID_METACRYPTO:
+        {
+          cout << " (unimplemented)" << endl;
           break;
         }
         default:
@@ -313,33 +363,43 @@ int main( int argc, char *argv[])
     iOpt = getopt_long (argc, argv, "vha", long_options, &option_index);
 
     if (iOpt == -1)
+    {
       break;
+    }
 
-    if (iOpt == 0) iOpt = iLongOpt;
+    if (iOpt == 0)
+    {
+      iOpt = iLongOpt;
+    }
 
     switch (iOpt)
     {
       case 'v':
+      {
         PrintVersion(argv[0]);
         exit (0);
         break;
-        
-
+      }
       case 'h':
+      {
         PrintUsage(argv[0]);
         exit (0);
         break;
-
+      }
       case 'a':
+      {
         bTestAssignment = true;
         break;
-
+      }
       case '?':
+      {
         bError = true;
         break;
-
+      }
       default:
+      {
         cout << "?? getopt returned character code " << iOpt << " ??" << endl;
+      }
     }
   }
   if (bError)
@@ -379,6 +439,12 @@ int main( int argc, char *argv[])
 }
 
 // $Log: demo_info.cpp,v $
+// Revision 1.6  1999/12/26 00:29:55  scott
+// (GetDescription): Reformatted.  Descriptions now match those from
+// www.id3.org.  Added descriptions for new frame id's.
+// (PrintInformation): Updated for added frames.  Now handles
+// unimplemented frames.
+//
 // Revision 1.5  1999/12/23 15:56:26  scott
 // Added check and include for config.h.
 //
