@@ -1,3 +1,83 @@
+2000-05-12  Scott Haug  <scott@id3.org>
+
+	* include/id3/field.h: 
+	- Updated luint parameter, return type with more descriptive type name
+	  (either size_t, index_t, or flags_t)
+	- (struct ID3_FrameDef): Removed lPriority and parseHandler fields
+
+	* include/id3/tag.h: 
+	- CreateFile now returns an ID3_Err
+	- ID3_IsTagHeader now returns an int32
+
+	* src/field.cpp: 
+	- Removed priorities and parse handler func pointers from frame def
+	  entries
+	- Updated luint parameter, return type with more descriptive type name
+	  (either size_t, index_t, or flags_t)
+
+	* src/frame_render.cpp 
+	(Render): 
+	- Updated luint parameter, return type with more descriptive type name
+	  (either size_t, index_t, or flags_t)
+	- No longer calls UpdateStringTypes, instead iterates through the 
+	  fields, setting the encoding for each depending on the value of the
+	  ENCODING field.
+
+	* src/header_frame.cpp 
+	(SetUnknownFrame): parseHandler no longer a member of FrameDef
+	(operator=): parseHandler no longer a member of FrameDef
+
+	* src/header.cpp:
+	* src/header_tag.cpp 
+	(SetSpec): Parameter no longer const
+
+	* src/tag.cpp 
+	(ID3_IsTagHeader): Return an int32 rather than an lsint
+	(Clear): Now sets the header's spec to the latest version
+
+	* src/tag_file.cpp 
+	(exists): Returns 'false' rather than throwing
+	(CreateFile): Returns the error encountered rather than throwing
+	(OpenFileForWriting): Returns the error rather than throwing.
+	(OpenFileForReading): Returns the error rather than throwing.
+	(Link): Return 0 rather than throwing
+	(Update): Creates a file if opening it for writing files, now renders
+	a v2 tag before rendering a v1 tag
+
+	* src/tag_parse.cpp 
+	(Parse): removed call to Clear(), since we might want to parse more
+	information into an already-full tag
+	(ParseFromHandle): Return with a 0 rather than throw if there's an
+	error either seeking or reading the file
+
+	* src/tag_parse_v1.cpp 
+	(ParseID3v1): Exit from the function, rather than throw, if it isn't
+	possible to seek to 128 bytes from the end of the file (i.e., empty 
+	files)
+
+	* src/tag_render.cpp
+	(RenderV1ToHandle): If file size is less than the length of an id3v1
+	tag, don't even bother looking for one, but rather append the tag 
+	at the end.  This allows writing tags to empty files.
+
+	* include/id3/error.h: 
+	* include/id3/frame.h: 
+	* include/id3/globals.h: 
+	* include/id3/header.h: 
+	* include/id3/misc_support.h: 
+	* include/id3/utils.h: 
+	* src/error.cpp: 
+	* src/field_binary.cpp: 
+	* src/field_integer.cpp: 
+	* src/field_string_ascii.cpp: 
+	* src/field_string_unicode.cpp: 
+	* src/frame.cpp: 
+	* src/frame_parse.cpp: 
+	* src/misc_support.cpp: 
+	* src/utils.cpp: 
+	Updated luint parameter, return type with more descriptive type name
+	(either size_t, index_t, or flags_t)
+
 2000-05-11  Scott Haug  <scott@id3.org>
 
 	* include/id3/flags.h 
