@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.17 2000/05/01 13:04:47 eldamitri Exp $
+# $Id: Makefile.am,v 1.18 2000/05/10 16:31:54 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -20,7 +20,7 @@ EXTRA_DIST =                    \
 	id3lib.spec             \
         id3lib.spec.in          \
         reconf
-SUBDIRS = . m4 doc src include zlib examples
+SUBDIRS = . m4 zlib doc include src examples
 
 INCLUDES = @ID3LIB_DEBUG_FLAGS@
 
