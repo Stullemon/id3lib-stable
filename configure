@@ -9792,7 +9792,7 @@ rm -f conftest.$ac_objext conftest.$ac_ext
     echo "$as_me:$LINENO: result: const char **" >&5
 echo "${ECHO_T}const char **" >&6
     cat >>confdefs.h <<\_ACEOF
-#define ID3LIB_ICONV_OLDSTYLE 1
+#define ID3LIB_ICONV_CONSTSOURCE 1
 _ACEOF
 
     #we'll check out the need of

@@ -1,4 +1,4 @@
-# $Id: configure.in,v 1.68 2003/03/02 16:37:12 t1mpy Exp $
+# $Id: configure.in,v 1.69 2004/04/11 15:25:49 t1mpy Exp $
 
 # Copyright 1999, 2000 Scott Thomas Haug <eldamitri@users.sourceforge.net>
 # Copyright (C) 2002 Thijmen Klok <thijmen@id3lib.org>
@@ -168,7 +168,7 @@ if test $has_iconv = 1; then
 		iconv_oldstyle=1, iconv_oldstyle=0)
   if test $iconv_oldstyle = 1; then
     AC_MSG_RESULT(const char **)
-    AC_DEFINE(ID3LIB_ICONV_OLDSTYLE)
+    AC_DEFINE(ID3LIB_ICONV_CONSTSOURCE)
     #we'll check out the need of
     #typecast in the call of iconv_open
     AC_MSG_CHECKING(whether to typecast in iconv)
