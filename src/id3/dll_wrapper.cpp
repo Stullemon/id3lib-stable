@@ -1,4 +1,4 @@
-// $Id: dll_wrapper.cpp,v 1.5 1999/11/15 20:23:48 scott Exp $
+// $Id: dll_wrapper.cpp,v 1.6 1999/11/19 17:13:19 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -191,10 +191,10 @@ void ID3Tag_Update(ID3_Tag *tag)
 
 
 CDLLEXPORT
-void ID3Tag_Strip(ID3_Tag *tag, bool v1Also)
+void ID3Tag_Strip(ID3_Tag *tag, luint ulTagFlags)
 {
   if (tag)
-    tag->Strip(v1Also);
+    tag->Strip(ulTagFlags);
     
   return ;
 }
@@ -489,6 +489,10 @@ void ID3Field_ToFile(ID3_Field *field, char *fileName)
 #endif
 
 // $Log: dll_wrapper.cpp,v $
+// Revision 1.6  1999/11/19 17:13:19  scott
+// * dll_wrapper.cpp (ID3Tag_Strip): Updated for interface change to
+// Tag::Strip.  Now accepts tag flags rather than a v1 boolean.
+//
 // Revision 1.5  1999/11/15 20:23:48  scott
 // Added include for config.h.
 //
