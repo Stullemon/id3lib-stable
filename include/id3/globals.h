@@ -1,4 +1,4 @@
-/* $Id: globals.h,v 1.25 2000/05/29 06:51:04 eldamitri Exp $
+/* $Id: globals.h,v 1.26 2000/06/22 21:00:41 eldamitri Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags Copyright
  * 1999, 2000 Scott Thomas Haug
@@ -279,7 +279,7 @@ ID3_ENUM(ID3_V1Lengths)
  **
  ** @author Dirk Mahoney (dirk@id3.org)
  ** @author Scott Thomas Haug (sth2@cs.wustl.edu)
- ** @version $Id: globals.h,v 1.25 2000/05/29 06:51:04 eldamitri Exp $
+ ** @version $Id: globals.h,v 1.26 2000/06/22 21:00:41 eldamitri Exp $
  ** @see ID3_Tag
  **/
 ID3_STRUCT(ID3V1_Tag)
@@ -338,7 +338,6 @@ ID3_ENUM(ID3_Err)
   ID3E_NoFile,                  /**< No file to parse */
   ID3E_ReadOnly,                /**< Attempting to write to a read-only file */
   ID3E_zlibError                /**< Error in compression/uncompression */
-
 };
 
 ID3_ENUM(ID3_ContentType)
