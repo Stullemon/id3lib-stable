@@ -1,4 +1,4 @@
-// $Id: tag_parse.cpp,v 1.26 2000/09/14 23:54:08 eldamitri Exp $
+// $Id: tag_parse.cpp,v 1.27 2000/09/27 08:36:25 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,12 +28,139 @@
 #include <config.h> // Must include before zlib.h to compile on WinCE
 #endif
 
+#include "debug.h"
+
+#include <zlib.h>
 #include <string.h>
 #include <memory.h>
-#include <zlib.h>
+
 #include "tag.h"
 #include "uint28.h"
 #include "utils.h"
+#include "reader_decorators.h"
+#include "readers.h"
+#include "strings.h"
+
+size_t ID3_ParseFrames(ID3_Tag& tag, ID3_Reader& rdr)
+{ 
+  ID3_Reader::pos_type beg = rdr.getCur();
+  ID3_Reader::pos_type last_pos = beg;
+  size_t total_size = 0; 
+  size_t frame_size = 0; 
+  id3::WindowedReader wr(rdr);
+  while (wr.getCur() < wr.getEnd() && wr.peekChar() != '\0')
+  { 
+    ID3D_NOTICE( "ID3_ParseFrames(): wr.getBeg() = " << wr.getBeg() );
+    ID3D_NOTICE( "ID3_ParseFrames(): wr.getCur() = " << wr.getCur() );
+    ID3D_NOTICE( "ID3_ParseFrames(): wr.getEnd() = " << wr.getEnd() );
+    last_pos = wr.getCur();
+    ID3_Frame* f = new ID3_Frame; 
+    f->SetSpec(tag.GetSpec());
+    f->Parse(wr);
+    frame_size = wr.getCur() - last_pos;
+    ID3D_NOTICE( "ID3_ParseFrames(): frame_size = " << frame_size );
+    total_size += frame_size;
+     
+    if (f->BadParse()) 
+    { 
+      ID3D_WARNING( "ID3_ParseFrames(): bad parse, deleting frame");
+      // bad parse!  we can't attach this frame.  should probably log this 
+      // TODO: log this 
+      delete f; 
+    } 
+    else if (frame_size == 0)
+    { 
+      // There is a problem. 
+      // If the frame size is 0, then we can't progress. 
+      ID3D_WARNING( "ID3_ParseFrames(): frame size is 0, can't continue parsing frames");
+      delete f; 
+      // Break for now. 
+      break; 
+    } 
+    else if (f->GetID() != ID3FID_METACOMPRESSION) 
+    { 
+      ID3D_NOTICE( "ID3_ParseFrames(): attaching non-compressed frame");
+      // a good, uncompressed frame.  attach away! 
+      tag.AttachFrame(f); 
+    } 
+    else 
+    { 
+      ID3D_NOTICE( "ID3_ParseFrames(): parsing ID3v2.2.1 compressed frame");
+      // hmm.  an ID3v2.2.1 compressed frame.  It contains 1 or more compressed
+      // frames.  Uncompress and call ParseFrames recursively.
+      const uchar* bin = f->Field(ID3FN_DATA).GetBinary(); 
+      if (*bin++ != 'z') 
+      { 
+        // unknown compression method 
+        /// \todo log this 
+      } 
+      else 
+      { 
+        size_t new_size = id3::parseNumber(bin);
+        bin += sizeof(uint32);
+        size_t old_size = f->GetDataSize() - sizeof(uint32) - 1;
+        id3::CompressedMemoryReader cmr(bin, old_size, new_size);
+        ID3_ParseFrames(tag, cmr);
+        if (cmr.getEnd() != cmr.getCur())
+        {
+          // hmm.  it didn't parse the entire uncompressed data.  wonder why. 
+          /// \todo log this. 
+        } 
+      } 
+    } 
+  } 
+  if (wr.peekChar() == '\0')
+  {
+    ID3D_NOTICE( "ID3_ParseFrames: done parsing, padding at postion " << wr.getCur() );
+  }
+  else
+  {
+    ID3D_NOTICE( "ID3_ParseFrames: done parsing, [cur, end] = [" << wr.getCur() << ", " << wr.getEnd() << "]" );
+  }
+} 
+
+void ID3_Tag::Parse(ID3_Reader& reader)
+{
+  ID3_Reader::pos_type beg = reader.getCur();
+  ID3D_NOTICE( "ID3_Tag::Parse(ID3_Reader&): rdr.getCur() = " << beg );
+  
+  id3::WindowedReader wr(reader);
+  wr.setWindow(beg, ID3_TagHeader::SIZE);
+  wr.setCur(wr.getBeg());
+  ID3D_NOTICE( "ID3_Tag::Parse(ID3_Reader&): before hdr, beg = " << wr.getBeg() );
+  ID3D_NOTICE( "ID3_Tag::Parse(ID3_Reader&): before hdr, cur = " << wr.getCur() );
+  ID3D_NOTICE( "ID3_Tag::Parse(ID3_Reader&): before hdr, end = " << wr.getEnd() );
+  _hdr.Parse(wr);
+  ID3D_NOTICE( "ID3_Tag::Parse(ID3_Reader&): after hdr,  cur = " << (int) wr.getCur() );
+
+  if (wr.getCur() == beg)
+  {
+    return;
+  }
+
+  size_t data_size = _hdr.GetDataSize();
+  ID3D_NOTICE( "ID3_Tag::Parse(ID3_Reader&): data_size = " << data_size);
+
+  wr.setWindow(wr.getCur(), data_size);
+  ID3D_NOTICE( "ID3_Tag::Parse(ID3_Reader&): data window beg = " << wr.getBeg() );
+  ID3D_NOTICE( "ID3_Tag::Parse(ID3_Reader&): data window cur = " << wr.getCur() );
+  ID3D_NOTICE( "ID3_Tag::Parse(ID3_Reader&): data window end = " << wr.getEnd() );
+  if (_hdr.GetUnsync())
+  {
+    id3::UnsyncedReader ur(wr);
+    ID3D_NOTICE( "ID3_Tag::Parse(ID3_Reader&): unsync beg = " << ur.getBeg() );
+    ID3D_NOTICE( "ID3_Tag::Parse(ID3_Reader&): unsync cur = " << ur.getCur() );
+    ID3D_NOTICE( "ID3_Tag::Parse(ID3_Reader&): unsync end = " << ur.getEnd() );
+    ID3_ParseFrames(*this, ur);
+  }
+  else
+  {
+    ID3_ParseFrames(*this, wr);
+  }
+
+  // set the flag which says that the tag hasn't changed
+  _changed = false;
+}
 
 size_t ID3_ParseFrames(ID3_Tag& tag, const uchar* const data, size_t size) 
 { 
@@ -79,7 +206,7 @@ size_t ID3_ParseFrames(ID3_Tag& tag, const uchar* const data, size_t size)
       } 
       else 
       { 
-        uint32 new_size = ParseNumber(&bin[1]); 
+        uint32 new_size = id3::parseNumber(&bin[1]); 
          
         uchar* uncompressed = new uchar[new_size]; 
          
@@ -143,33 +270,24 @@ size_t ID3_ParseFrames(ID3_Tag& tag, const uchar* const data, size_t size)
 size_t ID3_Tag::Parse(const uchar header[ID3_TagHeader::SIZE],
 		      const uchar *buffer)
 {
-  size_t hdr_size = _hdr.Parse(header, ID3_TagHeader::SIZE);
-  if (!hdr_size)
+  size_t size = ID3_Tag::IsV2Tag(header);
+  if (0 == size)
   {
     return 0;
   }
+  id3::bstring buf(header, ID3_TagHeader::SIZE);
+  buf.append(buffer, size);
 
-  size_t data_size = _hdr.GetDataSize();
-  uchar* unsynced_data = NULL;
-  if (_hdr.GetUnsync())
-  {
-    unsynced_data = new uchar[data_size];
-    memcpy(unsynced_data, buffer, data_size);
-    data_size = ID3_ReSync(unsynced_data, data_size);
-    buffer = unsynced_data;
-  }
-
-  ID3_ParseFrames(*this, buffer, data_size);
+  id3::MemoryReader mr(reinterpret_cast<const char *>(buf.data()), buf.size());
+  ID3_Reader::pos_type beg = mr.getCur();
+  this->Parse(mr);
+  return mr.getCur() - beg;
 
   // set the flag which says that the tag hasn't changed
   _changed = false;
-
-  delete [] unsynced_data;
-  
-  return hdr_size + _hdr.GetDataSize();
 }
 
-size_t ParseID3v2(ID3_Tag& tag, fstream& file)
+size_t ParseID3v2(ID3_Tag& tag, ifstream& file)
 {
   size_t size = 0;
 
@@ -177,43 +295,23 @@ size_t ParseID3v2(ID3_Tag& tag, fstream& file)
   {
     return 0;
   }
-  uchar header[ID3_TAGHEADERSIZE];
-  file.read(header, ID3_TAGHEADERSIZE);
-  if (file.gcount() != ID3_TAGHEADERSIZE)
-  {
-    return 0;
-  }
-  
-  size_t tagSize = ID3_Tag::IsV2Tag(header);
-  if (tagSize > 0)
-  {
-    uchar* bin = new uchar[tagSize];
-    file.read(bin, tagSize - ID3_TagHeader::SIZE);
-    if (tagSize != (size_t)file.gcount())
-    {
-      // log this...
-      //return 0;
-      //ID3_THROW_DESC(ID3E_NoFile, 
-      //               "ID3_Tag::ParseFromHandle: Ack! Couldn't read");
-    }
-    
-    size += tag.Parse(header, bin);
-    
-    delete[] bin;
-  }
-
-  return size;
+  id3::IStreamReader isr(file);
+  ID3D_NOTICE( "ParseID3v2: Created istreamreader, cur = " << isr.getCur() );
+  ID3_Reader::pos_type beg = isr.getCur();
+  tag.Parse(isr);
+  ID3_Reader::pos_type end = isr.getCur();
+  return end - beg;
 }
 
-size_t ParseMusicMatch(ID3_Tag&, fstream&);
-size_t ParseLyrics3(ID3_Tag&, fstream&);
-size_t ParseLyrics3v2(ID3_Tag&, fstream&);
-size_t ParseID3v1(ID3_Tag&, fstream&);
+size_t ParseMusicMatch(ID3_Tag&, ifstream&);
+size_t ParseLyrics3(ID3_Tag&, ifstream&);
+size_t ParseLyrics3v2(ID3_Tag&, ifstream&);
+size_t ParseID3v1(ID3_Tag&, ifstream&);
 
 void ID3_Tag::ParseFile()
 {
-  fstream file;
-  if (ID3E_NoError != ID3_OpenReadableFile(this->GetFileName(), file))
+  ifstream file;
+  if (ID3E_NoError != id3::openReadableFile(this->GetFileName(), file))
   {
     // log this...
     return;
@@ -222,7 +320,7 @@ void ID3_Tag::ParseFile()
   size_t bytes = 0;
   _file_tags.clear();
   _prepended_bytes = 0;
-  _file_size = ID3_GetFileSize(file);
+  _file_size = id3::getFileSize(file);
   do
   {
     file.seekg(_prepended_bytes, ios::beg);
