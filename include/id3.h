@@ -1,4 +1,4 @@
-/* $Id: id3.h,v 1.3 2000/04/22 23:35:49 eldamitri Exp $
+/* $Id: id3.h,v 1.4 2000/04/24 14:59:56 eldamitri Exp $
  * 
  * id3lib: a software library for creating and manipulating id3v1/v2 tags
  * Copyright 1999, 2000  Scott Thomas Haug
@@ -49,16 +49,17 @@ extern "C"
   void        ID3Tag_SetCompression       (ID3Tag *tag, bool comp);
   void        ID3Tag_SetPadding           (ID3Tag *tag, bool pad);
   void        ID3Tag_AddFrame             (ID3Tag *tag, ID3Frame *frame);
+  void        ID3Tag_AttachFrame          (ID3Tag *tag, ID3Frame *frame);
   void        ID3Tag_AddFrames            (ID3Tag *tag, ID3Frame *frames, 
                                            luint num);
   void        ID3Tag_RemoveFrame          (ID3Tag *tag, ID3Frame *frame);
-  void        ID3Tag_Parse                (ID3Tag *tag, 
+  ID3_Err     ID3Tag_Parse                (ID3Tag *tag, 
                                            uchar header[ID3_TAGHEADERSIZE],
                                            uchar *buffer);
   luint       ID3Tag_Link                 (ID3Tag *tag, char *fileName);
-  void        ID3Tag_Update               (ID3Tag *tag);
-  void        ID3Tag_UpdateType           (ID3Tag *tag, const luint type);
-  void        ID3Tag_Strip                (ID3Tag *tag, luint ulTagFlags);
+  ID3_Err     ID3Tag_Update               (ID3Tag *tag);
+  ID3_Err     ID3Tag_UpdateByTagType      (ID3Tag *tag, const luint type);
+  ID3_Err     ID3Tag_Strip                (ID3Tag *tag, luint ulTagFlags);
   ID3Frame   *ID3Tag_FindFrameWithID      (ID3Tag *tag, ID3_FrameID id);
   ID3Frame   *ID3Tag_FindFrameWithINT     (ID3Tag *tag, ID3_FrameID id,
                                            ID3_FieldID fld, luint data);
