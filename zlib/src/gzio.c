@@ -1,11 +1,11 @@
 /* gzio.c -- IO on .gz files
- * Copyright (C) 1995-1998 Jean-loup Gailly.
+ * Copyright (C) 1995-2002 Jean-loup Gailly.
  * For conditions of distribution and use, see copyright notice in zlib.h
  *
  * Compile this file with -DNO_DEFLATE to avoid the compression code.
  */
 
-/* @(#) $Id: gzio.c,v 1.3 2000/10/14 23:29:18 eldamitri Exp $ */
+/* @(#) $Id: gzio.c,v 1.4 2002/06/20 02:16:27 t1mpy Exp $ */
 
 #include <stdio.h>
 
@@ -153,11 +153,7 @@ local gzFile gz_open (path, mode, fd)
     s->stream.avail_out = Z_BUFSIZE;
 
     errno = 0;
-#if !defined(WINCE) /* CE does not support fdopen */
     s->file = fd < 0 ? F_OPEN(path, fmode) : (FILE*)fdopen(fd, fmode);
-#else
-    s->file = F_OPEN(path, fmode);
-#endif
 
     if (s->file == NULL) {
         return destroy(s), (gzFile)Z_NULL;
@@ -184,14 +180,12 @@ local gzFile gz_open (path, mode, fd)
 /* ===========================================================================
      Opens a gzip (.gz) file for reading or writing.
 */
-#if !defined(WINCE)
 gzFile ZEXPORT gzopen (path, mode)
     const char *path;
     const char *mode;
 {
     return gz_open (path, mode, -1);
 }
-#endif
 
 /* ===========================================================================
      Associate a gzFile with the file descriptor fd. fd is not dup'ed here
@@ -758,12 +752,7 @@ int ZEXPORT gzrewind (file)
     s->crc = crc32(0L, Z_NULL, 0);
 	
     if (s->startpos == 0) { /* not a compressed file */
-#if !defined(WINCE) /* windows CE has fseek, but not rewind */
 	rewind(s->file);
-#else
-        fseek(s->file,0,SEEK_SET); /* do a rewind.  could have been done with macro */
-#endif
-        
 	return 0;
     }
 

@@ -1,7 +1,7 @@
 /* zlib.h -- interface of the 'zlib' general purpose compression library
-  version 1.1.3, July 9th, 1998
+  version 1.1.4, March 11th, 2002
 
-  Copyright (C) 1995-1998 Jean-loup Gailly and Mark Adler
+  Copyright (C) 1995-2002 Jean-loup Gailly and Mark Adler
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -26,12 +26,7 @@
   The data format used by the zlib library is described by RFCs (Request for
   Comments) 1950 to 1952 in the files ftp://ds.internic.net/rfc/rfc1950.txt
   (zlib format), rfc1951.txt (deflate format) and rfc1952.txt (gzip format).
-
-  *** NOTE***
-  This version of zlib has minor modifications to handle compilation under
-  Windows CE.
-
-  */
+*/
 
 #ifndef _ZLIB_H
 #define _ZLIB_H
@@ -42,7 +37,7 @@
 extern "C" {
 #endif
 
-#define ZLIB_VERSION "1.1.3"
+#define ZLIB_VERSION "1.1.4"
 
 /* 
      The 'zlib' compression library provides in-memory compression and
@@ -661,10 +656,7 @@ ZEXTERN int ZEXPORT uncompress OF((Bytef *dest,   uLongf *destLen,
 
 typedef voidp gzFile;
 
-#if !defined(WINCE) /* CE 2.11 does not support fdopen */
 ZEXTERN gzFile ZEXPORT gzopen  OF((const char *path, const char *mode));
-#endif
-
 /*
      Opens a gzip (.gz) file for reading or writing. The mode parameter
    is as in fopen ("rb" or "wb") but can also include a compression level

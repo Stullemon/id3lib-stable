@@ -1,5 +1,5 @@
 /* zutil.h -- internal interface and configuration of the compression library
- * Copyright (C) 1995-1998 Jean-loup Gailly.
+ * Copyright (C) 1995-2002 Jean-loup Gailly.
  * For conditions of distribution and use, see copyright notice in zlib.h
  */
 
@@ -8,7 +8,7 @@
    subject to change. Applications should only use zlib.h.
  */
 
-/* @(#) $Id: zutil.h,v 1.3 2000/10/14 23:29:18 eldamitri Exp $ */
+/* @(#) $Id: zutil.h,v 1.4 2002/06/20 02:11:51 t1mpy Exp $ */
 
 #ifndef _Z_UTIL_H
 #define _Z_UTIL_H
@@ -94,11 +94,6 @@ extern const char *z_errmsg[10]; /* indexed by 2-zlib_error */
 
 #ifdef WIN32 /* Window 95 & Windows NT */
 #  define OS_CODE  0x0b
-#endif
-
-#if defined(WINCE)
-#  include <malloc.h>
-#  include <stdlib.h>
 #endif
 
 #if defined(VAXC) || defined(VMS)
