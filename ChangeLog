@@ -1,3 +1,83 @@
+2000-05-06  Scott Haug  <scott@id3.org>
+
+	* examples/demo_info.cpp 
+	(PrintInformation): Now prints out timestamp format for synced lyrics
+
+	* include/id3/tag.h: 
+	* src/tag_parse.cpp: 
+	(Parse): Now returns the tag size
+
+	* include/id3/utils.h: 
+	Commented out namespace, RenderNumber now returns number of bytes 
+	rendered
+
+	* src/field_integer.cpp 
+	Replaced '#include "misc_support.h"' with '#include "utils.h"'
+	(RenderInteger): Minor cleanup
+
+	* src/frame_render.cpp: 
+	Replaced '#include "misc_support.h"' with '#include "utils.h"'
+	(Render): Minor cleanup
+
+	* src/header_frame.cpp 
+	(Parse): Minor cleanup
+	(Render): Minor cleanup
+
+	* src/header_tag.cpp 
+	(Render): Minor cleanup
+	(Parse): Minor cleanup
+
+	* include/id3/misc_support.h: 
+	* src/misc_support.cpp: 
+	Moved utility functions to utils.cpp
+
+	* src/tag.cpp
+	(SetupTag): Minor cleanups
+
+	* src/tag_file.cpp
+	(Link): Minor cleanups
+
+	* src/tag_parse_lyrics3.cpp 
+	(ID3_RenderTimeStamp): Added new function
+	(ID3_Lyrics3ToSylt): Cleaned up the function, minor bugfix for newlines
+
+	* src/tag_render.cpp: 
+	Minor cleanups
+
+	* src/utils.cpp
+	(ParseNumber): New, easier-to-understand implementation
+	(RenderNumber): 
+	- New, easier-to-understand implementation
+	- Now returns number of bytes rendered
+
+	* src/field_string_ascii.cpp: 
+	* src/field_string_unicode.cpp: 
+	* src/tag_find.cpp: 
+	* src/tag_parse.cpp: 
+	Replaced '#include "misc_support.h"' with '#include "utils.h"'
+
+	* configure.in: 
+	Not having sys/param.h or wchar.h doesn't prevent compilation.
+
+	* examples/demo_info.cpp 
+	(PrintUsage): Parameter now const
+	(PrintVersion): Parameter now const
+	(PrintInformation): Parameter now const, now prints out info about
+	synced lyrics
+
+	* include/id3/field.h: 
+	Added GetBinary() method
+
+	* include/id3/globals.h: 
+	Removed VerCtl enumeration, and LyricsContent enumeration.
+
+	* include/id3/tag.h 
+	* src/tag_file.cpp: 
+	The Link() methods' filename parameter is now const.
+
+	* src/tag_parse_lyrics3.cpp: 
+	Bugfixes to the synchronized lyrics conversion.
+
 2000-05-04  Scott Haug  <scott@id3.org>
 
 	* include/id3/Makefile.am 
