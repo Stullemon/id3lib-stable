@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.21 2000/06/23 02:50:28 eldamitri Exp $
+# $Id: Makefile.am,v 1.22 2000/08/27 22:37:52 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -14,13 +14,26 @@
 AUTOMAKE_OPTIONS = 1.4
 
 EXTRA_DIST =                    \
-	HISTORY                 \
+        HISTORY                 \
         config.h.win32          \
         config.h.win32.in       \
-	id3lib.spec             \
+        id3lib.spec             \
         id3lib.spec.in          \
         reconf
-SUBDIRS = . m4 zlib doc include src examples
+if ID3_NEEDZLIB
+zlib_subdir = zlib
+else
+zlib_subdir = 
+endif
+
+if ID3_NEEDPOPT
+popt_subdir = popt
+else
+popt_subdir = 
+endif
+
+SUBDIRS =  . m4 $(popt_subdir) $(zlib_subdir) doc include src examples
+DIST_SUBDIRS = . m4 popt zlib doc include src examples
 
 INCLUDES = @ID3LIB_DEBUG_FLAGS@
 
