@@ -1,5 +1,20 @@
 2000-06-22  Scott Haug  <scott@id3.org>
 
+	* examples/230-unicode.tag:
+	The BOMs were incorrect.  Now they're correct.
+	
+	* src/field_string_unicode.cpp: 
+	(ParseUnicodeString): Updated with definitive comment on the role and
+	value of the BOM.  Fixed bug that was swapping byte-order when it 
+	shouldn't, and not swapping when it should.
+	(RenderUnicodeString): Renders the BOM correctly now.
+
+	* examples/test_unicode.cpp
+	* examples/test_remove.cpp
+	* examples/test_pic.cpp 
+	* examples/test_compression.cpp 
+	(main): Remove the call to Update() - it's unnecessary.
+
 	* src/tag_parse_lyrics3.cpp 
 	(ParseLyrics3): 
 	- Makes use of newly defined AddLyrics and AddSyncLyrics functions in 
