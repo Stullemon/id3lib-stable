@@ -1,4 +1,4 @@
-// $Id: frame_parse.cpp,v 1.22 2000/10/03 04:38:12 eldamitri Exp $
+// $Id: frame_parse.cpp,v 1.23 2000/10/09 04:27:26 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -23,8 +23,6 @@
 // contributed to id3lib.  See the ChangeLog file for a list of changes to
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
-
-#include <zlib.h>
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
@@ -52,13 +50,13 @@ using namespace dami;
 
 bool id3::v2::parseFields(ID3_Reader& rdr, ID3_FrameImpl& frame)
 {
-  ::io::ExitTrigger et(rdr);
+  io::ExitTrigger et(rdr);
   ID3_TextEnc enc = ID3TE_ASCII;  // set the default encoding 
   ID3_V2Spec spec = frame.GetSpec(); 
   // parse the frame's fields  
   ID3D_NOTICE( "ID3_FrameImpl::Parse(): num_fields = " << 
-               frame.GetNumFields() );
-  for (size_t i = 0; i < frame.GetNumFields(); ++i)
+               frame.NumFields() );
+  for (size_t i = 0; i < frame.NumFields(); ++i)
   {
     if (rdr.atEnd())
     { 
@@ -69,7 +67,7 @@ bool id3::v2::parseFields(ID3_Reader& rdr, ID3_FrameImpl& frame)
     } 
     
     ID3D_NOTICE( "ID3_FrameImpl::Parse(): field #" << i );
-    ID3_Field* fp = frame.GetFieldAt(i);
+    ID3_Field* fp = frame.GetFieldNum(i);
     if (NULL == fp)
     {
       // Ack!  Why is the field NULL?  Log this...
@@ -108,7 +106,7 @@ bool id3::v2::parseFields(ID3_Reader& rdr, ID3_FrameImpl& frame)
 
 bool ID3_FrameImpl::Parse(ID3_Reader& reader) 
 { 
-  ::io::ExitTrigger et(reader);
+  io::ExitTrigger et(reader);
   ID3D_NOTICE( "ID3_FrameImpl::Parse(): reader.getBeg() = " << reader.getBeg() );
   ID3D_NOTICE( "ID3_FrameImpl::Parse(): reader.getCur() = " << reader.getCur() );
   ID3D_NOTICE( "ID3_FrameImpl::Parse(): reader.getEnd() = " << reader.getEnd() );
@@ -123,24 +121,24 @@ bool ID3_FrameImpl::Parse(ID3_Reader& reader)
   ID3D_NOTICE( "ID3_FrameImpl::Parse(): found frame! id = " << _hdr.GetTextID() );
 
   // data is the part of the frame buffer that appears after the header  
-  const size_t data_size = _hdr.GetDataSize();
-  ID3D_NOTICE( "ID3_FrameImpl::Parse(): data_size = " << data_size );
-  if (reader.getEnd() < beg + data_size)
+  const size_t dataSize = _hdr.GetDataSize();
+  ID3D_NOTICE( "ID3_FrameImpl::Parse(): dataSize = " << dataSize );
+  if (reader.getEnd() < beg + dataSize)
   {
     ID3D_WARNING( "ID3_FrameImpl::Parse(): not enough data to parse frame" );
     return false;
   }
-  ::io::WindowedReader wr(reader, data_size);
+  io::WindowedReader wr(reader, dataSize);
   ID3D_NOTICE( "ID3_FrameImpl::Parse(): window getBeg() = " << wr.getBeg() );
   ID3D_NOTICE( "ID3_FrameImpl::Parse(): window getCur() = " << wr.getCur() );
   ID3D_NOTICE( "ID3_FrameImpl::Parse(): window getEnd() = " << wr.getEnd() );
   
-  unsigned long expanded_size = 0;
+  unsigned long origSize = 0;
   if (_hdr.GetCompression())
   {
-    ::io::NumberReader nr(wr);
-    expanded_size = nr.readNumber(sizeof(uint32));
-    ID3D_NOTICE( "ID3_FrameImpl::Parse(): frame is compressed, expanded_size = " << expanded_size );
+    io::BinaryNumberReader nr(wr);
+    origSize = nr.readNumber(sizeof(uint32));
+    ID3D_NOTICE( "ID3_FrameImpl::Parse(): frame is compressed, origSize = " << origSize );
   }
 
   if (_hdr.GetEncryption())
@@ -165,12 +163,12 @@ bool ID3_FrameImpl::Parse(ID3_Reader& reader)
   // expand out the data if it's compressed 
   if (!_hdr.GetCompression())
   {
-    success = ::id3::v2::parseFields(wr, *this);
+    success = id3::v2::parseFields(wr, *this);
   }
   else
   {
-    ::io::CompressedStreamReader csr(wr, expanded_size);
-    success = ::id3::v2::parseFields(csr, *this);
+    io::CompressedReader csr(wr, origSize);
+    success = id3::v2::parseFields(csr, *this);
   }
   et.setExitPos(wr.getCur());
 
