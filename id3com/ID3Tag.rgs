@@ -1,0 +1,26 @@
+HKCR
+{
+	ID3libCOM.ID3Tag.1 = s 'ID3Tag Class'
+	{
+		CLSID = s '{AEBA98BD-C36C-11D3-841B-0008C782A257}'
+	}
+	ID3libCOM.ID3Tag = s 'ID3Tag Class'
+	{
+		CLSID = s '{AEBA98BD-C36C-11D3-841B-0008C782A257}'
+		CurVer = s 'ID3libCOM.ID3Tag.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {AEBA98BD-C36C-11D3-841B-0008C782A257} = s 'ID3Tag Class'
+		{
+			ProgID = s 'ID3libCOM.ID3Tag.1'
+			VersionIndependentProgID = s 'ID3libCOM.ID3Tag'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{AEBA98B0-C36C-11D3-841B-0008C782A257}'
+		}
+	}
+}

@@ -1,0 +1,267 @@
+/////////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2000 John Adcock.  All rights reserved.
+/////////////////////////////////////////////////////////////////////////////
+//
+//	This file is subject to the terms of the GNU General Public License as
+//	published by the Free Software Foundation.  A copy of this license is
+//	included with this software distribution in the file COPYING.  If you
+//	do not have a copy, you may obtain a copy by writing to the Free
+//	Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+//	This software is distributed in the hope that it will be useful,
+//	but WITHOUT ANY WARRANTY; without even the implied warranty of
+//	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//	GNU General Public License for more details
+//
+/////////////////////////////////////////////////////////////////////////////
+// ID3COM.idl : IDL source for ID3COM.dll
+/////////////////////////////////////////////////////////////////////////////
+// Change Log
+//
+// Date          Developer             Changes
+//
+// 05 Jan 2000   John Adcock           Original Release    
+//
+/////////////////////////////////////////////////////////////////////////////
+
+// This file will be processed by the MIDL tool to
+// produce the type library (ID3libCOM.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+	typedef 
+	[
+		uuid(181CFC77-C770-11d3-841C-0008C782A257), 		
+		helpstring("ID3 Field Types")
+	]
+	enum
+	{
+	  /// No field
+	  ID3_FIELD_NOFIELD = 0,
+	  /// Text encoding (unicode or ASCII)
+	  ID3_FIELD_TEXTENC,
+	  /// Text field
+	  ID3_FIELD_TEXT,
+	  /// A URL
+	  ID3_FIELD_URL,
+	  /// Data field
+	  ID3_FIELD_DATA,
+	  /// Description field
+	  ID3_FIELD_DESCRIPTION,
+	  /// Owner field
+	  ID3_FIELD_OWNER,
+	  /// Email field
+	  ID3_FIELD_EMAIL,
+	  /// Rating field
+	  ID3_FIELD_RATING,
+	  /// Filename field
+	  ID3_FIELD_FILENAME,
+	  /// Language field
+	  ID3_FIELD_LANGUAGE,
+	  /// Picture type field
+	  ID3_FIELD_PICTURETYPE,
+	  /// Image format field
+	  ID3_FIELD_IMAGEFORMAT,
+	  /// Mimetype field
+	  ID3_FIELD_MIMETYPE,
+	  /// Counter field
+	  ID3_FIELD_COUNTER,
+	  /// Symbol field
+	  ID3_FIELD_SYMBOL,
+	  /// Volume adjustment field
+	  ID3_FIELD_VOLUMEADJ,
+	  /// Number of bits field
+	  ID3_FIELD_NUMBITS,
+	  /// Volume chage on the right channel
+	  ID3_FIELD_VOLCHGRIGHT,
+	  /// Volume chage on the left channel
+	  ID3_FIELD_VOLCHGLEFT,
+	  /// Peak volume on the right channel
+	  ID3_FIELD_PEAKVOLRIGHT,
+	  /// Peak volume on the left channel
+	  ID3_FIELD_PEAKVOLLEFT,
+	  /// Last field placeholder
+	  ID3_FIELD_LASTFIELDID
+	} eID3FieldTypes;
+
+
+	typedef 
+	[
+		uuid(385B5F8C-1F3C-11d3-83C6-0008C782A257), 		
+		helpstring("ID3 Frame Types")
+	]
+	enum
+	{
+		ID3_NOFRAME			= 0,
+		ID3_ORIGALBUM,
+		ID3_PUBLISHER,
+		ID3_ENCODEDBY,
+		ID3_ENCODERSETTINGS,
+		ID3_ORIGFILENAME,
+		ID3_LANGUAGE,
+		ID3_PARTINSET,
+		ID3_DATE,
+		ID3_TIME,
+		ID3_RECORDINGDATES,
+		ID3_MEDIATYPE,
+		ID3_FILETYPE,
+		ID3_NETRADIOSTATION,
+		ID3_NETRADIOOWNER,
+		ID3_LYRICIST,
+		ID3_ORIGARTIST,
+		ID3_ORIGLYRICIST,
+		ID3_SUBTITLE,
+		ID3_MIXARTIST,
+		ID3_USERTEXT,
+		ID3_CONTENTGROUP,
+		ID3_TITLE,
+		ID3_LEADARTIST,
+		ID3_BAND,
+		ID3_ALBUM,
+		ID3_YEAR,
+		ID3_CONDUCTOR,
+		ID3_COMPOSER,
+		ID3_COPYRIGHT,
+		ID3_CONTENTTYPE,
+		ID3_TRACKNUM,
+		ID3_COMMENT,
+		ID3_WWWAUDIOFILE,
+		ID3_WWWARTIST,
+		ID3_WWWAUDIOSOURCE,
+		ID3_WWWCOMMERCIALINFO,
+		ID3_WWWCOPYRIGHT,
+		ID3_WWWPUBLISHER,
+		ID3_WWWPAYMENT,
+		ID3_WWWRADIOPAGE,
+		ID3_WWWUSER,
+		ID3_INVOLVEDPEOPLE,
+		ID3_UNSYNCEDLYRICS,
+		ID3_PICTURE,
+		ID3_GENERALOBJECT,
+		ID3_UNIQUEFILEID,
+		ID3_PLAYCOUNTER,
+		ID3_POPULARIMETER,
+		ID3_GROUPINGREG,
+		ID3_CRYPTOREG
+	} eID3FrameTypes;
+
+	[
+		object,
+		uuid(A513A24E-C749-11D3-841C-0008C782A257),
+		dual,
+		helpstring("IID3Field Interface"),
+		pointer_default(unique)
+	]
+	interface IID3Field : IDispatch
+	{
+		[propget, id(1), helpstring("property Text")] HRESULT Text([in] long ItemNum, [out, retval] BSTR *pVal);
+		[propput, id(1), helpstring("property Text")] HRESULT Text([in] long ItemNum, [in] BSTR newVal);
+		[propget, id(2), helpstring("property Long")] HRESULT Long([out, retval] long *pVal);
+		[propput, id(2), helpstring("property Long")] HRESULT Long([in] long newVal);
+		[id(3), helpstring("method Clear")] HRESULT Clear();
+		[id(4), helpstring("method CopyDataToFile")] HRESULT CopyDataToFile(BSTR FileName);
+		[id(5), helpstring("method CopyDataFromFile")] HRESULT CopyDataFromFile(BSTR FileName);
+		[propget, id(6), helpstring("property NumTextItems")] HRESULT NumTextItems([out, retval] long *pVal);
+	};
+
+	[
+		object,
+		uuid(AEBA98BE-C36C-11D3-841B-0008C782A257),
+		dual,
+		helpstring("IID3Frame Interface"),
+		pointer_default(unique)
+	]
+	interface IID3Frame : IDispatch
+	{
+		[propget, id(1), helpstring("property Field")] HRESULT Field([in] eID3FieldTypes FieldType, [out, retval] IID3Field** pVal);
+		[id(2), helpstring("method Clear")] HRESULT Clear();
+		[propget, id(3), helpstring("property ID")] HRESULT ID([out, retval] eID3FrameTypes *pVal);
+		[propput, id(3), helpstring("property ID")] HRESULT ID([in] eID3FrameTypes newVal);
+		[propget, id(4), helpstring("property FrameName")] HRESULT FrameName([out, retval] BSTR *pVal);
+	};
+
+	[
+		object,
+		uuid(AEBA98BC-C36C-11D3-841B-0008C782A257),
+		dual,
+		helpstring("IID3Tag Interface"),
+		pointer_default(unique)
+	]
+	interface IID3Tag : IDispatch
+	{
+		[id(1), helpstring("method Link")] HRESULT Link(BSTR* FileName);
+		[id(2), helpstring("method Clear")] HRESULT Clear();
+		[propget, id(3), helpstring("property HasChanged")] HRESULT HasChanged([out, retval] VARIANT_BOOL *pVal);
+		[id(4), helpstring("method FindFrame")] HRESULT FindFrame([in] eID3FrameTypes FrameID, [in, defaultvalue(TRUE)] VARIANT_BOOL CreateNewIfNotFound, [out, retval] IID3Frame** pVal);
+		[propget, id(5), helpstring("property NumFrames")] HRESULT NumFrames([out, retval] long *pVal);
+		[propget, id(6), helpstring("property FrameByNum")] HRESULT FrameByNum([in] long FrameNum, [out, retval] IID3Frame** pVal);
+		[id(7), helpstring("method SaveV1Tag")] HRESULT SaveV1Tag();
+		[id(8), helpstring("method StripV1Tag")] HRESULT StripV1Tag();
+		[id(9), helpstring("method SaveV2Tag")] HRESULT SaveV2Tag();
+		[id(10), helpstring("method StripV2Tag")] HRESULT StripV2Tag();
+		[propget, id(11), helpstring("property Artist")] HRESULT Artist([out, retval] BSTR *pVal);
+		[propput, id(11), helpstring("property Artist")] HRESULT Artist([in] BSTR newVal);
+		[propget, id(12), helpstring("property Album")] HRESULT Album([out, retval] BSTR *pVal);
+		[propput, id(12), helpstring("property Album")] HRESULT Album([in] BSTR newVal);
+		[propget, id(13), helpstring("property Title")] HRESULT Title([out, retval] BSTR *pVal);
+		[propput, id(13), helpstring("property Title")] HRESULT Title([in] BSTR newVal);
+		[propget, id(14), helpstring("property Comment")] HRESULT Comment([out, retval] BSTR *pVal);
+		[propput, id(14), helpstring("property Comment")] HRESULT Comment([in] BSTR newVal);
+		[propget, id(15), helpstring("property Genre")] HRESULT Genre([out, retval] long *pVal);
+		[propput, id(15), helpstring("property Genre")] HRESULT Genre([in] long newVal);
+		[propget, id(16), helpstring("property Year")] HRESULT Year([out, retval] BSTR *pVal);
+		[propput, id(16), helpstring("property Year")] HRESULT Year([in] BSTR newVal);
+		[propget, id(17), helpstring("property Track")] HRESULT Track([out, retval] long *pVal);
+		[propput, id(17), helpstring("property Track")] HRESULT Track([in] long newVal);
+		[propget, id(18), helpstring("property LastPlayed")] HRESULT LastPlayed([out, retval] DATE *pVal);
+		[propput, id(18), helpstring("property LastPlayed")] HRESULT LastPlayed([in] DATE newVal);
+		[propget, id(19), helpstring("property HasV1Tag")] HRESULT HasV1Tag([out, retval] VARIANT_BOOL *pVal);
+		[propget, id(20), helpstring("property HasV2Tag")] HRESULT HasV2Tag([out, retval] VARIANT_BOOL *pVal);
+		[propget, id(21), helpstring("property HasLyrics")] HRESULT HasLyrics([out, retval] VARIANT_BOOL *pVal);
+		[id(22), helpstring("method FindFrameString")] HRESULT FindFrameString([in] eID3FrameTypes FrameID, [in] eID3FieldTypes FieldType, [in] BSTR FindString, [in, defaultvalue(TRUE)] VARIANT_BOOL CreateNewIfNotFound, [out, retval] IID3Frame** pVal);
+		[propget, id(23), helpstring("property PlayCount")] HRESULT PlayCount([in] BSTR EMailAddress, [out, retval] long *pVal);
+		[propput, id(23), helpstring("property PlayCount")] HRESULT PlayCount([in] BSTR EMailAddress, [in] long newVal);
+		[propget, id(24), helpstring("property Popularity")] HRESULT Popularity([in] BSTR EMailAddress, [out, retval] short *pVal);
+		[propput, id(24), helpstring("property Popularity")] HRESULT Popularity([in] BSTR EMailAddress, [in] short newVal);
+		[propget, id(25), helpstring("property TagCreated")] HRESULT TagCreated([out, retval] DATE *pVal);
+		[propput, id(25), helpstring("property TagCreated")] HRESULT TagCreated([in] DATE newVal);
+		[propget, id(26), helpstring("property PercentVolumeAdjust")] HRESULT PercentVolumeAdjust([out, retval] double *pVal);
+		[propput, id(26), helpstring("property PercentVolumeAdjust")] HRESULT PercentVolumeAdjust([in] double newVal);
+		[propget, id(DISPID_NEWENUM), restricted] HRESULT _NewEnum([out, retval] IUnknown** pRetVal);
+	};
+[
+	uuid(AEBA98B0-C36C-11D3-841B-0008C782A257),
+	version(1.0),
+	helpstring("ID3COM 1.0 Type Library")
+]
+library ID3COMLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+	[
+		uuid(AEBA98BD-C36C-11D3-841B-0008C782A257),
+		helpstring("ID3Tag Class")
+	]
+	coclass ID3Tag
+	{
+		[default] interface IID3Tag;
+	};
+	[
+		uuid(AEBA98BF-C36C-11D3-841B-0008C782A257),
+		helpstring("ID3Frame Class")
+	]
+	coclass ID3Frame
+	{
+		[default] interface IID3Frame;
+	};
+	[
+		uuid(A513A24F-C749-11D3-841C-0008C782A257),
+		helpstring("ID3Field Class")
+	]
+	coclass ID3Field
+	{
+		[default] interface IID3Field;
+	};
+};
