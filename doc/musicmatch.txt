@@ -1,4 +1,4 @@
-$Id: musicmatch.txt,v 1.2 2000/09/07 21:22:56 eldamitri Exp $
+$Id: musicmatch.txt,v 1.3 2000/09/08 05:41:29 eldamitri Exp $
 
 
                     MusicMatch (TM) tag format description
@@ -435,16 +435,20 @@ Abstract
     lack of foresight and questionable design decisions by MusicMatch, care 
     must be taken to ensure it is done correctly.
 
+    <unfinished />
+
 6.   Converting to ID3v2
 
-   As of Jukebox 4.0, MusicMatch has abandoned the MusicMatch tagging format
-   inn favor of the open standard ID3v2.  The Jukebox application will convert
-   old tags to ID3v2 upon request, but as this is a closed application that
-   serves a limited number of platforms (currently on Windows and Macintosh),
-   having a public specification for performing this mapping is necessary.  As
-   ID3v2 can encapsulate all of the information found in the original
-   MusicMatch format while being infinitely more flexible, the decision to
-   convert shouldn't be a difficult one.
+    As of Jukebox 4.0, MusicMatch has abandoned the MusicMatch tagging format
+    inn favor of the open standard ID3v2.  The Jukebox application will convert
+    old tags to ID3v2 upon request, but as this is a closed application that
+    serves a limited number of platforms (currently on Windows and Macintosh),
+    having a public specification for performing this mapping is necessary.  As
+    ID3v2 can encapsulate all of the information found in the original
+    MusicMatch format while being infinitely more flexible, the decision to
+    convert shouldn't be a difficult one.
+
+    <unfinished />
 
 7.   Copyright
 
@@ -522,3 +526,4 @@ Abstract
 
       Scott Thomas Haug
       Seattle, WA
+      USA
