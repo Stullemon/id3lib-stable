@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.11 1999/12/06 06:46:25 scott Exp $
+// $Id: tag_render.cpp,v 1.12 1999/12/13 04:44:28 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -289,13 +289,21 @@ void ID3_Tag::RenderV2ToHandle(void)
     // else we gotta make a temp file, copy the tag into it, copy the
     // rest of the old file after the tag, delete the old file, rename
     // this new file to the old file's name and update the __fFileHandle
-            
-    uchar buffer2[BUFF_SIZE];
-    char sTempFile[] = "temp.XXXXXX";
+
+    const char sTmpSuffix[] = ".XXXXXX";
+    if (strlen(__sFileName) + strlen(sTmpSuffix) > MAXPATHLEN)
+    {
+      ID3_THROW_DESC(ID3E_NoFile, "filename too long");
+    }
+    char sTempFile[MAXPATHLEN + 1];
+    strcpy(sTempFile, __sFileName);
+    strcat(sTempFile, sTmpSuffix);
+    
     int fd = mkstemp(sTempFile);
     if (fd < 0)
     {
-      ID3_THROW(ID3E_ReadOnly);
+      remove(sTempFile);
+      ID3_THROW_DESC(ID3E_NoFile, "couldn't open temp file");
     }
 
     ofstream tmpOut(sTempFile);
@@ -307,14 +315,15 @@ void ID3_Tag::RenderV2ToHandle(void)
     tmpOut.write(buffer, size);
     fseek(__fFileHandle, __ulOldTagSize, SEEK_SET);
       
+    uchar buffer2[BUFSIZ];
     while (! feof(__fFileHandle))
     {
-      size_t nBytes = fread(buffer2, 1, BUFF_SIZE, __fFileHandle);
+      size_t nBytes = fread(buffer2, 1, BUFSIZ, __fFileHandle);
       tmpOut.write(buffer2, nBytes);
     }
       
     tmpOut.close();
-    fclose(__fFileHandle);
+    CloseFile();
     remove(__sFileName);
     rename(sTempFile, __sFileName);
     
@@ -366,6 +375,11 @@ luint ID3_Tag::PaddingSize(luint curSize) const
 
 
 // $Log: tag_render.cpp,v $
+// Revision 1.12  1999/12/13 04:44:28  scott
+// (RenderV2ToHandle): Cleaned up creation of temp files.  Now ensures
+// temp file will be in same directory as original file, thereby ensuring
+// that the call to rename will not be used across partitions.
+//
 // Revision 1.11  1999/12/06 06:46:25  scott
 // (RenderV2ToHandle): Use mkstemp instead of tmpfile for creating a
 // temporary file, enabling only a single copy for rendering new id3v2
