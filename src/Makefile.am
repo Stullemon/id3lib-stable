@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.10 2000/05/01 13:05:07 eldamitri Exp $
+# $Id: Makefile.am,v 1.11 2000/05/02 20:34:45 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -30,7 +30,6 @@ the_sources =                   \
   header.cpp                    \
   header_frame.cpp              \
   header_tag.cpp                \
-  int28.cpp                     \
   misc_support.cpp              \
   spec.cpp                      \
   tag.cpp                       \
@@ -40,7 +39,9 @@ the_sources =                   \
   tag_parse_lyrics3.cpp         \
   tag_parse_v1.cpp              \
   tag_render.cpp                \
-  tag_sync.cpp
+  tag_sync.cpp                  \
+  uint28.cpp                    \
+  utils.cpp                     
 
 lib_LTLIBRARIES   = libid3.la 
 
