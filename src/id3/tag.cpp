@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.9 1999/12/09 03:32:28 scott Exp $
+// $Id: tag.cpp,v 1.10 1999/12/13 04:44:17 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -65,12 +65,12 @@ void ID3_Tag::SetupTag(char *fileInfo)
   __bPadding        = true;
   __bExtendedHeader = true;
   __bFileWritable   = false;
-  __bHasV1Tag       = false;
   __ulFileSize      = 0;
   __ulOldTagSize    = 0;
   __ulExtraBytes    = 0;
+  __bHasV1Tag       = false;
 
- __sFileName        = NULL;
+  __sFileName[0]     = '\0';
   
   Clear();
   
@@ -86,10 +86,6 @@ void ID3_Tag::SetupTag(char *fileInfo)
 ID3_Tag::~ID3_Tag(void)
 {
   CloseFile();
-  if (NULL != __sFileName)
-  {
-    delete [] __sFileName;
-  }
     
   Clear();
   
@@ -389,6 +385,9 @@ ID3_Tag::operator=( const ID3_Tag &rTag )
 }
 
 // $Log: tag.cpp,v $
+// Revision 1.10  1999/12/13 04:44:17  scott
+// (SetupTag, ~ID3_Tag): Slight changes to reflect new __sFileName type.
+//
 // Revision 1.9  1999/12/09 03:32:28  scott
 // (ID3_Tag): Added copy constructor implementation.
 // (operator=): Added implementation.
