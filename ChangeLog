@@ -1,5 +1,19 @@
 2000-05-07  Scott Haug  <scott@id3.org>
 
+	* include/id3/error.h 
+	* include/id3/field.h 
+	* include/id3/frame.h 
+	* include/id3/tag.h 
+	* src/field.cpp 
+	* src/field_binary.cpp 
+	* src/field_string_unicode.cpp 
+	* src/frame_parse.cpp 
+	* src/tag.cpp 
+	* src/tag_find.cpp 
+	* src/tag_parse.cpp 
+	* src/tag_render.cpp: 
+	Updated interface to use const appropriately
+
 	* include/id3/misc_support.h: 
 	All Get* functions now take const pointers to tags, Minor cleanup
 
