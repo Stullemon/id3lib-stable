@@ -31,7 +31,6 @@ EXTRA_DIST =            \
         StdAfx.cpp      \
         StdAfx.h        \
         dlldata.c       \
-        files.txt       \
         frmID3Test.frm  \
         id3com.cpp      \
         id3com.dsp      \
