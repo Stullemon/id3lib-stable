@@ -1,4 +1,4 @@
-// $Id: header_frame.cpp,v 1.16 2000/10/09 04:27:56 eldamitri Exp $
+// $Id: header_frame.cpp,v 1.17 2000/10/13 18:20:43 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -98,6 +98,7 @@ size_t ID3_FrameHeader::Size() const
 
 bool ID3_FrameHeader::Parse(ID3_Reader& reader)
 {
+  ID3D_NOTICE( "ID3_FrameHeader::Parse(): getCur() = " << reader.getCur() );
   io::ExitTrigger et(reader);
   if (!_info)
   {
@@ -108,12 +109,11 @@ bool ID3_FrameHeader::Parse(ID3_Reader& reader)
     return false;
   }
 
-  et.setExitPos(reader.getCur() + 10);
-  
   io::TextReader tr(reader);
   ::String text_id = tr.readText(_info->frame_bytes_id);
 
   ID3D_NOTICE( "ID3_FrameHeader::Parse: text_id = " << text_id );
+  ID3D_NOTICE( "ID3_FrameHeader::Parse: getCur() = " << reader.getCur() );
 
   ID3_FrameID fid = ID3_FindFrameID(text_id.c_str());
   if (ID3FID_NOFRAME == fid)
@@ -129,10 +129,15 @@ bool ID3_FrameHeader::Parse(ID3_Reader& reader)
   io::BinaryNumberReader nr(reader);
   uint32 dataSize = nr.readNumber(_info->frame_bytes_size);
   ID3D_NOTICE( "ID3_FrameHeader::Parse: dataSize = " << dataSize );
+  ID3D_NOTICE( "ID3_FrameHeader::Parse: getCur() = " << reader.getCur() );
   this->SetDataSize(dataSize);
 
   uint32 flags = nr.readNumber(_info->frame_bytes_flags);
   _flags.add(flags);
+
+  ID3D_NOTICE( "ID3_FrameHeader::Parse: flags = " << flags );
+  ID3D_NOTICE( "ID3_FrameHeader::Parse: getCur() = " << reader.getCur() );
+  et.setExitPos(reader.getCur());
 
   return true;
 }
