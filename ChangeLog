@@ -1,3 +1,187 @@
+2000-05-02  Scott Haug  <scott@id3.org>
+
+	* include/id3.h: 
+	Minor bugfix for #endif (thanks John Southerland)
+
+	* include/id3/frame.h: 
+	SetSpec's parameter is no longer const, now returns bool
+
+	* include/id3/globals.h: 
+	Added ID3FID_METACOMPRESSION enum for ID3v2.2.1's compressed-data 
+	meta-frame ("CDM")
+
+	* include/id3/header.h: 
+	(ID3_HeaderInfo):
+	- Struct now defined within ID3_Header
+	- renamed to Info (ID3_Header::Info)
+	- renamed member variables to something not so windows-ish (ick!)
+	- removed ID3_V2Spec member (redundant)
+	(ID3_Header):
+	- Most members now defined in header
+	- Removed *Flags() methods; replaced with __flags protected data members
+	  subclasses should now provide subclasses to access this member
+	- removed ID3_V2Spec member (redundant)
+	- Added Parse() pure virtual method to be implemented by subclasses
+	- renamed member variables to something not so windows-ish (ick!)
+	- SetSpec's parameter is no longer const, now returns bool to indicate
+	  if the spec actually changed
+	- Clear() now returns bool to indicate if the tag actually needed
+	  clearing
+	- Size() method is now const
+
+	* include/id3/header_frame.h: 
+	- ID3FL #define's now public enum's within the class
+	- Added SetCompression(), SetEncryption(), SetGrouping(), 
+	  GetCompression(), GetEncryption(), GetGrouping(), and GetReadOnly()
+	  methods and their definitions
+	- renamed member variables to something not so windows-ish (ick!)
+
+	* include/id3/header_tag.h: 
+	- ID3HF #define's now public enum's within the class
+	- Added default constructor, copy constructor, destructor, SetSpec(),
+	  Parse(), SetUnsync(), and static IsHeader() methods
+	- Added enumeration of offsets, sizes for header fields
+	- Added static const char* ID variable
+	- Deprecated ID3_IsTagHeader (use ID3_TagHeader::IsHeader() instead)
+
+	* include/id3/spec.h: 
+	- SetSpec's, SetVersion's now return bool
+	- SetSpec's parameter is no longer const
+
+	* include/id3/tag.h: 
+	SetSpec's parameter is no longer const, now returns bool
+
+	* src/field.cpp 
+	(ID3FD_LinkedInfo): Now is valid through ID3v2.2.1
+	(ID3FD_CDM): Added for ID3v2.2.1's compressed data meta-frame
+	(ID3_FrameDefs): 
+	- Added def for CDM
+	- If a frame isn't defined for a spec, this is now signified with an
+	  empty id string, rather than one filled with spaces
+
+	* src/frame.cpp
+	(SetSpec): Updated for new SetSpec interface, now just calls __FrmHdr's
+	SetSpec
+
+	* src/frame_parse.cpp: 
+	Removed #include <iostream.h>
+
+	* src/frame_render.cpp 
+	(Render): Now uses FrameHeader's GetCompression(), SetCompression(),
+	SetEncryption(), and SetGrouping() methods.
+
+	* src/header.cpp: 
+	Moved most methods to the header file.  SetSpec reimplemented to assign
+	__info pointer.  ID3_SpecInfo (renamed to _spec_info) is static to
+	the file and no longer has the V2Spec member.  It is now accessed
+	directly via subscript in SetSpec.
+
+	* src/header_frame.cpp
+	(ID3_FrameHeader): Moved to header
+	(~ID3_FrameHeader): Moved to header
+	(SetFrameID): Now no-ops when the id is the same as the current
+	(Size): Now returns 0 if __info is NULL
+	(Parse): Updated to use new __flags member variable
+	(Render): New interface; method is now const, no longer throws
+	(Clear): New interface; now returns a boolean to indicate if the header
+	actually changed
+
+	* src/header_tag.cpp 
+	(IsHeader): Added implementation; returns 0 if buffer isn't an id3v2
+	tag header, otherwise returns the size of the tag (including the header)
+	(ID3_IsTagHeader): Deprecated; now uses IsHeader
+	(SetSpec): Updated for new interface; now returns a boolean to indicate
+	if the spec actually changed
+	(Size): New interface; method is now const
+	(Render): New interface; method is now const, new implementation
+	(Parse): Added implementation
+	(operator=): Implementation moved to header file
+	
+	* src/tag.cpp 
+	(SetSpec): Updated for new interface; now returns a boolean to indicate
+	if the spec actually changed
+
+	* src/tag_file.cpp 
+	(Strip): Added note to log error
+
+	* src/tag_parse.cpp 
+	(ExpandBinaries): Now uses new METACOMPRESSION frame id rather than
+	comparing the text id directly
+	(ProcessBinaries): Updated for new FrameHeader methods: 
+	GetCompression(),GetEncryption(), GetCrouping()
+	(Parse): Updated to use new uint28 class; updated to use new TagHeader
+	enum's
+
+	* include/id3/Makefile.am: 
+	Removed int28.h, added flags.h, uint28.h, and utils.h
+
+	* src/Makefile.am: 
+	Removed int28.cpp, added uit28.cpp and utils.cpp
+
+	* src/tag_render.cpp 
+	(Render): Replaced call of SetFlags(ID3HF_UNSYNC) to SetUnsync(true)
+
+	* include/id3/flags.h: 
+	Added; basic class for manipulating a flags bitset
+
+	* src/utils.cpp 
+	* include/id3/utils.h: 
+	Added; moved util functions out of misc_support
+
+	* src/uint28.cpp 
+	* include/id3/uint28.h: 
+	Added; better implementation of the 28-bit unsigned int class.
+
+2000-05-01  Scott Haug  <scott@id3.org>
+
+	* include/id3/frame.h: 
+	- No longer includes field.h, added advanced decl of ID3_Field
+	- ID3_Tag is no longer a friend class
+	- HasChanged(), Parse(), Size(), Render(), SetSpec() now public
+	- Added decl for Contains(ID3_FieldID) method
+	- Minor cleanup
+
+	* include/id3/tag.h: 
+	No longer includes header_frame.h, deprecated SetCompression
+	(compression should be set on a frame-by-frame basis).
+
+	* src/tag.cpp: 
+	Removed all occurrences of SetCompression (deprecated)
+
+	* src/tag_find.cpp 
+	(Find): Replaced direct access of field bits with call to Contains
+
+	* src/tag_render.cpp 
+	(Render): Removed compression step - this will be handled in the frame
+	
+	* Makefile.am 
+	* configure.in 
+	* src/Makefile.am 
+	* src/error.cpp 
+	* src/field.cpp 
+	* src/field_binary.cpp 
+	* src/field_integer.cpp 
+	* src/field_string_ascii.cpp 
+	* src/field_string_unicode.cpp 
+	* src/frame.cpp 
+	* src/frame_parse.cpp 
+	* src/frame_render.cpp 
+	* src/globals.cpp 
+	* src/header.cpp 
+	* src/header_frame.cpp 
+	* src/header_tag.cpp 
+	* src/int28.cpp 
+	* src/misc_support.cpp 
+	* src/tag.cpp 
+	* src/tag_file.cpp 
+	* src/tag_find.cpp 
+	* src/tag_parse.cpp 
+	* src/tag_parse_lyrics3.cpp 
+	* src/tag_parse_v1.cpp 
+	* src/tag_render.cpp 
+	* src/tag_sync.cpp: 
+	Removed Log comments at the end of all files.
+	
 2000-04-28  Scott Haug  <scott@id3.org>
 
 	* NEWS 
