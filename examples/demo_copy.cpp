@@ -1,4 +1,4 @@
-// $Id: demo_copy.cpp,v 1.2 2000/08/27 22:58:17 eldamitri Exp $
+// $Id: demo_copy.cpp,v 1.3 2000/10/02 17:01:45 eldamitri Exp $
 //
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -14,9 +14,10 @@
 
 #include <iostream.h>
 #include <id3/tag.h>
+#include <id3/error.h>
 #include <popt.h>
 
-static const char* VERSION_NUMBER = "$Revision: 1.2 $";
+static const char* VERSION_NUMBER = "$Revision: 1.3 $";
 
 void PrintUsage(const char *sName)
 {

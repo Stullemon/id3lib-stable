@@ -1,13 +1,14 @@
-// $Id: demo_tag.cpp,v 1.7 2000/08/27 22:58:17 eldamitri Exp $
+// $Id: demo_tag.cpp,v 1.8 2000/10/02 17:01:45 eldamitri Exp $
 
 #include <iostream.h>
 #include <popt.h>
 #include <stdlib.h>
 
 #include <id3/tag.h>
+#include <id3/error.h>
 #include <id3/misc_support.h>
 
-static const char* VERSION_NUMBER = "$Revision: 1.7 $";
+static const char* VERSION_NUMBER = "$Revision: 1.8 $";
 
 void PrintUsage(const char *sName)
 {
