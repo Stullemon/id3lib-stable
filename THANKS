@@ -1,4 +1,4 @@
-$Id: THANKS,v 1.9 2000/05/10 16:33:53 eldamitri Exp $
+$Id: THANKS,v 1.10 2000/05/24 03:03:48 eldamitri Exp $
 
 id3lib THANKS file
 
@@ -31,12 +31,16 @@ current project maintainer if anyone has been missed.
 * Severino Delaurenti (id3lib@castlems.com) added functionality for parsing
   Lyrics3 v1.0 and v2.0 tags, as well as improving synchronized lyric frame 
   (SYLT) dramatically.
-* The following individuals have assisted by providing bug reports and
+* Michael Little (mike@netlinear.com) provided the delphi code for use with 
+  id3com.
+* The following individuals have assisted by providing bug reports and (often)
   suggestions for fixes:
   - Daryl Pawluk (dpawluk@home.com)
   - John Southerland (jbsouthe@home.com)
   - Sasa Ðolic (sasad@moderngroove.com)
   - Peter Thorstenson (swede@openlink.com.br)
+  - Christian Becker (chris@craze.de)
+  - (nuisance@cmu.edu)
 
 Dirk Mahoney included the following at the end of his documentation on ID3Lib
 3.05a.  It is included in verbatim here.

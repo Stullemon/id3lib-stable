@@ -1,4 +1,4 @@
-# $Id: id3lib.spec.in,v 1.13 2000/05/11 13:01:37 eldamitri Exp $
+# $Id: id3lib.spec.in,v 1.14 2000/05/24 03:03:48 eldamitri Exp $
 
 %define name    @PACKAGE@
 %define	version	@VERSION@
@@ -155,43 +155,47 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Wed May 10 2000 Scott Haug <scott@id3.org> 3.7.8-1
+* Wed 24 May 2000 Scott Haug <scott@id3.org> 3.7.9-1
+- Version 3.7.9
+- Modified the date format in the changelog
+
+* Wed 10 May 2000 Scott Haug <scott@id3.org> 3.7.8-1
 - Version 3.7.8
 
-* Wed May 10 2000 Scott Haug <scott@id3.org> 3.7.7-1
+* Wed 10 May 2000 Scott Haug <scott@id3.org> 3.7.7-1
 - Version 3.7.7
 
-* Wed May 03 2000 Scott Haug <scott@id3.org> 3.7.6-1
+* Wed 03 May 2000 Scott Haug <scott@id3.org> 3.7.6-1
 - Version 3.7.6
 
-* Fri Apr 28 2000 Scott Haug <scott@id3.org> 3.7.5-1
+* Fri 28 Apr 2000 Scott Haug <scott@id3.org> 3.7.5-1
 - Version 3.7.5
 
-* Wed Apr 26 2000 Scott Haug <scott@id3.org> 3.7.4-1
+* Wed 26 Apr 2000 Scott Haug <scott@id3.org> 3.7.4-1
 - Version 3.7.4
 
-* Mon Apr 24 2000 Scott Haug <scott@id3.org> 3.7.3-1
+* Mon 24 Apr 2000 Scott Haug <scott@id3.org> 3.7.3-1
 - Version 3.7.3
 - Added explicit RPM_OPT_FLAGS def based on arch, since -fno-exceptions and
   -fno-rtti are part of the default flags in rpmrc and we need both exceptions
   and rtti (exceptions uses rtti)
 
-* Fri Apr 21 2000 Scott Haug <scott@id3.org> 3.7.2-1
+* Fri 21 Apr 2000 Scott Haug <scott@id3.org> 3.7.2-1
 - Version 3.7.2
 - More conditional blocks for noarch
 - More thorough cleaning of files for documentation
 - Updated html directory
 
-* Thu Apr 20 2000 Scott Haug <scott@id3.org> 3.7.1-2
+* Thu 20 Apr 2000 Scott Haug <scott@id3.org> 3.7.1-2
 - Fixed date of changelog entry for 3.7.1-1
 - Added conditional blocks so docs only get built for noarch target
 
-* Wed Apr 19 2000 Scott Haug <scott@id3.org> 3.7.1-1
+* Wed 19 Apr 2000 Scott Haug <scott@id3.org> 3.7.1-1
 - Version 3.7.1
 - Removed zlib-devel requirement from devel
 - Added doc package to distribute documentation
 - Added examples package to distribute binary examples (id3tag, id3info, ...)
 - Moved doc/ and examples/ source files from devel to doc package
 
-* Mon Apr 17 2000 Scott Haug <scott@id3.org> 3.7.0-1
+* Mon 17 Apr 2000 Scott Haug <scott@id3.org> 3.7.0-1
 - First (s)rpm build
