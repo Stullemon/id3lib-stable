@@ -51,8 +51,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 ../libprj/id3libd.lib /nologo /subsystem:windows /dll /debug /machine:I386 /nodefaultlib:"libcmtd" /pdbtype:sept
-# ADD LINK32 ../libprj/id3libd.lib /nologo /subsystem:windows /dll /debug /machine:I386 /nodefaultlib:"libcmtd" /pdbtype:sept
+# ADD BASE LINK32 ../libprj/id3libd.lib ../zlib/zlibd.lib /nologo /subsystem:windows /dll /debug /machine:I386 /nodefaultlib:"libcmtd" /pdbtype:sept
+# ADD LINK32 ../libprj/id3libd.lib ../zlib/zlibd.lib /nologo /subsystem:windows /dll /debug /machine:I386 /nodefaultlib:"libcmtd" /pdbtype:sept
 # Begin Custom Build - Performing registration
 OutDir=.\Debug
 TargetPath=.\Debug\id3com.dll
@@ -88,8 +88,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 ../libprj/id3lib.lib /nologo /subsystem:windows /dll /machine:I386 /nodefaultlib:"libcmt"
-# ADD LINK32 ../libprj/id3lib.lib /nologo /subsystem:windows /dll /machine:I386 /nodefaultlib:"libcmt"
+# ADD BASE LINK32 ../libprj/id3lib.lib ../zlib/zlib.lib /nologo /subsystem:windows /dll /machine:I386 /nodefaultlib:"libcmt"
+# ADD LINK32 ../libprj/id3lib.lib ../zlib/zlib.lib /nologo /subsystem:windows /dll /machine:I386 /nodefaultlib:"libcmt"
 # Begin Custom Build - Performing registration
 OutDir=.\Release
 TargetPath=.\Release\id3com.dll
