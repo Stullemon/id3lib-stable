@@ -9,6 +9,6 @@ config.h.win32
 config.log
 config.status
 configure
-id3lib-3.0.6.tar.gz
+id3lib.spec
 libtool
 stamp-h
