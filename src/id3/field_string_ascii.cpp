@@ -1,4 +1,4 @@
-// $Id: field_string_ascii.cpp,v 1.5 1999/11/15 20:16:15 scott Exp $
+// $Id: field_string_ascii.cpp,v 1.6 1999/11/16 22:50:24 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -132,6 +132,12 @@ luint ID3_Field::ParseASCIIString(uchar *buffer, luint posn, luint buffSize)
   }
   if (bytesUsed > 0)
   {
+    // Sanity check our indices and sizes before we start copying memory
+    if ((bytesUsed > buffSize) || (posn + bytesUsed > buffSize))
+    {
+      ID3_THROW_DESC(ID3E_BadData, "field information invalid");
+    }
+
     temp = new char[bytesUsed + 1];
     if (NULL == temp)
       ID3_THROW(ID3E_NoMemory);
@@ -199,6 +205,10 @@ luint ID3_Field::RenderASCIIString(uchar *buffer)
 }
 
 // $Log: field_string_ascii.cpp,v $
+// Revision 1.6  1999/11/16 22:50:24  scott
+// * field_string_ascii.cpp (ParseASCIIString): Added sanity check
+// for indices so we don't call memcpy with out-of-bounds indices.
+//
 // Revision 1.5  1999/11/15 20:16:15  scott
 // Added include for config.h.  Minor code cleanup.  Removed
 // assignments from if checks; first makes assignment, then checks
