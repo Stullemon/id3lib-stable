@@ -1,4 +1,4 @@
-// $Id: frame_parse.cpp,v 1.10 2000/05/10 03:25:36 eldamitri Exp $
+// $Id: frame_parse.cpp,v 1.11 2000/05/10 14:49:01 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -83,6 +83,18 @@ size_t ID3_Frame::Parse(const uchar * const buffer, luint size)
       if (!(*fi)->InScope(spec)) 
       { 
         // this field isn't in scope, so don't attempt to parse into it 
+        // rather, give it some reasonable default value in case someone tries
+        // to access it
+        switch ((*fi)->GetType())
+        {
+          case ID3FTY_INTEGER:
+            **fi = (luint) 0;
+            break;
+          default:
+            **fi = "";
+            break;
+        }
+        // now continue with the rest of the fields
         continue; 
       }
       
