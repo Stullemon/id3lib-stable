@@ -1,4 +1,4 @@
-// $Id: writer_decorators.h,v 1.1 2000/10/08 20:47:34 eldamitri Exp $
+// $Id: writer_decorators.h,v 1.2 2000/10/12 22:29:33 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -53,6 +53,10 @@ namespace dami
       virtual int_type writeChar(char_type ch) { return _writer.writeChar(ch); }
       virtual size_type writeChars(const char_type buf[], size_type len)
       { return _writer.writeChars(buf, len); }
+      virtual size_type writeChars(const char buf[], size_type len)
+      { 
+        return this->writeChars(reinterpret_cast<const char_type *>(buf), len);
+      }
     };
 
     class CharWriter : public IdentityWriter
@@ -68,6 +72,10 @@ namespace dami
        * might have been unsynced, this function copies the characters one at a
        * time.
        */
+      virtual size_type writeChars(const char buf[], size_type len)
+      { 
+        return this->writeChars(reinterpret_cast<const char_type *>(buf), len);
+      }
       size_type writeChars(const char_type buf[], size_type len)
       {
         size_t numChars = 0;
@@ -125,6 +133,10 @@ namespace dami
        * might have been unsynced, this function copies the characters one at a
        * time.
        */
+      virtual size_type writeChars(const char buf[], size_type len)
+      { 
+        return this->writeChars(reinterpret_cast<const char_type *>(buf), len);
+      }
       size_type writeChars(const char_type buf[], size_type len)
       {
         pos_type beg = this->getCur();
@@ -152,9 +164,10 @@ namespace dami
 
       size_type writeNumber(uint32 val, size_t numBytes)
       {
-        char_type bytes[numBytes];
-        renderNumber(bytes, val, numBytes);
-        return this->writeChars(bytes, numBytes);
+        char_type bytes[sizeof(uint32)];
+        size_type size = min<size_type>(numBytes, sizeof(uint32));
+        renderNumber(bytes, val, size);
+        return this->writeChars(bytes, size);
       }
     };
 
@@ -165,6 +178,10 @@ namespace dami
       TrailingSpacesWriter(ID3_Writer& writer) : SUPER(writer) { ; }
       virtual ~TrailingSpacesWriter() { ; }
 
+      virtual size_type writeChars(const char buf[], size_type len)
+      { 
+        return this->writeChars(reinterpret_cast<const char_type *>(buf), len);
+      }
       size_type writeChars(const char_type buf[], size_type len)
       {
         String str((const char*)buf);
@@ -192,6 +209,10 @@ namespace dami
 
       void close() { ; }
       void flush() { ; }
+      virtual size_type writeChars(const char buf[], size_type len)
+      { 
+        return this->writeChars(reinterpret_cast<const char_type *>(buf), len);
+      }
       size_type writeChars(const char_type buf[], size_type len)
       {
         ID3D_NOTICE("io::StringWriter: writing chars: " << len );

@@ -1,4 +1,4 @@
-// $Id: readers.h,v 1.4 2000/10/09 01:56:05 eldamitri Exp $
+// $Id: readers.h,v 1.5 2000/10/12 22:29:33 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -45,6 +45,10 @@ class ID3_IStreamReader : public ID3_Reader
   /** Read up to \c len chars into buf and advance the internal position
    ** accordingly.  Returns the number of characters read into buf.
    **/
+  virtual size_type readChars(char buf[], size_type len)
+  {
+    return this->readChars(reinterpret_cast<uchar *>(buf), len);
+  }
   virtual size_type readChars(char_type buf[], size_type len)
   {
     _stream.read(buf, len);
@@ -118,6 +122,10 @@ class ID3_MemoryReader : public ID3_Reader
   /** Read up to \c len chars into buf and advance the internal position
    ** accordingly.  Returns the number of characters read into buf.
    **/
+  virtual size_type readChars(char buf[], size_type len)
+  {
+    return this->readChars(reinterpret_cast<char_type *>(buf), len);
+  }
   virtual size_type readChars(char_type buf[], size_type len);
     
   virtual pos_type getCur() 

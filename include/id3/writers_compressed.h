@@ -1,4 +1,4 @@
-// $Id: writers_compressed.h,v 1.1 2000/10/08 20:47:34 eldamitri Exp $
+// $Id: writers_compressed.h,v 1.2 2000/10/12 22:29:33 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -27,8 +27,8 @@
 #ifndef _ID3LIB_WRITERS_COMPRESSED_H_
 #define _ID3LIB_WRITERS_COMPRESSED_H_
 
-#include "writer_decorators.h"
 #include <zlib.h>
+#include "writer_decorators.h"
 
 namespace dami
 {
@@ -62,7 +62,7 @@ namespace dami
         // be an unsigned long at least 0.1% larger than the source buffer,
         // plus 12 bytes
         unsigned long newDataSize = dataSize + (dataSize / 10) + 12;
-        char_type newData[newDataSize];
+        char_type* newData = new char_type[newDataSize];
         if (::compress(newData, &newDataSize, data, dataSize) != Z_OK)
         {
           // log this
@@ -79,6 +79,7 @@ namespace dami
           ID3D_NOTICE("io::CompressedWriter: no compression!compressed size = " << newDataSize << ", original size = " << dataSize ); 
           SUPER::writeChars(data, dataSize);
         }
+        delete [] newData;
         _data.erase();
       }
       
