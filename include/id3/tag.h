@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.22 2000/05/03 03:02:39 eldamitri Exp $
+// $Id: tag.h,v 1.23 2000/05/03 14:05:28 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -116,6 +116,8 @@ public:
    **/
   bool HasLyrics() {return __has_v1_tag;};
 
+  static size_t IsV2Tag(const uchar*);
+
   /* Deprecated! */
   void       AddNewFrame(ID3_Frame* f) { this->AttachFrame(f); }
   luint      Link(char *fileInfo, bool parseID3v1, bool parseLyrics3);
@@ -177,4 +179,7 @@ ID3_Tag& operator<<(ID3_Tag&, const ID3_Frame &);
 ID3_Tag& operator<<(ID3_Tag&, const ID3_Frame *);
 //@}
 
-#endif
+// deprecated!
+lsint ID3_IsTagHeader(const uchar header[ID3_TAGHEADERSIZE]);
+
+#endif /* __ID3LIB_TAG_H__ */

@@ -1,4 +1,4 @@
-// $Id: header_tag.cpp,v 1.5 2000/05/02 21:56:29 eldamitri Exp $
+// $Id: header_tag.cpp,v 1.6 2000/05/03 14:05:34 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,49 +24,14 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#include <string.h>
-#include <memory.h>
 #include "header_tag.h"
 #include "uint28.h"
 #include "utils.h"
+#include "tag.h"
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
 #endif
-
-// Analyses a buffer to determine if we have a valid ID3v2 tag header.
-// If so, return the total number of bytes (including the header) to
-// read so we get all of the tag
-size_t ID3_TagHeader::IsHeader(const uchar* const data)
-{
-  lsint tagSize = 0;
-  
-  if (strncmp(ID3_TagHeader::ID, (char *)data, ID3_TagHeader::ID_SIZE) == 0 &&
-      data[ID3_TagHeader::MAJOR_OFFSET]    <  0xFF &&
-      data[ID3_TagHeader::MINOR_OFFSET]    <  0xFF &&
-      data[ID3_TagHeader::SIZE_OFFSET + 0] <  0x80 &&
-      data[ID3_TagHeader::SIZE_OFFSET + 1] <  0x80 &&
-      data[ID3_TagHeader::SIZE_OFFSET + 2] <  0x80 &&
-      data[ID3_TagHeader::SIZE_OFFSET + 3] <  0x80)
-  {
-    uint28 data_size(&data[ID3_TagHeader::SIZE_OFFSET]);
-    tagSize = data_size.to_uint32() + ID3_TagHeader::SIZE;
-  }
-  
-  return tagSize;
-}
-
-lsint ID3_IsTagHeader(const uchar data[ID3_TAGHEADERSIZE])
-{
-  size_t size = ID3_TagHeader::IsHeader(data);
-  
-  if (!size)
-  {
-    return -1;
-  }
-  
-  return size - ID3_TagHeader::SIZE;
-}
 
 bool ID3_TagHeader::SetSpec(const ID3_V2Spec spec)
 {

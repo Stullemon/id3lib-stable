@@ -1,4 +1,4 @@
-// $Id: header_tag.h,v 1.9 2000/05/02 21:59:16 eldamitri Exp $
+// $Id: header_tag.h,v 1.10 2000/05/03 14:05:27 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -74,10 +74,6 @@ public:
     SIZE           = 10
   };
   
-  static size_t IsHeader(const uchar*);
 };
-
-// deprecated!
-lsint ID3_IsTagHeader(const uchar header[ID3_TAGHEADERSIZE]);
 
 #endif /* __ID3LIB_HEADER_TAG_H__ */
