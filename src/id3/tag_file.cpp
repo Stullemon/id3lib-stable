@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.4 1999/11/15 20:20:37 scott Exp $
+// $Id: tag_file.cpp,v 1.5 1999/11/19 19:09:12 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -96,33 +96,50 @@ luint ID3_Tag::Link(char *fileInfo)
 }
 
 
-void ID3_Tag::Update(void)
+void ID3_Tag::Update(luint ulTagFlag)
 {
   if (!__bFileWritable)
     ID3_THROW_DESC(ID3E_NoFile, "ID3_Tag::Update: File not writable.");
 
-  if (HasChanged())
-    RenderToHandle();
+  if ((ulTagFlag & V1_TAG) && (!__bHasV1Tag || HasChanged()))
+    RenderV1ToHandle();
+  if ((ulTagFlag & V2_TAG) && HasChanged())
+    RenderV2ToHandle();
     
   return ;
 }
 
 
-void ID3_Tag::Strip(bool v1Also)
+void ID3_Tag::Strip(const luint ulTagFlag)
 {
   FILE *tempOut;
   
   if (!__bFileWritable)
     ID3_THROW_DESC(ID3E_NoFile, "ID3_Tag::Strip: File not writable.");
 
-  if (strlen(__sTempName) > 0)
+  if (!(ulTagFlag & V1_TAG) && !(ulTagFlag & V2_TAG))
+  {
+    cerr << "--- No tag to strip. exiting." << endl;
+    return;
+  }
+
+  if (strlen(__sTempName) == 0)
+  {
+    cerr << "--- No temp name.  Exiting." << endl;
+  }
+  else
   {
     tempOut = fopen(__sTempName, "wb");
-    if (tempOut != NULL)
+    if (NULL == tempOut)
+    {
+      ID3_THROW_DESC(ID3E_NoData, "Ack! Couldn't open temp file.");
+    }
+    else
     {
       uchar * buffer2;
-      
-      fseek(__fFileHandle, __ulOldTagSize, SEEK_SET);
+      luint ulOffset = (ulTagFlag & V2_TAG) ? __ulOldTagSize : 0;
+
+      fseek(__fFileHandle, ulOffset, SEEK_SET);
       
       buffer2 = new uchar[BUFF_SIZE];
       if (NULL == buffer2)
@@ -133,8 +150,16 @@ void ID3_Tag::Strip(bool v1Also)
       luint bytesToCopy = __ulFileSize;
       size_t i;
         
-      if (__bHasV1Tag && v1Also)
+      if (!(ulTagFlag & V2_TAG))
+      {
+        cerr << "+++ keeping old v2 tag" << endl;
+        bytesToCopy += __ulOldTagSize;
+      }
+      if (__bHasV1Tag && (ulTagFlag & V1_TAG))
+      {
+        cerr << "+++ removing old v1 tag" << endl;
         bytesToCopy -= __ulExtraBytes;
+      }
           
       while (! feof(__fFileHandle) && ! done)
       {
@@ -164,7 +189,7 @@ void ID3_Tag::Strip(bool v1Also)
       __ulOldTagSize = 0;
       __ulExtraBytes = 0;
       
-      __bHasV1Tag = __bHasV1Tag && !v1Also;
+      __bHasV1Tag = __bHasV1Tag && !(ulTagFlag & V1_TAG);
         
       __bHasChanged = true;
     }
@@ -176,6 +201,14 @@ void ID3_Tag::Strip(bool v1Also)
 
 
 // $Log: tag_file.cpp,v $
+// Revision 1.5  1999/11/19 19:09:12  scott
+// (Update): Changed parameter to be a flag which indicates which type of
+// tag to update, either V1_TAG, V2_TAG, or BOTH_TAGS.  Updated method to
+// act appropriately based on the parameter passed in.
+// (Strip): Changed parameter to be a flag which indicates which type of
+// tag to update, either V1_TAG, V2_TAG, or BOTH_TAGS.  Updated method to
+// act appropriately based on the parameter passed in.
+//
 // Revision 1.4  1999/11/15 20:20:37  scott
 // Added include for config.h.  Minor code cleanup.  Removed
 // assignments from if checks; first makes assignment, then checks
