@@ -1,4 +1,4 @@
-// $Id: tag_parse.cpp,v 1.12 1999/12/26 15:11:57 scott Exp $
+// $Id: tag_parse.cpp,v 1.13 1999/12/27 05:29:03 scott Exp $
 // 
 // This program is free software; you can distribute it and/or modify it under
 // the terms discussed in the COPYING file, which should have been included
@@ -81,26 +81,21 @@ void ID3_Tag::AddBinary(uchar *buffer, luint size)
 
 void ID3_Tag::ExpandBinaries(uchar *buffer, luint size)
 {
-  ID3_FrameAttr attr;
   ID3_FrameHeader frHeader;
   luint posn = 0;
   
   // TODO: 6 is a magic number!  Find a suitable constant
   while (posn < (size - 6) && buffer[posn] != 0)
   {
-    luint newBinSize;
-    
     frHeader.SetVersion(__ucVersion, __ucRevision);
     
-    posn += frHeader.GetFrameInfo(attr, &buffer[posn]);
-    newBinSize = frHeader.Size() + attr.ulSize;
-    
+    posn += frHeader.Parse(&buffer[posn]);
     // firstly, let's check to see if we are parsing a CDM.
-    if (strcmp(attr.sTextID, "CDM") != 0)
+    if (strcmp(frHeader.GetTextID(), "CDM") != 0)
     {
       AddBinary(&buffer[posn - frHeader.Size()], 
-                attr.ulSize + frHeader.Size());
-      posn += attr.ulSize;
+                frHeader.Size() + frHeader.GetDataSize());
+      posn += frHeader.GetDataSize();
     }
     else
     {
@@ -118,11 +113,11 @@ void ID3_Tag::ExpandBinaries(uchar *buffer, luint size)
 
         uncompress(expBin, (luint *) &expandedSize, 
                    &buffer[posn + 1 + sizeof(luint)], 
-                   attr.ulSize - sizeof(luint) - 1);
+                   frHeader.GetDataSize() - sizeof(luint) - 1);
           
         ExpandBinaries(expBin, expandedSize);
           
-        posn += attr.ulSize;
+        posn += frHeader.GetDataSize();
           
         delete[] expBin;
       }
@@ -134,7 +129,6 @@ void ID3_Tag::ExpandBinaries(uchar *buffer, luint size)
 
 void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
 {
-  ID3_FrameAttr attr;
   ID3_FrameHeader frHeader;
   ID3_Elem *cur = __pBinaryList;
 
@@ -152,29 +146,29 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
     bool bShouldAttach = attach;
     bool bReadOnly = false;
     
-    posn = frHeader.GetFrameInfo(attr, cur->acBinary);
+    posn = frHeader.Parse(cur->acBinary);
     
-    if (attr.ulFlags & ID3FL_COMPRESSION)
+    if (frHeader.GetFlags() & ID3FL_COMPRESSION)
     {
       expandedSize = ParseNumber(&(cur->acBinary[posn]));
       extras += sizeof(luint);
     }
     
-    if (attr.ulFlags & ID3FL_ENCRYPTION)
+    if (frHeader.GetFlags() & ID3FL_ENCRYPTION)
     {
       encryptionID = cur->acBinary[posn];
       posn++, extras++;
     }
     
-    if (attr.ulFlags & ID3FL_GROUPING)
+    if (frHeader.GetFlags() & ID3FL_GROUPING)
     {
       groupingID = cur->acBinary[posn];
       posn++, extras++;
     }
 
-    bReadOnly = attr.ulFlags & ID3FL_READONLY;
+    bReadOnly = frHeader.GetFlags() & ID3FL_READONLY;
 
-    id = ID3_FindFrameID(attr.sTextID);
+    id = frHeader.GetFrameID();
     
     if ((id != whichFrame && ID3FID_NOFRAME != whichFrame) ||
         ID3FID_NOFRAME == id)
@@ -185,7 +179,7 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
     {
       uchar *expBin = NULL;
       
-      if (attr.ulFlags & ID3FL_COMPRESSION)
+      if (frHeader.GetFlags() & ID3FL_COMPRESSION)
       {
         expBin = new uchar[expandedSize];
         if (NULL == expBin)
@@ -194,7 +188,8 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
         }
           
         uncompress(expBin, (luint *) &expandedSize, 
-                   &cur->acBinary[posn + sizeof(luint)], attr.ulSize - extras);
+                   &cur->acBinary[posn + sizeof(luint)], 
+                   frHeader.GetDataSize() - extras);
       }
       
       frame = new ID3_Frame;
@@ -209,7 +204,7 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
       {
         if (NULL == expBin)
         {
-          frame->Parse(&cur->acBinary[posn], attr.ulSize - extras);
+          frame->Parse(&cur->acBinary[posn], frHeader.GetDataSize() - extras);
         }
         else
         {
@@ -254,7 +249,7 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
         // newly parsed frame to the tag, do so
         ID3_Elem 
           *elem     = new ID3_Elem, 
-          *lastElem = GetLastElem(__pFrameList);;
+          *lastElem = GetLastElem(__pFrameList);
         if (NULL == elem)
         {
           ID3_THROW(ID3E_NoMemory);
@@ -414,6 +409,10 @@ luint ID3_Tag::ParseFromHandle(void)
 }
 
 // $Log: tag_parse.cpp,v $
+// Revision 1.13  1999/12/27 05:29:03  scott
+// (ExpandBinaries, ProcessBinaries): Moved header processing tasks to
+// the header object, now a member of ID3_Frame.
+//
 // Revision 1.12  1999/12/26 15:11:57  scott
 // (ExpandBinaries): Now uses ParseNumber, defined in misc_support.
 // (ProcessBinaries): Now uses ParseNumber, defined in misc_support.
