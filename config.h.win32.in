@@ -27,26 +27,19 @@
 
 /* config.h defines these preprocesser symbols to be used by id3lib for
  * determining internal versioning information.  The intent is that these
- * macros will be made available int the library via functions or static
- * methods.
+ * macros will be made available in the library via constants, functions,
+ * or static methods.
  */
-/* Defines which major version of id3lib is being used (int) */
-#define ID3LIB_MAJOR_VERSION @ID3LIB_MAJOR_VERSION@
-/* Defines which minor version of id3lib is being used (int) */
-#define ID3LIB_MINOR_VERSION @ID3LIB_MINOR_VERSION@
-/* Defines which patch version (or patch) of id3lib is being used (int) */
-#define ID3LIB_PATCH_VERSION @ID3LIB_PATCH_VERSION@
-/* */
-#define ID3LIB_INTERFACE_AGE @ID3LIB_INTERFACE_AGE@
-/* */
-#define ID3LIB_BINARY_AGE @ID3LIB_BINARY_AGE@
-/* The date of this id3lib release */
-#define ID3LIB_DATE "@ID3LIB_DATE@"
-/* The identifying string of this id3lib */
-#define ID3LIB_FULLNAME  "@ID3LIB_FULLNAME@"
-/* */
-#undef ID3_COMPILED_WITH_DEBUGGING
-/* */
+#define __ID3LIB_NAME "@ID3LIB_NAME@"
+#define __ID3LIB_DATE "@ID3LIB_DATE@"
+#define __ID3LIB_VERSION "@ID3LIB_VERSION@"
+#define __ID3LIB_FULLNAME "@ID3LIB_FULLNAME@"
+#define __ID3LIB_MAJOR_VERSION @ID3LIB_MAJOR_VERSION@
+#define __ID3LIB_MINOR_VERSION @ID3LIB_MINOR_VERSION@
+#define __ID3LIB_PATCH_VERSION @ID3LIB_PATCH_VERSION@
+#define __ID3LIB_INTERFACE_AGE @ID3LIB_INTERFACE_AGE@
+#define __ID3LIB_BINARY_AGE @ID3LIB_BINARY_AGE@
+/* #undef ID3_COMPILED_WITH_DEBUGGING */
 
 /* Define if you have the mkstemp function.  */
 /* #undef HAVE_MKSTEMP */
@@ -102,7 +95,7 @@
 // for loop
 
 #ifdef CXX_HAS_BUGGY_FOR_LOOPS
-#undef for
+/* #undef for */
 #define for if(1) for
 #endif
 
