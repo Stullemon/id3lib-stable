@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.26 2000/10/09 04:29:28 eldamitri Exp $
+// $Id: tag_file.cpp,v 1.27 2000/10/12 22:34:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -26,12 +26,22 @@
 
 #include <string.h>
 #include <fstream.h>
+#include <stdlib.h>
 #include "utils.h"
 #include "writers.h"
 #include "writer_decorators.h"
+#include "tag_impl.h"
+
+#if defined HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #if !defined HAVE_MKSTEMP
 #  include <stdio.h>
+#endif
+
+#if defined HAVE_UNISTD_H
+#  include <unistd.h>
 #endif
 
 #if defined WIN32
@@ -65,15 +75,7 @@ static int truncate(const char *path, size_t length)
 #    undef CreateFile
 #  endif
 
-#else
-#  include <unistd.h>
 #endif
-
-#if defined HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
-#include "tag_impl.h"
 
 using namespace dami;
 
