@@ -1,4 +1,4 @@
-// $Id: frame.h,v 1.26 2000/05/29 02:13:28 eldamitri Exp $
+// $Id: frame.h,v 1.27 2000/06/06 12:21:51 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -33,32 +33,9 @@
 class ID3_Field;
 class ID3_Tag;
 
-/** The representative class of an id3v2 frame.
- ** 
- ** id3lib defines frames in a funny way.  Using some nice c++ conventions,
- ** ID3_Frame class objects appear to be quite polymorphic; that is, they can
- ** take on many forms.  The same ID3_Frame class provides the facilities for
- ** the implementation of a complex APIC frame and for a simple text frame.
- ** 
- ** @author Dirk Mahoney
- ** @version $Id: frame.h,v 1.26 2000/05/29 02:13:28 eldamitri Exp $
- ** @see ID3_Tag
- ** @see ID3_Field
- ** @see ID3_Err
- **/
 class ID3_Frame : public ID3_Speccable
 {
 public:
-  /** Default constructor; accepts as a default parameter the type of frame
-   ** to create.
-   ** 
-   ** The parameter which will internally set the frame's structure.  See
-   ** <a href="#SetID">SetID</a> for more details.
-   **     
-   ** @param id The type of frame to create
-   ** @see ID3_FrameID
-   ** @see SetID
-   **/
   ID3_Frame(ID3_FrameID id = ID3FID_NOFRAME);
   ID3_Frame(const ID3_FrameHeader&);
   ID3_Frame(const ID3_Frame&);
@@ -66,57 +43,11 @@ public:
   /// Destructor.
   virtual ~ID3_Frame();
   
-  /** Clears the frame of all data and resets the frame such that it can take
-   ** on the form of any id3v2 frame that id3lib supports.
-   ** 
-   ** @see ID3_Tag::Clear
-   **/
   void        Clear();
 
-  /** Establishes the internal structure of an ID3_Frame object so
-   ** that it represents the id3v2 frame indicated by the parameter
-   ** 
-   ** Given an ID3_FrameID (a list of which is found in &lt;id3/field.h&gt;),
-   ** <a href="#SetID">SetID</a> will structure the object according to the
-   ** frame you wish to implement.
-   ** 
-   ** Either using this call or via the constructor, this must be the first
-   ** command performed on an ID3_Frame object.  
-   ** 
-   ** \code
-   **   myFrame.SetID(ID3FID_TITLE);
-   ** \endcode
-   ** 
-   ** @param id The type of frame this frame should be set to
-   ** @see ID3_FrameID
-   **/
   bool        SetID(ID3_FrameID id);
-
-  /** Returns the type of frame that the object represents.
-   ** 
-   ** Useful in conjunction with ID3_Tag's Find method
-   ** 
-   ** @returns The type, or id, of the frame
-   ** @see ID3_Tag::Find
-   **/
-  ID3_FrameID GetID() const;
+  ID3_FrameID GetID() const { return __hdr.GetFrameID(); }
   
-  /** Returns a reference to the frame's internal field indicated by the 
-   ** parameter.
-   ** 
-   ** A list of fields that are in given frames appears in
-   ** &lt;id3/field.cpp&gt;.  This method returns a reference to the field in
-   ** question so that the result can be used as though it were a field
-   ** itself.
-   **
-   ** \code
-   **   ID3_TextEnc enc;
-   **   enc = (ID3_TextEnc) myFrame.Field(ID3FN_TEXTENC).Get();
-   ** \endcode
-   ** 
-   ** @param name The name of the field to be retrieved
-   ** @returns A reference to the desired field
-   **/
   ID3_Field  &Field(ID3_FieldID name) const;
   
   const char* GetDescription() const;
@@ -133,9 +64,9 @@ public:
   ID3_V2Spec  GetSpec() const;
 
   /** Sets the compression flag within the frame.  When the compression flag is
-   ** is set, compression will be attempted.  However, the frame might not 
-   ** actually be compressed after it is rendered if the "compressed" data is no
-   ** smaller than the "uncompressed" data.
+   ** is set, compression will be attempted.  However, the frame might not
+   ** actually be compressed after it is rendered if the "compressed" data is
+   ** no smaller than the "uncompressed" data.
    **/
   bool        SetCompression(bool b)  { return __hdr.SetCompression(b); }
   /** Returns whether or not the compression flag is set.  After parsing a tag,
@@ -156,7 +87,6 @@ protected:
   void        _InitFields();
   void        _InitFieldBits();
   void        _UpdateFieldDeps();
-  lsint       _FindField(ID3_FieldID name) const;
 
   bool _SetEncryptionID(uchar id)
   {
