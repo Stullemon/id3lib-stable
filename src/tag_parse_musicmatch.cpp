@@ -1,4 +1,4 @@
-// $Id: tag_parse_musicmatch.cpp,v 1.9 2000/09/27 07:47:09 eldamitri Exp $
+// $Id: tag_parse_musicmatch.cpp,v 1.10 2000/09/30 22:14:04 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,329 +24,403 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#include <stdlib.h>
-#include <string.h>
-#include <memory.h>
-#include "tag.h"
-#include "utils.h"
-#include "misc_support.h"
-
 #if defined HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-size_t MM_ParseNum(const char* arr, size_t numBytes)
-{
-  size_t val = 0;
-  for (size_t i = 0; i < numBytes; i++)
-  {
-    val += (static_cast<size_t>(0xFF & arr[i]) << (i * 8));
-  }
-  return val;
-}
+#include "debug.h"
 
-ID3_Frame* MM_ParseTextField(ifstream& file, ID3_FrameID id, const char* desc = "")
+#include <stdlib.h>
+#include "tag.h"
+#include "utils.h"
+#include "misc_support.h"
+#include "reader_decorators.h"
+
+namespace id3
 {
-  char size_bytes[2];
-  size_t size = 0;
-  file.read(size_bytes, 2);
-  size = MM_ParseNum(size_bytes, 2);
-  ID3_Frame* frame = NULL;
-  if (size > 0)
+  namespace mm
   {
-    char* text = new char[size + 1];
-    text[size] = '\0';
-    file.read(text, size);
-    if (ID3FID_SONGLEN == id)
+    class NumberReader : public IdentityReader
     {
-      size_t len = id3::timeToSeconds(text, size) * 1000;
-      size_t digits = 1;
-      for (size_t max = 10; max < len; digits++, max *= 10)
+      typedef IdentityReader SUPER;
+    public:
+      NumberReader(ID3_Reader& reader) : SUPER(reader) { ; }
+      virtual ~NumberReader() { ; }
+
+      uint32 readInteger()
       {
-        continue;
+        return this->readInteger(this->getEnd() - this->getCur());
       }
-      char* len_str = new char[digits + 1];
-      sprintf(len_str, "%lu", static_cast<long unsigned>(len));
-      delete [] text;
-      text = len_str;
+      
+      uint32 readInteger(size_t numBytes)
+      {
+        uint32 val = 0;
+        for (size_t i = 0; i < numBytes; i++)
+        {
+          if (this->atEnd())
+          {
+            break;
+          }
+          val += (static_cast<size_t>(0xFF & this->readChar()) << (i * 8));
+        }
+        return val;
+      }
+    };
+
+    id3::string toString(uint32 val)
+    {
+      if (val == 0)
+      {
+        return "0";
+      }
+      id3::string text;
+      while (val > 0)
+      {
+        id3::string tmp;
+        char ch = (val % 10) + '0';
+        tmp += ch;
+        text = tmp + text;
+        val /= 10;
+      }
+      return text;
+    }
+    
+    class TimeReader : public IdentityReader
+    {
+      typedef IdentityReader SUPER;
+    public:
+      TimeReader(ID3_Reader& reader) : SUPER(reader) { ; }
+      virtual ~TimeReader() { ; }
+
+      uint32 readSeconds(size_t numBytes)
+      {
+        WindowedReader wr(*this, numBytes);
+        pos_type beg = wr.getCur();
+        uint32 seconds = 0;
+        uint32 cur = 0;
+        while (!wr.atEnd())
+        {
+          char_type ch = wr.readChar();
+          if (':' == ch)
+          {
+            seconds += 60 * cur;
+            cur = 0;
+          }
+          else if (!isdigit(ch))
+          {
+            this->setCur(beg);
+            return 0;
+          }
+          else
+          {
+            cur = cur * 10 + (ch - '0');
+          }
+        }
+        return seconds + cur;
+      }
+    };
+
+      class TextFrameReader : public IdentityReader
+    {
+      typedef IdentityReader SUPER;
+    public:
+      TextFrameReader(ID3_Reader& reader) : SUPER(reader) { ; }
+      virtual ~TextFrameReader() { ; }
+
+      ID3_Frame* readFrame(ID3_FrameID id, const id3::string desc = "")
+      {
+        mm::NumberReader nr(*this);
+        uint32 size = nr.readInteger(2);
+        ID3D_NOTICE( "id3::mm::TextFrameReader::readFrame() size = " << size );
+        if (size == 0)
+        {
+          return NULL;
+        }
+
+        id3::string text;
+        if (ID3FID_SONGLEN != id)
+        {
+          LineFeedReader lfr(*this);
+          TextReader tr(lfr);
+          text = tr.readText(size);
+          ID3D_NOTICE( "id3::mm::TextFrameReader::readFrame() text = " << text );
+        }
+        else
+        {
+          TimeReader tr(*this);
+          text = toString(tr.readSeconds(size));
+          ID3D_NOTICE( "id3::mm::TextFrameReader::readFrame() songlen = " << text );
+        }
+        //wr.setCur(this->getEnd());
+
+        ID3_Frame* frame = new ID3_Frame(id);
+        if (frame)
+        {
+          if (frame->Contains(ID3FN_TEXT))
+          {
+            frame->Field(ID3FN_TEXT).Set(text.c_str());
+          }
+          else if (frame->Contains(ID3FN_URL))
+          {
+            frame->Field(ID3FN_URL).Set(text.c_str());
+          }
+          if (frame->Contains(ID3FN_LANGUAGE))
+          {
+            frame->Field(ID3FN_LANGUAGE).Set("XXX");
+          }
+          if (frame->Contains(ID3FN_DESCRIPTION))
+          {
+            frame->Field(ID3FN_DESCRIPTION).Set(desc.c_str());
+          }
+        }
+        return frame;
+      }
+    };
+  };
+
+  bool parseMusicMatch(ID3_Tag& tag, ID3_Reader& rdr)
+  {
+    ID3_Reader::pos_type end = rdr.getCur();
+    ExitTrigger et(rdr, end);
+    if (end < 48)
+    {
+      ID3D_NOTICE( "id3::parseMusicMatch: bailing, not enough bytes to parse, pos = " << end );
+      return false;
+    }
+    
+    rdr.setCur(end - 48);
+    id3::string version;
+
+    {
+      TextReader tr(rdr);
+      if (tr.readText(32) != "Brava Software Inc.             ")
+      {
+        ID3D_NOTICE( "id3::parseMusicMatch: bailing, couldn't find footer" );
+        return false;
+      }
+      
+      version = tr.readText(4);
+      if (version.size() != 4 || 
+          !isdigit(version[0]) || version[1] != '.' ||
+          !isdigit(version[2]) || 
+          !isdigit(version[3]))
+      {
+        ID3D_WARNING( "id3::parseMusicMatch: bailing, nonstandard version = " << version );
+        return false;
+      }
+    }
+    
+    ID3_Reader::pos_type beg = rdr.setCur(end - 48);
+    et.setExitPos(beg);
+    if (end < 68)
+    {
+      ID3D_NOTICE( "id3::parseMusicMatch: bailing, not enough bytes to parse offsets, pos = " << end );
+      return false;
+    }
+    rdr.setCur(end - 68);
+    
+    WindowedReader dataWindow(rdr);
+    dataWindow.setEnd(rdr.getCur());
+
+    uint32 offsets[5];
+    
+    {
+      WindowedReader offsetWindow(rdr, 20);
+      mm::NumberReader offsetRdr(offsetWindow);
+      for (size_t i = 0; i < 5; ++i)
+      {
+        offsets[i] = offsetRdr.readInteger(sizeof(uint32));
+      }
+    }
+
+    size_t metadataSize = 0;
+    if (version <= "3.00")
+    {
+      // All MusicMatch tags up to and including version 3.0 had metadata 
+      // sections exactly 7868 bytes in length.
+      metadataSize = 7868;
     }
     else
     {
-      size = id3::CRLFtoLF(text, size);
-      text[size] = '\0';
-    }
-    frame = new ID3_Frame(id);
-    if (frame)
-    {
-      if (frame->Contains(ID3FN_TEXT))
+      // MusicMatch tags after version 3.0 had three possible lengths for their
+      // metadata sections.  We can determine which it was by searching for
+      // the version section signature that should precede the metadata section
+      // by exactly 256 bytes.
+      size_t possibleSizes[] = { 8132, 8004, 7936 };
+      
+      for (size_t i = 0; i < sizeof(possibleSizes)/sizeof(size_t); ++i)
       {
-        frame->Field(ID3FN_TEXT).Set(text);
-      }
-      else if (frame->Contains(ID3FN_URL))
-      {
-        frame->Field(ID3FN_URL).Set(text);
-      }
-      if (frame->Contains(ID3FN_LANGUAGE))
-      {
-        frame->Field(ID3FN_LANGUAGE).Set("XXX");
-      }
-      if (frame->Contains(ID3FN_DESCRIPTION))
-      {
-        frame->Field(ID3FN_DESCRIPTION).Set(desc);
-      }
-    }
-    delete [] text;
-  }
-  return frame;
-}
-
-size_t ParseMusicMatch(ID3_Tag& tag, ifstream& file)
-{
-  char sig[8];
-  size_t tag_bytes = 0;
-  if (!file.is_open())
-  {
-    // TODO: log this
-    return tag_bytes;
-    // ID3_THROW(ID3E_NoData);
-  }
-  
-  char id_buffer[48];
-  
-  if (file.tellg() < 48)
-  {
-    return 0;
-  }
-  file.seekg(-48, ios::cur);
-  file.read(id_buffer, 48);
-
-  if (memcmp(id_buffer, "Brava Software Inc.             ", 32) != 0)
-  {
-    // not a music match tag
-    return 0;
-  }
-  char sVersion[4+1];
-  sVersion[4] = '\0';
-  strncpy(sVersion, &id_buffer[32], 4);
-  size_t nVersion = static_cast<size_t>(atof(sVersion) * 100.);
-    
-  streampos tag_end = file.tellg();
-  streampos tag_beg = tag_end;
-
-  if (file.tellg() < 68)
-  {
-    return 0;
-  }
-  file.seekg(-68, ios::cur);
-  streampos sig_pos = file.tellg();
-    
-  char sOffsetBuffer[20];
-  file.read(sOffsetBuffer, 20);
-
-  size_t metadata_size = 0;
-
-  if (nVersion <= 300)
-  {
-    // All MusicMatch tags up to and including version 3.0 had metadata 
-    // sections exactly 7868 bytes in length.
-    metadata_size = 7868;
-  }
-  else
-  {
-    // MusicMatch tags after version 3.0 had three possible lengths for their
-    // metadata sections.  We can determine which it was by searching for
-    // the version section signature that should precede the metadata section
-    // by exactly 256 bytes.
-    size_t possible_sizes[] = { 8132, 8004, 7936 };
-
-    for (size_t i = 0; i < sizeof(possible_sizes)/sizeof(size_t); ++i)
-    {
-      file.seekg(sig_pos);
+        dataWindow.setCur(dataWindow.getEnd());
         
-      // Our offset will be exactly 256 bytes prior to our potential metadata
-      // section
-      int offset = possible_sizes[i] + 256;
-      if (file.tellg() < offset)
-      {
-        // if our filesize is less than the offset, then it can't possibly
-        // be the correct offset, so try again.
-        continue;
-      }
-      file.seekg(-offset, ios::cur);
-
-      // now read in the signature to see if it's a match
-      file.read(sig, 8);
+        // Our offset will be exactly 256 bytes prior to our potential metadata
+        // section
+        int offset = possibleSizes[i] + 256;
+        if (dataWindow.getCur() < offset)
+        {
+          // if our filesize is less than the offset, then it can't possibly
+          // be the correct offset, so try again.
+          continue;
+        }
+        dataWindow.setCur(dataWindow.getCur() - offset);
+        TextReader tr(dataWindow);
         
-      if (memcmp(sig, "18273645", 8) == 0)
-      {
-        metadata_size = possible_sizes[i];
-        break;
+        // now read in the signature to see if it's a match
+        if (tr.readText(8) == "18273645")
+        {
+          metadataSize = possibleSizes[i];
+          break;
+        }
       }
     }
-  }
-  if (0 == metadata_size)
-  {
-    // if we didn't establish a size for the metadata, then something is
-    // wrong.  probably should log this.
-    return 0;
-  }
-
-  // parse the offset pointers to determine the actual sizes of all the 
-  // sections
-  size_t section_sizes[5];
-  size_t tag_size = metadata_size + 20 + 48;
-
-  // we already know the size of the last section
-  section_sizes[4] = metadata_size;
-    
-  size_t last_offset = 0;
-  for (int i = 0; i < 5; i++)
-  {
-    size_t this_offset = MM_ParseNum(&sOffsetBuffer[i*4], 4);
-    //ASSERT(this_offset > last_offset);
-    if (i > 0)
+    if (0 == metadataSize)
     {
-      size_t section_size = this_offset - last_offset;
-      section_sizes[i-1] = section_size;
-      tag_size += section_size;
+      // if we didn't establish a size for the metadata, then something is
+      // wrong.  probably should log this.
+      ID3D_WARNING( "id3::parseMusicMatch: bailing, couldn't find meta data signature, end = " << end );
+      return false;
     }
-    last_offset = this_offset;
-  }
-
-  // now check to see that our tag size is reasonable
-  if (static_cast<size_t>(tag_end) < tag_size)
-  {
-    // Ack!  The tag size doesn't jive with the tag's ending position in
-    // the file.  Bail!
-    return 0;
-  }
-
-  file.seekg(tag_end - tag_size);
-  tag_beg = file.tellg();
-
-  // Now calculate the actual offsets
-  streampos offsets[5];
-  offsets[0] = tag_beg;
-  for (size_t i = 0; i < 4; ++i)
-  {
-    offsets[i+1] = offsets[i] + section_sizes[i];
-  }
-
-  // now check for a tag header and adjust the tag_beg pointer appropriately
-  if (tag_beg >= 256)
-  {
-    file.seekg(tag_beg - 256);
-    file.read(sig, 8);
-    if (memcmp(sig, "18273645", 8) == 0)
+    
+    // parse the offset pointers to determine the actual sizes of all the 
+    // sections
+    size_t sectionSizes[5];
+    size_t tagSize = metadataSize;
+    
+    // we already know the size of the last section
+    sectionSizes[4] = metadataSize;
+    
+    size_t lastOffset = 0;
+    for (int i = 0; i < 5; i++)
     {
-      file.seekg(tag_beg - 256);
-      tag_beg = file.tellg();
-      file.ignore(256);
+      size_t thisOffset = offsets[i];
+      //ASSERT(thisOffset > lastOffset);
+      if (i > 0)
+      {
+        size_t sectionSize = thisOffset - lastOffset;
+        sectionSizes[i-1] = sectionSize;
+        tagSize += sectionSize;
+      }
+      lastOffset = thisOffset;
+    }
+    
+    // now check to see that our tag size is reasonable
+    if (dataWindow.getEnd() < tagSize)
+    {
+      // Ack!  The tag size doesn't jive with the tag's ending position in
+      // the file.  Bail!
+      ID3D_WARNING( "id3::parseMusicMatch: bailing, tag size is too big, tag size = " << tagSize << ", end = " << end );
+      return false;
+    }
+
+    dataWindow.setBeg(dataWindow.getEnd() - tagSize);
+    dataWindow.setCur(dataWindow.getBeg());
+    
+    // Now calculate the adjusted offsets
+    offsets[0] = dataWindow.getBeg();
+    for (size_t i = 0; i < 4; ++i)
+    {
+      offsets[i+1] = offsets[i] + sectionSizes[i];
+    }
+    
+    // now check for a tag header and adjust the tag_beg pointer appropriately
+    if (dataWindow.getBeg() >= 256)
+    {
+      rdr.setCur(dataWindow.getBeg() - 256);
+      TextReader tr(rdr);
+      if (tr.readText(8) == "18273645")
+      {
+        et.setExitPos(tr.getCur() - 8);
+      }
+      dataWindow.setCur(dataWindow.getBeg());
+    }
+    
+    // Now parse the various sections...
+    TextReader tr(dataWindow);
+    
+    // Parse the image extension at offset 0
+    dataWindow.setCur(offsets[0]);
+    id3::string imgExt = id3::removeTrailingSpaces(tr.readText(4));
+    
+    // Parse the image binary at offset 1
+    dataWindow.setCur(offsets[1]);
+    mm::NumberReader nr(dataWindow);
+    uint32 imgSize = nr.readInteger(4);
+    if (imgSize == 0)
+    {
+      // no image binary.  don't do anything.
     }
     else
     {
-      // no header.  do nothing.
+      WindowedReader imgWindow(dataWindow, imgSize);
+      if (imgWindow.getEnd() < imgWindow.getBeg() + imgSize)
+      {
+        // Ack!  The image size given extends beyond the next offset!  This is 
+        // not good...  log?
+      }
+      else
+      {
+        TextReader dataReader(imgWindow);
+        id3::string imgData = dataReader.readText();
+        ID3_Frame* frame = new ID3_Frame(ID3FID_PICTURE);
+        if (frame)
+        {
+          id3::string mimetype("image/");
+          mimetype += imgExt;
+          frame->Field(ID3FN_MIMETYPE).Set(mimetype.c_str());
+          frame->Field(ID3FN_IMAGEFORMAT).Set("");
+          frame->Field(ID3FN_PICTURETYPE).Set(static_cast<unsigned int>(0));
+          frame->Field(ID3FN_DESCRIPTION).Set("");
+          frame->Field(ID3FN_DATA).Set(reinterpret_cast<const uchar*>(imgData.data()), imgData.size());
+          tag.AttachFrame(frame);
+        }
+      }
     }
-  }
     
-  // Now parse the various sections...
-
-  // Parse the image extension at offset 0
-  file.seekg(offsets[0]);
-  char sImgExt[4+1];
-  sImgExt[4] = '\0';
-  file.read(sImgExt, 4);
-  id3::removeTrailingSpaces(sImgExt, 4);
-
-  // Parse the image binary at offset 1
-  file.seekg(offsets[1]);
-  char sImgSize[4];
-  file.read(sImgSize, 4);
-  size_t nImgSize = MM_ParseNum(sImgSize, 4);
-  if (0 == nImgSize)
-  {
-    // no image binary.  don't do anything.
-  }
-  else if (offsets[0] + 4 + nImgSize > static_cast<size_t>(offsets[2]))
-  {
-    // Ack!  The image size given extends beyond the next offset!  This is 
-    // not good...  log?
-  }
-  else
-  {
-    uchar* img_data = new uchar[nImgSize];
-    file.read(img_data, nImgSize);
-    ID3_Frame* frame = new ID3_Frame(ID3FID_PICTURE);
-    if (frame)
+    //file.seekg(offsets[2]);
+    //file.seekg(offsets[3]);
+    dataWindow.setCur(offsets[4]);
+    mm::TextFrameReader tfr(dataWindow);
+    
+    tag.AttachFrame(tfr.readFrame(ID3FID_TITLE));
+    tag.AttachFrame(tfr.readFrame(ID3FID_ALBUM));
+    tag.AttachFrame(tfr.readFrame(ID3FID_LEADARTIST));
+    tag.AttachFrame(tfr.readFrame(ID3FID_CONTENTTYPE));
+    tag.AttachFrame(tfr.readFrame(ID3FID_COMMENT, "MusicMatch_Tempo"));
+    tag.AttachFrame(tfr.readFrame(ID3FID_COMMENT, "MusicMatch_Mood"));
+    tag.AttachFrame(tfr.readFrame(ID3FID_COMMENT, "MusicMatch_Situation"));
+    tag.AttachFrame(tfr.readFrame(ID3FID_COMMENT, "MusicMatch_Preference"));
+    tag.AttachFrame(tfr.readFrame(ID3FID_SONGLEN));
+    
+    // The next 12 bytes can be ignored.  The first 8 represent the 
+    // creation date as a 64 bit floating point number.  The last 4 are
+    // for a play counter.
+    tfr.skipChars(12);
+    
+    tag.AttachFrame(tfr.readFrame(ID3FID_COMMENT, "MusicMatch_Path"));
+    tag.AttachFrame(tfr.readFrame(ID3FID_COMMENT, "MusicMatch_Serial"));
+    
+    // 2 bytes for track
+    uint32 trkNum = nr.readInteger(2);
+    if (trkNum > 0)
     {
-      char mimetype[11];
-      strcpy(mimetype, "image/");
-      strcat(mimetype, sImgExt);
-      frame->Field(ID3FN_MIMETYPE).Set(mimetype);
-      frame->Field(ID3FN_IMAGEFORMAT).Set("");
-      frame->Field(ID3FN_PICTURETYPE).Set(static_cast<unsigned int>(0));
-      frame->Field(ID3FN_DESCRIPTION).Set("");
-      frame->Field(ID3FN_DATA).Set(img_data, nImgSize);
-      tag.AttachFrame(frame);
+      id3::string trkStr = mm::toString(trkNum);
+      ID3_Frame* frame = new ID3_Frame(ID3FID_TRACKNUM);
+      if (frame)
+      {
+        frame->Field(ID3FN_TEXT).Set(trkStr.c_str());
+        tag.AttachFrame(frame);
+      }
     }
-  }
-
-  //file.seekg(offsets[2]);
-  //file.seekg(offsets[3]);
-  
-  file.seekg(offsets[4]);
-          
-  tag.AttachFrame(MM_ParseTextField(file, ID3FID_TITLE));
-  tag.AttachFrame(MM_ParseTextField(file, ID3FID_ALBUM));
-  tag.AttachFrame(MM_ParseTextField(file, ID3FID_LEADARTIST));
-  tag.AttachFrame(MM_ParseTextField(file, ID3FID_CONTENTTYPE));
-  tag.AttachFrame(MM_ParseTextField(file, ID3FID_COMMENT, 
-                                    "MusicMatch_Tempo"));
-  tag.AttachFrame(MM_ParseTextField(file, ID3FID_COMMENT, 
-                                    "MusicMatch_Mood"));
-  tag.AttachFrame(MM_ParseTextField(file, ID3FID_COMMENT, 
-                                    "MusicMatch_Situation"));
-  tag.AttachFrame(MM_ParseTextField(file, ID3FID_COMMENT, 
-                                    "MusicMatch_Preference"));
-  tag.AttachFrame(MM_ParseTextField(file, ID3FID_SONGLEN));
-  
-  // The next 12 bytes can be ignored.  The first 8 represent the 
-  // creation date as a 64 bit floating point number.  The last 4 are
-  // for a play counter.
-  file.ignore(12);
-  
-  tag.AttachFrame(MM_ParseTextField(file, ID3FID_COMMENT, 
-                                    "MusicMatch_Path"));
-  tag.AttachFrame(MM_ParseTextField(file, ID3FID_COMMENT, 
-                                    "MusicMatch_Serial"));
-  
-  // 2 bytes for track
-  char trk_bytes[2];
-  file.read(trk_bytes, 2);
-  size_t trk_num = MM_ParseNum(trk_bytes, 2);
-  if (trk_num > 0)
-  {
-    char trk_str[5];
-    sprintf(trk_str, "%lu", static_cast<unsigned long>(trk_num));
-    ID3_Frame* frame = new ID3_Frame(ID3FID_TRACKNUM);
-    if (frame)
-    {
-      frame->Field(ID3FN_TEXT).Set(trk_str);
-      tag.AttachFrame(frame);
-    }
+    
+    tag.AttachFrame(tfr.readFrame(ID3FID_COMMENT, "MusicMatch_Notes"));
+    tag.AttachFrame(tfr.readFrame(ID3FID_COMMENT, "MusicMatch_Bio"));
+    tag.AttachFrame(tfr.readFrame(ID3FID_UNSYNCEDLYRICS));
+    tag.AttachFrame(tfr.readFrame(ID3FID_WWWARTIST));
+    tag.AttachFrame(tfr.readFrame(ID3FID_WWWCOMMERCIALINFO));
+    tag.AttachFrame(tfr.readFrame(ID3FID_COMMENT, "MusicMatch_ArtistEmail"));
+    
+    // email?
+    
+    return true;
   }
   
-  tag.AttachFrame(MM_ParseTextField(file, ID3FID_COMMENT, 
-                                    "MusicMatch_Notes"));
-  tag.AttachFrame(MM_ParseTextField(file, ID3FID_COMMENT, 
-                                    "MusicMatch_Bio"));
-  tag.AttachFrame(MM_ParseTextField(file, ID3FID_UNSYNCEDLYRICS));
-  tag.AttachFrame(MM_ParseTextField(file, ID3FID_WWWARTIST));
-  tag.AttachFrame(MM_ParseTextField(file, ID3FID_WWWCOMMERCIALINFO));
-  tag.AttachFrame(MM_ParseTextField(file, ID3FID_COMMENT, 
-                                    "MusicMatch_ArtistEmail"));
-  
-  // email?
-  
-  return tag_size;
-}
+};

@@ -1,4 +1,4 @@
-// $Id: tag_parse_v1.cpp,v 1.12 2000/09/27 07:47:09 eldamitri Exp $
+// $Id: tag_parse_v1.cpp,v 1.13 2000/09/30 22:14:38 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,109 +24,97 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#include <string.h>
-#include <memory.h>
-#include "tag.h"
-#include "misc_support.h"
-#include "utils.h"
-
 #if defined HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-size_t ParseID3v1(ID3_Tag& tag, ifstream& file)
-{
-  size_t num_bytes = 0;
-  if (!file)
-  {
-    return num_bytes;
-  }
+#include "debug.h"
+#include "tag.h"
+#include "misc_support.h"
+#include "utils.h"
+#include "reader_decorators.h"
 
-  ID3V1_Tag tagID3v1;
-    
-  // posn ourselves at 128 bytes from the current position
-  file.seekg(-128, ios::cur);
-  //file.seekg(-static_cast<long>(ID3_V1_LEN), ios::cur);
-  if (!file)
+namespace id3
+{
+  
+  bool parseID3v1(ID3_Tag& tag, ID3_Reader& reader)
   {
-    return num_bytes;
-    // TODO:  This is a bad error message.  Make it more descriptive
-  }
+    ID3_Reader::pos_type end = reader.getCur();
     
-  // read the next 128 bytes in;
-  file.read(tagID3v1.sID, ID3_V1_LEN_ID);
-  if (file.gcount() != ID3_V1_LEN_ID)
-  {
-    // TODO:  This is a bad error message.  Make it more descriptive
-    return num_bytes;
-    //ID3_THROW(ID3E_NoData);
-  }
-    
-  // check to see if it was a tag
-  if (memcmp(tagID3v1.sID, "TAG", ID3_V1_LEN_ID) == 0)
-  {
-    const size_t data_size = ID3_V1_LEN - ID3_V1_LEN_ID;
-    uchar tag_bytes[data_size];
-    file.read(tag_bytes, data_size);
-    if (file.gcount() != data_size)
+    // posn ourselves at 128 bytes from the current position
+    if (end < ID3_V1_LEN)
     {
-      return num_bytes;
+      ID3D_NOTICE( "id3::parseID3v1: bailing, not enough bytes to parse, pos = " << end );
+      return false;
     }
+    reader.setCur(end - ID3_V1_LEN);
+    ID3_Reader::pos_type beg = reader.getCur();
+    //file.seekg(-static_cast<long>(ID3_V1_LEN), ios::cur);
+    if (end != beg + ID3_V1_LEN)
+    {
+      ID3D_WARNING( "id3::parseID3v1: failed to reposition " << ID3_V1_LEN << " bytes" );
+      reader.setCur(end);
+      return false;
+    }
+    
+    // read the next 128 bytes in;
+    id3::TextReader tr(reader);
+    id3::string id = tr.readText(ID3_V1_LEN_ID);
+    
+    // check to see if it was a tag
+    if (id != "TAG")
+    {
+      tr.setCur(end);
+      return false;
+    }
+
     // guess so, let's start checking the v2 tag for frames which are the
     // equivalent of the v1 fields.  When we come across a v1 field that has
     // no current equivalent v2 frame, we create the frame, copy the data
     // from the v1 frame and attach it to the tag
-
-    size_t offset = 0;
-
-    memcpy(tagID3v1.sTitle, &tag_bytes[offset], ID3_V1_LEN_TITLE);
-    tagID3v1.sTitle[ID3_V1_LEN_TITLE] = '\0';
-    id3::removeTrailingSpaces(tagID3v1.sTitle,  ID3_V1_LEN_TITLE);
-    ID3_AddTitle(&tag, tagID3v1.sTitle);
-    offset += ID3_V1_LEN_TITLE;
-
-    memcpy(tagID3v1.sArtist, &tag_bytes[offset], ID3_V1_LEN_ARTIST);
-    tagID3v1.sTitle[ID3_V1_LEN_ARTIST] = '\0';
-    id3::removeTrailingSpaces(tagID3v1.sArtist,  ID3_V1_LEN_ARTIST);
-    ID3_AddArtist(&tag, tagID3v1.sArtist);
-    offset += ID3_V1_LEN_ARTIST;
-
-    memcpy(tagID3v1.sAlbum, &tag_bytes[offset], ID3_V1_LEN_ALBUM);
-    tagID3v1.sTitle[ID3_V1_LEN_ALBUM] = '\0';
-    id3::removeTrailingSpaces(tagID3v1.sAlbum,  ID3_V1_LEN_ALBUM);
-    ID3_AddAlbum(&tag, tagID3v1.sAlbum);
-    offset += ID3_V1_LEN_ALBUM;
-
-    memcpy(tagID3v1.sYear, &tag_bytes[offset], ID3_V1_LEN_YEAR);
-    tagID3v1.sTitle[ID3_V1_LEN_YEAR] = '\0';
-    id3::removeTrailingSpaces(tagID3v1.sYear,  ID3_V1_LEN_YEAR);
-    ID3_AddYear(&tag, tagID3v1.sYear);
-    offset += ID3_V1_LEN_YEAR;
+    id3::string title = tr.readText(ID3_V1_LEN_TITLE);
+    //id3::removeTrailingSpaces(title);
+    ID3_AddTitle(&tag, title.c_str());
+    ID3D_NOTICE( "id3::parseID3v1: title = " << title );
     
-    memcpy(tagID3v1.sComment, &tag_bytes[offset], ID3_V1_LEN_COMMENT);
-    tagID3v1.sTitle[ID3_V1_LEN_COMMENT] = '\0';
-    id3::removeTrailingSpaces(tagID3v1.sComment,  ID3_V1_LEN_COMMENT);
-    if ('\0' != tagID3v1.sComment[ID3_V1_LEN_COMMENT - 2] ||
-        '\0' == tagID3v1.sComment[ID3_V1_LEN_COMMENT - 1])
-    {
-      id3::removeTrailingSpaces(tagID3v1.sComment, ID3_V1_LEN_COMMENT);
-    }
-    else
+    id3::string artist = tr.readText(ID3_V1_LEN_ARTIST);
+    //id3::removeTrailingSpaces(title);
+    ID3_AddTitle(&tag, artist.c_str());
+    ID3D_NOTICE( "id3::parseID3v1: artist = " << artist );
+    
+    id3::string album = tr.readText(ID3_V1_LEN_ALBUM);
+    //id3::removeTrailingSpaces(title);
+    ID3_AddTitle(&tag, album.c_str());
+    ID3D_NOTICE( "id3::parseID3v1: album = " << title );
+    
+    id3::string year = tr.readText(ID3_V1_LEN_YEAR);
+    //id3::removeTrailingSpaces(title);
+    ID3_AddYear(&tag, year.c_str());
+    ID3D_NOTICE( "id3::parseID3v1: year = " << year );
+    
+    id3::string comment = tr.readText(ID3_V1_LEN_COMMENT);
+    if (comment.length() == ID3_V1_LEN_COMMENT  &&
+        '\0' == comment[ID3_V1_LEN_COMMENT - 2] ||
+        '\0' != comment[ID3_V1_LEN_COMMENT - 1])
     {
       // This is an id3v1.1 tag.  The last byte of the comment is the track
       // number.  
-      id3::removeTrailingSpaces(tagID3v1.sComment, ID3_V1_LEN_COMMENT - 1);
-      ID3_AddTrack(&tag, tagID3v1.sComment[ID3_V1_LEN_COMMENT - 1]);
+      size_t track = comment[ID3_V1_LEN_COMMENT - 1];
+      ID3_AddTrack(&tag, track);
+      ID3D_NOTICE( "id3::parseID3v1: track = " << track );
+      comment = comment.substr(0, ID3_V1_LEN_COMMENT - 1);
     }
-    ID3_AddComment(&tag, tagID3v1.sComment, STR_V1_COMMENT_DESC);
-    offset += ID3_V1_LEN_COMMENT;
-      
-    // the GENRE field/frame
-    tagID3v1.ucGenre = tag_bytes[offset];
-    ID3_AddGenre(&tag, tagID3v1.ucGenre);
-
-    num_bytes += ID3_V1_LEN;
-  }
+    //id3::removeTrailingSpaces(tagID3v1.sComment, 
+    ID3_AddComment(&tag, comment.c_str());
+    ID3D_NOTICE( "id3::parseID3v1: comment = " << comment );
     
-  return num_bytes;
-}
+    // the GENRE field/frame
+    uchar genre = tr.readChar();
+    ID3_AddGenre(&tag, genre);
+    ID3D_NOTICE( "id3::parseID3v1: genre = " << (int) genre );
+    
+    reader.setCur(beg);
+    return true;
+  }
+
+};
