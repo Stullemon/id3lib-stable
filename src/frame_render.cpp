@@ -1,4 +1,4 @@
-// $Id: frame_render.cpp,v 1.19 2000/10/23 07:42:13 eldamitri Exp $
+// $Id: frame_render.cpp,v 1.20 2000/10/23 07:48:54 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -88,14 +88,14 @@ void ID3_FrameImpl::Render(ID3_Writer& writer) const
   size_t origSize = 0;
   if (!this->GetCompression())
   {
-    id3::v2::renderFields(fldWriter, *this);
+    renderFields(fldWriter, *this);
     origSize = flds.size();
     ID3D_NOTICE ( "ID3_FrameImpl::Render(): uncompressed fields" );
   }
   else
   {
     io::CompressedWriter cr(fldWriter);
-    id3::v2::renderFields(cr, *this);
+    renderFields(cr, *this);
     cr.flush();
     origSize = cr.getOrigSize();
     ID3D_NOTICE ( "ID3_FrameImpl::Render(): compressed fields, orig size = " <<
