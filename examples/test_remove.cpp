@@ -1,8 +1,12 @@
-// $Id: test_remove.cpp,v 1.6 2000/07/08 21:23:30 eldamitri Exp $
+// $Id: test_remove.cpp,v 1.7 2000/10/08 21:28:50 eldamitri Exp $
 
 #include <iostream.h>
 #include <id3/tag.h>
 #include <id3/misc_support.h>
+#include <id3/error.h>
+#include <id3/strings.h>
+
+using namespace dami;
 
 typedef const char* LPCTSTR;
 
@@ -15,11 +19,21 @@ size_t RemoveFrame(ID3_Tag& pTag, ID3_FrameID fID, LPCTSTR sDescription)
 
   do {
     if (!sDescription)
+    {
+      cerr << "*** description is null" << endl;
       frame = pTag.Find(fID);
+    }
     else
+    {
+      cerr << "*** description is \"" << sDescription << "\"" << endl;
       frame = pTag.Find(fID, ID3FN_DESCRIPTION, sDescription);
+    }
 
-    if (frame) {
+    if (frame)
+    {
+      ID3_Field* fld = frame->GetField(ID3FN_TEXT);
+      String text(fld->GetText(), fld->Size());
+      cerr << "*** delete frame with text \"" << text << "\"" << endl;
       /* pTag is an ID3_Tag */
       delete pTag.RemoveFrame(frame);
       nCount++;
@@ -50,37 +64,37 @@ int main( int argc, char *argv[])
       tag.Clear();
       
       frame.SetID(ID3FID_TITLE);
-      frame.Field(ID3FN_TEXT).Set("Test title");
+      frame.GetField(ID3FN_TEXT)->Set("Test title");
       tag.AddFrame(frame);
       
       frame.SetID(ID3FID_COMPOSER);
-      frame.Field(ID3FN_TEXT).Set("Test composer");
+      frame.GetField(ID3FN_TEXT)->Set("Test composer");
       tag.AddFrame(frame);
       
       frame.SetID(ID3FID_BAND);
-      frame.Field(ID3FN_TEXT).Set("Test band");
+      frame.GetField(ID3FN_TEXT)->Set("Test band");
       tag.AddFrame(frame);
       
       frame.SetID(ID3FID_CONDUCTOR);
-      frame.Field(ID3FN_TEXT).Set("Test conductor");
+      frame.GetField(ID3FN_TEXT)->Set("Test conductor");
       tag.AddFrame(frame);
       
       frame.SetID(ID3FID_COMMENT);
-      frame.Field(ID3FN_LANGUAGE).Set("eng");
-      frame.Field(ID3FN_TEXT).Set("Test comment");
-      frame.Field(ID3FN_DESCRIPTION).Set("A Description");
+      frame.GetField(ID3FN_LANGUAGE)->Set("eng");
+      frame.GetField(ID3FN_TEXT)->Set("Test comment");
+      frame.GetField(ID3FN_DESCRIPTION)->Set("A Description");
       tag.AddFrame(frame);
 
       frame.SetID(ID3FID_COMMENT);
-      frame.Field(ID3FN_LANGUAGE).Set("eng");
-      frame.Field(ID3FN_TEXT).Set("Test comment 2");
-      frame.Field(ID3FN_DESCRIPTION).Set("");
+      frame.GetField(ID3FN_LANGUAGE)->Set("eng");
+      frame.GetField(ID3FN_TEXT)->Set("Test comment 2");
+      frame.GetField(ID3FN_DESCRIPTION)->Set("");
       tag.AddFrame(frame);
 
       frame.SetID(ID3FID_COMMENT);
-      frame.Field(ID3FN_LANGUAGE).Set("eng");
-      frame.Field(ID3FN_TEXT).Set("ID3v1 comment text?");
-      frame.Field(ID3FN_DESCRIPTION).Set(STR_V1_COMMENT_DESC);
+      frame.GetField(ID3FN_LANGUAGE)->Set("eng");
+      frame.GetField(ID3FN_TEXT)->Set("ID3v1 comment text?");
+      frame.GetField(ID3FN_DESCRIPTION)->Set(STR_V1_COMMENT_DESC);
       tag.AddFrame(frame);
 
       tag.SetPadding(false);
