@@ -1,4 +1,4 @@
-// $Id: demo_convert.cpp,v 1.9 1999/12/23 15:56:26 scott Exp $
+// $Id: demo_convert.cpp,v 1.10 1999/12/26 00:26:20 scott Exp $
 //
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -20,7 +20,7 @@
 #include <id3/tag.h>
 #include <getopt.h>
 
-#define VERSION_NUMBER "$Revision: 1.9 $"
+#define VERSION_NUMBER "$Revision: 1.10 $"
 
 void PrintUsage(char *sName)
 {
@@ -30,6 +30,7 @@ void PrintUsage(char *sName)
   cout << "  -1, --v1tag     Render only the id3v1 tag" << endl;
   cout << "  -2, --v2tag     Render only the id3v2 tag" << endl;
   cout << "  -s, --strip     Strip, rather than render, the tags" << endl;
+  cout << "  -p, --padding   Use padding in the tag" << endl;
   cout << "  -h, --help      Display this help and exit" << endl;
   cout << "  -v, --version   Display version information and exit" << endl;
   cout << endl;
@@ -45,11 +46,19 @@ void PrintVersion(char *sName)
   size_t nIndex;
   cout << sName << " ";
   for (nIndex = 0; nIndex < strlen(VERSION_NUMBER); nIndex++)
-    if (VERSION_NUMBER[nIndex] == ' ') break;
+  {
+    if (VERSION_NUMBER[nIndex] == ' ') 
+    {
+      break;
+    }
+  }
   nIndex++;
   for (; nIndex < strlen (VERSION_NUMBER); nIndex++)
   {
-    if (VERSION_NUMBER[nIndex] == ' ') break;
+    if (VERSION_NUMBER[nIndex] == ' ') 
+    {
+      break;
+    }
     cout << VERSION_NUMBER[nIndex];
   }
   cout << endl;
@@ -62,13 +71,21 @@ void PrintVersion(char *sName)
 void DisplayTags(ostream &os, luint nTags)
 {
   if (!((nTags & V1_TAG) || (nTags & V2_TAG)))
+  {
     os << "no tag";
+  }
   if (nTags & V1_TAG)
+  {
     os << "v1";
+  }
   if ((nTags & V1_TAG) && (nTags & V2_TAG))
+  {
     os << " and ";
+  }
   if (nTags & V2_TAG)
+  {
     os << "v2";
+  }
 }
 
 int main( int argc, char *argv[])
@@ -77,6 +94,7 @@ int main( int argc, char *argv[])
   int iOpt;
   bool bError = false;
   bool bStrip = false;
+  bool bPadding = false;
   while (true)
   {
     int option_index = 0;
@@ -88,9 +106,10 @@ int main( int argc, char *argv[])
       { "version", no_argument, &iLongOpt, 'v' },
       { "help",    no_argument, &iLongOpt, 'h' },
       { "strip",   no_argument, &iLongOpt, 's' },
+      { "padding",   no_argument, &iLongOpt, 'p' },
       { 0, 0, 0, 0 }
     };
-    iOpt = getopt_long (argc, argv, "12svh", long_options, &option_index);
+    iOpt = getopt_long (argc, argv, "12svhp", long_options, &option_index);
 
     if (iOpt == -1)
       break;
@@ -104,6 +123,7 @@ int main( int argc, char *argv[])
       case 's': bStrip = true;          break;
       case 'v': PrintVersion(argv[0]);  exit (0);
       case 'h': PrintUsage(argv[0]);    exit (0);
+      case 'p': bPadding = true;        break;
       case '?': bError = true;          break;
       default:
         cout << "?? getopt returned character code " << iOpt << " ??" << endl;
@@ -132,6 +152,7 @@ int main( int argc, char *argv[])
 
         myTag.Clear();
         myTag.Link(argv[nIndex]);
+        myTag.SetPadding(bPadding);
 
         cout << "attempting ";
         DisplayTags(cout, ulFlag);
