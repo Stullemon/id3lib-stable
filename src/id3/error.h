@@ -1,3 +1,5 @@
+// $Id: error.h,v 1.3 1999/11/04 04:15:54 scott Exp $
+
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
 //  This means that it may be modified, redistributed and used in commercial
@@ -52,3 +54,8 @@ protected:
 #define ID3_THROW(x) throw ID3_Error(x, __FILE__, __LINE__)
 
 #endif
+
+// $Log: error.h,v $
+// Revision 1.3  1999/11/04 04:15:54  scott
+// Added cvs Id and Log tags to beginning and end of file, respectively.
+//

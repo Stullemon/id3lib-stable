@@ -1,3 +1,5 @@
+// $Id: header_tag.h,v 1.4 1999/11/04 04:15:55 scott Exp $
+
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
 //  This means that it may be modified, redistributed and used in commercial
@@ -36,3 +38,8 @@ CDLLEXPORT
 lsint ID3_IsTagHeader(uchar header[ID3_TAGHEADERSIZE]);
 
 #endif
+
+// $Log: header_tag.h,v $
+// Revision 1.4  1999/11/04 04:15:55  scott
+// Added cvs Id and Log tags to beginning and end of file, respectively.
+//

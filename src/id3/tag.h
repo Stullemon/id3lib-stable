@@ -1,3 +1,5 @@
+// $Id: tag.h,v 1.4 1999/11/04 04:15:55 scott Exp $
+
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
 //  This means that it may be modified, redistributed and used in commercial
@@ -122,3 +124,8 @@ ID3_Tag& operator<<(ID3_Tag& tag, ID3_Frame& frame);
 ID3_Tag& operator<<(ID3_Tag& tag, ID3_Frame *frame);
 
 #endif
+
+// $Log: tag.h,v $
+// Revision 1.4  1999/11/04 04:15:55  scott
+// Added cvs Id and Log tags to beginning and end of file, respectively.
+//
