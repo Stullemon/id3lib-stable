@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.14 2000/06/25 06:15:12 eldamitri Exp $
+# $Id: Makefile.am,v 1.15 2000/09/27 07:31:08 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -53,11 +53,11 @@ id3lib_sources =                \
 lib_LTLIBRARIES   = libid3.la 
 
 libid3_la_SOURCES = $(id3lib_sources)
+
 if ID3_NEEDZLIB
 LDADD        = $(top_builddir)/zlib/src/libz.la
-else
-libid3_la_LIBADD  = -lz
 endif
+
 libid3_la_LDFLAGS = \
   -version-info $(LT_VERSION) \
   -release $(LT_RELEASE) \
