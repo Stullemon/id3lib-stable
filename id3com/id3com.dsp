@@ -280,15 +280,7 @@ SOURCE=..\src\misc_support.cpp
 # Begin Source File
 
 SOURCE=..\src\spec.cpp
-
-!IF  "$(CFG)" == "id3com - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "id3com - Win32 Release"
-
 # SUBTRACT CPP /YX /Yc /Yu
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
