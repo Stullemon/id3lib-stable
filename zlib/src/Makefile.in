@@ -106,9 +106,9 @@ VERSION = @VERSION@
 zlib_sources =    adler32.c    compress.c   crc32.c      deflate.c    gzio.c       infblock.c   infcodes.c   inffast.c    inflate.c    inftrees.c   infutil.c    trees.c      uncompr.c    zutil.c
 
 
-@ID3_NEEDZLIB_TRUE@lib_LTLIBRARIES = libid3.la
+@ID3_NEEDZLIB_TRUE@lib_LTLIBRARIES = libz.la
 @ID3_NEEDZLIB_TRUE@INCLUDES = -I$(top_srcdir)/zlib/include
-@ID3_NEEDZLIB_TRUE@libid3_la_SOURCES = $(zlib_sources)
+@ID3_NEEDZLIB_TRUE@libz_la_SOURCES = $(zlib_sources)
 
 EXTRA_DIST = $(zlib_sources)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -121,9 +121,9 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I../..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libid3_la_LDFLAGS = 
-libid3_la_LIBADD = 
-@ID3_NEEDZLIB_TRUE@libid3_la_OBJECTS =  adler32.lo compress.lo crc32.lo \
+libz_la_LDFLAGS = 
+libz_la_LIBADD = 
+@ID3_NEEDZLIB_TRUE@libz_la_OBJECTS =  adler32.lo compress.lo crc32.lo \
 @ID3_NEEDZLIB_TRUE@deflate.lo gzio.lo infblock.lo infcodes.lo \
 @ID3_NEEDZLIB_TRUE@inffast.lo inflate.lo inftrees.lo infutil.lo \
 @ID3_NEEDZLIB_TRUE@trees.lo uncompr.lo zutil.lo
@@ -143,8 +143,8 @@ DEP_FILES =  .deps/adler32.P .deps/compress.P .deps/crc32.P \
 .deps/deflate.P .deps/gzio.P .deps/infblock.P .deps/infcodes.P \
 .deps/inffast.P .deps/inflate.P .deps/inftrees.P .deps/infutil.P \
 .deps/trees.P .deps/uncompr.P .deps/zutil.P
-SOURCES = $(libid3_la_SOURCES)
-OBJECTS = $(libid3_la_OBJECTS)
+SOURCES = $(libz_la_SOURCES)
+OBJECTS = $(libz_la_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -214,8 +214,8 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-libid3.la: $(libid3_la_OBJECTS) $(libid3_la_DEPENDENCIES)
-	$(LINK) -rpath $(libdir) $(libid3_la_LDFLAGS) $(libid3_la_OBJECTS) $(libid3_la_LIBADD) $(LIBS)
+libz.la: $(libz_la_OBJECTS) $(libz_la_DEPENDENCIES)
+	$(LINK) -rpath $(libdir) $(libz_la_LDFLAGS) $(libz_la_OBJECTS) $(libz_la_LIBADD) $(LIBS)
 
 tags: TAGS
 
