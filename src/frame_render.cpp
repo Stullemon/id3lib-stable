@@ -1,4 +1,4 @@
-// $Id: frame_render.cpp,v 1.11 2000/05/28 03:43:28 eldamitri Exp $
+// $Id: frame_render.cpp,v 1.12 2000/06/06 12:22:57 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -73,7 +73,16 @@ size_t ID3_Frame::Render(uchar *buffer) const
 {
   if (NULL == buffer)
   {
-    ID3_THROW(ID3E_NoBuffer);
+    // log this
+    return 0;
+    //ID3_THROW(ID3E_NoBuffer);
+  }
+
+  // Return immediately if we have no fields, which (usually) means we're
+  // trying to render a frame which has been Cleared or hasn't been initialized
+  if (!__num_fields)
+  {
+    return 0;
   }
 
   uchar e_id = this->_GetEncryptionID(), g_id = this->_GetGroupingID();
@@ -101,7 +110,13 @@ size_t ID3_Frame::Render(uchar *buffer) const
       data_size += (*fi)->Render(&buffer[data_size + hdr_size + extras]);
     }
   }
-
+  
+  // Return if there's no data
+  if (!data_size)
+  {
+    return 0;
+  }
+  
   // 2.  Attempt to compress if specified
   if (this->GetCompression())
   {
