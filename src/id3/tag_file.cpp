@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.8 1999/12/01 18:00:59 scott Exp $
+// $Id: tag_file.cpp,v 1.9 1999/12/01 22:16:36 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -17,7 +17,11 @@
 #endif
 
 #include <string.h>
+
+#if defined HAVE_UNISTD_H
 #include <unistd.h>
+#endif
+
 #include "tag.h"
 
 bool exists(char *name)
@@ -154,6 +158,36 @@ luint ID3_Tag::Update(luint ulTagFlag)
   return ulTags;
 }
 
+#if defined WIN32
+
+#include <windows.h>
+static int truncate(const char *path, off_t length)
+{
+  int result = -1;
+  HANDLE fh;
+  
+  fh = ::CreateFile(path,
+                    GENERIC_WRITE | GENERIC_READ,
+                    0,
+                    NULL,
+                    OPEN_EXISTING,
+                    FILE_ATTRIBUTE_NORMAL,
+                    NULL);
+  
+  if(INVALID_HANDLE_VALUE != fh)
+  {
+    SetFilePointer(fh, length, NULL, FILE_BEGIN);
+    SetEndOfFile(fh);
+    CloseHandle(fh);
+    result = 0;
+  }
+  
+  return result;
+}
+
+#endif
+
+
 luint ID3_Tag::Strip(const luint ulTagFlag)
 {
   luint ulTags = NO_TAG;
@@ -265,6 +299,10 @@ luint ID3_Tag::Strip(const luint ulTagFlag)
 
 
 // $Log: tag_file.cpp,v $
+// Revision 1.9  1999/12/01 22:16:36  scott
+// (truncate): Added.  Defined only for windows, which doesn't have
+// unistd.h available (thanks elrod).
+//
 // Revision 1.8  1999/12/01 18:00:59  scott
 // Changed all of the #include <id3/*> to #include "*" to help ensure that
 // the sources are searched for in the right places (and to make compiling under
