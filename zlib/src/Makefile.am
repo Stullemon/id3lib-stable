@@ -8,6 +8,10 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+LT_VERSION = 1:0:0
+
+INCLUDES = -I$(top_srcdir)/include
+
 zlib_sources = \
   adler32.c  \
   compress.c \
@@ -24,14 +28,7 @@ zlib_sources = \
   uncompr.c  \
   zutil.c
 
-if ID3_NEEDZLIB
-LT_VERSION = 1:0:0
 lib_LTLIBRARIES = libz.la
-INCLUDES = -I$(top_srcdir)/zlib/include
 libz_la_SOURCES = $(zlib_sources)
-else
-LT_VERSION = 0:0:0
-endif
-libz_la_LDFLAGS = -version-info $(LT_VERSION)
 
-EXTRA_DIST = $(zlib_sources)
+libz_la_LDFLAGS = -version-info $(LT_VERSION)

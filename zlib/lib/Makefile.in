@@ -48,7 +48,7 @@ pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
 
-top_builddir = ../..
+top_builddir = ..
 
 ACLOCAL = @ACLOCAL@
 AUTOCONF = @AUTOCONF@
@@ -74,36 +74,16 @@ CC = @CC@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 DLLTOOL = @DLLTOOL@
-DOX_DIR_HTML = @DOX_DIR_HTML@
-DOX_DIR_LATEX = @DOX_DIR_LATEX@
-DOX_DIR_MAN = @DOX_DIR_MAN@
-DOX_DIR_RTF = @DOX_DIR_RTF@
-ID3LIB_BINARY_AGE = @ID3LIB_BINARY_AGE@
-ID3LIB_DATE = @ID3LIB_DATE@
-ID3LIB_DEBUG_FLAGS = @ID3LIB_DEBUG_FLAGS@
-ID3LIB_FULLNAME = @ID3LIB_FULLNAME@
-ID3LIB_INTERFACE_AGE = @ID3LIB_INTERFACE_AGE@
-ID3LIB_MAJOR_VERSION = @ID3LIB_MAJOR_VERSION@
-ID3LIB_MINOR_VERSION = @ID3LIB_MINOR_VERSION@
-ID3LIB_NAME = @ID3LIB_NAME@
-ID3LIB_PATCH_VERSION = @ID3LIB_PATCH_VERSION@
-ID3LIB_VERSION = @ID3LIB_VERSION@
-LD = @LD@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
-LT_AGE = @LT_AGE@
-LT_CURRENT = @LT_CURRENT@
-LT_RELEASE = @LT_RELEASE@
-LT_REVISION = @LT_REVISION@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
-NM = @NM@
 OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
-mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = ../../config.h
+mkinstalldirs = $(SHELL) $(top_srcdir)/../mkinstalldirs
+CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
 DIST_COMMON =  Makefile.am Makefile.in
 
@@ -115,7 +95,7 @@ GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu zlib/lib/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu lib/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
@@ -127,14 +107,14 @@ TAGS:
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
-subdir = zlib/lib
+subdir = lib
 
 distdir: $(DISTFILES)
 	here=`cd $(top_builddir) && pwd`; \
 	top_distdir=`cd $(top_distdir) && pwd`; \
 	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu zlib/lib/Makefile
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu lib/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \

@@ -48,7 +48,7 @@ pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
 
-top_builddir = ../..
+top_builddir = ..
 
 ACLOCAL = @ACLOCAL@
 AUTOCONF = @AUTOCONF@
@@ -74,60 +74,40 @@ CC = @CC@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 DLLTOOL = @DLLTOOL@
-DOX_DIR_HTML = @DOX_DIR_HTML@
-DOX_DIR_LATEX = @DOX_DIR_LATEX@
-DOX_DIR_MAN = @DOX_DIR_MAN@
-DOX_DIR_RTF = @DOX_DIR_RTF@
-ID3LIB_BINARY_AGE = @ID3LIB_BINARY_AGE@
-ID3LIB_DATE = @ID3LIB_DATE@
-ID3LIB_DEBUG_FLAGS = @ID3LIB_DEBUG_FLAGS@
-ID3LIB_FULLNAME = @ID3LIB_FULLNAME@
-ID3LIB_INTERFACE_AGE = @ID3LIB_INTERFACE_AGE@
-ID3LIB_MAJOR_VERSION = @ID3LIB_MAJOR_VERSION@
-ID3LIB_MINOR_VERSION = @ID3LIB_MINOR_VERSION@
-ID3LIB_NAME = @ID3LIB_NAME@
-ID3LIB_PATCH_VERSION = @ID3LIB_PATCH_VERSION@
-ID3LIB_VERSION = @ID3LIB_VERSION@
-LD = @LD@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
-LT_AGE = @LT_AGE@
-LT_CURRENT = @LT_CURRENT@
-LT_RELEASE = @LT_RELEASE@
-LT_REVISION = @LT_REVISION@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
-NM = @NM@
 OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
 
+LT_VERSION = 1:0:0
+
+INCLUDES = -I$(top_srcdir)/include
+
 zlib_sources =    adler32.c    compress.c   crc32.c      deflate.c    gzio.c       infblock.c   infcodes.c   inffast.c    inflate.c    inftrees.c   infutil.c    trees.c      uncompr.c    zutil.c
 
-@ID3_NEEDZLIB_TRUE@LT_VERSION = 1:0:0
-@ID3_NEEDZLIB_FALSE@LT_VERSION = 0:0:0
-@ID3_NEEDZLIB_TRUE@lib_LTLIBRARIES = libz.la
-@ID3_NEEDZLIB_TRUE@INCLUDES = -I$(top_srcdir)/zlib/include
-@ID3_NEEDZLIB_TRUE@libz_la_SOURCES = $(zlib_sources)
-libz_la_LDFLAGS = -version-info $(LT_VERSION)
 
-EXTRA_DIST = $(zlib_sources)
-mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_HEADER = ../../config.h
+lib_LTLIBRARIES = libz.la
+libz_la_SOURCES = $(zlib_sources)
+
+libz_la_LDFLAGS = -version-info $(LT_VERSION)
+mkinstalldirs = $(SHELL) $(top_srcdir)/../mkinstalldirs
+CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
 LTLIBRARIES =  $(lib_LTLIBRARIES)
 
 
-DEFS = @DEFS@ -I. -I$(srcdir) -I../..
+DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libz_la_LIBADD = 
-@ID3_NEEDZLIB_TRUE@libz_la_OBJECTS =  adler32.lo compress.lo crc32.lo \
-@ID3_NEEDZLIB_TRUE@deflate.lo gzio.lo infblock.lo infcodes.lo \
-@ID3_NEEDZLIB_TRUE@inffast.lo inflate.lo inftrees.lo infutil.lo \
-@ID3_NEEDZLIB_TRUE@trees.lo uncompr.lo zutil.lo
+libz_la_OBJECTS =  adler32.lo compress.lo crc32.lo deflate.lo gzio.lo \
+infblock.lo infcodes.lo inffast.lo inflate.lo inftrees.lo infutil.lo \
+trees.lo uncompr.lo zutil.lo
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -151,7 +131,7 @@ all: all-redirect
 .SUFFIXES:
 .SUFFIXES: .S .c .lo .o .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu zlib/src/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu src/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
@@ -249,14 +229,14 @@ maintainer-clean-tags:
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
-subdir = zlib/src
+subdir = src
 
 distdir: $(DISTFILES)
 	here=`cd $(top_builddir) && pwd`; \
 	top_distdir=`cd $(top_distdir) && pwd`; \
 	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu zlib/src/Makefile
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu src/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \

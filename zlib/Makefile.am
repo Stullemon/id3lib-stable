@@ -8,4 +8,8 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-SUBDIRS = include lib prj src
+# require automake 1.4
+AUTOMAKE_OPTIONS = 1.4
+
+EXTRA_DIST = reconf
+SUBDIRS = . include src lib prj
