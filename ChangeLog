@@ -1,5 +1,34 @@
 2000-05-02  Scott Haug  <scott@id3.org>
 
+	* src/tag_file.cpp 
+	(Strip): Fix of a major bug that would delete too much info when
+	stripping a file with an ID3v2 tag present
+
+	* include/id3/error.h 
+	* include/id3/field.h 
+	* include/id3/frame.h 
+	* include/id3/tag.h 
+	* src/error.cpp 
+	* src/field.cpp 
+	* src/field_binary.cpp 
+	* src/field_integer.cpp 
+	* src/field_string_ascii.cpp 
+	* src/field_string_unicode.cpp 
+	* src/frame.cpp 
+	* src/frame_parse.cpp 
+	* src/frame_render.cpp 
+	* src/tag.cpp 
+	* src/tag_file.cpp 
+	* src/tag_find.cpp 
+	* src/tag_parse.cpp 
+	* src/tag_parse_lyrics3.cpp 
+	* src/tag_parse_v1.cpp 
+	* src/tag_render.cpp: 
+	Renamed member variables to something not so windows-ish (ick!)
+	
+	* src/field.cpp:
+	Removed left over comment that wasn't commented
+
 	* src/field.cpp
 	(ID3_FrameDefs): Descriptions for PCNT, POSS, PRIV, and POPM were not
 	matched up with their appropriate frame def (thanks Daryl Pawluk)
