@@ -1,4 +1,4 @@
-// $Id: error.cpp,v 1.6 1999/11/16 22:50:10 scott Exp $
+// $Id: error.cpp,v 1.7 1999/11/25 18:17:22 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -25,15 +25,17 @@ static char *ID3_ErrorDescs[] =
 {
   "out of memory",
   "no source/dest data specified",
+  "improperly formatted id3 tag",
   "no buffer specified",
+  "buffer is insufficient in size",
   "invalid frame id",
   "field not found",
   "unknown field type",
   "tag is already attached to a file",
   "invalid tag version",
   "file not found",
-  "error in zlib compression library",
-  "improperly formatted id3 tag"
+  "trying to write to a read-only file",
+  "error in zlib compression library"
 };
   
   
@@ -47,8 +49,8 @@ ID3_Error::ID3_Error(const ID3_Err eCode, const char *sFileName,
   
   __sErrFileName = new char[nFileNameLen+1];
   __sErrDesc     = new char[nDescLen+1];
-  strncpy(__sErrFileName, sFileName, nFileNameLen);
-  strncpy(__sErrDesc, sDesc, nDescLen);
+  strncpy(__sErrFileName, sFileName, nFileNameLen+1);
+  strncpy(__sErrDesc, sDesc, nDescLen+1);
 }
 
 
@@ -82,6 +84,10 @@ luint ID3_Error::GetErrorLine(void) const
 
 
 // $Log: error.cpp,v $
+// Revision 1.7  1999/11/25 18:17:22  scott
+// (ID3_ErrorDescs): Added descriptions for new error types.
+// (ID3_Error): Minor bugfix in string copying.
+//
 // Revision 1.6  1999/11/16 22:50:10  scott
 // * error.cpp (ID3_ErrorDescs): Added text entry for ID3E_BadData.
 //
