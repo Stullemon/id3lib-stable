@@ -1,3 +1,26 @@
+1999-12-17  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* [all .cpp and .h files in src/id3 and include/id3]
+	Updated opening comment block.
+	
+	* THANKS: 
+	Updated with thanks for those of who have submitted recent bugfixes.
+
+	* README: 
+	Removed BRIEF HISTORY.  Fixed typos in FURTHER READING.  Added CONTACT
+	information.  Added original contact.txt information.
+
+	* COPYING: 
+	Named MusicMatch as project coordinator.
+
+	* AUTHORS: 
+	Listed MusicMatch as contact project maintainer.
+	Moved contact.txt info to README.
+
+	* src/id3/tag_sync.cpp 
+	(ShouldUnsync): Added for use with GetUnSyncSize and UnSync.
+	(ReSync, GetUnSyncSize, UnSync): Renamed variables.  Restructured code.
+
 1999-12-16  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* src/id3/tag_parse_v1.cpp: 
