@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.8 2000/07/11 03:59:46 eldamitri Exp $
+# $Id: Makefile.am,v 1.9 2000/09/27 07:26:23 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -27,6 +27,15 @@ the_headers =                   \
 id3includedir      = $(includedir)/id3
 id3include_HEADERS = $(the_headers)
 
-noinst_HEADERS = \
-  uint28.h       \
+noinst_HEADERS =                \
+  debug.h                       \
+  field_def.h                   \
+  field_impl.h                  \
+  frame_def.h                   \
+  frame_impl.h                  \
+  reader.h                      \
+  reader_decorators.h           \
+  readers.h                     \
+  strings.h                     \
+  uint28.h                      \
   utils.h
