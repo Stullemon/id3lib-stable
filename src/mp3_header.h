@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: mp3_header.h,v 1.2 2002/07/23 13:20:30 t1mpy Exp $
+// $Id: mp3_header.h,v 1.3 2002/07/31 12:47:42 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 2002 Thijmen Klok (thijmen@id3lib.org)
@@ -33,11 +33,11 @@
 class Mp3Info
 {
 public:
-  Mp3Info();
-  ~Mp3Info();
+  Mp3Info() { _mp3_header_output = new Mp3_Headerinfo; };
+  ~Mp3Info() { this->Clean(); };
   void Clean();
     
-  Mp3_Headerinfo* GetMp3HeaderInfo();
+  const Mp3_Headerinfo* GetMp3HeaderInfo() const { return _mp3_header_output; };
   bool Parse(ID3_Reader&, size_t mp3size);
 
   Mpeg_Layers Layer() const { return _mp3_header_output->layer; };
