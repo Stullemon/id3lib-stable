@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.15 2000/05/08 04:07:39 eldamitri Exp $
+// $Id: field.cpp,v 1.16 2000/05/09 13:34:39 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -828,7 +828,7 @@ ID3_Field::ID3_Field(void)
   __data   = NULL;
   __size  = 0;
   __flags = 0;
-  __spec    = ID3V2_LATEST;
+  //__spec    = ID3V2_LATEST;
   
   Clear();
 }
@@ -854,6 +854,7 @@ ID3_Field::Clear(void)
   return ;
 }
 
+/*
 void
 ID3_Field::SetSpec(ID3_V2Spec spec)
 {
@@ -861,6 +862,7 @@ ID3_Field::SetSpec(ID3_V2Spec spec)
   __changed = (__changed || __spec != spec);
   __spec = spec;
 }
+*/
 
 bool
 ID3_Field::HasChanged(void)
@@ -879,82 +881,82 @@ ID3_Field::BinSize(const bool withExtras) const
 {
   luint bytes   = 0;
 
-  if (__spec >= __spec_begin && __spec <= __spec_end)
-  {
-    bytes = __size;
+  //if (__spec >= __spec_begin && __spec <= __spec_end)
+  //  {
+  bytes = __size;
     
-    // check to see if we are within the legal limit for this field 0 means
-    // arbitrary length field
-    if (__length > 0)
+  // check to see if we are within the legal limit for this field 0 means
+  // arbitrary length field
+  if (__length > 0)
+  {
+    bytes = __length;
+  }
+  else if (withExtras)
+  {
+    if (NULL == __data && __size > 0)
     {
-      bytes = __length;
+      bytes = (__flags & ID3FF_NULL) ? sizeof(unicode_t) : 0;
     }
-    else if (withExtras)
-    {
-      if (NULL == __data && __size > 0)
-      {
-        bytes = (__flags & ID3FF_NULL) ? sizeof(unicode_t) : 0;
-      }
       
-      // if we are a Unicode string, add 2 bytes for the BOM (but only if there
-      // is a string to render - regardless of NULL)
-      if (__type == ID3FTY_UNICODESTRING && __data != NULL && __size > 0)
-      {
-        bytes += sizeof(unicode_t);
-      }
-        
-      // if we are an ASCII string, divide by sizeof(unicode_t) because
-      // internally we store the string as Unicode, so the ASCII version will
-      // only be half as long
-      if (__type == ID3FTY_ASCIISTRING)
-      {
-        bytes /= sizeof(unicode_t);
-      }
-    }
-    else if (__type == ID3FTY_UNICODESTRING || __type == ID3FTY_ASCIISTRING)
+    // if we are a Unicode string, add 2 bytes for the BOM (but only if there
+    // is a string to render - regardless of NULL)
+    if (__type == ID3FTY_UNICODESTRING && __data != NULL && __size > 0)
     {
-      // because it seems that the application called us via ID3_Field::Size()
-      // we are going to return the number of characters, not bytes.  since we
-      // store every string internally as unicode, we will divide the 'bytes'
-      // variable by the size of a unicode character (should be two bytes)
-      // because Unicode strings have twice as many bytes as they do characters
+      bytes += sizeof(unicode_t);
+    }
+        
+    // if we are an ASCII string, divide by sizeof(unicode_t) because
+    // internally we store the string as Unicode, so the ASCII version will
+    // only be half as long
+    if (__type == ID3FTY_ASCIISTRING)
+    {
       bytes /= sizeof(unicode_t);
     }
   }
+  else if (__type == ID3FTY_UNICODESTRING || __type == ID3FTY_ASCIISTRING)
+  {
+    // because it seems that the application called us via ID3_Field::Size()
+    // we are going to return the number of characters, not bytes.  since we
+    // store every string internally as unicode, we will divide the 'bytes'
+    // variable by the size of a unicode character (should be two bytes)
+    // because Unicode strings have twice as many bytes as they do characters
+    bytes /= sizeof(unicode_t);
+  }
+  //}
   
   return bytes;
 }
 
 luint
-ID3_Field::Parse(const uchar *buffer, const luint posn, const luint buffSize)
+ID3_Field::Parse(const uchar *buffer, const luint buffSize)
 {
   luint bytesUsed       = 0;
-
-  if (__spec >= __spec_begin && __spec <= __spec_end)
+  
+  //if this->InScope(__spec >= __spec_begin && __spec <= __spec_end)
+  //{
+  switch (__type)
   {
-    switch (__type)
-    {
-      case ID3FTY_INTEGER:
-        bytesUsed = ParseInteger(buffer, posn, buffSize);
-        break;
+    case ID3FTY_INTEGER:
+      bytesUsed = ParseInteger(buffer, buffSize);
+      break;
         
-      case ID3FTY_BINARY:
-        bytesUsed = ParseBinary( buffer, posn, buffSize);
-        break;
+    case ID3FTY_BINARY:
+      bytesUsed = ParseBinary(buffer, buffSize);
+      break;
         
-      case ID3FTY_ASCIISTRING:
-        bytesUsed = ParseASCIIString(buffer, posn, buffSize);
-        break;
+    case ID3FTY_ASCIISTRING:
+      bytesUsed = ParseASCIIString(buffer, buffSize);
+      break;
         
-      case ID3FTY_UNICODESTRING:
-        bytesUsed = ParseUnicodeString(buffer, posn, buffSize);
-        break;
+    case ID3FTY_UNICODESTRING:
+      bytesUsed = ParseUnicodeString(buffer, buffSize);
+      break;
         
-      default:
-        ID3_THROW(ID3E_UnknownFieldType);
-        break;
-    }
+    default:
+      ID3_THROW(ID3E_UnknownFieldType);
+      break;
   }
+  //}
   
   return bytesUsed;
 }
@@ -1001,31 +1003,31 @@ ID3_Field::Render(uchar *buffer)
 {
   luint bytesUsed = 0;
   
-  if (__spec >= __spec_begin && __spec <= __spec_end)
+  //if (__spec >= __spec_begin && __spec <= __spec_end)
+  //{
+  switch (__type) 
   {
-    switch (__type) 
-    {
-      case ID3FTY_INTEGER:
-        bytesUsed = RenderInteger(buffer);
-        break;
+    case ID3FTY_INTEGER:
+      bytesUsed = RenderInteger(buffer);
+      break;
         
-      case ID3FTY_BINARY:
-        bytesUsed = RenderBinary(buffer);
-        break;
+    case ID3FTY_BINARY:
+      bytesUsed = RenderBinary(buffer);
+      break;
         
-      case ID3FTY_ASCIISTRING:
-        bytesUsed = RenderASCIIString(buffer);
-        break;
+    case ID3FTY_ASCIISTRING:
+      bytesUsed = RenderASCIIString(buffer);
+      break;
         
-      case ID3FTY_UNICODESTRING:
-        bytesUsed = RenderUnicodeString(buffer);
-        break;
+    case ID3FTY_UNICODESTRING:
+      bytesUsed = RenderUnicodeString(buffer);
+      break;
         
-      default:
-        ID3_THROW (ID3E_UnknownFieldType);
-        break;
-    }
+    default:
+      ID3_THROW (ID3E_UnknownFieldType);
+      break;
   }
+  //}
     
   return bytesUsed;
 }
@@ -1049,6 +1051,6 @@ ID3_Field::operator=( const ID3_Field &rField )
     }
   }
   __type = rField.__type;
-  __spec  = rField.__spec;
+  //__spec  = rField.__spec;
   return *this;
 }
