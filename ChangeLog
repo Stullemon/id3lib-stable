@@ -1,3 +1,78 @@
+2000-04-17  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* configure.in: 
+	(AC_OUTPUT): Removed doc's subdirs.
+
+	* doc/Makefile.am: 
+	Fixed bug which prevented successful 'make distcheck'
+
+2000-04-16  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* TODO
+	* THANKS
+	* NEWS: 
+	Updated for release of 3.7.0
+
+	* doc/.cvsignore: 
+	Added Doxyfile and index.html.
+
+	* HISTORY: 
+	Minor updates.
+
+	* configure.in
+	* AUTHORS: 
+	Updated email address
+
+	* doc/Makefile.am 
+	(EXTRA_DIST): Added new files.
+	(Doxyfile): Added new rule for generating Doxyfile.
+	(index.html): Added new rule for generating index.html.
+	(docs): Added new rule for generating documentation.
+	(dist-hook): Added hook for creating a distrbution (copies 
+	documentation to the distribution directory)
+
+	* doc/id3guide.html: 
+	Updated to use id3lib.css.
+
+	* doc/Doxyfile.in
+	* doc/id3lib.css
+	* doc/index.html.in: 
+	Added to CVS
+
+	* src/id3/field.cpp
+	* src/id3/field_binary.cpp
+	* src/id3/field_integer.cpp
+	* src/id3/field_string_ascii.cpp
+	* src/id3/tag_file.cpp:
+	Updated parameters of certain methods with const modifier to match 
+	declaration.
+
+2000-04-15  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* doc/Makefile.am 
+	(EXTRA_DIST): Updated to reflect documentation changes
+
+	* src/examples/demo_info.cpp 
+	(PrintInformation): Renamed ID3FN_SYMBOL to ID3FN_ID
+
+	* doc/id3v2.3.0.html
+	* doc/id3v2.3.0.txt
+	* doc/index.html
+	* doc/id3lib-manual.php: 
+	Added
+
+	* doc/id3guide.html: 
+	Updated with version at http://www.id3.org
+
+2000-04-13  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* include/id3/globals.h 
+	(ID3_FieldID): Renamed ID3FN_SYMBOL to ID3FN_ID
+
+	* src/id3/field.cpp 
+	(ID3FD_LinkedInfo): Fixed bug in definition of LinkedInfo array.
+	(ID3FD_Registration): Renamed ID3FN_SYMBOL to ID3FN_ID
+
 2000-04-12  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* configure.in
