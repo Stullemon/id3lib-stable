@@ -1,4 +1,4 @@
-// $Id: error.cpp,v 1.8 2000/06/22 21:11:23 eldamitri Exp $
+// $Id: error.cpp,v 1.9 2000/09/06 07:04:18 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -55,16 +55,21 @@ ID3_Error::ID3_Error(ID3_Err eCode, const char *sFileName,
 {
   __error = eCode;
   __line_num = nLine;
-  __file_name = strdup(sFileName);
-  __description = strdup(sDesc);
+  __file_name = __file_name = new char[strlen(sFileName) + 1]; 
+  strcpy(__file_name, sFileName);
+  __description = new char[strlen(sDesc) + 1];
+  strcpy(__description, sDesc);
 }
 
 ID3_Error::ID3_Error(const ID3_Error& Error)
 {
   __error = Error.__error;
   __line_num = Error.__line_num;
-  __file_name = strdup(Error.__file_name);
-  __description = strdup(Error.__description);
+
+  __file_name = new char[strlen(Error.__file_name) + 1];
+  strcpy(__file_name, Error.__file_name);
+  __description = new char[strlen(Error.__description) + 1];
+  strcpy(__description, Error.__description);                          
 }
 
 ID3_Error::~ID3_Error()
