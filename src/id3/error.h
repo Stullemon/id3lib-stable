@@ -1,4 +1,4 @@
-// $Id: error.h,v 1.5 1999/11/15 20:15:13 scott Exp $
+// $Id: error.h,v 1.6 1999/11/16 22:50:15 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -31,7 +31,8 @@ enum ID3_Err
   ID3E_TagAlreadyAttached,
   ID3E_InvalidTagVersion,
   ID3E_NoFile,
-  ID3E_zlibError
+  ID3E_zlibError,
+  ID3E_BadData
 };
 
 class ID3_Error
@@ -58,6 +59,9 @@ private:
 #endif
 
 // $Log: error.h,v $
+// Revision 1.6  1999/11/16 22:50:15  scott
+// * error.h (ID3_Err): Added new ID3_Err: ID3E_BadData.
+//
 // Revision 1.5  1999/11/15 20:15:13  scott
 // Made constructor public.  Added new interface to error reporting
 // to allow for more descriptive error messages (this should still be
