@@ -1,4 +1,4 @@
-# $Id: id3lib.spec.in,v 1.5 2000/04/21 05:53:45 eldamitri Exp $
+# $Id: id3lib.spec.in,v 1.6 2000/04/21 19:52:52 eldamitri Exp $
 
 %define name    @PACKAGE@
 %define	version	@VERSION@
@@ -64,14 +64,23 @@ uname -a|grep SMP && make -j 2 || make
 %install
 rm -rf $RPM_BUILD_ROOT
 
+%ifnarch noarch
+
 make prefix=$RPM_BUILD_ROOT%{prefix} install
 
-make clean 
- 
-cd doc/latex && make ps && cp *.ps ../id3lib.ps && gzip -9 ../id3lib.ps && cd ../..
+%else
 
-# strip down the doc and examples directories
-for i in doc/ examples/; do find $i -name 'Makefile*' -exec rm {} \; ; done
+make docs
+ 
+# strip down the doc and examples directories so we can copy w/impunity
+for i in doc/ examples/; do \
+  find $i 
+  \(  -name 'Makefile*' -or \
+      -name '*.ps.gz'   -or \
+      -name '*.pdf'         \
+  \)  -exec rm {} \; ; done
+
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -106,17 +115,23 @@ rm -rf $RPM_BUILD_ROOT
 %files doc
 %defattr(-, root, root)
 %doc AUTHORS COPYING ChangeLog HISTORY NEWS README THANKS TODO
-%doc doc/*.* doc/html examples
+%doc doc/*.* doc/@DOX_DIR_HTML@ examples
 
 %endif
 
 %changelog
+* Fri Apr 21 2000 Scott Haug <scott@id3.org> 3.7.2-1
+- Version 3.7.2
+- More conditional blocks for noarch
+- More thorough cleaning of files for documentation
+- Updated html directory
+
 * Thu Apr 20 2000 Scott Haug <scott@id3.org> 3.7.1-2
 - Fixed date of changelog entry for 3.7.1-1
 - Added conditional blocks so docs only get built for noarch target
 
 * Wed Apr 19 2000 Scott Haug <scott@id3.org> 3.7.1-1
-- Release 3.7.1
+- Version 3.7.1
 - Removed zlib-devel requirement from devel
 - Added doc package to distribute documentation
 - Added examples package to distribute binary examples (id3tag, id3info, ...)
