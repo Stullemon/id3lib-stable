@@ -1,4 +1,4 @@
-// $Id: field_binary.cpp,v 1.7 2000/05/08 04:07:39 eldamitri Exp $
+// $Id: field_binary.cpp,v 1.8 2000/05/09 13:30:08 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -140,17 +140,12 @@ void ID3_Field::ToFile(const char *info) const
 
 
 size_t
-ID3_Field::ParseBinary(const uchar *buffer, luint posn, size_t nSize)
+ID3_Field::ParseBinary(const uchar *buffer, size_t nSize)
 {
-  size_t bytesUsed = nSize - posn;
-  
-  if (__length > 0)
-  {
-    bytesUsed = MIN(__length, bytesUsed);
-  }
-    
-  Set(&buffer[posn], bytesUsed);
-  
+  // copy the remaining bytes, unless we're fixed length, in which case copy
+  // the minimum of the remaining bytes vs. the fixed length
+  size_t bytesUsed = (__length > 0 ? MIN(nSize, __length) : nSize);
+  this->Set(buffer, bytesUsed);
   __changed = false;
   
   return bytesUsed;
