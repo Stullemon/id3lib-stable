@@ -1,4 +1,4 @@
-/* $Id: globals.h,v 1.10 2000/04/21 05:45:42 eldamitri Exp $
+/* $Id: globals.h,v 1.11 2000/04/23 17:37:33 eldamitri Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags Copyright
  * 1999, 2000 Scott Thomas Haug
@@ -82,47 +82,59 @@ typedef long  unsigned int *  bitset;
 typedef uint16                unicode_t;
 const unicode_t NULL_UNICODE = (unicode_t) '\0';
 
+/* These macros are used to make the C and C++ declarations for enums and
+ * structs have the same syntax.  Basically, it allows C users to refer to an
+ * enum or a struct without prepending enum/struct.
+ */
 #ifdef __cplusplus
-#  define ID3_ENUM_DECL(EnumName) enum EnumName
+#  define ID3_ENUM(E)   enum   E
+#  define ID3_STRUCT(S) struct S
 #else
-#  define ID3_ENUM_DECL(EnumName) enum __ ## EnumName
-#endif
-
-#ifdef __cplusplus
-#  define ID3_ENUM_TYPE(EnumName)
-#else
-#  define ID3_ENUM_TYPE(EnumName) typedef enum __ ## EnumName EnumName;
+#  define ID3_ENUM(E)   typedef enum   __ ## E E; enum   __ ## E
+#  define ID3_STRUCT(S) typedef struct __ ## S S; struct __ ## S
 #endif
 
 /**
  ** Enumeration of the types of text encodings: ascii or unicode
  **/
-ID3_ENUM_DECL(ID3_TextEnc)
+ID3_ENUM(ID3_TextEnc)
 {
   ID3TE_ASCII = 0,
   ID3TE_UNICODE
 };
-ID3_ENUM_TYPE(ID3_TextEnc)
 
 /** Enumeration of the various id3 specifications
  **/
-ID3_ENUM_DECL(ID3_SpecVersion)
+ID3_ENUM(ID3_SpecVersion)
 {
-  ID3V1_0 = 0,
-  ID3V1_1,
-  ID3V2_2_0,
-  ID3V2_2_1,
-  ID3V2_3_0,
-  ID3_LASTVERSION
+  ID3SV_1_0 = 0,
+  ID3SV_1_1,
+  ID3SV_2_2_0,
+  ID3SV_2_2_1,
+  ID3SV_2_3_0,
+  ID3SV_NUMVERSIONS
 };
-ID3_ENUM_TYPE(ID3_SpecVersion)
 
-const ID3_SpecVersion ID3_LATEST_SPEC = ID3V2_3_0;
+const ID3_SpecVersion ID3SV_LATEST = ID3SV_2_3_0;
+
+/** The various types of tags that id3lib can handle
+ **/
+ID3_ENUM(ID3_TagType)
+{
+  ID3TT_NONE    =      0,   /**< Represents an empty or non-existant tag */
+  ID3TT_ID3V1   = 1 << 0,   /**< Represents an id3v1 or id3v1.1 tag */
+  ID3TT_ID3V2   = 1 << 1,   /**< Represents an id3v2 tag */
+  ID3TT_LYRICS  = 1 << 2,   /**< Represents a Lyrics tag */
+  /** Represents both id3 tags: id3v1 and id3v2 */
+  ID3TT_ID3     = ID3TT_ID3V1 | ID3TT_ID3V2,
+  /** Represents all possible types of tags */
+  ID3TT_ALL     = ID3TT_LYRICS | ID3TT_ID3
+};
 
 /**
  ** Enumeration of the different types of fields in a frame.
  **/
-ID3_ENUM_DECL(ID3_FieldID)
+ID3_ENUM(ID3_FieldID)
 {
   ID3FN_NOFIELD = 0,    /**< No field */
   ID3FN_TEXTENC,        /**< Text encoding (unicode or ASCII) */
@@ -148,12 +160,11 @@ ID3_ENUM_DECL(ID3_FieldID)
   ID3FN_PEAKVOLLEFT,    /**< Peak volume on the left channel */
   ID3FN_LASTFIELDID     /**< Last field placeholder */
 };
-ID3_ENUM_TYPE(ID3_FieldID)
 
 /**
  ** Enumeration of the different types of frames recognized by id3lib
  **/
-ID3_ENUM_DECL(ID3_FrameID)
+ID3_ENUM(ID3_FrameID)
 {
   /* ???? */ ID3FID_NOFRAME = 0,       /**< No known frame */
   /* AENC */ ID3FID_AUDIOCRYPTO,       /**< Audio encryption */
@@ -232,7 +243,103 @@ ID3_ENUM_DECL(ID3_FrameID)
   /* WXXX */ ID3FID_WWWUSER,           /**< User defined URL link */
   /*      */ ID3FID_METACRYPTO         /**< Encrypted meta frame (id3v2.2.x) */
 };
-ID3_ENUM_TYPE(ID3_FrameID)
+
+ID3_ENUM(ID3_V1Lengths)
+{
+  ID3_V1_LEN         = 128,
+  ID3_V1_LEN_ID      =   3,
+  ID3_V1_LEN_TITLE   =  30,
+  ID3_V1_LEN_ARTIST  =  30,
+  ID3_V1_LEN_ALBUM   =  30,
+  ID3_V1_LEN_YEAR    =   4,
+  ID3_V1_LEN_COMMENT =  30,
+  ID3_V1_LEN_GENRE   =   1
+};
+
+/** A structure for storing the contents of an id3v1 tag.
+ **
+ ** @author Dirk Mahoney (dirk@id3.org)
+ ** @author Scott Thomas Haug (sth2@cs.wustl.edu)
+ ** @version $Id: globals.h,v 1.11 2000/04/23 17:37:33 eldamitri Exp $
+ ** @see ID3_Tag
+ **/
+ID3_STRUCT(ID3V1_Tag)
+{
+  /** String for storing the "TAG" identifier. */
+  char sID     [1 + ID3_V1_LEN_ID];
+  /** String for storing the title */
+  char sTitle  [1 + ID3_V1_LEN_TITLE];
+  /** String for storing the artist */
+  char sArtist [1 + ID3_V1_LEN_ARTIST];
+  /** String for storing the album */
+  char sAlbum  [1 + ID3_V1_LEN_ALBUM];
+  /** String for storing the year */
+  char sYear   [1 + ID3_V1_LEN_YEAR];
+  /** String for storing the comment */
+  char sComment[1 + ID3_V1_LEN_COMMENT];
+  /** Byte for storing the genre */
+  uchar ucGenre;
+};
+
+// field flags
+ID3_ENUM(ID3_FieldFlags)
+{
+  ID3FF_NONE       =      0,
+  ID3FF_NULL       = 1 << 0,
+  ID3FF_NULLDIVIDE = 1 << 1,
+  ID3FF_ADJUSTENC  = 1 << 2,
+  ID3FF_ADJUSTEDBY = 1 << 3
+};
+
+// Enumeration of the types of field types
+ID3_ENUM(ID3_FieldType)
+{
+  ID3FTY_INTEGER        = 0,
+  ID3FTY_BITFIELD,
+  ID3FTY_BINARY,
+  ID3FTY_ASCIISTRING,
+  ID3FTY_UNICODESTRING
+};
+
+/**
+ ** Predefined id3lib error types.
+ **/
+ID3_ENUM(ID3_Err)
+{
+  /** No available memory */
+  ID3E_NoMemory = 0,
+  /** No data to parse */
+  ID3E_NoData,
+  /** Improperly formatted data */
+  ID3E_BadData,
+  /** No buffer to write to */
+  ID3E_NoBuffer,
+  /** Buffer is too small */
+  ID3E_SmallBuffer,
+  /** Invalid frame id */
+  ID3E_InvalidFrameID,
+  /** Requested field not found */
+  ID3E_FieldNotFound,
+  /** Unknown field type */
+  ID3E_UnknownFieldType,
+  /** Tag is already attached to a file */
+  ID3E_TagAlreadyAttached,
+  /** Invalid tag version */
+  ID3E_InvalidTagVersion,
+  /** No file to parse */
+  ID3E_NoFile,
+  /** Attempting to write to a read-only file */
+  ID3E_ReadOnly,
+  /** Error in compression/uncompression */
+  ID3E_zlibError
+};
+
+// Used for version control
+ID3_ENUM(ID3_VerCtl)
+{
+  ID3VC_HIGHER  = 0,
+  ID3VC_LOWER
+};
 
 #define BS_SIZE (sizeof(luint)*8)
 #define BS_SET(v,x)   ((v)[(x) / BS_SIZE] |=  (1 << ((x) % BS_SIZE)))
