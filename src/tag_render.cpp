@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.7 2000/04/26 15:48:34 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.8 2000/04/27 15:54:17 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -392,6 +392,7 @@ void ID3_Tag::RenderV2ToHandle(void)
   else
   {
 #if !defined HAVE_MKSTEMP
+    // This section is for Windows folk
 
     FILE *tempOut = tmpfile();
     if (NULL == tempOut)
@@ -411,7 +412,7 @@ void ID3_Tag::RenderV2ToHandle(void)
     }
     
     rewind(tempOut);
-    freopen(__sFileName, "w+", __fFileHandle);
+    freopen(__sFileName, "wb+", __fFileHandle);
     
     while (!feof(tempOut))
     {
@@ -516,6 +517,10 @@ luint ID3_Tag::PaddingSize(luint curSize) const
 
 
 // $Log: tag_render.cpp,v $
+// Revision 1.8  2000/04/27 15:54:17  eldamitri
+// (RenderV2ToHandle): Fixes a nasty bug when saving a V2 tag to a file
+// (thanks John Adcock)
+//
 // Revision 1.7  2000/04/26 15:48:34  eldamitri
 // (PaddingSize): Fix for padding logic, thanks to John Adcock for the
 // patch.
