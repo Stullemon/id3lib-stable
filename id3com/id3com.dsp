@@ -51,7 +51,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /machine:I386 /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ..\zlib\zlibD.lib /nologo /subsystem:windows /dll /debug /machine:I386 /pdbtype:sept
 # Begin Custom Build - Performing registration
 OutDir=.\Debug
 TargetPath=.\Debug\id3com.dll
@@ -88,7 +88,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /machine:I386
 # SUBTRACT BASE LINK32 /nodefaultlib
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /machine:I386
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ..\zlib\zlib.lib /nologo /subsystem:windows /dll /machine:I386
 # SUBTRACT LINK32 /nodefaultlib
 # Begin Custom Build - Performing registration
 OutDir=.\Release
@@ -204,13 +204,25 @@ SOURCE=..\src\c_wrapper.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\Config.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\error.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
+SOURCE=..\Include\Id3\Error.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\field.cpp
 # SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Id3\field.h
 # End Source File
 # Begin Source File
 
@@ -234,8 +246,16 @@ SOURCE=..\src\field_string_unicode.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\Include\Id3\Flags.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\frame.cpp
 # SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Id3\frame.h
 # End Source File
 # Begin Source File
 
@@ -254,8 +274,16 @@ SOURCE=..\src\globals.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\Include\Id3\Globals.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\header.cpp
 # SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Id3\Header.h
 # End Source File
 # Begin Source File
 
@@ -264,8 +292,24 @@ SOURCE=..\src\header_frame.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\Include\Id3\header_frame.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\header_tag.cpp
 # SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Id3\header_tag.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Id3.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Id3\Int28.h
 # End Source File
 # Begin Source File
 
@@ -274,13 +318,29 @@ SOURCE=..\src\misc_support.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\Include\Id3\misc_support.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Id3\sized_types.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\spec.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 
+SOURCE=..\Include\Id3\Spec.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\tag.cpp
 # SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Id3\Tag.h
 # End Source File
 # Begin Source File
 
@@ -324,13 +384,37 @@ SOURCE=..\src\uint28.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\Include\Id3\uint28.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\utils.cpp
 # SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\Include\Id3\Utils.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\zlib\include\zconf.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\zlib\include\zlib.h
 # End Source File
 # End Group
 # Begin Source File
 
-SOURCE=..\zlib\zlib.lib
+SOURCE=..\ChangeLog
+# End Source File
+# Begin Source File
+
+SOURCE=..\News
+# End Source File
+# Begin Source File
+
+SOURCE=..\Todo
 # End Source File
 # End Target
 # End Project

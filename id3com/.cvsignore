@@ -1,10 +1,12 @@
 Makefile
-id3com.ncb
-id3com.opt
+ID3COM.APS
+ID3COM.NCB
+ID3COM.PLG
+ID3COM_P.C
+Id3com.opt
+Id3lib.ncb
 id3com.h
-id3com.plg
 id3com.tlb
 id3com_i.c
-id3com_p.c
 Release
 Debug
