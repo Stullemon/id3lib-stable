@@ -46,7 +46,7 @@
 // CID3Field
 class ATL_NO_VTABLE CID3Field : 
 	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CID3Field, &CLSID_ID3ComField>,
+    public CComCoClass<CID3Field, &CLSID_ID3ComField>,
 	public ISupportErrorInfo,
 	public IDispatchImpl<IID3ComField, &IID_IID3ComField, &LIBID_ID3COM>
 {

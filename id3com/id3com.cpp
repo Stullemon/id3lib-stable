@@ -54,7 +54,6 @@ CComModule _Module;
 
 BEGIN_OBJECT_MAP(ObjectMap)
 OBJECT_ENTRY(CLSID_ID3ComTag, CID3Tag)
-OBJECT_ENTRY(CLSID_ID3ComField, CID3Field)
 END_OBJECT_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

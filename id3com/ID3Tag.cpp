@@ -365,7 +365,7 @@ STDMETHODIMP CID3Tag::put_Album(BSTR newVal)
 	USES_CONVERSION;
 	try
 	{
-		ID3_AddAlbum(m_ID3Tag, OLE2A(newVal));
+		ID3_AddAlbum(m_ID3Tag, OLE2A(newVal), true);
 		return S_OK;
 	}
 	catch (ID3_Error err)
@@ -408,7 +408,7 @@ STDMETHODIMP CID3Tag::put_Title(BSTR newVal)
 	USES_CONVERSION;
 	try
 	{
-		ID3_AddTitle(m_ID3Tag, OLE2A(newVal));
+		ID3_AddTitle(m_ID3Tag, OLE2A(newVal), true);
 		return S_OK;
 	}
 	catch (ID3_Error err)
@@ -451,7 +451,7 @@ STDMETHODIMP CID3Tag::put_Comment(BSTR newVal)
 	USES_CONVERSION;
 	try
 	{
-		ID3_AddComment(m_ID3Tag, OLE2A(newVal));
+		ID3_AddComment(m_ID3Tag, OLE2A(newVal), STR_V1_COMMENT_DESC, true);
 		return S_OK;
 	}
 	catch (ID3_Error err)
@@ -486,7 +486,7 @@ STDMETHODIMP CID3Tag::put_Genre(long newVal)
 {
 	try
 	{
-		ID3_AddGenre(m_ID3Tag, newVal);
+		ID3_AddGenre(m_ID3Tag, newVal, true);
 		return S_OK;
 	}
 	catch (ID3_Error err)
@@ -529,7 +529,7 @@ STDMETHODIMP CID3Tag::put_Year(BSTR newVal)
 	USES_CONVERSION;
 	try
 	{
-		ID3_AddYear(m_ID3Tag, OLE2A(newVal));
+		ID3_AddYear(m_ID3Tag, OLE2A(newVal), true);
 	}
 	catch (ID3_Error err)
 	{
@@ -564,7 +564,7 @@ STDMETHODIMP CID3Tag::put_Track(long newVal)
 {
 	try
 	{
-		ID3_AddTrack(m_ID3Tag, (uchar)newVal);
+		ID3_AddTrack(m_ID3Tag, (uchar)newVal, 0, true);
 		return S_OK;
 	}
 	catch (ID3_Error err)

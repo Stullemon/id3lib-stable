@@ -279,7 +279,8 @@ library ID3COM
 	};
 	[
 		uuid(AEBA98BF-C36C-11D3-841B-0008C782A257),
-		helpstring("ID3ComFrame Class")
+		helpstring("ID3ComFrame Class"),
+		noncreatable
 	]
 	coclass ID3ComFrame
 	{
@@ -287,7 +288,8 @@ library ID3COM
 	};
 	[
 		uuid(A513A24F-C749-11D3-841C-0008C782A257),
-		helpstring("ID3ComField Class")
+		helpstring("ID3ComField Class"),
+		noncreatable
 	]
 	coclass ID3ComField
 	{
