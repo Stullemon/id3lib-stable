@@ -1,4 +1,4 @@
-// $Id: error.cpp,v 1.2 2000/04/18 22:10:09 eldamitri Exp $
+// $Id: error.cpp,v 1.3 2000/04/24 14:47:23 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -34,6 +34,7 @@
 
 static char *ID3_ErrorDescs[] =
 {
+  "no error",
   "out of memory",
   "no source/dest data specified",
   "improperly formatted id3 tag",
@@ -94,6 +95,9 @@ luint ID3_Error::GetErrorLine(void) const
 
 
 // $Log: error.cpp,v $
+// Revision 1.3  2000/04/24 14:47:23  eldamitri
+// (ID3_ErrorDescs): Added "no error" to list
+//
 // Revision 1.2  2000/04/18 22:10:09  eldamitri
 // Moved error.cpp from src/id3/ to src/
 //
