@@ -25,7 +25,7 @@ CFG=zlib - Win32 NASM Debug
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
-# PROP Scc_ProjName ""$/Winamp/id3lib-3.6.2/zlib/prj", JAAAAAAA"
+# PROP Scc_ProjName ""
 # PROP Scc_LocalPath "H/PC Ver. 2.00"
 # PROP WCE_FormatVersion ""
 CPP=cl.exe
