@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.35 2000/10/15 07:06:26 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.36 2000/10/16 08:59:19 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -152,22 +152,19 @@ size_t ID3_TagImpl::Size() const
   {
     return 0;
   }
-  ID3_Elem *cur = _frames;
   ID3_TagHeader hdr;
 
   hdr.SetSpec(this->GetSpec());
   size_t bytesUsed = hdr.Size();
   
   size_t frameBytes = 0;
-  while (cur)
+  for (const_iterator cur = _frames.begin(); cur != _frames.end(); ++cur)
   {
-    if (cur->pFrame)
+    if (*cur)
     {
-      cur->pFrame->SetSpec(this->GetSpec());
-      frameBytes += cur->pFrame->Size();
+      (*cur)->SetSpec(this->GetSpec());
+      frameBytes += (*cur)->Size();
     }
-    
-    cur = cur->pNext;
   }
   
   if (!frameBytes)
