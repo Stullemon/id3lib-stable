@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.30 2000/10/29 01:37:28 eldamitri Exp $
+// $Id: field_string_unicode.cpp,v 1.31 2002/06/29 14:43:12 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -82,7 +82,7 @@ size_t ID3_FieldImpl::Add(const unicode_t* data)
  ** number of characters specified; for fields with multiple entries, the
  ** optional third parameter indicates which of the fields to retrieve.
  ** 
- ** Performs similarly as the ASCII Get(char *, size_t, index_t) method, taking
+ ** Performs similarly as the ASCII Get(char *, size_t, size_t) method, taking
  ** a unicode_t string as a parameter rather than an ascii string.  The
  ** maxChars parameter still represents the maximum number of characters, not
  ** bytes.
@@ -96,7 +96,7 @@ size_t ID3_FieldImpl::Add(const unicode_t* data)
  ** \param maxChars The maximum number of characters to copy to the buffer.
  ** \param itemNum  For fields with multiple items (such as the involved
  **                 people frame, the item number to retrieve.
- ** \sa Get(char *, size_t, index_t)
+ ** \sa Get(char *, size_t, size_t)
  **/
 size_t ID3_FieldImpl::Get(unicode_t *buffer, size_t maxLength) const
 {
@@ -127,11 +127,11 @@ const unicode_t* ID3_FieldImpl::GetRawUnicodeText() const
   return text;
 }
 
-const unicode_t* ID3_FieldImpl::GetRawUnicodeTextItem(index_t index) const
+const unicode_t* ID3_FieldImpl::GetRawUnicodeTextItem(size_t index) const
 {
   const unicode_t* text = NULL;
   if (this->GetType() == ID3FTY_TEXTSTRING && 
-      this->GetEncoding() == ID3TE_ASCII &&
+      this->GetEncoding() == ID3TE_UNICODE &&
       index < this->GetNumTextItems())
   {
     String unicode = _text + '\0' + '\0';
@@ -144,7 +144,7 @@ const unicode_t* ID3_FieldImpl::GetRawUnicodeTextItem(index_t index) const
   return text;
 }
 
-size_t ID3_FieldImpl::Get(unicode_t *buffer, size_t maxLength, index_t itemNum) const
+size_t ID3_FieldImpl::Get(unicode_t *buffer, size_t maxLength, size_t itemNum) const
 {
   size_t length = 0;
   size_t total_items = this->GetNumTextItems();
