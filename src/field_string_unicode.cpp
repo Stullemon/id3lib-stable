@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.7 2000/05/08 04:07:39 eldamitri Exp $
+// $Id: field_string_unicode.cpp,v 1.8 2000/05/09 13:28:10 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -47,8 +47,7 @@ ID3_Field& ID3_Field::operator= (const unicode_t *string)
 
 void ID3_Field::Set(const unicode_t *string)
 {
-  luint nBytes =
-    (0 == __length) ? ucslen(string) : __length;
+  luint nBytes = (0 == __length) ? ucslen(string) : __length;
   
   // we can simply increment the nBytes count here because we just pilfer
   // the NULL which is present in the string which was passed to us
@@ -196,7 +195,7 @@ luint ID3_Field::GetNumTextItems() const
 
 
 size_t 
-ID3_Field::ParseUnicodeString(const uchar *buffer, luint posn, size_t nSize)
+ID3_Field::ParseUnicodeString(const uchar *buffer, size_t nSize)
 {
   size_t nBytes = 0;
   unicode_t *temp = NULL;
@@ -208,23 +207,22 @@ ID3_Field::ParseUnicodeString(const uchar *buffer, luint posn, size_t nSize)
   {
     if (__flags & ID3FF_NULL)
     {
-      while ((posn + nBytes) < nSize &&
-             !(buffer[posn + nBytes] == 0 && 
-               buffer[posn + nBytes + 1] == 0))
+      while (nBytes < nSize &&
+             !(buffer[nBytes] == 0 && buffer[nBytes + 1] == 0))
       {
         nBytes += sizeof(unicode_t);
       }
     }
     else
     {
-      nBytes = nSize - posn;
+      nBytes = nSize;
     }
   }
   
   if (nBytes > 0)
   {
     // Sanity check our indices and sizes before we start copying memory
-    if ((nBytes > nSize) || (posn + nBytes > nSize))
+    if (nBytes > nSize)
     {
       ID3_THROW_DESC(ID3E_BadData, "field information invalid");
     }
@@ -237,7 +235,7 @@ ID3_Field::ParseUnicodeString(const uchar *buffer, luint posn, size_t nSize)
 
     luint loc = 0;
 
-    memcpy(temp, &buffer[posn], nBytes);
+    memcpy(temp, buffer, nBytes);
     temp[nBytes / sizeof(unicode_t)] = NULL_UNICODE;
       
     // if there is a BOM, skip past it and check to see if we need to swap
