@@ -1,4 +1,4 @@
-// $Id: demo_copy.cpp,v 1.9 2002/06/27 12:49:49 t1mpy Exp $
+// $Id: demo_copy.cpp,v 1.10 2002/06/27 13:02:12 t1mpy Exp $
 //
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -24,9 +24,9 @@
 
 using std::cout;
 using std::endl;
-uding std::cerr;
+using std::cerr;
 
-static const char* VERSION_NUMBER = "$Revision: 1.9 $";
+static const char* VERSION_NUMBER = "$Revision: 1.10 $";
 
 void PrintUsage(const char *sName)
 {
