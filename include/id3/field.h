@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: field.h,v 1.41 2000/10/21 03:50:10 eldamitri Exp $
+// $Id: field.h,v 1.42 2000/10/23 08:20:54 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,7 +28,7 @@
 #ifndef _ID3LIB_FIELD_H_
 #define _ID3LIB_FIELD_H_
 
-#include "globals.h"
+#include <id3/globals.h>
 
 class ID3_Reader;
 class ID3_Writer;
