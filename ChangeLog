@@ -1,3 +1,35 @@
+2000-05-07  Scott Haug  <scott@id3.org>
+
+	* include/id3/misc_support.h: 
+	All Get* functions now take const pointers to tags, Minor cleanup
+
+	* include/id3/tag.h: 
+	- All Find methods are now const
+	- __cursor is now mutable so Find methods can be const
+	- Removed decl of protected GetLastElem (not dependant on tag data)
+
+	* src/c_wrapper.cpp 
+	(ID3Frame_GetCompression): Now returns false by default (thanks John
+	Adcock)
+
+	* src/misc_support.cpp: 
+	Fixed bug in AddGenre (thanks Peter Thorstenson), all Get* functions 
+	now take const pointers to tags, no function throws on error.
+
+	* src/tag_find.cpp
+	(Find): All are now const methods
+
+	* src/tag_parse.cpp 
+	(ID3_GetLastElem): Renamed from ID3_Tag::GetLastElem (local to file)
+	(AddBinary): Updated to use ID3_GetLastElem
+	(ProcessBinaries): Updated to use ID3_GetLastElem
+
+	* id3com/ID3Frame.cpp: 
+	* id3com/ID3Frame.h: 
+	* id3com/id3com.idl: 
+	Updated for the changes to compression in ID3_Tag and ID3_Frame (thanks
+	John Adcock)
+
 2000-05-06  Scott Haug  <scott@id3.org>
 
 	* examples/demo_info.cpp 
@@ -104,30 +136,32 @@
 
 	* include/id3/globals.h:
 	Added ID3FN_TIMESTAMPFORMAT and ID3FN_CONTENTTYPE constants for the new
-	synced lyrics support (thanks Severino)
+	synced lyrics support (thanks Severino Delaurenti)
 
 	* include/id3/misc_support.h: 
 	Added declaration of ID3_GetLyricist, ID3_AddLyricist, and 
-	ID3_RemoveLyricist (thanks Severino)
+	ID3_RemoveLyricist (thanks Severino Delaurenti)
 
 	* src/field.cpp 
 	(ID3FD_LinkedInfo): Removed unnecessary (read: wrong) size field for
 	id3v2.2.x
-	(ID3FD_SyncLyrics): Added (thanks Severino)
+	(ID3FD_SyncLyrics): Added (thanks Severino Delaurenti)
 	(ID3_FrameDefs): Updated ID3FID_SYNCEDLYRICS frame def to use 
 	ID3FD_SyncLyrics
 
 	* src/misc_support.cpp 
-	(ID3_AddTitle): Now checks if memory wasn't allocated (thanks Severino)
-	(ID3_GetLyricist): Added implementation (thanks Severino)
-	(ID3_AddLyricist): Added implementation (thanks Severino)
-	(ID3_RemoveLyricist): Added implementation (thanks Severino)
+	(ID3_AddTitle): Now checks if memory wasn't allocated (thanks Severino
+	Delaurenti)
+	(ID3_GetLyricist): Added implementation (thanks Severino Delaurenti)
+	(ID3_AddLyricist): Added implementation (thanks Severino Delaurenti)
+	(ID3_RemoveLyricist): Added implementation (thanks Severino Delaurenti)
 
 	* src/tag_parse_lyrics3.cpp 
-	(ID3_StripTimeStamps): Fixed logic of bad data (thanks Severino)
-	(ID3_Lyrics3ToSylt): Added implementation (thanks Severino)
+	(ID3_StripTimeStamps): Fixed logic of bad data (thanks Severino
+	Delaurenti)
+	(ID3_Lyrics3ToSylt): Added implementation (thanks Severino Delaurenti)
 	(ParseLyrics3): Adds description, language, lyricist, and information 
-	(thanks Severino)
+	(thanks Severino Delaurenti)
 
 2000-05-03  Scott Haug  <scott@id3.org>
 
@@ -424,7 +458,7 @@
 	Updated for 3.7.5 release
 
 	* THANKS: 
-	Added mention of Severino's contribution, other minor fixes
+	Added mention of Severino Delaurenti's contribution, other minor fixes
 
 	* doc/Doxyfile.in: 
 	Removed source browser
