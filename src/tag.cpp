@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.22 2000/06/25 06:20:05 eldamitri Exp $
+// $Id: tag.cpp,v 1.23 2000/07/04 21:54:57 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -86,7 +86,7 @@
  ** 'CDM' frames from the unreleased ID3v2 2.01 draft specification.
  **
  ** \author Dirk Mahoney
- ** \version $Id: tag.cpp,v 1.22 2000/06/25 06:20:05 eldamitri Exp $
+ ** \version $Id: tag.cpp,v 1.23 2000/07/04 21:54:57 eldamitri Exp $
  ** \sa ID3_Frame
  ** \sa ID3_Field
  ** \sa ID3_Err
@@ -214,8 +214,11 @@ ID3_Tag& operator<<(ID3_Tag& tag, const ID3_Frame *frame)
 ID3_Tag::ID3_Tag(const char *name)
   : __frames(NULL),
     __file_name(new char[ID3_PATH_LENGTH]),
-    __file_handle(NULL)
-    
+    __file_handle(NULL),
+    __file_size(0),
+    __prepended_bytes(0),
+    __appended_bytes(0),
+    __is_file_writable(false)
 {
   this->Clear();
   if (name)
@@ -231,7 +234,11 @@ ID3_Tag::ID3_Tag(const char *name)
 ID3_Tag::ID3_Tag(const ID3_Tag &tag)
   : __frames(NULL),
     __file_name(new char[ID3_PATH_LENGTH]),
-    __file_handle(NULL)
+    __file_handle(NULL),
+    __file_size(0),
+    __prepended_bytes(0),
+    __appended_bytes(0),
+    __is_file_writable(false)
 {
   *this = tag;
 }
@@ -264,13 +271,7 @@ void ID3_Tag::Clear()
   __hdr.Clear();
   __hdr.SetSpec(ID3V2_LATEST);
   
-  __file_size = 0;
-  __starting_bytes = 0;
-  __ending_bytes = 0;
-  __is_file_writable = false;
-
   __tags_to_parse.clear();
-  __file_tags.clear();
 
   __changed = true;
 }
@@ -580,3 +581,9 @@ ID3_Tag::operator=( const ID3_Tag &rTag )
   }
   return *this;
 }
+
+size_t ID3_GetDataSize(const ID3_Tag& tag)
+{
+  return tag.GetFileSize() - tag.GetPrependedBytes() - tag.GetAppendedBytes();
+}
+
