@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.37 2000/10/02 15:16:24 eldamitri Exp $
+# $Id: Makefile.in,v 1.38 2000/10/08 20:26:59 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -110,7 +110,7 @@ LT_VERSION = $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 INCLUDES =    @ID3LIB_DEBUG_FLAGS@ -I$(top_srcdir)/include/id3 -I$(top_srcdir)/include $(zlib_include)
 
 
-id3lib_sources =    c_wrapper.cpp                   error.cpp                       field.cpp                       field_binary.cpp                field_integer.cpp               field_string_ascii.cpp          field_string_unicode.cpp        frame.cpp                       frame_impl.cpp                  frame_parse.cpp                 frame_render.cpp                globals.cpp                     header.cpp                      header_frame.cpp                header_tag.cpp                  helpers.cpp                     misc_support.cpp                readers.cpp                     spec.cpp                        tag.cpp                         tag_file.cpp                    tag_find.cpp                    tag_impl.cpp                    tag_parse.cpp                   tag_parse_lyrics3.cpp           tag_parse_musicmatch.cpp        tag_parse_v1.cpp                tag_render.cpp                  tag_sync.cpp                    uint28.cpp                      utils.cpp                     
+id3lib_sources =    c_wrapper.cpp                   error.cpp                       field.cpp                       field_binary.cpp                field_integer.cpp               field_string_ascii.cpp          field_string_unicode.cpp        frame.cpp                       frame_impl.cpp                  frame_parse.cpp                 frame_render.cpp                globals.cpp                     header.cpp                      header_frame.cpp                header_tag.cpp                  helpers.cpp                     misc_support.cpp                readers.cpp                     reader_decorators.cpp           spec.cpp                        tag.cpp                         tag_file.cpp                    tag_find.cpp                    tag_impl.cpp                    tag_parse.cpp                   tag_parse_lyrics3.cpp           tag_parse_musicmatch.cpp        tag_parse_v1.cpp                tag_render.cpp                  uint28.cpp                      utils.cpp                       writers.cpp                     writer_decorators.cpp        
 
 
 lib_LTLIBRARIES = libid3.la 
@@ -136,9 +136,10 @@ libid3_la_OBJECTS =  c_wrapper.lo error.lo field.lo field_binary.lo \
 field_integer.lo field_string_ascii.lo field_string_unicode.lo frame.lo \
 frame_impl.lo frame_parse.lo frame_render.lo globals.lo header.lo \
 header_frame.lo header_tag.lo helpers.lo misc_support.lo readers.lo \
-spec.lo tag.lo tag_file.lo tag_find.lo tag_impl.lo tag_parse.lo \
-tag_parse_lyrics3.lo tag_parse_musicmatch.lo tag_parse_v1.lo \
-tag_render.lo tag_sync.lo uint28.lo utils.lo
+reader_decorators.lo spec.lo tag.lo tag_file.lo tag_find.lo tag_impl.lo \
+tag_parse.lo tag_parse_lyrics3.lo tag_parse_musicmatch.lo \
+tag_parse_v1.lo tag_render.lo uint28.lo utils.lo writers.lo \
+writer_decorators.lo
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -156,11 +157,11 @@ DEP_FILES =  .deps/c_wrapper.P .deps/error.P .deps/field.P \
 .deps/field_string_unicode.P .deps/frame.P .deps/frame_impl.P \
 .deps/frame_parse.P .deps/frame_render.P .deps/globals.P .deps/header.P \
 .deps/header_frame.P .deps/header_tag.P .deps/helpers.P \
-.deps/misc_support.P .deps/readers.P .deps/spec.P .deps/tag.P \
-.deps/tag_file.P .deps/tag_find.P .deps/tag_impl.P .deps/tag_parse.P \
-.deps/tag_parse_lyrics3.P .deps/tag_parse_musicmatch.P \
-.deps/tag_parse_v1.P .deps/tag_render.P .deps/tag_sync.P .deps/uint28.P \
-.deps/utils.P
+.deps/misc_support.P .deps/reader_decorators.P .deps/readers.P \
+.deps/spec.P .deps/tag.P .deps/tag_file.P .deps/tag_find.P \
+.deps/tag_impl.P .deps/tag_parse.P .deps/tag_parse_lyrics3.P \
+.deps/tag_parse_musicmatch.P .deps/tag_parse_v1.P .deps/tag_render.P \
+.deps/uint28.P .deps/utils.P .deps/writer_decorators.P .deps/writers.P
 SOURCES = $(libid3_la_SOURCES)
 OBJECTS = $(libid3_la_OBJECTS)
 

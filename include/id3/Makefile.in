@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.37 2000/10/02 15:16:24 eldamitri Exp $
+# $Id: Makefile.in,v 1.38 2000/10/08 20:26:59 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -103,13 +103,13 @@ PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
 
-the_headers =    field.h                         frame.h                         globals.h                       misc_support.h                  sized_types.h                   spec.h                          reader.h                        readers.h                       tag.h                         
+the_headers =    field.h                         frame.h                         globals.h                       misc_support.h                  sized_types.h                   spec.h                          reader.h                        readers.h                       tag.h                           writer.h                        writers.h                     
 
 
 id3includedir = $(includedir)/id3
 id3include_HEADERS = $(the_headers)
 
-noinst_HEADERS =    debug.h                         error.h                         field_def.h                     field_impl.h                    flags.h                         frame_def.h                     frame_impl.h                    header.h                        header_frame.h                  header_tag.h                    reader_decorators.h             readers_compressed.h            strings.h                       uint28.h                        utils.h
+noinst_HEADERS =    debug.h                         error.h                         field_def.h                     field_impl.h                    flags.h                         frame_def.h                     frame_impl.h                    header.h                        header_frame.h                  header_tag.h                    reader_decorators.h             readers_compressed.h            strings.h                       uint28.h                        utils.h                         writer_decorators.h             writers_compressed.h          
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h

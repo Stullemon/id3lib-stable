@@ -118,7 +118,7 @@ LDADD = $(top_builddir)/src/libid3.la $(popt_lib) $(zlib_lib) $(ID3_DEBUG_LIBS)
 INCLUDES = @ID3LIB_DEBUG_FLAGS@ -I$(top_srcdir)/include $(popt_include)
 
 bin_PROGRAMS = id3info id3convert id3tag id3cp
-check_PROGRAMS =    id3simple                 testpic                   testunicode               testcompression           testremove                testreader                get_pic                   findstr                   findeng
+check_PROGRAMS =    id3simple                 testpic                   testunicode               testcompression           testremove                testreader                testio                    get_pic                   findstr                   findeng
 
 id3cp_SOURCES = demo_copy.cpp
 id3info_SOURCES = demo_info.cpp
@@ -130,6 +130,7 @@ testunicode_SOURCES = test_unicode.cpp
 testcompression_SOURCES = test_compression.cpp
 testremove_SOURCES = test_remove.cpp
 testreader_SOURCES = test_reader.cpp
+testio_SOURCES = test_io.cpp
 get_pic_SOURCES = get_pic.cpp
 findeng_SOURCES = findeng.cpp
 findstr_SOURCES = findstr.cpp
@@ -416,6 +417,33 @@ testreader_LDADD = $(LDADD)
 @ID3_NEEDDEBUG_FALSE@@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
 @ID3_NEEDDEBUG_FALSE@@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
 testreader_LDFLAGS = 
+testio_OBJECTS =  test_io.o
+testio_LDADD = $(LDADD)
+@ID3_NEEDDEBUG_FALSE@@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@testio_DEPENDENCIES =  \
+@ID3_NEEDDEBUG_FALSE@@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDDEBUG_FALSE@@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/popt/libpopt.la
+@ID3_NEEDDEBUG_TRUE@@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@testio_DEPENDENCIES =  \
+@ID3_NEEDDEBUG_TRUE@@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDDEBUG_TRUE@@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
+@ID3_NEEDDEBUG_TRUE@@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@testio_DEPENDENCIES =  \
+@ID3_NEEDDEBUG_TRUE@@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDDEBUG_TRUE@@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/popt/libpopt.la \
+@ID3_NEEDDEBUG_TRUE@@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
+@ID3_NEEDDEBUG_TRUE@@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@testio_DEPENDENCIES =  \
+@ID3_NEEDDEBUG_TRUE@@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDDEBUG_TRUE@@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/popt/libpopt.la
+@ID3_NEEDDEBUG_TRUE@@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_FALSE@testio_DEPENDENCIES =  \
+@ID3_NEEDDEBUG_TRUE@@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la
+@ID3_NEEDDEBUG_FALSE@@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@testio_DEPENDENCIES =  \
+@ID3_NEEDDEBUG_FALSE@@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDDEBUG_FALSE@@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/popt/libpopt.la \
+@ID3_NEEDDEBUG_FALSE@@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
+@ID3_NEEDDEBUG_FALSE@@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_FALSE@testio_DEPENDENCIES =  \
+@ID3_NEEDDEBUG_FALSE@@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la
+@ID3_NEEDDEBUG_FALSE@@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@testio_DEPENDENCIES =  \
+@ID3_NEEDDEBUG_FALSE@@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDDEBUG_FALSE@@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
+testio_LDFLAGS = 
 get_pic_OBJECTS =  get_pic.o
 get_pic_LDADD = $(LDADD)
 @ID3_NEEDDEBUG_FALSE@@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@get_pic_DEPENDENCIES =  \
@@ -516,10 +544,11 @@ TAR = gtar
 GZIP_ENV = --best
 DEP_FILES =  .deps/demo_convert.P .deps/demo_copy.P .deps/demo_info.P \
 .deps/demo_simple.P .deps/demo_tag.P .deps/findeng.P .deps/findstr.P \
-.deps/get_pic.P .deps/test_compression.P .deps/test_pic.P \
-.deps/test_reader.P .deps/test_remove.P .deps/test_unicode.P
-SOURCES = $(id3info_SOURCES) $(id3convert_SOURCES) $(id3tag_SOURCES) $(id3cp_SOURCES) $(id3simple_SOURCES) $(testpic_SOURCES) $(testunicode_SOURCES) $(testcompression_SOURCES) $(testremove_SOURCES) $(testreader_SOURCES) $(get_pic_SOURCES) $(findstr_SOURCES) $(findeng_SOURCES)
-OBJECTS = $(id3info_OBJECTS) $(id3convert_OBJECTS) $(id3tag_OBJECTS) $(id3cp_OBJECTS) $(id3simple_OBJECTS) $(testpic_OBJECTS) $(testunicode_OBJECTS) $(testcompression_OBJECTS) $(testremove_OBJECTS) $(testreader_OBJECTS) $(get_pic_OBJECTS) $(findstr_OBJECTS) $(findeng_OBJECTS)
+.deps/get_pic.P .deps/test_compression.P .deps/test_io.P \
+.deps/test_pic.P .deps/test_reader.P .deps/test_remove.P \
+.deps/test_unicode.P
+SOURCES = $(id3info_SOURCES) $(id3convert_SOURCES) $(id3tag_SOURCES) $(id3cp_SOURCES) $(id3simple_SOURCES) $(testpic_SOURCES) $(testunicode_SOURCES) $(testcompression_SOURCES) $(testremove_SOURCES) $(testreader_SOURCES) $(testio_SOURCES) $(get_pic_SOURCES) $(findstr_SOURCES) $(findeng_SOURCES)
+OBJECTS = $(id3info_OBJECTS) $(id3convert_OBJECTS) $(id3tag_OBJECTS) $(id3cp_OBJECTS) $(id3simple_OBJECTS) $(testpic_OBJECTS) $(testunicode_OBJECTS) $(testcompression_OBJECTS) $(testremove_OBJECTS) $(testreader_OBJECTS) $(testio_OBJECTS) $(get_pic_OBJECTS) $(findstr_OBJECTS) $(findeng_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -637,6 +666,10 @@ testremove: $(testremove_OBJECTS) $(testremove_DEPENDENCIES)
 testreader: $(testreader_OBJECTS) $(testreader_DEPENDENCIES)
 	@rm -f testreader
 	$(CXXLINK) $(testreader_LDFLAGS) $(testreader_OBJECTS) $(testreader_LDADD) $(LIBS)
+
+testio: $(testio_OBJECTS) $(testio_DEPENDENCIES)
+	@rm -f testio
+	$(CXXLINK) $(testio_LDFLAGS) $(testio_OBJECTS) $(testio_LDADD) $(LIBS)
 
 get_pic: $(get_pic_OBJECTS) $(get_pic_DEPENDENCIES)
 	@rm -f get_pic
