@@ -1,4 +1,4 @@
-// $Id: utils.cpp,v 1.8 2000/09/27 07:38:51 eldamitri Exp $
+// $Id: utils.cpp,v 1.9 2000/09/30 22:14:57 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -105,6 +105,21 @@ namespace id3
     }
   }
 
+  id3::string removeTrailingSpaces(id3::string str)
+  {
+    id3::string buffer = str;
+    size_t newlen = 0;
+    for (newlen = buffer.length(); newlen > 0 && 0x20 == buffer[newlen-1]; --newlen)
+    {
+      continue;
+    }
+    if (newlen < buffer.length())
+    {
+      buffer = buffer.substr(0, newlen);
+    }
+    return buffer;
+  }
+
   // Extract a 32-bit number from a 4-byte character array
   uint32 parseNumber(const uchar *buffer, size_t size)
   {
@@ -126,6 +141,18 @@ namespace id3
       num >>= 8;
     }
     return size;
+  }
+
+  id3::string renderNumber(uint32 val, size_t size)
+  {
+    id3::string str(size, '\0');
+    uint32 num = val;
+    for (size_t i = 0; i < size; i++)
+    {
+      str[size - i - 1] = (uchar)(num & MASK8);
+      num >>= 8;
+    }
+    return str;
   }
 
   // converts an ASCII string into a Unicode one
