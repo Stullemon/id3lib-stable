@@ -1,4 +1,4 @@
-// $Id: frame.h,v 1.22 2000/05/08 04:07:25 eldamitri Exp $
+// $Id: frame.h,v 1.23 2000/05/09 13:45:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -41,7 +41,7 @@ class ID3_Tag;
  ** the implementation of a complex APIC frame and for a simple text frame.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: frame.h,v 1.22 2000/05/08 04:07:25 eldamitri Exp $
+ ** @version $Id: frame.h,v 1.23 2000/05/09 13:45:56 eldamitri Exp $
  ** @see ID3_Tag
  ** @see ID3_Field
  ** @see ID3_Err
@@ -90,7 +90,7 @@ public:
    ** @param id The type of frame this frame should be set to
    ** @see ID3_FrameID
    **/
-  void        SetID(ID3_FrameID id);
+  bool        SetID(ID3_FrameID id);
 
   /** Returns the type of frame that the object represents.
    ** 
@@ -124,23 +124,27 @@ public:
 
   ID3_Frame  &operator=(const ID3_Frame &);
   bool        HasChanged() const;
-  void        Parse(const uchar *buffer, luint size);
+  size_t      Parse(const uchar *buffer, luint size);
   luint       Size();
   luint       Render(uchar *buffer);
   bool        Contains(ID3_FieldID fld)
   { return BS_ISSET(__field_bitset, fld) > 0; }
   bool        SetSpec(ID3_V2Spec);
+  ID3_V2Spec  GetSpec() const;
 
   bool        SetCompression(bool b)  { return __hdr.SetCompression(b); }
   bool        GetCompression() const  { return __hdr.GetCompression(); }
+  bool        BadParse() const { return __bad_parse; }
+  size_t      GetDataSize() const { return __hdr.GetDataSize(); }
 
 protected:
-  void        InitFields();
-  void        InitFieldBits();
-  ID3_V2Spec  GetSpec() const;
-  void        UpdateStringTypes();
-  void        UpdateFieldDeps();
-  lsint       FindField(ID3_FieldID name) const;
+  bool        _SetID(ID3_FrameID);
+  bool        _ClearFields();
+  void        _InitFields();
+  void        _InitFieldBits();
+  void        _UpdateStringTypes();
+  void        _UpdateFieldDeps();
+  lsint       _FindField(ID3_FieldID name) const;
 
 private:
   char        __encryption_id[256]; // encryption method used with this frame
@@ -150,6 +154,7 @@ private:
   luint       __num_fields;         // how many fields are in this frame?
   ID3_Field **__fields;             // an array of field object pointers
   ID3_FrameHeader __hdr;            // 
+  bool        __bad_parse;          //
 }
 ;
 
