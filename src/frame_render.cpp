@@ -1,4 +1,4 @@
-// $Id: frame_render.cpp,v 1.4 2000/05/01 13:05:07 eldamitri Exp $
+// $Id: frame_render.cpp,v 1.5 2000/05/02 21:57:48 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -75,8 +75,7 @@ luint ID3_Frame::Render(uchar *buffer)
     
   // if we can compress frames individually and we have been asked to compress
   // the frames
-  if (__FrmHdr.GetFlags() & ID3FL_COMPRESSION && 
-      __FrmHdr.GetSpec() >= ID3V2_3_0)
+  if (__FrmHdr.GetCompression() && __FrmHdr.GetSpec() >= ID3V2_3_0)
   {
       
     bytesUsed -= __FrmHdr.Size();
@@ -122,32 +121,9 @@ luint ID3_Frame::Render(uchar *buffer)
   }
     
   // determine which flags need to be set
-  if (didCompress)
-  {
-    __FrmHdr.AddFlags(ID3FL_COMPRESSION);
-  }
-  else
-  {
-    __FrmHdr.RemoveFlags(ID3FL_COMPRESSION);
-  }
-
-  if (strlen(__sEncryptionID) > 0)
-  {
-    __FrmHdr.AddFlags(ID3FL_ENCRYPTION);
-  }
-  else
-  {
-    __FrmHdr.RemoveFlags(ID3FL_ENCRYPTION);
-  }
-
-  if (strlen(__sGroupingID) > 0)
-  {
-    __FrmHdr.AddFlags(ID3FL_GROUPING);
-  }
-  else
-  {
-    __FrmHdr.RemoveFlags(ID3FL_GROUPING);
-  }
+  __FrmHdr.SetCompression(didCompress);
+  __FrmHdr.SetEncryption(strlen(__sEncryptionID) > 0);
+  __FrmHdr.SetGrouping(strlen(__sGroupingID) > 0);
       
   __FrmHdr.SetDataSize(bytesUsed - __FrmHdr.Size());
   __FrmHdr.Render(buffer);
