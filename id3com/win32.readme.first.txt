@@ -1,0 +1,26 @@
+Compiling on win32:
+
+So far, it has only been confirmed it compiles on visual C 6.0 (service pack 5), 
+but if you got it working on Borland or other compilers, drop me a mail, or better, add a patch
+here: http://sourceforge.net/tracker/?group_id=979&atid=300979 with the (e.g.) borland project files.
+
+These are the directories you'll be needing:
+id3lib/prj
+id3lib/libprj
+id3lib/id3com
+
+The first one (id3lib/prj) just creates the standard dll (no COM interface)
+The Second one (id3lib/libprj) creates the .lib file for static linking.
+And the third one (id3lib/id3com) creates a dll with com interface. A Visual basic demo using it is included.
+
+Before you compile, you'll need to rename id3lib/config.h.win32 to id3lib/config.h
+
+The third one is not too much tested, it was created outside this project but
+it doesn't seem to be maintained anymore. I've included it as a service.
+The original location is http://sourceforge.net/projects/id3com
+
+And, last but not least, there is a delphi project in id3lib/delphi which uses the allready compiled dll.
+
+Thijmen
+thijmen@id3lib.org
+
