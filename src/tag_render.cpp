@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.14 2000/05/08 04:07:39 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.15 2000/05/10 15:19:20 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -228,7 +228,7 @@ luint ID3_Tag::RenderV1(uchar *buffer)
   // sTemp is used as a temporary string pointer for functions that return
   //  dynamically created strings
   uchar* pCur = buffer;
-  const char* sTemp = NULL;
+  char* sTemp = NULL;
 
   // The default char for a v1 tag is null
   memset(buffer, '\0', ID3_V1_LEN);
