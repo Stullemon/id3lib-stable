@@ -30,15 +30,15 @@
  * macros will be made available in the library via constants, functions,
  * or static methods.
  */
-#define __ID3LIB_NAME "id3lib"
-#define __ID3LIB_DATE ": 2000/08/27 22:40:41 "
-#define __ID3LIB_VERSION "3.7.13"
-#define __ID3LIB_FULLNAME "id3lib-3.7.13"
-#define __ID3LIB_MAJOR_VERSION 3
-#define __ID3LIB_MINOR_VERSION 7
-#define __ID3LIB_PATCH_VERSION 13
-#define __ID3LIB_INTERFACE_AGE 0
-#define __ID3LIB_BINARY_AGE 0
+#define _ID3LIB_NAME "id3lib"
+#define _ID3LIB_DATE ": 2000/09/15 00:03:02 "
+#define _ID3LIB_VERSION "3.7.13"
+#define _ID3LIB_FULLNAME "id3lib-3.7.13"
+#define _ID3LIB_MAJOR_VERSION 3
+#define _ID3LIB_MINOR_VERSION 7
+#define _ID3LIB_PATCH_VERSION 13
+#define _ID3LIB_INTERFACE_AGE 0
+#define _ID3LIB_BINARY_AGE 0
 /* #undef ID3_COMPILED_WITH_DEBUGGING */
 
 /* Define if you have the mkstemp function.  */
