@@ -1,4 +1,4 @@
-// $Id: tag_parse.cpp,v 1.36 2000/10/15 16:09:49 eldamitri Exp $
+// $Id: tag_parse.cpp,v 1.37 2000/10/21 22:30:14 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -97,7 +97,7 @@ namespace
         ID3_Field* fld = f->GetField(ID3FN_DATA);
         if (fld)
         {
-          ID3_MemoryReader mr(fld->GetBinary(), fld->BinSize());
+          ID3_MemoryReader mr(fld->GetRawBinary(), fld->BinSize());
           ID3_Reader::char_type ch = mr.readChar();
           if (ch != 'z') 
           { 
@@ -236,7 +236,7 @@ void ID3_TagImpl::ParseFile()
       }
       cur  = wr.getCur();
       wr.setBeg(cur);
-    } while (cur > last);
+    } while (!wr.atEnd() && cur > last);
   }
 
   _prepended_bytes = cur - beg;
