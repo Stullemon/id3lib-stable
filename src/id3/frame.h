@@ -1,4 +1,4 @@
-// $Id: frame.h,v 1.8 1999/11/29 19:06:50 scott Exp $
+// $Id: frame.h,v 1.9 1999/11/29 19:26:18 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -8,7 +8,7 @@
 // express or implied.
 // 
 // The ID3Lib authors encourage improvements and optimisations to be sent to
-// the ID3Lib coordinator, currently Dirk Mahoney (dirk@id3.org).  Approved
+// the ID3Lib coordinator, currently Scott Haug (sth2@cs.wustl.edu).  Approved
 // submissions may be altered, and will be included and released under these
 // terms.
 
@@ -28,7 +28,7 @@ class ID3_Tag;
     the implementation of a complex APIC frame and for a simple text frame.
     
     @author Dirk Mahoney
-    @version $Id: frame.h,v 1.8 1999/11/29 19:06:50 scott Exp $
+    @version $Id: frame.h,v 1.9 1999/11/29 19:26:18 scott Exp $
     @see ID3_Tag
     @see ID3_Field
     @see ID3_Err
@@ -136,6 +136,9 @@ protected:
 ;
 
 // $Log: frame.h,v $
+// Revision 1.9  1999/11/29 19:26:18  scott
+// Updated the leading license information of the file to reflect new maintainer.
+//
 // Revision 1.8  1999/11/29 19:06:50  scott
 // Updated documentation to work better with doc++ (probably doesn't work
 // well with kdoc anymore).

@@ -1,4 +1,4 @@
-// $Id: dll_wrapper.cpp,v 1.7 1999/11/29 15:13:00 scott Exp $
+// $Id: dll_wrapper.cpp,v 1.8 1999/11/29 19:26:18 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -8,7 +8,7 @@
 // express or implied.
 // 
 // The ID3Lib authors encourage improvements and optimisations to be sent to
-// the ID3Lib coordinator, currently Dirk Mahoney (dirk@id3.org).  Approved
+// the ID3Lib coordinator, currently Scott Haug (sth2@cs.wustl.edu).  Approved
 // submissions may be altered, and will be included and released under these
 // terms.
 
@@ -487,6 +487,9 @@ void ID3Field_ToFile(ID3_Field *field, char *fileName)
 #endif
 
 // $Log: dll_wrapper.cpp,v $
+// Revision 1.8  1999/11/29 19:26:18  scott
+// Updated the leading license information of the file to reflect new maintainer.
+//
 // Revision 1.7  1999/11/29 15:13:00  scott
 // Updated unicode function declarations to now pass unicode_t instead of
 // wchar_t.  unicode_t now defined in globals.h.

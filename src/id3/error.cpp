@@ -1,18 +1,16 @@
-// $Id: error.cpp,v 1.7 1999/11/25 18:17:22 scott Exp $
-
-//  The authors have released ID3Lib as Public Domain (PD) and claim no
-//  copyright, patent or other intellectual property protection in this work.
-//  This means that it may be modified, redistributed and used in commercial
-//  and non-commercial software and hardware without restrictions.  ID3Lib is
-//  distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either
-//  express or implied.
-//
-//  The ID3Lib authors encourage improvements and optimisations to be sent to
-//  the ID3Lib coordinator, currently Dirk Mahoney (dirk@id3.org).  Approved
-//  submissions may be altered, and will be included and released under these
-//  terms.
-//
-//  Mon Nov 23 18:34:01 1998
+// $Id: error.cpp,v 1.8 1999/11/29 19:26:18 scott Exp $
+// 
+// The authors have released ID3Lib as Public Domain (PD) and claim no
+// copyright, patent or other intellectual property protection in this work.
+// This means that it may be modified, redistributed and used in commercial
+// and non-commercial software and hardware without restrictions.  ID3Lib is
+// distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either
+// express or implied.
+// 
+// The ID3Lib authors encourage improvements and optimisations to be sent to
+// the ID3Lib coordinator, currently Scott Haug (sth2@cs.wustl.edu).  Approved
+// submissions may be altered, and will be included and released under these
+// terms.
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
@@ -37,7 +35,6 @@ static char *ID3_ErrorDescs[] =
   "trying to write to a read-only file",
   "error in zlib compression library"
 };
-  
   
 ID3_Error::ID3_Error(const ID3_Err eCode, const char *sFileName, 
                      const luint nLine, const char *sDesc)
@@ -84,6 +81,9 @@ luint ID3_Error::GetErrorLine(void) const
 
 
 // $Log: error.cpp,v $
+// Revision 1.8  1999/11/29 19:26:18  scott
+// Updated the leading license information of the file to reflect new maintainer.
+//
 // Revision 1.7  1999/11/25 18:17:22  scott
 // (ID3_ErrorDescs): Added descriptions for new error types.
 // (ID3_Error): Minor bugfix in string copying.
