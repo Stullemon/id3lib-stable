@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.17 2000/04/26 02:49:00 eldamitri Exp $
+// $Id: tag.h,v 1.18 2000/04/26 15:54:05 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -91,7 +91,7 @@ const char STR_V1_COMMENT_DESC[] = "ID3v1_Comment";
  ** that id3lib 2.16 supports.
  **
  ** @author Dirk Mahoney
- ** @version $Id: tag.h,v 1.17 2000/04/26 02:49:00 eldamitri Exp $
+ ** @version $Id: tag.h,v 1.18 2000/04/26 15:54:05 eldamitri Exp $
  ** @see ID3_Frame
  ** @see ID3_Field
  ** @see ID3_Err
@@ -173,7 +173,7 @@ protected:
   void       AddFrame(ID3_Frame *pNewFrame, bool bFreeWhenDone);
   void       AddFrames(ID3_Frame *newFrames, luint nFrames, bool freeWhenDone);
   void       SetupTag(char *fileInfo);
-  void       SetSpec(ID3_V2Spec);
+  void       SetSpec(const ID3_V2Spec);
   ID3_V2Spec GetSpec() const;
   void       ClearList(ID3_Elem *list);
   void       DeleteElem(ID3_Elem *cur);
