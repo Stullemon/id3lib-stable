@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.3 2000/04/23 17:38:00 eldamitri Exp $
+// $Id: tag_file.cpp,v 1.4 2000/04/24 14:48:42 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -111,7 +111,7 @@ void ID3_Tag::CreateFile(void)
   return ;
 }
 
-void ID3_Tag::OpenFileForWriting(void)
+ID3_Err ID3_Tag::OpenFileForWriting(void)
 {
   CloseFile();
   
@@ -122,14 +122,15 @@ void ID3_Tag::OpenFileForWriting(void)
   }
   else
   {
-    // No such file to open
     ID3_THROW(ID3E_NoFile);
+    return ID3E_NoFile;
   }
 
   // Check to see if file could not be opened for writing
   if (NULL == __fFileHandle)
   {
     ID3_THROW(ID3E_ReadOnly);
+    return ID3E_ReadOnly;
   }
 
   // Determine the size of the file
@@ -137,18 +138,20 @@ void ID3_Tag::OpenFileForWriting(void)
   __ulFileSize = ftell(__fFileHandle);
   fseek(__fFileHandle, 0, SEEK_SET);
   
-  return ;
+  return ID3E_NoError;
 }
 
-void ID3_Tag::OpenFileForReading(void)
+ID3_Err ID3_Tag::OpenFileForReading(void)
 {
   CloseFile();
+  __ulFileSize = 0;
 
   __fFileHandle = fopen(__sFileName, "rb");
   
   if (NULL == __fFileHandle)
   {
     ID3_THROW(ID3E_NoFile);
+    return ID3E_NoFile;
   }
 
   // Determine the size of the file
@@ -156,7 +159,7 @@ void ID3_Tag::OpenFileForReading(void)
   __ulFileSize = ftell(__fFileHandle);
   fseek(__fFileHandle, 0, SEEK_SET);
 
-  return ;
+  return ID3E_NoError;
 }
 
 bool ID3_Tag::CloseFile(void)
@@ -171,10 +174,65 @@ bool ID3_Tag::CloseFile(void)
 
 luint ID3_Tag::Link(char *fileInfo, bool parseID3v1, bool parseLyrics3)
 {
+  luint tt = ID3TT_NONE;
+  if (parseID3v1)
+  {
+    tt |= ID3TT_ID3V1;
+  }
+  if (parseLyrics3)
+  {
+    tt |= ID3TT_LYRICS;
+  }
+  return this->Link(fileInfo, tt);
+}
+
+  /** Attaches a file to the tag, parses the file, and adds any tag information
+   ** found in the file to the tag.
+   ** 
+   ** Use this method if you created your ID3_Tag object without supplying a
+   ** parameter to the constructor (maybe you created an array of ID3_Tag
+   ** pointers).  This is the preferred method of interacting with files, since
+   ** id3lib can automatically do things like parse foreign tag formats and
+   ** handle padding when linked to a file.  When a tag is linked to a file,
+   ** you do not need to use the <a href="#Size">Size</a>, <a
+   ** href="#Render">Render</a>, or <a href="#Parse">Parse</a> methods or the
+   ** <code>ID3_IsTagHeader</code> function---id3lib will take care of those
+   ** details for you.  The single parameter is a pointer to a file name.
+   ** 
+   ** Link returns a 'luint' which is the byte position within the file that
+   ** the audio starts (i.e., where the id3v2 tag ends).
+   ** 
+   ** \code
+   **   ID3_Tag *myTag;
+   **   if (myTag = new ID3_Tag)
+   **   {
+   **     myTag->Link("mysong.mp3");
+   **     
+   **     // do whatever we want with the tag
+   **     // ...
+   **   
+   **     // setup all our rendering parameters
+   **     myTag->SetUnsync(false);
+   **     myTag->SetExtendedHeader(true);
+   **     myTag->SetCompression(true);
+   **     myTag->SetPadding(true);
+   **     
+   **     // write any changes to the file
+   **     myTag->Update()
+   **     
+   **     // free the tag
+   **     delete myTag;
+   **   }
+   ** \endcode
+   ** 
+   ** @see ID3_IsTagHeader
+   ** @param fileInfo The filename of the file to link to.
+   **/
+luint ID3_Tag::Link(char *fileInfo, const luint tag_types)
+{
   luint posn = 0;
   
-  __bParseID3v1 = parseID3v1;
-  __bParseLyrics3 = parseLyrics3;
+  __ulTagsToParse = tag_types;
   
   if (NULL == fileInfo)
   {
@@ -188,24 +246,41 @@ luint ID3_Tag::Link(char *fileInfo, bool parseID3v1, bool parseLyrics3)
   {
     ID3_THROW(ID3E_TagAlreadyAttached);
   }
-
-  OpenFileForReading();
-
-  __ulOldTagSize = ParseFromHandle();
-
-  CloseFile();
+  
+  if (ID3E_NoError != OpenFileForReading())
+  {
+    __ulOldTagSize = 0;
+  }
+  else
+  {
+    __ulOldTagSize = ParseFromHandle();
     
+    CloseFile();
+  }
+  
   if (__ulOldTagSize > 0)
   {
     __ulOldTagSize += ID3_TAGHEADERSIZE;
   }
-      
+
   __ulFileSize -= __ulOldTagSize;
   posn = __ulOldTagSize;
-    
+  
   return posn;
 }
 
+  /** Renders the tag and writes it to the attached file; the type of tag
+   ** rendered can be specified as a parameter.  The default is to update only
+   ** the ID3v2 tag.  See the ID3_TagType enumeration for the constants that
+   ** can be used.
+   ** 
+   ** Make sure the rendering parameters are set before calling the method.
+   ** See the Link dcoumentation for an example of this method in use.
+   ** 
+   ** \sa ID3_TagType
+   ** \sa Link
+   ** \param tt The type of tag to update.
+   **/
 luint ID3_Tag::Update(const luint ulTagFlag)
 {
   OpenFileForWriting();
@@ -227,6 +302,12 @@ luint ID3_Tag::Update(const luint ulTagFlag)
   return ulTags;
 }
 
+  /** Strips the tag(s) from the attached file. The type of tag stripped
+   ** can be specified as a parameter.  The default is to strip all tag types.
+   ** 
+   ** \param tt The type of tag to strip
+   ** \sa ID3_TagType@see
+   **/
 luint ID3_Tag::Strip(const luint ulTagFlag)
 {
   luint ulTags = ID3TT_NONE;
@@ -345,6 +426,13 @@ luint ID3_Tag::Strip(const luint ulTagFlag)
 
 
 // $Log: tag_file.cpp,v $
+// Revision 1.4  2000/04/24 14:48:42  eldamitri
+// - Added comments originally in include/id3/tag.h
+// - (OpenFileForWriting): Now returns ID3_Err rather than void
+// - (OpenFileForReading): Now returns ID3_Err rather than void
+// - (Link): Deprecated Link(char *, bool, bool) for Link(char *, luint),
+//   which accepts an unsigned int representing the tag types to parse.
+//
 // Revision 1.3  2000/04/23 17:38:00  eldamitri
 // - Updated ID3_TagType constants to new names
 //
