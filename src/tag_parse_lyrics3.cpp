@@ -1,4 +1,4 @@
-// $Id: tag_parse_lyrics3.cpp,v 1.19 2000/07/11 04:25:01 eldamitri Exp $
+// $Id: tag_parse_lyrics3.cpp,v 1.20 2000/08/26 20:25:29 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -231,8 +231,7 @@ size_t ParseLyrics3(ID3_Tag& tag, fstream& file)
 
       lyr_begin[lyr_size] = '\0';
 
-      ID3_Frame *frame = ID3_AddLyrics(&tag, lyr_begin, 
-                                       "Converted from Lyrics3 v1.00");
+      ID3_AddLyrics(&tag, lyr_begin, "Converted from Lyrics3 v1.00");
 
     }
   
@@ -355,7 +354,7 @@ size_t ParseLyrics3v2(ID3_Tag& tag, fstream& file)
           text[fld_size] = '\0';
           memcpy(text, fld_data, fld_size);
 
-          ID3_Frame* frame = ID3_AddAlbum(&tag, text, true);
+          ID3_AddAlbum(&tag, text, true);
 
           delete[] text;
         }
