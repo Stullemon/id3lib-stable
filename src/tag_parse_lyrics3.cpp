@@ -1,4 +1,4 @@
-// $Id: tag_parse_lyrics3.cpp,v 1.2 2000/04/18 22:13:38 eldamitri Exp $
+// $Id: tag_parse_lyrics3.cpp,v 1.3 2000/04/28 15:56:44 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -101,36 +101,112 @@ void ID3_Tag::ParseLyrics3(void)
   }
 
   uchar buffer[18];
-    
+
   fseek(__fFileHandle, -143, SEEK_END);
   fread(buffer, 1, 18, __fFileHandle);
-    
+
   // first check for an ID3v1 tag
   if (memcmp(&buffer[15], "TAG", 3) == 0)
   {
+    // check for lyrics
     if (memcmp(&buffer[6], "LYRICSEND", 9) == 0)
     {
       // we have a Lyrics3 v1.00 tag
+
+      // get the position of LYRICSEND string in file
+      int filelen = __ulFileSize;
+      int lyrendpos = filelen - 137;
+
+      // read the maximum Lyrics3 v1.00 tag size (5100 bytes) + some extra byte
+      int bytesToRead = 5100 + 100;
+      fseek(__fFileHandle, -(bytesToRead+143), SEEK_END);
+      uchar *bufflyr;
+      bufflyr = new uchar[bytesToRead];
+      if (NULL == bufflyr)
+      {
+        ID3_THROW(ID3E_NoMemory);
+      }
+      fread(bufflyr, 1, bytesToRead, __fFileHandle);
+
+      // search for LYRICSBEGIN
+      bool      bFoundBegin = false;
+      int pos = 0;
+      for (; pos < bytesToRead; pos++)
+      {
+        if (bufflyr[pos] == 'L')
+        {
+          // found ?
+          if (memcmp(&bufflyr[pos], "LYRICSBEGIN", 11) == 0)
+          {
+            // yes
+            bFoundBegin = true;
+            break;
+          }
+          // still not found
+        }
+      }
+
+      if (!bFoundBegin)
+      {
+                                // invalid tag
+        delete[] bufflyr;
+        return;
+      }
+
+      delete[] bufflyr;
+
+      // extract lyrics text
+      pos += 11;
+      int lyrbeginpos = filelen - ((bytesToRead+143) - pos);
+      int lyrsize = lyrendpos - lyrbeginpos;
+
+      fseek(__fFileHandle, lyrbeginpos, SEEK_SET);
+      bufflyr = new uchar[lyrsize];
+      if (NULL == bufflyr)
+      {
+        ID3_THROW(ID3E_NoMemory);
+      }
+      fread(bufflyr, 1, lyrsize, __fFileHandle);
+
+      char *text;
+      luint newSize;
+
+      newSize = ID3_CRLFtoLF((char *) bufflyr, lyrsize);
+
+      text = new char[newSize + 1];
+      if (NULL == text)
+      {
+        ID3_THROW(ID3E_NoMemory);
+      }
+
+      text[newSize] = 0;
+
+      memcpy(text, bufflyr, newSize);
+      delete[] bufflyr;
+
+      ID3_AddLyrics(this, text);
+
+      delete[] text;
     }
-      
+  
     else if (memcmp(&buffer[6], "LYRICS200", 9) == 0)
     {
       // we have a Lyrics3 v2.00 tag
       luint lyricsSize;
-        
+
       buffer[6] = 0;
       lyricsSize = atoi((char *) buffer);
-        
+
       fseek(__fFileHandle, -18 - lyricsSize, SEEK_CUR);
       fread(buffer, 1, 11, __fFileHandle);
-        
+
       if (memcmp(buffer, "LYRICSBEGIN", 11) == 0)
       {
         luint bytesToRead = lyricsSize - 11;
         uchar *buff2;
-          
+
         __ulExtraBytes += lyricsSize + 9 + 6;
-        
+
         buff2 = new uchar[bytesToRead];
         if (NULL == buff2)
         {
@@ -139,22 +215,22 @@ void ID3_Tag::ParseLyrics3(void)
 
         luint posn = 0;
         bool stampsUsed = false;
-            
+
         fread(buff2, 1, bytesToRead, __fFileHandle);
-            
+
         while (posn < bytesToRead)
         {
           uchar fid[4];
           uchar sizeT[6];
           luint size;
-              
+
           fid[3] = 0;
           sizeT[5] = 0;
-              
+
           memcpy(fid, &buff2[posn], 3);
           memcpy(sizeT, &buff2[posn + 3], 5);
           size = atoi((char *) sizeT);
-              
+
           // the IND field
           if (strcmp((char *) fid, "IND") == 0)
           {
@@ -163,12 +239,12 @@ void ID3_Tag::ParseLyrics3(void)
               stampsUsed = true;
             }
           }
-              
+
           // the TITLE field
           if (strcmp((char *) fid, "ETT") == 0)
           {
             char *text;
-            
+
             text = new char[size + 1];
             if (NULL == text)
             {
@@ -177,12 +253,12 @@ void ID3_Tag::ParseLyrics3(void)
 
             text[size] = 0;
             memcpy(text, &buff2[posn + 8], size);
-                  
+
             ID3_AddTitle(this, text);
-                  
+
             delete[] text;
           }
-              
+
           // the ARTIST field
           if (strcmp((char *) fid, "EAR") == 0)
           {
@@ -196,17 +272,17 @@ void ID3_Tag::ParseLyrics3(void)
 
             text[size] = 0;
             memcpy(text, &buff2[posn + 8], size);
-                  
+
             ID3_AddArtist(this, text);
-                  
+
             delete[] text;
           }
-              
+
           // the ALBUM field
           if (strcmp((char *) fid, "EAL") == 0)
           {
             char *text;
-                
+
             text = new char[size + 1];
             if (NULL == text)
             {
@@ -215,26 +291,26 @@ void ID3_Tag::ParseLyrics3(void)
 
             text[size] = 0;
             memcpy(text, &buff2[posn + 8], size);
-                  
+
             ID3_AddAlbum(this, text);
-                  
+
             delete[] text;
           }
-              
+
           // the LYRICS field
           if (strcmp((char *) fid, "LYR") == 0)
           {
             char *text;
             luint newSize;
-                
+
             newSize = ID3_CRLFtoLF((char *) & buff2[posn + 8], size);
-                
+
             if (stampsUsed)
             {
               newSize = ID3_StripTimeStamps((char *) & buff2[posn + 8], 
                                             newSize);
             }
-                  
+
             text = new char[newSize + 1];
             if (NULL == text)
             {
@@ -242,26 +318,30 @@ void ID3_Tag::ParseLyrics3(void)
             }
 
             text[newSize] = 0;
-                  
+
             memcpy(text, &buff2[posn + 8], newSize);
-                  
+
             ID3_AddLyrics(this, text);
-                  
+
             delete[] text;
           }
-              
+
           posn += size + 8;
         }
-            
+
         delete[] buff2;
       }
     }
   }
-    
+
   return ;
 }
 
 // $Log: tag_parse_lyrics3.cpp,v $
+// Revision 1.3  2000/04/28 15:56:44  eldamitri
+// (ParseLyrics3): Added code for parsing Lyrics3 v1.00 tags (thanks
+// Severino Delaurenti)
+//
 // Revision 1.2  2000/04/18 22:13:38  eldamitri
 // Moved tag_parse_lyrics3.cpp from src/id3/ to src/
 //
