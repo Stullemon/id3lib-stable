@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.26 2000/05/06 21:39:44 eldamitri Exp $
+// $Id: tag.h,v 1.27 2000/05/08 03:11:47 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -75,16 +75,16 @@ public:
 
   //@{
   /// Finds frame with given frame id
-  ID3_Frame* Find(ID3_FrameID id);
+  ID3_Frame* Find(ID3_FrameID id) const;
 
   /// Finds frame with given frame id, fld id, and integer data
-  ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, luint data);
+  ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, luint data) const;
 
   /// Finds frame with given frame id, fld id, and ascii data
-  ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, char *data);
+  ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, char *data) const;
 
   /// Finds frame with given frame id, fld id, and unicode data
-  ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, unicode_t *data);
+  ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, unicode_t *data) const;
   //@}
 
   luint      NumFrames() const;
@@ -135,7 +135,6 @@ protected:
   void       ExpandBinaries(uchar *, luint);
   void       ProcessBinaries(ID3_FrameID = ID3FID_NOFRAME, bool = true);
   void       RemoveFromList(ID3_Elem *, ID3_Elem **);
-  ID3_Elem*  GetLastElem(ID3_Elem *);
   ID3_Elem*  Find(ID3_Frame *) const;
   luint      PaddingSize(luint) const;
   void       RenderExtHeader(uchar *);
@@ -156,7 +155,7 @@ private:
   ID3_V2Spec __spec;            // what version of the spec are we using
   ID3_Elem*  __frames;          // the list of known frames currently attached to this tag
   ID3_Elem*  __binaries;        // the list of yet-to-be-parsed frames currently attached to this tag
-  ID3_Elem*  __cursor;          // on which element in the frameList are we currently positioned?
+  mutable ID3_Elem*  __cursor;  // on which element in the frameList are we currently positioned?
   bool       __is_unsync;       // should we unsync this tag when rendering?
   bool       __is_padded;       // add padding to tags?
   bool       __is_extended;     // create an extended header when rendering?
