@@ -467,10 +467,6 @@ SOURCE=..\src\tag_render.cpp
 SOURCE=..\src\tag_sync.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
-# Begin Source File
-
-SOURCE=..\src\version.cpp
-# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # End Group
 # Begin Source File
