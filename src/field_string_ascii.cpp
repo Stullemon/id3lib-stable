@@ -1,4 +1,4 @@
-// $Id: field_string_ascii.cpp,v 1.12 2000/05/28 03:40:56 eldamitri Exp $
+// $Id: field_string_ascii.cpp,v 1.13 2000/06/06 12:22:34 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -33,16 +33,18 @@
 #include <config.h>
 #endif
 
-ID3_Field& ID3_Field::operator= (const char *string)
-{
-  Set(string);
-  
-  return *this;
-}
+/** \fn ID3_Field& ID3_Field::operator=(const char* data)
+ ** \brief Shortcut for the Set operator.
+ ** \param data The string to assign to this field
+ ** \sa Set(const char*)
+ **/
 
-
-// the ::Set() function for ASCII
-
+/** \brief Copies the supplied string to the field.
+ ** You may dispose of the source string after a call to this method.
+ ** \code
+ **   myFrame.Field(ID3FN_TEXT).Set("ID3Lib is very cool!");
+ ** \endcode
+ **/
 void ID3_Field::Set(const char *sString)
 {
   if (sString != NULL)
@@ -70,7 +72,39 @@ void ID3_Field::Set(const char *sString)
 
 // the ::Get() function for ASCII
 
-size_t ID3_Field::Get(char* buffer, size_t maxLength, index_t itemNum) const
+/** Copies the contents of the field into the supplied buffer, up to the
+ ** number of characters specified; for fields with multiple entries, the
+ ** optional third parameter indicates which of the fields to retrieve.
+ ** 
+ ** The third parameter is useful when using text lists (see Add(const char*)
+ ** for more details).  The default value for this third parameter is 1,
+ ** which returns the entire string if the field contains only one item.
+ ** 
+ ** It returns the number of characters (not bytes necessarily, and not
+ ** including any NULL terminator) of the supplied buffer that are now used.
+ ** 
+ ** \code
+ **   char myBuffer[1024];
+ **   size_t charsUsed = myFrame.Field(ID3FN_TEXT).Get(buffer, 1024);
+ ** \endcode
+ ** 
+ ** It fills the buffer with as much data from the field as is present in the
+ ** field, or as large as the buffer, whichever is smaller.
+ ** 
+ ** \code
+ **   char myBuffer[1024];
+ **   size_t charsUsed = myFrame.Field(ID3FN_TEXT).Get(buffer, 1024, 3);
+ ** \endcode
+ ** 
+ ** This fills the buffer with up to the first 1024 characters from the third
+ ** element of the text list.
+ ** 
+ ** \sa Add(const char*)
+ **/
+size_t ID3_Field::Get(char* buffer,     ///< Where to copy the data
+                      size_t maxLength, ///< Max number of characters to copy
+                      index_t itemNum   ///< The item number to retrieve
+                      ) const
 {
   unicode_t* unicode_buffer = new unicode_t[maxLength];
   if (NULL == unicode_buffer)
@@ -102,19 +136,32 @@ size_t ID3_Field::Get(char* buffer, size_t maxLength, index_t itemNum) const
 }
 
 
-void ID3_Field::Add(const char *sString)
+/** For fields which support this feature, adds a string to the list of
+ ** strings currently in the field.
+ ** 
+ ** This is useful for using id3v2 frames such as the involved people list,
+ ** composer, and part of set.  You can use the GetNumTextItems() method to
+ ** find out how many such items are in a list.
+ ** 
+ ** \code
+ **   myFrame.Field(ID3FN_TEXT).Add("this is a test");
+ ** \endcode
+ ** 
+ ** \param string The string to add to the field
+ **/
+void ID3_Field::Add(const char *str)
 {
-  if (sString)
+  if (str)
   {
     unicode_t *unicode_buffer;
     
-    unicode_buffer = new unicode_t[strlen(sString) + 1];
+    unicode_buffer = new unicode_t[strlen(str) + 1];
     if (NULL == unicode_buffer)
     {
       ID3_THROW(ID3E_NoMemory);
     }
 
-    mbstoucs(unicode_buffer, sString, strlen(sString) + 1);
+    mbstoucs(unicode_buffer, str, strlen(str) + 1);
     Add(unicode_buffer);
     delete [] unicode_buffer;
     
