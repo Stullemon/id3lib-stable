@@ -1,4 +1,4 @@
-// $Id: frame.cpp,v 1.2 2000/04/18 22:11:19 eldamitri Exp $
+// $Id: frame.cpp,v 1.3 2000/04/24 14:48:11 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -56,6 +56,19 @@ ID3_Frame::ID3_Frame(const ID3_FrameHeader &hdr)
   
   InitFieldBits();
   InitFields(__FrmHdr.GetFrameDef());
+}
+
+ID3_Frame::ID3_Frame(const ID3_Frame& frame)
+  : __bHasChanged(false),
+    __auiFieldBits(NULL),
+    __ulNumFields(0),
+    __apFields(NULL)
+{
+  __sEncryptionID[0] = '\0';
+  __sGroupingID[0]   = '\0';
+  
+  InitFieldBits();
+  *this = frame;
 }
 
 void ID3_Frame::InitFieldBits()
@@ -146,7 +159,7 @@ void ID3_Frame::InitFields(const ID3_FrameDef *info)
 
     __apFields[i]->__eName        = info->aeFieldDefs[i].eID;
     __apFields[i]->__eType        = info->aeFieldDefs[i].eType;
-    __apFields[i]->__lFixedLength = info->aeFieldDefs[i].lFixedLength;
+    __apFields[i]->__ulFixedLength = info->aeFieldDefs[i].ulFixedLength;
     __apFields[i]->__ucIOVersion  = info->aeFieldDefs[i].ucVersion;
     __apFields[i]->__ucIORevision = info->aeFieldDefs[i].ucRevision;
     __apFields[i]->__eControl     = info->aeFieldDefs[i].eControl;
@@ -341,6 +354,9 @@ ID3_Frame::operator=( const ID3_Frame &rFrame )
 }
 
 // $Log: frame.cpp,v $
+// Revision 1.3  2000/04/24 14:48:11  eldamitri
+// (ID3_Frame): Added copy constructor implementation
+//
 // Revision 1.2  2000/04/18 22:11:19  eldamitri
 // Moved frame.cpp from src/id3/ to src/
 //
