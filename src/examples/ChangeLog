@@ -1,3 +1,14 @@
+1999-11-25  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* demo_convert.cpp
+ 	(PrintUsage): Added for printing usage information.
+	(PrintVersion): Added for printing version information.
+	(DisplayTags): Added for printing out the contents of a tag flag.
+	(main): Modified to make use of command-line options via option.h.  
+	Can now choose which type of tag to convert to, can convert multiple
+	tags at once.  Can print out usage and version info.  Added stripping
+	capabilities with the -s flag.
+
 1999-11-19  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* Makefile.am: Added compilation options for demo_strip.cpp
