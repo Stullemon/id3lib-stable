@@ -1,4 +1,4 @@
-// $Id: reader.h,v 1.2 2000/09/27 08:02:22 eldamitri Exp $
+// $Id: reader.h,v 1.3 2000/09/30 22:09:16 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -64,7 +64,7 @@ class ID3_Reader
    **/
   virtual int_type readChar() 
   {
-    if (this->peekChar() == END_OF_READER) 
+    if (this->atEnd())
     { 
       return END_OF_READER; 
     }
@@ -111,6 +111,11 @@ class ID3_Reader
     }
 
     return 0;
+  }
+
+  virtual bool atEnd()
+  {
+    return this->getCur() >= this->getEnd();
   }
 };
 
