@@ -1,4 +1,4 @@
-// $Id: frame_impl.cpp,v 1.6 2000/10/21 15:44:59 eldamitri Exp $
+// $Id: frame_impl.cpp,v 1.7 2000/10/23 07:42:13 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -35,32 +35,6 @@
 #include "frame_def.h"
 #include "field_def.h"
 
-/** \class ID3_FrameImpl
- ** \brief The representative class of an id3v2 frame.
- ** 
- ** id3lib defines frames in a funny way.  Using some nice c++ conventions,
- ** ID3_FrameImpl class objects appear to be quite polymorphic; that is, they
- ** can take on many forms.  The same ID3_FrameImpl class provides the
- ** facilities for the implementation of a complex APIC frame and for a simple
- ** text frame.
- ** 
- ** @author Dirk Mahoney
- ** @version $Id: frame_impl.cpp,v 1.6 2000/10/21 15:44:59 eldamitri Exp $
- ** @see ID3_Tag
- ** @see ID3_Field
- ** @see ID3_Err
- **/
-
-/** Default constructor; accepts as a default parameter the type of frame
- ** to create.
- ** 
- ** The parameter which will internally set the frame's structure.  See
- ** SetID() for more details.
- **     
- ** @param id The type of frame to create
- ** @see ID3_FrameID
- ** @see SetID
- **/
 ID3_FrameImpl::ID3_FrameImpl(ID3_FrameID id)
   : _changed(false),
     _bitset(),
@@ -112,11 +86,6 @@ bool ID3_FrameImpl::_ClearFields()
   return true;
 }
 
-/** Clears the frame of all data and resets the frame such that it can take
- ** on the form of any id3v2 frame that id3lib supports.
- ** 
- ** @see ID3_Tag::Clear
- **/
 void ID3_FrameImpl::Clear()
 {
   this->_ClearFields();
@@ -149,23 +118,6 @@ void ID3_FrameImpl::_InitFields()
   }
 }
 
-/** Establishes the internal structure of an ID3_FrameImpl object so
- ** that it represents the id3v2 frame indicated by the parameter
- ** 
- ** Given an ID3_FrameID (a list of which is found in &lt;id3/field.h&gt;),
- ** SetID() will structure the object according to the
- ** frame you wish to implement.
- ** 
- ** Either using this call or via the constructor, this must be the first
- ** command performed on an ID3_FrameImpl object.  
- ** 
- ** \code
- **   myFrame.SetID(ID3FID_TITLE);
- ** \endcode
- ** 
- ** @param id The type of frame this frame should be set to
- ** @see ID3_FrameID
- **/
 bool ID3_FrameImpl::SetID(ID3_FrameID id)
 {
   bool changed = (this->GetID() != id);
@@ -185,15 +137,6 @@ bool ID3_FrameImpl::_SetID(ID3_FrameID id)
   return changed;
 }
 
-/** \fn ID3_FrameID GetID() const
- ** \brief Returns the type of frame that the object represents.
- ** 
- ** Useful in conjunction with ID3_Tag::Find() method
- ** 
- ** @returns The type, or id, of the frame
- ** @see ID3_Tag::Find
- **/
-
 bool ID3_FrameImpl::SetSpec(ID3_V2Spec spec)
 {
   return _hdr.SetSpec(spec);
@@ -204,17 +147,6 @@ ID3_V2Spec ID3_FrameImpl::GetSpec() const
   return _hdr.GetSpec();
 }
 
-/** Returns a pointer to the frame's internal field indicated by the
- ** parameter.
- **
- ** \code
- **   ID3_TextEnc enc;
- **   enc = (ID3_TextEnc) myFrame.GetField(ID3FN_TEXTENC)->Get();
- ** \endcode
- ** 
- ** @param name The name of the field to be retrieved
- ** @returns A reference to the desired field
- **/
 ID3_Field* ID3_FrameImpl::GetField(ID3_FieldID fieldName) const
 {
   ID3_Field* field = NULL;

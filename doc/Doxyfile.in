@@ -71,7 +71,7 @@ HIDE_UNDOC_MEMBERS     = NO
 # If set to NO (the default) these class will be included in the various 
 # overviews. This option has no effect if EXTRACT_ALL is enabled. 
 
-HIDE_UNDOC_CLASSES     = NO
+HIDE_UNDOC_CLASSES     = YES
 
 # If the BRIEF_MEMBER_DESC tag is set to YES (the default) Doxygen will 
 # include brief member descriptions after the members that are listed in 
@@ -97,14 +97,14 @@ ALWAYS_DETAILED_SEC    = NO
 # path before files name in the file list and in the header files. If set 
 # to NO the shortest path that makes the file name unique will be used. 
 
-FULL_PATH_NAMES        = NO
+FULL_PATH_NAMES        = YES
 
 # If the FULL_PATH_NAMES tag is set to YES then the STRIP_FROM_PATH tag 
 # can be used to strip a user defined part of the path. Stripping is 
 # only done if one of the specified strings matches the left-hand part of 
 # the path. It is allowed to use relative paths in the argument list.
 
-STRIP_FROM_PATH        = 
+STRIP_FROM_PATH        = ..
 
 # The INTERNAL_DOCS tag determines if documentation 
 # that is typed after a \internal command is included. If the tag is set 
@@ -122,7 +122,7 @@ CLASS_DIAGRAMS         = YES
 # If the SOURCE_BROWSER tag is set to YES then a list of source files will 
 # be generated. Documented entities will be cross-referenced with these sources. 
 
-SOURCE_BROWSER         = NO
+SOURCE_BROWSER         = YES
 
 # Setting the INLINE_SOURCES tag to YES will include the body 
 # of functions and classes directly in the documentation. 
@@ -191,7 +191,7 @@ SORT_MEMBER_DOCS       = YES
 # member in the group (if any) for the other members of the group. By default 
 # all members of a group must be documented explicitly.
 
-DISTRIBUTE_GROUP_DOC   = NO
+DISTRIBUTE_GROUP_DOC   = YES
 
 # The TAB_SIZE tag can be used to set the number of spaces in a tab. 
 # Doxygen uses this value to replace tabs by spaces in code fragments. 
@@ -243,7 +243,7 @@ WARNINGS               = YES
 # for undocumented members. If EXTRACT_ALL is set to YES then this flag will 
 # automatically be disabled. 
 
-WARN_IF_UNDOCUMENTED   = YES
+WARN_IF_UNDOCUMENTED   = NO
 
 # The WARN_FORMAT tag determines the format of the warning messages that 
 # doxygen can produce. The string should contain the $file, $line, and $text 
@@ -262,7 +262,19 @@ WARN_FORMAT            = "$file:$line: $text"
 # with spaces. 
 
 INPUT                  = ../src \
-                         ../include/id3
+                         ../include/id3/tag.h \
+                         ../include/id3/debug.h \
+                         ../include/id3/field.h \
+                         ../include/id3/frame.h \
+                         ../include/id3/globals.h \
+                         ../include/id3/misc_support.h \
+                         ../include/id3/reader.h \
+                         ../include/id3/readers.h \
+                         ../include/id3/sized_types.h \
+                         ../include/id3/tag.h \
+                         ../include/id3/writer.h \
+                         ../include/id3/writers.h
+
 
 # If the value of the INPUT tag contains directories, you can use the 
 # FILE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 
@@ -403,7 +415,7 @@ DISABLE_INDEX          = NO
 # If the GENERATE_LATEX tag is set to YES (the default) Doxygen will 
 # generate Latex output. 
 
-GENERATE_LATEX         = YES
+GENERATE_LATEX         = NO
 
 # The LATEX_OUTPUT tag is used to specify where the LaTeX docs will be put. 
 # If a relative path is entered the value of OUTPUT_DIRECTORY will be 

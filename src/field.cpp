@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.37 2000/10/21 07:22:24 eldamitri Exp $
+// $Id: field.cpp,v 1.38 2000/10/23 07:42:13 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -831,7 +831,7 @@ static  ID3_FrameDef ID3_FrameDefs[] =
   {ID3FID_NOFRAME}
 };
   
-/** \class ID3_Field
+/** \class ID3_Field field.h id3/field.h
  ** \brief The representative class of an ID3v2 field.
  ** 
  ** As a general rule, you need never create an object of this type.  id3lib
@@ -882,7 +882,7 @@ static  ID3_FrameDef ID3_FrameDefs[] =
  ** if you only plan to generate 3.0 tags.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: field.cpp,v 1.37 2000/10/21 07:22:24 eldamitri Exp $
+ ** @version $Id: field.cpp,v 1.38 2000/10/23 07:42:13 eldamitri Exp $
  ** \sa ID3_Tag
  ** \sa ID3_Frame
  ** \sa ID3_Err 

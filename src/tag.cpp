@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.32 2000/10/21 22:20:30 eldamitri Exp $
+// $Id: tag.cpp,v 1.33 2000/10/23 07:42:13 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -29,15 +29,15 @@
 #endif
 
 #include "tag.h"
-#include "tag_impl.h"
 #include "readers.h"
 #include "writers.h"
+#include "tag_impl.h"
 #include "strings.h"
 #include "utils.h"
 
 using namespace dami;
 
-/** \class ID3_Tag
+/** \class ID3_Tag tag.h id3/tag.h
  ** \brief The representative class of an id3 tag.
  ** 
  ** The ID3_Tag is, at its simplest, a container for ID3v2 frames.  At its
@@ -82,7 +82,7 @@ using namespace dami;
  ** formatted 'CDM' frames from the unreleased ID3v2 2.01 draft specification.
  **
  ** \author Dirk Mahoney
- ** \version $Id: tag.cpp,v 1.32 2000/10/21 22:20:30 eldamitri Exp $
+ ** \version $Id: tag.cpp,v 1.33 2000/10/23 07:42:13 eldamitri Exp $
  ** \sa ID3_Frame
  ** \sa ID3_Field
  ** \sa ID3_Err
@@ -412,7 +412,7 @@ size_t ID3_Tag::Parse(const uchar* buffer, size_t bytes)
  ** @param buffer The remainder of the tag (not including the data source) 
  **               read in from the data source.
  **/
-size_t ID3_Tag::Parse(const uchar header[ID3_TagHeader::SIZE],
+size_t ID3_Tag::Parse(const uchar header[ID3_TAGHEADERSIZE],
 		      const uchar *buffer)
 {
   size_t size = ID3_Tag::IsV2Tag(header);
@@ -643,6 +643,13 @@ ID3_Frame* ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, const unicode_t* data)
   return _impl->Find(id, fld, str);
 }
 
+/** Returns the number of frames present in the tag object.
+ ** 
+ ** This includes only those frames that id3lib recognises.  This is used as
+ ** the upper bound on calls to the GetFrame() and operator[]() methods.
+ ** 
+ ** \return The number of frames present in the tag object.
+ **/
 size_t ID3_Tag::NumFrames() const
 {
   return _impl->NumFrames();

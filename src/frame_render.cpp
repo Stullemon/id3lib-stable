@@ -1,4 +1,4 @@
-// $Id: frame_render.cpp,v 1.18 2000/10/14 19:24:38 eldamitri Exp $
+// $Id: frame_render.cpp,v 1.19 2000/10/23 07:42:13 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -43,39 +43,31 @@
 
 using namespace dami;
 
-namespace dami
+namespace 
 {
-  namespace id3
+  void renderFields(ID3_Writer& writer, const ID3_FrameImpl& frame)
   {
-    namespace v2
+    ID3_TextEnc enc = ID3TE_ASCII;
+    for (size_t i = 0; i < frame.NumFields(); ++i)
     {
-      void renderFields(ID3_Writer& writer, const ID3_FrameImpl& frame);
-    }
-  };
-};
-
-void id3::v2::renderFields(ID3_Writer& writer, const ID3_FrameImpl& frame)
-{
-  ID3_TextEnc enc = ID3TE_ASCII;
-  for (size_t i = 0; i < frame.NumFields(); ++i)
-  {
-    ID3_Field* fld = frame.GetFieldNum(i);
-    if (fld != NULL && fld->InScope(frame.GetSpec()))
-    {
-      if (fld->GetID() == ID3FN_TEXTENC)  
+      ID3_Field* fld = frame.GetFieldNum(i);
+      if (fld != NULL && fld->InScope(frame.GetSpec()))
       {
-        enc = static_cast<ID3_TextEnc>(fld->Get());  
-        ID3D_NOTICE( "id3::v2::renderFields(): found encoding = " << enc );
+        if (fld->GetID() == ID3FN_TEXTENC)  
+        {
+          enc = static_cast<ID3_TextEnc>(fld->Get());  
+          ID3D_NOTICE( "id3::v2::renderFields(): found encoding = " << enc );
+        }
+        else
+        {
+          fld->SetEncoding(enc);
+        }
+        fld->Render(writer);
       }
-      else
-      {
-        fld->SetEncoding(enc);
-      }
-      fld->Render(writer);
     }
   }
 }
-
+  
 void ID3_FrameImpl::Render(ID3_Writer& writer) const
 {
   // Return immediately if we have no fields, which (usually) means we're

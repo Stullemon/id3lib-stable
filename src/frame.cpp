@@ -1,4 +1,4 @@
-// $Id: frame.cpp,v 1.30 2000/10/15 06:39:26 eldamitri Exp $
+// $Id: frame.cpp,v 1.31 2000/10/23 07:42:13 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -29,9 +29,35 @@
 #endif
 
 #include "frame.h"
-#include "frame_impl.h"
 #include "readers.h"
+#include "frame_impl.h"
 
+/** \class ID3_Frame frame.h id3/frame.h
+ ** \brief The representative class of an id3v2 frame.
+ ** 
+ ** id3lib defines frames in a funny way.  Using some nice c++ conventions,
+ ** ID3_FrameImpl class objects appear to be quite polymorphic; that is, they
+ ** can take on many forms.  The same ID3_FrameImpl class provides the
+ ** facilities for the implementation of a complex APIC frame and for a simple
+ ** text frame.
+ ** 
+ ** @author Dirk Mahoney
+ ** @version $Id: frame.cpp,v 1.31 2000/10/23 07:42:13 eldamitri Exp $
+ ** @see ID3_Tag
+ ** @see ID3_Field
+ ** @see ID3_Err
+ **/
+
+/** Default constructor; accepts as a default parameter the type of frame
+ ** to create.
+ ** 
+ ** The parameter which will internally set the frame's structure.  See
+ ** SetID() for more details.
+ **     
+ ** @param id The type of frame to create
+ ** @see ID3_FrameID
+ ** @see SetID
+ **/
 ID3_Frame::ID3_Frame(ID3_FrameID id)
   : _impl(new ID3_FrameImpl(id))
 {
@@ -47,16 +73,45 @@ ID3_Frame::~ID3_Frame()
   delete _impl;
 }
 
+/** Clears the frame of all data and resets the frame such that it can take
+ ** on the form of any id3v2 frame that id3lib supports.
+ ** 
+ ** @see ID3_Tag::Clear
+ **/
 void ID3_Frame::Clear()
 {
   _impl->Clear();
 }
 
+/** Returns the type of frame that the object represents.
+ ** 
+ ** Useful in conjunction with ID3_Tag::Find() method
+ ** 
+ ** @returns The type, or id, of the frame
+ ** @see ID3_Tag::Find
+ **/
 ID3_FrameID ID3_Frame::GetID() const
 {
   return _impl->GetID();
 }
 
+/** Establishes the internal structure of an ID3_FrameImpl object so
+ ** that it represents the id3v2 frame indicated by the parameter
+ ** 
+ ** Given an ID3_FrameID (a list of which is found in &lt;id3/field.h&gt;),
+ ** SetID() will structure the object according to the
+ ** frame you wish to implement.
+ ** 
+ ** Either using this call or via the constructor, this must be the first
+ ** command performed on an ID3_FrameImpl object.  
+ ** 
+ ** \code
+ **   myFrame.SetID(ID3FID_TITLE);
+ ** \endcode
+ ** 
+ ** @param id The type of frame this frame should be set to
+ ** @see ID3_FrameID
+ **/
 bool ID3_Frame::SetID(ID3_FrameID id)
 {
   return _impl->SetID(id);
@@ -72,6 +127,17 @@ ID3_V2Spec ID3_Frame::GetSpec() const
   return _impl->GetSpec();
 }
 
+/** Returns a pointer to the frame's internal field indicated by the
+ ** parameter.
+ **
+ ** \code
+ **   ID3_TextEnc enc;
+ **   enc = (ID3_TextEnc) myFrame.GetField(ID3FN_TEXTENC)->Get();
+ ** \endcode
+ ** 
+ ** @param name The name of the field to be retrieved
+ ** @returns A reference to the desired field
+ **/
 ID3_Field& ID3_Frame::Field(ID3_FieldID fieldName) const
 {
   return *this->GetField(fieldName);
@@ -142,11 +208,24 @@ bool ID3_Frame::Contains(ID3_FieldID id) const
   return _impl->Contains(id);
 }
 
+/** Sets the compression flag within the frame.  When the compression flag is
+ ** is set, compression will be attempted.  However, the frame might not
+ ** actually be compressed after it is rendered if the "compressed" data is
+ ** no smaller than the "uncompressed" data.
+ **/
 bool ID3_Frame::SetCompression(bool b)
 {
   return _impl->SetCompression(b);
 }
 
+/** Returns whether or not the compression flag is set.  After parsing a tag,
+ ** this will indicate whether or not the frame was compressed.  After
+ ** rendering a tag, however, it does not actually indicate if the frame is
+ ** compressed rendering.  It only indicates whether or not compression was
+ ** attempted.  A frame will not be compressed, even whent the compression
+ ** flag is set, if the "compressed" data is no smaller than the
+ ** "uncompressed" data.
+ **/
 bool ID3_Frame::GetCompression() const
 {
   return _impl->GetCompression();

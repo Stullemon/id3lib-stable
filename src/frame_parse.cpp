@@ -1,4 +1,4 @@
-// $Id: frame_parse.cpp,v 1.26 2000/10/21 15:46:10 eldamitri Exp $
+// $Id: frame_parse.cpp,v 1.27 2000/10/23 07:42:13 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -34,77 +34,69 @@
 #include "utils.h"
 #include "io_decorators.h"
 
-namespace dami
-{
-  namespace id3
-  {
-    namespace v2
-    {
-      bool parseFields(ID3_Reader& rdr, ID3_FrameImpl& frame);
-    };
-  };
-};
-
 using namespace dami;
 
-bool id3::v2::parseFields(ID3_Reader& rdr, ID3_FrameImpl& frame)
+namespace
 {
-  io::ExitTrigger et(rdr);
-  ID3_TextEnc enc = ID3TE_ASCII;  // set the default encoding 
-  ID3_V2Spec spec = frame.GetSpec(); 
-  // parse the frame's fields  
-  ID3D_NOTICE( "ID3_FrameImpl::Parse(): num_fields = " << 
-               frame.NumFields() );
-  for (size_t i = 0; i < frame.NumFields(); ++i)
+  bool parseFields(ID3_Reader& rdr, ID3_FrameImpl& frame)
   {
-    if (rdr.atEnd())
-    { 
-      // there's no remaining data to parse! 
-      ID3D_WARNING( "ID3_FrameImpl::Parse(): out of data at postion " <<
-                    rdr.getCur() );
-      return false;
-    } 
-    
-    ID3D_NOTICE( "ID3_FrameImpl::Parse(): field #" << i );
-    ID3_Field* fp = frame.GetFieldNum(i);
-    if (NULL == fp)
+    io::ExitTrigger et(rdr);
+    ID3_TextEnc enc = ID3TE_ASCII;  // set the default encoding 
+    ID3_V2Spec spec = frame.GetSpec(); 
+    // parse the frame's fields  
+    ID3D_NOTICE( "ID3_FrameImpl::Parse(): num_fields = " << 
+                 frame.NumFields() );
+    for (size_t i = 0; i < frame.NumFields(); ++i)
     {
-      // Ack!  Why is the field NULL?  Log this...
-      ID3D_WARNING( "ID3_FrameImpl::Parse(): field is null" );
-      continue;
+      if (rdr.atEnd())
+      { 
+        // there's no remaining data to parse! 
+        ID3D_WARNING( "ID3_FrameImpl::Parse(): out of data at postion " <<
+                      rdr.getCur() );
+        return false;
+      } 
+      
+      ID3D_NOTICE( "ID3_FrameImpl::Parse(): field #" << i );
+      ID3_Field* fp = frame.GetFieldNum(i);
+      if (NULL == fp)
+      {
+        // Ack!  Why is the field NULL?  Log this...
+        ID3D_WARNING( "ID3_FrameImpl::Parse(): field is null" );
+        continue;
+      }
+      
+      if (!fp->InScope(spec)) 
+      {
+        ID3D_NOTICE( "ID3_FrameImpl::Parse(): field is not in scope" );
+        // continue with the rest of the fields
+        continue; 
+      }
+      
+      ID3D_NOTICE( "ID3_FrameImpl::Parse(): setting enc to " << enc );
+      fp->SetEncoding(enc);
+      ID3_Reader::pos_type beg = rdr.getCur();
+      et.setExitPos(beg);
+      ID3D_NOTICE( "ID3_FrameImpl::Parse(): parsing field, cur = " << beg );
+      ID3D_NOTICE( "ID3_FrameImpl::Parse(): parsing field, end = " << 
+                   rdr.getEnd() );
+      if (!fp->Parse(rdr) || rdr.getCur() == beg) 
+      { 
+        // nothing to parse!  ack!  parse error... 
+        ID3D_WARNING( "ID3_FrameImpl::Parse(): no data parsed, bad parse" );
+        return false;
+      }
+      
+      if (fp->GetID() == ID3FN_TEXTENC)  
+      {
+        enc = static_cast<ID3_TextEnc>(fp->Get());  
+        ID3D_NOTICE( "ID3_FrameImpl::Parse(): found encoding = " << enc );
+      }
     }
+    et.setExitPos(rdr.getCur());
     
-    if (!fp->InScope(spec)) 
-    {
-      ID3D_NOTICE( "ID3_FrameImpl::Parse(): field is not in scope" );
-      // continue with the rest of the fields
-      continue; 
-    }
-    
-    ID3D_NOTICE( "ID3_FrameImpl::Parse(): setting enc to " << enc );
-    fp->SetEncoding(enc);
-    ID3_Reader::pos_type beg = rdr.getCur();
-    et.setExitPos(beg);
-    ID3D_NOTICE( "ID3_FrameImpl::Parse(): parsing field, cur = " << beg );
-    ID3D_NOTICE( "ID3_FrameImpl::Parse(): parsing field, end = " << 
-                 rdr.getEnd() );
-    if (!fp->Parse(rdr) || rdr.getCur() == beg) 
-    { 
-      // nothing to parse!  ack!  parse error... 
-      ID3D_WARNING( "ID3_FrameImpl::Parse(): no data parsed, bad parse" );
-      return false;
-    }
-    
-    if (fp->GetID() == ID3FN_TEXTENC)  
-    {
-      enc = static_cast<ID3_TextEnc>(fp->Get());  
-      ID3D_NOTICE( "ID3_FrameImpl::Parse(): found encoding = " << enc );
-    }
+    return true;
   }
-  et.setExitPos(rdr.getCur());
-
-  return true;
-}
+};
 
 bool ID3_FrameImpl::Parse(ID3_Reader& reader) 
 { 
