@@ -1,5 +1,5 @@
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
-// $Id: uint28.h,v 1.7 2000/09/11 07:46:32 eldamitri Exp $
+// $Id: uint28.h,v 1.8 2000/10/09 01:57:02 eldamitri Exp $
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -27,6 +27,9 @@
 
 #include "globals.h"
 #include <iostream.h>
+
+class ID3_Reader;
+class ID3_Writer;
 
 /** Class representation of an unsigned 28-bit integer for use in an ID3v2 tag.
  **
@@ -69,11 +72,6 @@ public:
    **/
   explicit uint28(uint32 val = 0) { *this = val; }
 
-  /** Creates a uint28 object from a character string
-   ** \param data The character string to parse to create the uint28 object
-   **/
-  explicit uint28(const uchar* data) { *this = data; }
-
   /** Copy constructor
    ** \param rhs The uint28 object to copy
    **/
@@ -108,28 +106,6 @@ public:
     return *this; 
   }
   
-  /** Unsigned Character string assignment operator
-   ** \param data The character string from which to extract a 28-bit integer
-   **             (must be at least 4 characters long)
-   ** \return The newly-assigned uint28 object (*this)
-   **/
-  uint28&    operator=(const uchar* data)
-  {
-    this->Parse(data);
-    return *this;
-  }
-  
-  /** Character string assignment operator
-   ** \param data The character string from which to extract a 28-bit integer
-   **             (must be at least 4 characters long)
-   ** \return The newly-assigned uint28 object (*this)
-   **/
-  uint28&    operator=(const char* data)
-  {
-    this->Parse(data);
-    return *this;
-  }
-  
   /** Converts the unsigned 28-bit integer object to a built-in unsigned 32-bit
    ** integer.
    **/
@@ -143,16 +119,14 @@ public:
    **             characters in length) 
    ** \return The number of characters parsed (should always be 4)
    **/
-  size_t    Parse(const uchar* data);
-  size_t    Parse(const char* data);
+  bool      Parse(ID3_Reader&);
   
   /** Renders a 28-bit integer to a character string
    ** \param data The character string to render to (should be at least 4 
    **             characters in length)
    ** \return The number of characters render (should always be 4)
    **/
-  size_t    Render(uchar*) const;
-  size_t    Render(char*) const;
+  void    Render(ID3_Writer&) const;
 
 };
 
