@@ -1,4 +1,4 @@
-// $Id: header.h,v 1.8 2000/04/20 03:43:09 eldamitri Exp $
+// $Id: header.h,v 1.9 2000/04/26 04:18:26 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -27,54 +27,51 @@
 #ifndef __ID3LIB_HEADER_H__
 #define __ID3LIB_HEADER_H__
 
-#include "globals.h"
-
-#define ID3v2_VERSION  (3)
-#define ID3v2_REVISION (0)
+#include "spec.h"
 
 struct ID3_HeaderInfo
 {
-  uchar ucVersion;
-  uchar ucRevision;
-  uchar ucFrameIDBytes;
-  uchar ucFrameSizeBytes;
-  uchar ucFrameFlagsBytes;
-  bool  bHasExtHeader;
-  luint ulExtHeaderBytes;
-  bool  bSetExpBit;
+  ID3_V2Spec eSpec;
+  uchar      ucFrameIDBytes;
+  uchar      ucFrameSizeBytes;
+  uchar      ucFrameFlagsBytes;
+  bool       bHasExtHeader;
+  luint      ulExtHeaderBytes;
+  bool       bSetExpBit;
 };
 
-extern ID3_HeaderInfo ID3_VersionInfo[];
+// extern ID3_HeaderInfo ID3_SpecInfo[];
 
-class ID3_Header
+class ID3_Header : public ID3_Speccable
 {
 public:
   ID3_Header(void);
   
-  virtual void   SetVersion(uchar ver, uchar rev);
-  virtual uchar  GetVersion() const;
-  virtual uchar  GetRevision() const;
-  virtual void   SetDataSize(size_t newSize);
-  virtual size_t GetDataSize() const;
-  virtual void   SetFlags(uint16 newFlags);
-  virtual void   AddFlags(uint16 newFlags);
-  virtual void   RemoveFlags(uint16 newFlags);
-  virtual uint16 GetFlags() const;
-  virtual void   Clear();
-  virtual size_t Size(void) = 0;
-  virtual size_t Render(uchar *buffer) = 0;
+  virtual void       SetSpec(ID3_V2Spec = ID3V2_LATEST);
+  virtual ID3_V2Spec GetSpec() const;
+  virtual void       SetDataSize(size_t newSize);
+  virtual size_t     GetDataSize() const;
+  virtual void       SetFlags(uint16 newFlags);
+  virtual void       AddFlags(uint16 newFlags);
+  virtual void       RemoveFlags(uint16 newFlags);
+  virtual uint16     GetFlags() const;
+  virtual void       Clear();
+  virtual size_t     Size(void) = 0;
+  virtual size_t     Render(uchar *buffer) = 0;
 
   ID3_Header &operator=( const ID3_Header & );
 
 protected:
-  uchar  __ucVersion;        // which version?
-  uchar  __ucRevision;       // which revision?
-  size_t __ulDataSize;       // how big is the data?
-  uint16 __ulFlags;          // header flags
-  ID3_HeaderInfo *__pInfo;   // the info about this version of the headers
+  ID3_V2Spec      __spec;             // which version of the spec 
+  size_t          __ulDataSize;       // how big is the data?
+  uint16          __ulFlags;          // header flags
+  ID3_HeaderInfo* __pInfo;            // the info about this version of the headers
 }
 ;
 
-ID3_HeaderInfo *ID3_LookupHeaderInfo(uchar ver, uchar rev);
+ID3_HeaderInfo* ID3_LookupHeaderInfo(ID3_V2Spec);
+
+/* Deprecated */
+ID3_HeaderInfo* ID3_LookupHeaderInfo(uchar ver, uchar rev);
 
 #endif /* __ID3LIB_HEADER_H */
