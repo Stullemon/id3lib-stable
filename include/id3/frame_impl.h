@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: frame_impl.h,v 1.2 2000/10/09 01:53:54 eldamitri Exp $
+// $Id: frame_impl.h,v 1.3 2000/10/21 06:19:08 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,11 +28,17 @@
 #ifndef _ID3LIB_FRAME_IMPL_H_
 #define _ID3LIB_FRAME_IMPL_H_
 
+#include <vector>
+#include <bitset>
 #include "frame.h"
 #include "header_frame.h"
 
 class ID3_FrameImpl
 {
+  typedef std::bitset<ID3FN_LASTFIELDID> Bitset;
+  typedef std::vector<ID3_Field *> Fields;
+  typedef Fields::iterator iterator;
+  typedef Fields::const_iterator const_iterator;
 public:
   ID3_FrameImpl(ID3_FrameID id = ID3FID_NOFRAME);
   ID3_FrameImpl(const ID3_FrameHeader&);
@@ -62,7 +68,7 @@ public:
   void        Render(ID3_Writer&) const;
   size_t      Size();
   bool        Contains(ID3_FieldID fld) const
-  { return BS_ISSET(_field_bitset, fld) > 0; }
+  { return _bitset.test(fld); }
   bool        SetSpec(ID3_V2Spec);
   ID3_V2Spec  GetSpec() const;
 
@@ -111,9 +117,8 @@ protected:
 
 private:
   mutable bool        _changed;    // frame changed since last parse/render?
-  bitset      _field_bitset;       // which fields are present?
-  size_t      _num_fields;         // how many fields are in this frame?
-  ID3_Field **_fields;             // an array of field object pointers
+  Bitset      _bitset;             // which fields are present?
+  Fields      _fields;
   ID3_FrameHeader _hdr;            // 
   uchar       _encryption_id;      // encryption id
   uchar       _grouping_id;        // grouping id
