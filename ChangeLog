@@ -1,3 +1,23 @@
+2000-04-09  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* configure.in: 
+	Added check for mkstemp.
+
+	* config.h.win32.in: 
+	Updated for HAVE_MKSTEMP, which it doesn't define, but it's at least
+	comprehensive.
+
+	* Makefile.am
+	(config.h.win32): Fixed bug in creating config.h.win32.
+	(release): Added.  Creates id3lib-$(VERSION).tar.gz and 
+	id3lib-$(VERSION).zip.
+	(snapshot): Added.  Created id3lib-$(DATE).tar.gz and 
+	id3lib-$(DATE).zip
+
+	* src/id3/tag_render.cpp 
+	(RenderV2ToHandle): Changed conditional from '#if defined WIN32' to
+	'#if !defined HAVE_MKSTEMP'.
+
 2000-04-07  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* configure.in: 
