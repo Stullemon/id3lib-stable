@@ -230,23 +230,19 @@ SOURCE=..\src\writers.cpp
 # PROP Default_Filter "h;hpp"
 # Begin Source File
 
-SOURCE=..\include\id3\debug.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\include\id3\field.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\id3\field_def.h
+SOURCE=..\src\field_def.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\id3\field_impl.h
+SOURCE=..\src\field_impl.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\id3\flags.h
+SOURCE=..\src\flags.h
 # End Source File
 # Begin Source File
 
@@ -254,11 +250,11 @@ SOURCE=..\include\id3\frame.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\id3\frame_def.h
+SOURCE=..\src\frame_def.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\id3\frame_impl.h
+SOURCE=..\src\frame_impl.h
 # End Source File
 # Begin Source File
 
@@ -270,7 +266,7 @@ SOURCE=..\include\id3\id3lib_streams.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\id3\header.h
+SOURCE=..\src\header.h
 # End Source File
 # Begin Source File
 
@@ -278,11 +274,11 @@ SOURCE=..\src\mp3_header.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\id3\header_frame.h
+SOURCE=..\src\header_frame.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\id3\header_tag.h
+SOURCE=..\src\header_tag.h
 # End Source File
 # Begin Source File
 
@@ -322,7 +318,7 @@ SOURCE=..\include\id3\sized_types.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\id3\spec.h
+SOURCE=..\src\spec.h
 # End Source File
 # Begin Source File
 
@@ -334,7 +330,7 @@ SOURCE=..\include\id3\tag.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\id3\tag_impl.h
+SOURCE=..\src\tag_impl.h
 # End Source File
 # Begin Source File
 
