@@ -30,6 +30,10 @@
 #undef ID3_ENABLE_DEBUG
 #undef ID3_DISABLE_ASSERT
 #undef ID3_DISABLE_CHECKS
+#undef ID3_ICONV_FORMAT_UTF16BE
+#undef ID3_ICONV_FORMAT_UTF16
+#undef ID3_ICONV_FORMAT_UTF8
+#undef ID3_ICONV_FORMAT_ASCII
 
 /* config.h defines these preprocesser symbols to be used by id3lib for
  * determining internal versioning information.  The intent is that these
@@ -78,6 +82,9 @@
 
 /* Define if you have the <fstream.h> header file.  */
 #undef HAVE_FSTREAM_H
+
+/* Define if you have the <iconv.h> header file.  */
+#undef HAVE_ICONV_H
 
 /* Define if you have the <iomanip> header file.  */
 #undef HAVE_IOMANIP

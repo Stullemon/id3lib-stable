@@ -26,6 +26,10 @@
 #undef ID3_ENABLE_DEBUG
 #undef ID3_DISABLE_ASSERT
 #undef ID3_DISABLE_CHECKS
+#undef ID3_ICONV_FORMAT_UTF16BE
+#undef ID3_ICONV_FORMAT_UTF16
+#undef ID3_ICONV_FORMAT_UTF8
+#undef ID3_ICONV_FORMAT_ASCII
 
 /* config.h defines these preprocesser symbols to be used by id3lib for
  * determining internal versioning information.  The intent is that these

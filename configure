@@ -2475,7 +2475,7 @@ EOF
 
 fi
 
-for ac_hdr in zlib.h wchar.h sys/param.h
+for ac_hdr in zlib.h wchar.h sys/param.h unistd.h iconv.h
 do
 ac_safe=`echo "$ac_hdr" | sed 'y%./+-%__p_%'`
 echo $ac_n "checking for $ac_hdr""... $ac_c" 1>&6
@@ -2515,49 +2515,6 @@ else
 fi
 done
 
-for ac_hdr in unistd.h \
-  
-do
-ac_safe=`echo "$ac_hdr" | sed 'y%./+-%__p_%'`
-echo $ac_n "checking for $ac_hdr""... $ac_c" 1>&6
-echo "configure:2524: checking for $ac_hdr" >&5
-if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
-  echo $ac_n "(cached) $ac_c" 1>&6
-else
-  cat > conftest.$ac_ext <<EOF
-#line 2529 "configure"
-#include "confdefs.h"
-#include <$ac_hdr>
-EOF
-ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:2534: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
-ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
-if test -z "$ac_err"; then
-  rm -rf conftest*
-  eval "ac_cv_header_$ac_safe=yes"
-else
-  echo "$ac_err" >&5
-  echo "configure: failed program was:" >&5
-  cat conftest.$ac_ext >&5
-  rm -rf conftest*
-  eval "ac_cv_header_$ac_safe=no"
-fi
-rm -f conftest*
-fi
-if eval "test \"`echo '$ac_cv_header_'$ac_safe`\" = yes"; then
-  echo "$ac_t""yes" 1>&6
-    ac_tr_hdr=HAVE_`echo $ac_hdr | sed 'y%abcdefghijklmnopqrstuvwxyz./-%ABCDEFGHIJKLMNOPQRSTUVWXYZ___%'`
-  cat >> confdefs.h <<EOF
-#define $ac_tr_hdr 1
-EOF
- 
-else
-  echo "$ac_t""no" 1>&6
-{ echo "configure: error: Missing a vital header file for id3lib" 1>&2; exit 1; }
-
-fi
-done
-
 
 
 ac_ext=C
@@ -2571,17 +2528,17 @@ for ac_hdr in libcw/sys.h
 do
 ac_safe=`echo "$ac_hdr" | sed 'y%./+-%__p_%'`
 echo $ac_n "checking for $ac_hdr""... $ac_c" 1>&6
-echo "configure:2575: checking for $ac_hdr" >&5
+echo "configure:2532: checking for $ac_hdr" >&5
 if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2580 "configure"
+#line 2537 "configure"
 #include "confdefs.h"
 #include <$ac_hdr>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:2585: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:2542: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -2611,17 +2568,17 @@ for ac_hdr in cctype climits cstdio cstdlib cstring
 do
 ac_safe=`echo "$ac_hdr" | sed 'y%./+-%__p_%'`
 echo $ac_n "checking for $ac_hdr""... $ac_c" 1>&6
-echo "configure:2615: checking for $ac_hdr" >&5
+echo "configure:2572: checking for $ac_hdr" >&5
 if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2620 "configure"
+#line 2577 "configure"
 #include "confdefs.h"
 #include <$ac_hdr>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:2625: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:2582: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -2651,17 +2608,17 @@ for ac_hdr in fstream iostream iomanip
 do
 ac_safe=`echo "$ac_hdr" | sed 'y%./+-%__p_%'`
 echo $ac_n "checking for $ac_hdr""... $ac_c" 1>&6
-echo "configure:2655: checking for $ac_hdr" >&5
+echo "configure:2612: checking for $ac_hdr" >&5
 if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2660 "configure"
+#line 2617 "configure"
 #include "confdefs.h"
 #include <$ac_hdr>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:2665: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:2622: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -2696,17 +2653,17 @@ for ac_hdr in \
 do
 ac_safe=`echo "$ac_hdr" | sed 'y%./+-%__p_%'`
 echo $ac_n "checking for $ac_hdr""... $ac_c" 1>&6
-echo "configure:2700: checking for $ac_hdr" >&5
+echo "configure:2657: checking for $ac_hdr" >&5
 if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2705 "configure"
+#line 2662 "configure"
 #include "confdefs.h"
 #include <$ac_hdr>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:2710: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:2667: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -2750,20 +2707,20 @@ cross_compiling=$ac_cv_prog_cxx_cross
 
 
     echo $ac_n "checking whether C++ has bool""... $ac_c" 1>&6
-echo "configure:2754: checking whether C++ has bool" >&5
+echo "configure:2711: checking whether C++ has bool" >&5
   if test "$cross_compiling" = yes; then
    echo "configure: warning: Don't cross-compile" 1>&2
             
 else
   cat > conftest.$ac_ext <<EOF
-#line 2760 "configure"
+#line 2717 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" void exit(int);
 #endif
 main() { bool b1=true; bool b2=false; }
 EOF
-if { (eval echo configure:2767: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
+if { (eval echo configure:2724: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
 then
    echo "$ac_t""yes" 1>&6 
 else
@@ -2781,9 +2738,9 @@ fi
 
 
     echo $ac_n "checking whether C++ has correct scoping in for-loops""... $ac_c" 1>&6
-echo "configure:2785: checking whether C++ has correct scoping in for-loops" >&5
+echo "configure:2742: checking whether C++ has correct scoping in for-loops" >&5
   cat > conftest.$ac_ext <<EOF
-#line 2787 "configure"
+#line 2744 "configure"
 #include "confdefs.h"
 #include <iostream.h>
 int main() {
@@ -2793,7 +2750,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:2797: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:2754: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
    echo "$ac_t""yes" 1>&6 
 else
@@ -2828,7 +2785,7 @@ fi
 
 
   echo $ac_n "checking what warning flags to pass to the C++ compiler""... $ac_c" 1>&6
-echo "configure:2832: checking what warning flags to pass to the C++ compiler" >&5
+echo "configure:2789: checking what warning flags to pass to the C++ compiler" >&5
   warnCXXFLAGS=
   if test "x$GCC" != xyes; then
     enable_compile_warnings=no
@@ -2859,7 +2816,7 @@ fi
 
 
    echo $ac_n "checking what language compliance flags to pass to the C++ compiler""... $ac_c" 1>&6
-echo "configure:2863: checking what language compliance flags to pass to the C++ compiler" >&5
+echo "configure:2820: checking what language compliance flags to pass to the C++ compiler" >&5
    complCXXFLAGS=
    if test "x$enable_iso_cxx" != "xno"; then
      if test "x$GCC" = "xyes"; then
@@ -2920,17 +2877,509 @@ EOF
   fi
 
 
+  if test "x$ac_cv_header_iconv_h" = "xyes"; then
+    ID3_ICONV_FORMAT_UTF8=no
+    ID3_ICONV_FORMAT_UTF16=no
+    ID3_ICONV_FORMAT_UTF16BE=no
+    ID3_ICONV_FORMAT_ASCII=no
+
+    
+  if eval "test \"x\$ID3_ICONV_FORMAT_UTF8\" = \"xno\""; then
+    echo $ac_n "checking whether iconv supports UTF-8""... $ac_c" 1>&6
+echo "configure:2890: checking whether iconv supports UTF-8" >&5
+    if test "$cross_compiling" = yes; then
+   echo "configure: warning: Don't cross-compile" 1>&2 
+else
+  cat > conftest.$ac_ext <<EOF
+#line 2895 "configure"
+#include "confdefs.h"
+#include <iconv.h>
+        int main() { return iconv_open("UTF-8", "UTF-8") == -1; } 
+EOF
+if { (eval echo configure:2900: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
+then
+   eval ID3_ICONV_FORMAT_UTF8=yes
+        echo "$ac_t""yes" 1>&6
+        cat >> confdefs.h <<EOF
+#define ID3_ICONV_FORMAT_UTF8 "UTF-8"
+EOF
+ 
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -fr conftest*
+   echo "$ac_t""no" 1>&6 
+fi
+rm -fr conftest*
+fi
+
+  fi
+
+    
+  if eval "test \"x\$ID3_ICONV_FORMAT_UTF8\" = \"xno\""; then
+    echo $ac_n "checking whether iconv supports UTF8""... $ac_c" 1>&6
+echo "configure:2922: checking whether iconv supports UTF8" >&5
+    if test "$cross_compiling" = yes; then
+   echo "configure: warning: Don't cross-compile" 1>&2 
+else
+  cat > conftest.$ac_ext <<EOF
+#line 2927 "configure"
+#include "confdefs.h"
+#include <iconv.h>
+        int main() { return iconv_open("UTF8", "UTF8") == -1; } 
+EOF
+if { (eval echo configure:2932: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
+then
+   eval ID3_ICONV_FORMAT_UTF8=yes
+        echo "$ac_t""yes" 1>&6
+        cat >> confdefs.h <<EOF
+#define ID3_ICONV_FORMAT_UTF8 "UTF8"
+EOF
+ 
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -fr conftest*
+   echo "$ac_t""no" 1>&6 
+fi
+rm -fr conftest*
+fi
+
+  fi
+
+    
+  if eval "test \"x\$ID3_ICONV_FORMAT_UTF8\" = \"xno\""; then
+    cat >> confdefs.h <<EOF
+#define ID3_ICONV_FORMAT_UTF8 ""
+EOF
+
+  fi
+
+
+    
+  if eval "test \"x\$ID3_ICONV_FORMAT_UTF16BE\" = \"xno\""; then
+    echo $ac_n "checking whether iconv supports UTF-16BE""... $ac_c" 1>&6
+echo "configure:2963: checking whether iconv supports UTF-16BE" >&5
+    if test "$cross_compiling" = yes; then
+   echo "configure: warning: Don't cross-compile" 1>&2 
+else
+  cat > conftest.$ac_ext <<EOF
+#line 2968 "configure"
+#include "confdefs.h"
+#include <iconv.h>
+        int main() { return iconv_open("UTF-16BE", "UTF-16BE") == -1; } 
+EOF
+if { (eval echo configure:2973: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
+then
+   eval ID3_ICONV_FORMAT_UTF16BE=yes
+        echo "$ac_t""yes" 1>&6
+        cat >> confdefs.h <<EOF
+#define ID3_ICONV_FORMAT_UTF16BE "UTF-16BE"
+EOF
+ 
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -fr conftest*
+   echo "$ac_t""no" 1>&6 
+fi
+rm -fr conftest*
+fi
+
+  fi
+
+    
+  if eval "test \"x\$ID3_ICONV_FORMAT_UTF16BE\" = \"xno\""; then
+    echo $ac_n "checking whether iconv supports UTF16BE""... $ac_c" 1>&6
+echo "configure:2995: checking whether iconv supports UTF16BE" >&5
+    if test "$cross_compiling" = yes; then
+   echo "configure: warning: Don't cross-compile" 1>&2 
+else
+  cat > conftest.$ac_ext <<EOF
+#line 3000 "configure"
+#include "confdefs.h"
+#include <iconv.h>
+        int main() { return iconv_open("UTF16BE", "UTF16BE") == -1; } 
+EOF
+if { (eval echo configure:3005: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
+then
+   eval ID3_ICONV_FORMAT_UTF16BE=yes
+        echo "$ac_t""yes" 1>&6
+        cat >> confdefs.h <<EOF
+#define ID3_ICONV_FORMAT_UTF16BE "UTF16BE"
+EOF
+ 
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -fr conftest*
+   echo "$ac_t""no" 1>&6 
+fi
+rm -fr conftest*
+fi
+
+  fi
+
+    
+  if eval "test \"x\$ID3_ICONV_FORMAT_UTF16BE\" = \"xno\""; then
+    echo $ac_n "checking whether iconv supports UCS-2BE""... $ac_c" 1>&6
+echo "configure:3027: checking whether iconv supports UCS-2BE" >&5
+    if test "$cross_compiling" = yes; then
+   echo "configure: warning: Don't cross-compile" 1>&2 
+else
+  cat > conftest.$ac_ext <<EOF
+#line 3032 "configure"
+#include "confdefs.h"
+#include <iconv.h>
+        int main() { return iconv_open("UCS-2BE", "UCS-2BE") == -1; } 
+EOF
+if { (eval echo configure:3037: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
+then
+   eval ID3_ICONV_FORMAT_UTF16BE=yes
+        echo "$ac_t""yes" 1>&6
+        cat >> confdefs.h <<EOF
+#define ID3_ICONV_FORMAT_UTF16BE "UCS-2BE"
+EOF
+ 
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -fr conftest*
+   echo "$ac_t""no" 1>&6 
+fi
+rm -fr conftest*
+fi
+
+  fi
+
+    
+  if eval "test \"x\$ID3_ICONV_FORMAT_UTF16BE\" = \"xno\""; then
+    echo $ac_n "checking whether iconv supports UCS2BE""... $ac_c" 1>&6
+echo "configure:3059: checking whether iconv supports UCS2BE" >&5
+    if test "$cross_compiling" = yes; then
+   echo "configure: warning: Don't cross-compile" 1>&2 
+else
+  cat > conftest.$ac_ext <<EOF
+#line 3064 "configure"
+#include "confdefs.h"
+#include <iconv.h>
+        int main() { return iconv_open("UCS2BE", "UCS2BE") == -1; } 
+EOF
+if { (eval echo configure:3069: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
+then
+   eval ID3_ICONV_FORMAT_UTF16BE=yes
+        echo "$ac_t""yes" 1>&6
+        cat >> confdefs.h <<EOF
+#define ID3_ICONV_FORMAT_UTF16BE "UCS2BE"
+EOF
+ 
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -fr conftest*
+   echo "$ac_t""no" 1>&6 
+fi
+rm -fr conftest*
+fi
+
+  fi
+
+    
+  if eval "test \"x\$ID3_ICONV_FORMAT_UTF16BE\" = \"xno\""; then
+    echo $ac_n "checking whether iconv supports UNICODEBIG""... $ac_c" 1>&6
+echo "configure:3091: checking whether iconv supports UNICODEBIG" >&5
+    if test "$cross_compiling" = yes; then
+   echo "configure: warning: Don't cross-compile" 1>&2 
+else
+  cat > conftest.$ac_ext <<EOF
+#line 3096 "configure"
+#include "confdefs.h"
+#include <iconv.h>
+        int main() { return iconv_open("UNICODEBIG", "UNICODEBIG") == -1; } 
+EOF
+if { (eval echo configure:3101: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
+then
+   eval ID3_ICONV_FORMAT_UTF16BE=yes
+        echo "$ac_t""yes" 1>&6
+        cat >> confdefs.h <<EOF
+#define ID3_ICONV_FORMAT_UTF16BE "UNICODEBIG"
+EOF
+ 
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -fr conftest*
+   echo "$ac_t""no" 1>&6 
+fi
+rm -fr conftest*
+fi
+
+  fi
+
+    
+  if eval "test \"x\$ID3_ICONV_FORMAT_UTF16BE\" = \"xno\""; then
+    cat >> confdefs.h <<EOF
+#define ID3_ICONV_FORMAT_UTF16BE ""
+EOF
+
+  fi
+
+
+    
+  if eval "test \"x\$ID3_ICONV_FORMAT_UTF16\" = \"xno\""; then
+    echo $ac_n "checking whether iconv supports UTF-16""... $ac_c" 1>&6
+echo "configure:3132: checking whether iconv supports UTF-16" >&5
+    if test "$cross_compiling" = yes; then
+   echo "configure: warning: Don't cross-compile" 1>&2 
+else
+  cat > conftest.$ac_ext <<EOF
+#line 3137 "configure"
+#include "confdefs.h"
+#include <iconv.h>
+        int main() { return iconv_open("UTF-16", "UTF-16") == -1; } 
+EOF
+if { (eval echo configure:3142: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
+then
+   eval ID3_ICONV_FORMAT_UTF16=yes
+        echo "$ac_t""yes" 1>&6
+        cat >> confdefs.h <<EOF
+#define ID3_ICONV_FORMAT_UTF16 "UTF-16"
+EOF
+ 
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -fr conftest*
+   echo "$ac_t""no" 1>&6 
+fi
+rm -fr conftest*
+fi
+
+  fi
+
+    
+  if eval "test \"x\$ID3_ICONV_FORMAT_UTF16\" = \"xno\""; then
+    echo $ac_n "checking whether iconv supports UTF16""... $ac_c" 1>&6
+echo "configure:3164: checking whether iconv supports UTF16" >&5
+    if test "$cross_compiling" = yes; then
+   echo "configure: warning: Don't cross-compile" 1>&2 
+else
+  cat > conftest.$ac_ext <<EOF
+#line 3169 "configure"
+#include "confdefs.h"
+#include <iconv.h>
+        int main() { return iconv_open("UTF16", "UTF16") == -1; } 
+EOF
+if { (eval echo configure:3174: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
+then
+   eval ID3_ICONV_FORMAT_UTF16=yes
+        echo "$ac_t""yes" 1>&6
+        cat >> confdefs.h <<EOF
+#define ID3_ICONV_FORMAT_UTF16 "UTF16"
+EOF
+ 
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -fr conftest*
+   echo "$ac_t""no" 1>&6 
+fi
+rm -fr conftest*
+fi
+
+  fi
+
+    
+  if eval "test \"x\$ID3_ICONV_FORMAT_UTF16\" = \"xno\""; then
+    echo $ac_n "checking whether iconv supports UNICODE""... $ac_c" 1>&6
+echo "configure:3196: checking whether iconv supports UNICODE" >&5
+    if test "$cross_compiling" = yes; then
+   echo "configure: warning: Don't cross-compile" 1>&2 
+else
+  cat > conftest.$ac_ext <<EOF
+#line 3201 "configure"
+#include "confdefs.h"
+#include <iconv.h>
+        int main() { return iconv_open("UNICODE", "UNICODE") == -1; } 
+EOF
+if { (eval echo configure:3206: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
+then
+   eval ID3_ICONV_FORMAT_UTF16=yes
+        echo "$ac_t""yes" 1>&6
+        cat >> confdefs.h <<EOF
+#define ID3_ICONV_FORMAT_UTF16 "UNICODE"
+EOF
+ 
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -fr conftest*
+   echo "$ac_t""no" 1>&6 
+fi
+rm -fr conftest*
+fi
+
+  fi
+
+    
+  if eval "test \"x\$ID3_ICONV_FORMAT_UTF16\" = \"xno\""; then
+    cat >> confdefs.h <<EOF
+#define ID3_ICONV_FORMAT_UTF16 ""
+EOF
+
+  fi
+
+
+    
+  if eval "test \"x\$ID3_ICONV_FORMAT_ASCII\" = \"xno\""; then
+    echo $ac_n "checking whether iconv supports ISO-8859-1""... $ac_c" 1>&6
+echo "configure:3237: checking whether iconv supports ISO-8859-1" >&5
+    if test "$cross_compiling" = yes; then
+   echo "configure: warning: Don't cross-compile" 1>&2 
+else
+  cat > conftest.$ac_ext <<EOF
+#line 3242 "configure"
+#include "confdefs.h"
+#include <iconv.h>
+        int main() { return iconv_open("ISO-8859-1", "ISO-8859-1") == -1; } 
+EOF
+if { (eval echo configure:3247: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
+then
+   eval ID3_ICONV_FORMAT_ASCII=yes
+        echo "$ac_t""yes" 1>&6
+        cat >> confdefs.h <<EOF
+#define ID3_ICONV_FORMAT_ASCII "ISO-8859-1"
+EOF
+ 
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -fr conftest*
+   echo "$ac_t""no" 1>&6 
+fi
+rm -fr conftest*
+fi
+
+  fi
+
+    
+  if eval "test \"x\$ID3_ICONV_FORMAT_ASCII\" = \"xno\""; then
+    echo $ac_n "checking whether iconv supports ASCII""... $ac_c" 1>&6
+echo "configure:3269: checking whether iconv supports ASCII" >&5
+    if test "$cross_compiling" = yes; then
+   echo "configure: warning: Don't cross-compile" 1>&2 
+else
+  cat > conftest.$ac_ext <<EOF
+#line 3274 "configure"
+#include "confdefs.h"
+#include <iconv.h>
+        int main() { return iconv_open("ASCII", "ASCII") == -1; } 
+EOF
+if { (eval echo configure:3279: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
+then
+   eval ID3_ICONV_FORMAT_ASCII=yes
+        echo "$ac_t""yes" 1>&6
+        cat >> confdefs.h <<EOF
+#define ID3_ICONV_FORMAT_ASCII "ASCII"
+EOF
+ 
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -fr conftest*
+   echo "$ac_t""no" 1>&6 
+fi
+rm -fr conftest*
+fi
+
+  fi
+
+    
+  if eval "test \"x\$ID3_ICONV_FORMAT_ASCII\" = \"xno\""; then
+    echo $ac_n "checking whether iconv supports US-ASCII""... $ac_c" 1>&6
+echo "configure:3301: checking whether iconv supports US-ASCII" >&5
+    if test "$cross_compiling" = yes; then
+   echo "configure: warning: Don't cross-compile" 1>&2 
+else
+  cat > conftest.$ac_ext <<EOF
+#line 3306 "configure"
+#include "confdefs.h"
+#include <iconv.h>
+        int main() { return iconv_open("US-ASCII", "US-ASCII") == -1; } 
+EOF
+if { (eval echo configure:3311: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
+then
+   eval ID3_ICONV_FORMAT_ASCII=yes
+        echo "$ac_t""yes" 1>&6
+        cat >> confdefs.h <<EOF
+#define ID3_ICONV_FORMAT_ASCII "US-ASCII"
+EOF
+ 
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -fr conftest*
+   echo "$ac_t""no" 1>&6 
+fi
+rm -fr conftest*
+fi
+
+  fi
+
+    
+  if eval "test \"x\$ID3_ICONV_FORMAT_ASCII\" = \"xno\""; then
+    echo $ac_n "checking whether iconv supports US""... $ac_c" 1>&6
+echo "configure:3333: checking whether iconv supports US" >&5
+    if test "$cross_compiling" = yes; then
+   echo "configure: warning: Don't cross-compile" 1>&2 
+else
+  cat > conftest.$ac_ext <<EOF
+#line 3338 "configure"
+#include "confdefs.h"
+#include <iconv.h>
+        int main() { return iconv_open("US", "US") == -1; } 
+EOF
+if { (eval echo configure:3343: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext} && (./conftest; exit) 2>/dev/null
+then
+   eval ID3_ICONV_FORMAT_ASCII=yes
+        echo "$ac_t""yes" 1>&6
+        cat >> confdefs.h <<EOF
+#define ID3_ICONV_FORMAT_ASCII "US"
+EOF
+ 
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -fr conftest*
+   echo "$ac_t""no" 1>&6 
+fi
+rm -fr conftest*
+fi
+
+  fi
+
+    
+  if eval "test \"x\$ID3_ICONV_FORMAT_ASCII\" = \"xno\""; then
+    cat >> confdefs.h <<EOF
+#define ID3_ICONV_FORMAT_ASCII ""
+EOF
+
+  fi
+
+  fi
+
+
 
 # AC_FUNC_MEMCMP
 for ac_func in getopt_long
 do
 echo $ac_n "checking for $ac_func""... $ac_c" 1>&6
-echo "configure:2929: checking for $ac_func" >&5
+echo "configure:3378: checking for $ac_func" >&5
 if eval "test \"`echo '$''{'ac_cv_func_$ac_func'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2934 "configure"
+#line 3383 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char $ac_func(); below.  */
@@ -2953,7 +3402,7 @@ $ac_func();
 
 ; return 0; }
 EOF
-if { (eval echo configure:2957: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:3406: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_func_$ac_func=yes"
 else
@@ -2990,12 +3439,12 @@ fi
 for ac_func in mkstemp
 do
 echo $ac_n "checking for $ac_func""... $ac_c" 1>&6
-echo "configure:2994: checking for $ac_func" >&5
+echo "configure:3443: checking for $ac_func" >&5
 if eval "test \"`echo '$''{'ac_cv_func_$ac_func'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 2999 "configure"
+#line 3448 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char $ac_func(); below.  */
@@ -3018,7 +3467,7 @@ $ac_func();
 
 ; return 0; }
 EOF
-if { (eval echo configure:3022: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:3471: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_func_$ac_func=yes"
 else
@@ -3046,12 +3495,12 @@ for ac_func in truncate                      \
   
 do
 echo $ac_n "checking for $ac_func""... $ac_c" 1>&6
-echo "configure:3050: checking for $ac_func" >&5
+echo "configure:3499: checking for $ac_func" >&5
 if eval "test \"`echo '$''{'ac_cv_func_$ac_func'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 3055 "configure"
+#line 3504 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char $ac_func(); below.  */
@@ -3074,7 +3523,7 @@ $ac_func();
 
 ; return 0; }
 EOF
-if { (eval echo configure:3078: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:3527: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_func_$ac_func=yes"
 else
@@ -3102,12 +3551,12 @@ done
 
 
 echo $ac_n "checking for size_t""... $ac_c" 1>&6
-echo "configure:3106: checking for size_t" >&5
+echo "configure:3555: checking for size_t" >&5
 if eval "test \"`echo '$''{'ac_cv_type_size_t'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 3111 "configure"
+#line 3560 "configure"
 #include "confdefs.h"
 #include <sys/types.h>
 #if STDC_HEADERS
