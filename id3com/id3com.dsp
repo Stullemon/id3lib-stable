@@ -269,11 +269,6 @@ SOURCE=..\src\header_tag.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\int28.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\misc_support.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
@@ -320,6 +315,16 @@ SOURCE=..\src\tag_render.cpp
 # Begin Source File
 
 SOURCE=..\src\tag_sync.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\uint28.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\utils.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # End Group

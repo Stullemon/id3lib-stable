@@ -150,10 +150,6 @@ SOURCE=..\src\header_tag.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\int28.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\misc_support.cpp
 # End Source File
 # Begin Source File
@@ -192,6 +188,14 @@ SOURCE=..\src\tag_render.cpp
 
 SOURCE=..\src\tag_sync.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\src\uint28.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\utils.cpp
+# End Source File
 # End Group
 # Begin Group "include"
 
@@ -199,6 +203,10 @@ SOURCE=..\src\tag_sync.cpp
 # Begin Source File
 
 SOURCE=..\include\id3\field.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\id3\flags.h
 # End Source File
 # Begin Source File
 
@@ -226,10 +234,6 @@ SOURCE=..\include\id3.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\id3\int28.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\include\id3\misc_support.h
 # End Source File
 # Begin Source File
@@ -243,6 +247,14 @@ SOURCE=..\include\id3\spec.h
 # Begin Source File
 
 SOURCE=..\include\id3\tag.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\id3\uint28.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\id3\utils.h
 # End Source File
 # Begin Source File
 
