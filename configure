@@ -260,7 +260,7 @@ $as_unset CDPATH || test "${CDPATH+set}" != set || { CDPATH=$PATH_SEPARATOR; exp
 ID3LIB_MAJOR_VERSION=3
 ID3LIB_MINOR_VERSION=8
 ID3LIB_PATCH_VERSION=0
-ID3LIB_ADDED_VERSION=pre2.1
+ID3LIB_ADDED_VERSION=pre3.0
 ID3LIB_VERSION=$ID3LIB_MAJOR_VERSION.$ID3LIB_MINOR_VERSION.$ID3LIB_PATCH_VERSION$ID3LIB_ADDED_VERSION
 
 ID3LIB_INTERFACE_AGE=0
@@ -9565,7 +9565,9 @@ done
 
 
 
-for ac_header in fstream iostream iomanip \
+
+
+for ac_header in fstream iostream iomanip bitset vector \
 
 do
 as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
@@ -9676,8 +9678,8 @@ if test `eval echo '${'$as_ac_Header'}'` = yes; then
 _ACEOF
 
 else
-  { { echo "$as_me:$LINENO: error: Missing a vital header file for id3lib" >&5
-echo "$as_me: error: Missing a vital header file for id3lib" >&2;}
+  { { echo "$as_me:$LINENO: error: Missing a vital header file for id3lib - download them here: http://gcc.gnu.org/libstdc++/" >&5
+echo "$as_me: error: Missing a vital header file for id3lib - download them here: http://gcc.gnu.org/libstdc++/" >&2;}
    { (exit 1); exit 1; }; }
 
 fi
