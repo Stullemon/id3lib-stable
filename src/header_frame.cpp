@@ -1,4 +1,4 @@
-// $Id: header_frame.cpp,v 1.12 2000/09/21 23:17:19 eldamitri Exp $
+// $Id: header_frame.cpp,v 1.13 2000/09/27 08:31:20 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -32,6 +32,7 @@
 #include "frame_def.h"
 #include "field_def.h"
 #include "field_impl.h"
+#include "reader_decorators.h"
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
@@ -114,13 +115,41 @@ size_t ID3_FrameHeader::Parse(const uchar *buffer, size_t size)
     this->SetFrameID(fid);
   }
 
-  this->SetDataSize(ParseNumber(&buffer[index], _info->frame_bytes_size));
+  this->SetDataSize(id3::parseNumber(&buffer[index], _info->frame_bytes_size));
   index += _info->frame_bytes_size;
 
-  _flags.add(ParseNumber(&buffer[index], _info->frame_bytes_flags));
+  _flags.add(id3::parseNumber(&buffer[index], _info->frame_bytes_flags));
   index += _info->frame_bytes_flags;
   
   return index;
+}
+
+void ID3_FrameHeader::Parse(ID3_Reader& reader)
+{
+  char text_id[5];
+
+  if (!_info)
+  {
+    return;
+  }
+
+  reader.readChars(reinterpret_cast<uchar *>(text_id), _info->frame_bytes_id);
+  text_id[_info->frame_bytes_id] = '\0';
+
+  ID3_FrameID fid = ID3_FindFrameID(text_id);
+  if (ID3FID_NOFRAME == fid)
+  {
+    this->SetUnknownFrame(text_id);
+  }
+  else
+  {
+    this->SetFrameID(fid);
+  }
+
+  id3::NumberReader nr(reader);
+  this->SetDataSize(nr.readNumber(_info->frame_bytes_size));
+
+  _flags.add(nr.readNumber(_info->frame_bytes_flags));
 }
 
 size_t ID3_FrameHeader::Render(uchar *buffer) const
@@ -146,8 +175,8 @@ size_t ID3_FrameHeader::Render(uchar *buffer) const
   memcpy(&buffer[size], (uchar *) text_id, _info->frame_bytes_id);
   size += _info->frame_bytes_id;
   
-  size += RenderNumber(&buffer[size], _data_size, _info->frame_bytes_size);
-  size += RenderNumber(&buffer[size], _flags.get(), _info->frame_bytes_flags);
+  size += id3::renderNumber(&buffer[size], _data_size, _info->frame_bytes_size);
+  size += id3::renderNumber(&buffer[size], _flags.get(), _info->frame_bytes_flags);
   
   return size;
 }

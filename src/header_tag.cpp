@@ -1,4 +1,4 @@
-// $Id: header_tag.cpp,v 1.13 2000/09/11 07:46:32 eldamitri Exp $
+// $Id: header_tag.cpp,v 1.14 2000/09/27 08:32:45 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -29,6 +29,7 @@
 #include "utils.h"
 #include "tag.h"
 #include <string.h>
+#include "reader_decorators.h"
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
@@ -83,7 +84,7 @@ size_t ID3_TagHeader::Render(uchar *buffer) const
   // now we render the extended header
   if (_flags.test(EXTENDED))
   {
-    size += RenderNumber(&buffer[size], _info->extended_bytes);
+    size += id3::renderNumber(&buffer[size], _info->extended_bytes);
   }
   
   return size;
@@ -126,4 +127,43 @@ size_t ID3_TagHeader::Parse(const uchar* data, size_t size)
   }
   
   return tag_size;
+}
+
+void ID3_TagHeader::Parse(ID3_Reader& reader)
+{
+  ID3_Reader::pos_type beg = reader.getCur();
+  uchar data[SIZE];
+  reader.readChars(data, SIZE);
+  if (!(ID3_IsTagHeader(data) > 0))
+  {
+    reader.setCur(beg);
+    return;
+  }
+
+  // The spec version is determined with the MAJOR and MINOR OFFSETs
+  uchar major = data[MAJOR_OFFSET];
+  uchar minor = data[MINOR_OFFSET];
+  this->SetSpec(ID3_VerRevToV2Spec(major, minor));
+
+  // Get the flags at the appropriate offset
+  _flags.set(static_cast<ID3_Flags::TYPE>(data[FLAGS_OFFSET]));
+
+  // set the data size
+  uint28 data_size = uint28(&data[SIZE_OFFSET]);
+  this->SetDataSize(data_size.to_uint32());
+  
+  if (_flags.test(EXTENDED))
+  {
+    if (this->GetSpec() == ID3V2_2_1)
+    {
+      // okay, if we are ID3v2.2.1, then let's skip over the extended header
+      // for now because I am lazy
+    }
+
+    if (this->GetSpec() == ID3V2_3_0)
+    {
+      // okay, if we are ID3v2.3.0, then let's actually parse the extended
+      // header (for now, we skip it because we are lazy)
+    }
+  }
 }
