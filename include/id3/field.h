@@ -1,4 +1,4 @@
-// $Id: field.h,v 1.15 2000/04/23 17:37:10 eldamitri Exp $
+// $Id: field.h,v 1.16 2000/04/24 14:59:34 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -34,7 +34,7 @@ struct ID3_FieldDef
 {
   ID3_FieldID   eID;
   ID3_FieldType eType;
-  lsint         lFixedLength;
+  luint         ulFixedLength;
   uchar         ucVersion;
   uchar         ucRevision;
   ID3_VerCtl    eControl;
@@ -109,7 +109,7 @@ struct ID3_FrameDef
  ** if you only plan to generate 3.0 tags.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: field.h,v 1.15 2000/04/23 17:37:10 eldamitri Exp $
+ ** @version $Id: field.h,v 1.16 2000/04/24 14:59:34 eldamitri Exp $
  ** \sa ID3_Tag
  ** \sa ID3_Frame
  ** \sa ID3_Err 
@@ -360,7 +360,7 @@ private:
 
   ID3_FieldID   __eName;           // the ID of this field
   ID3_FieldType __eType;           // what type is this field or should be
-  lsint         __lFixedLength;    // length of field (fixed if positive)
+  luint         __ulFixedLength;   // length of field (fixed if positive)
   uchar         __ucIOVersion;     // specific version
   uchar         __ucIORevision;    // specific revision
   ID3_VerCtl    __eControl;        // render if ver/rev is higher, or lower than frame::version, frame::revision?
