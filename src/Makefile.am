@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.17 2000/10/03 00:36:39 eldamitri Exp $
+# $Id: Makefile.am,v 1.18 2000/10/08 21:03:15 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -40,6 +40,7 @@ id3lib_sources =                \
   helpers.cpp                   \
   misc_support.cpp              \
   readers.cpp                   \
+  reader_decorators.cpp         \
   spec.cpp                      \
   tag.cpp                       \
   tag_file.cpp                  \
@@ -50,9 +51,10 @@ id3lib_sources =                \
   tag_parse_musicmatch.cpp      \
   tag_parse_v1.cpp              \
   tag_render.cpp                \
-  tag_sync.cpp                  \
   uint28.cpp                    \
-  utils.cpp                     
+  utils.cpp                     \
+  writers.cpp                   \
+  writer_decorators.cpp        
 
 lib_LTLIBRARIES   = libid3.la 
 
