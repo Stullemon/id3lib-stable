@@ -11,6 +11,7 @@ field_integer.lo
 field_string_ascii.lo
 field_string_unicode.lo
 frame.lo
+frame_impl.lo
 frame_parse.lo
 frame_render.lo
 globals.lo

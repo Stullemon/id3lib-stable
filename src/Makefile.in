@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.35 2000/09/27 09:07:47 eldamitri Exp $
+# $Id: Makefile.in,v 1.36 2000/10/01 00:05:49 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -110,7 +110,7 @@ LT_VERSION = $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 INCLUDES =    @ID3LIB_DEBUG_FLAGS@ -I$(top_srcdir)/include/id3 -I$(top_srcdir)/include $(zlib_include)
 
 
-id3lib_sources =    c_wrapper.cpp                   error.cpp                       field.cpp                       field_binary.cpp                field_integer.cpp               field_string_ascii.cpp          field_string_unicode.cpp        frame.cpp                       frame_parse.cpp                 frame_render.cpp                globals.cpp                     header.cpp                      header_frame.cpp                header_tag.cpp                  misc_support.cpp                spec.cpp                        tag.cpp                         tag_file.cpp                    tag_find.cpp                    tag_parse.cpp                   tag_parse_lyrics3.cpp           tag_parse_musicmatch.cpp        tag_parse_v1.cpp                tag_render.cpp                  tag_sync.cpp                    uint28.cpp                      utils.cpp                     
+id3lib_sources =    c_wrapper.cpp                   error.cpp                       field.cpp                       field_binary.cpp                field_integer.cpp               field_string_ascii.cpp          field_string_unicode.cpp        frame.cpp                       frame_impl.cpp                  frame_parse.cpp                 frame_render.cpp                globals.cpp                     header.cpp                      header_frame.cpp                header_tag.cpp                  misc_support.cpp                spec.cpp                        tag.cpp                         tag_file.cpp                    tag_find.cpp                    tag_parse.cpp                   tag_parse_lyrics3.cpp           tag_parse_musicmatch.cpp        tag_parse_v1.cpp                tag_render.cpp                  tag_sync.cpp                    uint28.cpp                      utils.cpp                     
 
 
 lib_LTLIBRARIES = libid3.la 
@@ -134,10 +134,11 @@ LIBS = @LIBS@
 libid3_la_LIBADD = 
 libid3_la_OBJECTS =  c_wrapper.lo error.lo field.lo field_binary.lo \
 field_integer.lo field_string_ascii.lo field_string_unicode.lo frame.lo \
-frame_parse.lo frame_render.lo globals.lo header.lo header_frame.lo \
-header_tag.lo misc_support.lo spec.lo tag.lo tag_file.lo tag_find.lo \
-tag_parse.lo tag_parse_lyrics3.lo tag_parse_musicmatch.lo \
-tag_parse_v1.lo tag_render.lo tag_sync.lo uint28.lo utils.lo
+frame_impl.lo frame_parse.lo frame_render.lo globals.lo header.lo \
+header_frame.lo header_tag.lo misc_support.lo spec.lo tag.lo \
+tag_file.lo tag_find.lo tag_parse.lo tag_parse_lyrics3.lo \
+tag_parse_musicmatch.lo tag_parse_v1.lo tag_render.lo tag_sync.lo \
+uint28.lo utils.lo
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -152,8 +153,8 @@ TAR = gtar
 GZIP_ENV = --best
 DEP_FILES =  .deps/c_wrapper.P .deps/error.P .deps/field.P \
 .deps/field_binary.P .deps/field_integer.P .deps/field_string_ascii.P \
-.deps/field_string_unicode.P .deps/frame.P .deps/frame_parse.P \
-.deps/frame_render.P .deps/globals.P .deps/header.P \
+.deps/field_string_unicode.P .deps/frame.P .deps/frame_impl.P \
+.deps/frame_parse.P .deps/frame_render.P .deps/globals.P .deps/header.P \
 .deps/header_frame.P .deps/header_tag.P .deps/misc_support.P \
 .deps/spec.P .deps/tag.P .deps/tag_file.P .deps/tag_find.P \
 .deps/tag_parse.P .deps/tag_parse_lyrics3.P \

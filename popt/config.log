@@ -28,6 +28,7 @@ configure:1323: checking whether gcc accepts -g
 configure:1355: checking how to run the C preprocessor
 configure:1436: checking whether gcc needs -traditional
 configure:1485: checking for gcc option to accept ANSI C
+configure:1538: gcc  -c -g -O2  conftest.c 1>&5
 configure:1564: checking for function prototypes
 configure:1795: checking for ranlib
 configure:1834: checking for ld used by GCC
@@ -55,50 +56,104 @@ ltconfig:1639: eval "/usr/bin/nm -B conftest.o | sed -n -e 's/^.*[ 	]\([ABCDGIST
 ltconfig:1691: gcc -o conftest -g -O2 -fno-builtin -fno-rtti -fno-exceptions   conftest.c conftstm.o 1>&5
 configure:2150: checking for a BSD compatible install
 configure:2231: checking for alloca.h
+configure:2241: gcc -E  conftest.c >/dev/null 2>conftest.out
 configure:2231: checking for libintl.h
+configure:2241: gcc -E  conftest.c >/dev/null 2>conftest.out
 configure:2231: checking for mcheck.h
+configure:2241: gcc -E  conftest.c >/dev/null 2>conftest.out
 configure:2231: checking for unistd.h
 configure:2268: checking for /usr/ucblib in LIBS
 configure:2293: checking for strerror
+configure:2321: gcc -o conftest -Wall -g -O2   conftest.c  1>&5
 configure:2293: checking for mtrace
+configure:2321: gcc -o conftest -Wall -g -O2   conftest.c  1>&5
 configure:2348: checking for gettext
+configure:2376: gcc -o conftest -Wall -g -O2   conftest.c  1>&5
 configure:2403: checking for dgettext
+configure:2431: gcc -o conftest -Wall -g -O2   conftest.c  1>&5
 configure:2456: checking for setreuid
+configure:2484: gcc -o conftest -Wall -g -O2   conftest.c  1>&5
 configure:2547: checking for working const
+configure:2601: gcc -c -Wall -g -O2  conftest.c 1>&5
+configure: In function `main':
+configure:2575: warning: unused variable `s'
+configure:2595: warning: unused variable `foo'
+configure:2563: warning: unused variable `zero'
+configure:2557: warning: unused variable `x'
+configure:2574: warning: `t' might be used uninitialized in this function
+configure:2592: warning: `b' might be used uninitialized in this function
 configure:2622: checking for inline
+configure:2636: gcc -c -Wall -g -O2  conftest.c 1>&5
+configure: In function `main':
+configure:2632: warning: control reaches end of non-void function
+configure: At top level:
+configure:2632: warning: return-type defaults to `int'
 configure:2662: checking for off_t
 configure:2695: checking for size_t
 configure:2730: checking for working alloca.h
 configure:2763: checking for alloca
+configure:2796: gcc -o conftest -Wall -g -O2   conftest.c  1>&5
+configure: In function `main':
+configure:2792: warning: unused variable `p'
 configure:2965: checking for unistd.h
 configure:3004: checking for getpagesize
+configure:3032: gcc -o conftest -Wall -g -O2   conftest.c  1>&5
 configure:3057: checking for working mmap
+configure:3205: gcc -o conftest -Wall -g -O2   conftest.c  1>&5
+configure: In function `main':
+configure:3146: warning: implicit declaration of function `getpagesize'
+configure:3155: warning: implicit declaration of function `rand'
+configure:3156: warning: implicit declaration of function `umask'
+configure:3160: warning: implicit declaration of function `write'
+configure:3162: warning: implicit declaration of function `close'
+configure:3193: warning: implicit declaration of function `read'
+configure:3199: warning: implicit declaration of function `unlink'
 configure:3233: checking for argz.h
+configure:3243: gcc -E  conftest.c >/dev/null 2>conftest.out
 configure:3233: checking for limits.h
 configure:3233: checking for locale.h
+configure:3243: gcc -E  conftest.c >/dev/null 2>conftest.out
 configure:3233: checking for nl_types.h
+configure:3243: gcc -E  conftest.c >/dev/null 2>conftest.out
 configure:3233: checking for malloc.h
+configure:3243: gcc -E  conftest.c >/dev/null 2>conftest.out
 configure:3233: checking for string.h
 configure:3233: checking for unistd.h
 configure:3233: checking for sys/param.h
 configure:3273: checking for getcwd
+configure:3301: gcc -o conftest -Wall -g -O2   conftest.c  1>&5
 configure:3273: checking for munmap
+configure:3301: gcc -o conftest -Wall -g -O2   conftest.c  1>&5
 configure:3273: checking for putenv
+configure:3301: gcc -o conftest -Wall -g -O2   conftest.c  1>&5
 configure:3273: checking for setenv
+configure:3301: gcc -o conftest -Wall -g -O2   conftest.c  1>&5
 configure:3273: checking for setlocale
+configure:3301: gcc -o conftest -Wall -g -O2   conftest.c  1>&5
 configure:3273: checking for strchr
+configure:3301: gcc -o conftest -Wall -g -O2   conftest.c  1>&5
 configure:3273: checking for strcasecmp
+configure:3301: gcc -o conftest -Wall -g -O2   conftest.c  1>&5
 configure:3273: checking for strdup
+configure:3301: gcc -o conftest -Wall -g -O2   conftest.c  1>&5
 configure:3273: checking for __argz_count
+configure:3301: gcc -o conftest -Wall -g -O2   conftest.c  1>&5
 configure:3273: checking for __argz_stringify
+configure:3301: gcc -o conftest -Wall -g -O2   conftest.c  1>&5
 configure:3273: checking for __argz_next
+configure:3301: gcc -o conftest -Wall -g -O2   conftest.c  1>&5
+configure:3330: checking for stpcpy
+configure:3358: gcc -o conftest -Wall -g -O2   conftest.c  1>&5
 configure:3392: checking for LC_MESSAGES
+configure:3404: gcc -o conftest -Wall -g -O2   conftest.c  1>&5
 configure:3425: checking whether NLS is requested
 configure:3445: checking whether included gettext is requested
 configure:3464: checking for libintl.h
 configure:3491: checking for gettext in libc
+configure:3503: gcc -o conftest -Wall -g -O2   conftest.c  1>&5
 configure:3617: checking for msgfmt
 configure:3651: checking for dcgettext
+configure:3679: gcc -o conftest -Wall -g -O2   conftest.c  1>&5
 configure:3706: checking for gmsgfmt
 configure:3742: checking for xgettext
 configure:3782: gcc -o conftest -Wall -g -O2   conftest.c  1>&5

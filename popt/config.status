@@ -406,6 +406,9 @@ CEOF
   mv conftest.out conftest.in
 
   cat > conftest.frag <<CEOF
+${ac_dA}HAVE_STPCPY${ac_dB}HAVE_STPCPY${ac_dC}1${ac_dD}
+${ac_uA}HAVE_STPCPY${ac_uB}HAVE_STPCPY${ac_uC}1${ac_uD}
+${ac_eA}HAVE_STPCPY${ac_eB}HAVE_STPCPY${ac_eC}1${ac_eD}
 ${ac_dA}HAVE_LC_MESSAGES${ac_dB}HAVE_LC_MESSAGES${ac_dC}1${ac_dD}
 ${ac_uA}HAVE_LC_MESSAGES${ac_uB}HAVE_LC_MESSAGES${ac_uC}1${ac_uD}
 ${ac_eA}HAVE_LC_MESSAGES${ac_eB}HAVE_LC_MESSAGES${ac_eC}1${ac_eD}
@@ -415,15 +418,15 @@ ${ac_eA}ENABLE_NLS${ac_eB}ENABLE_NLS${ac_eC}1${ac_eD}
 ${ac_dA}HAVE_GETTEXT${ac_dB}HAVE_GETTEXT${ac_dC}1${ac_dD}
 ${ac_uA}HAVE_GETTEXT${ac_uB}HAVE_GETTEXT${ac_uC}1${ac_uD}
 ${ac_eA}HAVE_GETTEXT${ac_eB}HAVE_GETTEXT${ac_eC}1${ac_eD}
-${ac_dA}HAVE_DCGETTEXT${ac_dB}HAVE_DCGETTEXT${ac_dC}1${ac_dD}
-${ac_uA}HAVE_DCGETTEXT${ac_uB}HAVE_DCGETTEXT${ac_uC}1${ac_uD}
-${ac_eA}HAVE_DCGETTEXT${ac_eB}HAVE_DCGETTEXT${ac_eC}1${ac_eD}
 CEOF
   sed -f conftest.frag conftest.in > conftest.out
   rm -f conftest.in
   mv conftest.out conftest.in
 
   cat > conftest.frag <<CEOF
+${ac_dA}HAVE_DCGETTEXT${ac_dB}HAVE_DCGETTEXT${ac_dC}1${ac_dD}
+${ac_uA}HAVE_DCGETTEXT${ac_uB}HAVE_DCGETTEXT${ac_uC}1${ac_uD}
+${ac_eA}HAVE_DCGETTEXT${ac_eB}HAVE_DCGETTEXT${ac_eC}1${ac_eD}
 ${ac_dA}POPT_SOURCE_PATH${ac_dB}POPT_SOURCE_PATH${ac_dC}"/home/scott/devel/id3lib/id3lib/popt"${ac_dD}
 ${ac_uA}POPT_SOURCE_PATH${ac_uB}POPT_SOURCE_PATH${ac_uC}"/home/scott/devel/id3lib/id3lib/popt"${ac_uD}
 ${ac_eA}POPT_SOURCE_PATH${ac_eB}POPT_SOURCE_PATH${ac_eC}"/home/scott/devel/id3lib/id3lib/popt"${ac_eD}
