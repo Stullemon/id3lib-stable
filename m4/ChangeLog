@@ -1,0 +1,4 @@
+1999-11-15  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* Makefile.am: Adjusted so that the macros aren't installed.
+

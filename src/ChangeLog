@@ -1,0 +1,6 @@
+1999-11-15  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* Makefile.am 
+	(EXTRA_DIST): Added ChangeLog.
+	(SUBDIRS): Added examples.
+
