@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.5 2000/05/01 13:05:07 eldamitri Exp $
+// $Id: misc_support.cpp,v 1.6 2000/05/04 20:52:04 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -344,12 +344,13 @@ ID3_Frame* ID3_AddTitle(ID3_Tag *tag, const char *text, bool bReplace)
     if (bReplace || tag->Find(ID3FID_TITLE) == NULL)
     {
       pFrame = new ID3_Frame;
-      if (NULL != pFrame)
+      if (NULL == pFrame)
       {
-        pFrame->SetID(ID3FID_TITLE);
-        pFrame->Field(ID3FN_TEXT) = text;
-        tag->AttachFrame(pFrame);
+        ID3_THROW(ID3E_NoMemory);
       }
+      pFrame->SetID(ID3FID_TITLE);
+      pFrame->Field(ID3FN_TEXT) = text;
+      tag->AttachFrame(pFrame);
     }
   }
   
@@ -451,7 +452,7 @@ char *ID3_GetComment(ID3_Tag *tag)
 }
 
 ID3_Frame* ID3_AddComment(ID3_Tag *tag, const char *sComment,
-                    const char *sDescription, bool bReplace)
+                          const char *sDescription, bool bReplace)
 {
   ID3_Frame* pFrame = NULL;
   if (NULL != tag          &&
@@ -776,6 +777,67 @@ size_t ID3_RemoveLyrics(ID3_Tag *tag)
   }
 
   while ((pFrame = tag->Find(ID3FID_UNSYNCEDLYRICS)))
+  {
+    tag->RemoveFrame(pFrame);
+    nRemoved++;
+  }
+
+  return nRemoved;
+}
+
+char *ID3_GetLyricist(ID3_Tag *tag)
+{
+  char *sLyricist = NULL;
+  if (NULL == tag)
+  {
+    return sLyricist;
+  }
+
+  ID3_Frame *pFrame = tag->Find(ID3FID_LYRICIST);
+  if (pFrame != NULL)
+  {
+    sLyricist = ID3_GetString(pFrame, ID3FN_TEXT);
+  }
+  return sLyricist;
+}
+
+ID3_Frame* ID3_AddLyricist(ID3_Tag *tag, const char *text, bool bReplace)
+{
+  ID3_Frame* pFrame = NULL;
+  if (NULL != tag && NULL != text && strlen(text) > 0)
+  {
+    if (bReplace)
+    {
+      ID3_RemoveLyricist(tag);
+    }
+    if (bReplace || (tag->Find(ID3FID_LYRICIST) == NULL))
+    {    
+      pFrame = new ID3_Frame;
+      if (NULL == pFrame)
+      {
+        ID3_THROW(ID3E_NoMemory);
+      }
+      
+      pFrame->SetID(ID3FID_LYRICIST);
+      pFrame->Field(ID3FN_TEXT) = text;
+      tag->AttachFrame(pFrame);
+    }
+  }
+
+  return pFrame;
+}
+
+size_t ID3_RemoveLyricist(ID3_Tag *tag)
+{
+  size_t nRemoved = 0;
+  ID3_Frame *pFrame = NULL;
+
+  if (NULL == tag)
+  {
+    return nRemoved;
+  }
+
+  while ((pFrame = tag->Find(ID3FID_LYRICIST)))
   {
     tag->RemoveFrame(pFrame);
     nRemoved++;
