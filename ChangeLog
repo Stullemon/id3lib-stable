@@ -1,3 +1,54 @@
+2000-05-04  Scott Haug  <scott@id3.org>
+
+	* include/id3/Makefile.am 
+	* include/id3/Makefile.in: 
+	Designated utils.h and uint28.h as not needing to be installed
+	
+	* Makefile.in: 
+	* configure: 
+	* libtool: 
+	* src/Makefile.am: 
+	* src/Makefile.in: 
+	* zlib/src/Makefile.am: 
+	* configure.in: 
+	Updated to allow zlib to conditionally compile when it isn't found (not
+	yet working right)
+
+	* include/id3/frame.h 
+	* include/id3/tag.h: 
+	Made destructor virtual to avoid compilation warnings (thanks Peter
+	Thorstenson)
+
+	* doc/index.html.in: 
+	Added ref to new project: Sonize.
+
+	* include/id3/globals.h:
+	Added ID3FN_TIMESTAMPFORMAT and ID3FN_CONTENTTYPE constants for the new
+	synced lyrics support (thanks Severino)
+
+	* include/id3/misc_support.h: 
+	Added declaration of ID3_GetLyricist, ID3_AddLyricist, and 
+	ID3_RemoveLyricist (thanks Severino)
+
+	* src/field.cpp 
+	(ID3FD_LinkedInfo): Removed unnecessary (read: wrong) size field for
+	id3v2.2.x
+	(ID3FD_SyncLyrics): Added (thanks Severino)
+	(ID3_FrameDefs): Updated ID3FID_SYNCEDLYRICS frame def to use 
+	ID3FD_SyncLyrics
+
+	* src/misc_support.cpp 
+	(ID3_AddTitle): Now checks if memory wasn't allocated (thanks Severino)
+	(ID3_GetLyricist): Added implementation (thanks Severino)
+	(ID3_AddLyricist): Added implementation (thanks Severino)
+	(ID3_RemoveLyricist): Added implementation (thanks Severino)
+
+	* src/tag_parse_lyrics3.cpp 
+	(ID3_StripTimeStamps): Fixed logic of bad data (thanks Severino)
+	(ID3_Lyrics3ToSylt): Added implementation (thanks Severino)
+	(ParseLyrics3): Adds description, language, lyricist, and information 
+	(thanks Severino)
+
 2000-05-03  Scott Haug  <scott@id3.org>
 
 	* NEWS 
