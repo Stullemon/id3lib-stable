@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.51 2002/07/31 13:45:18 t1mpy Exp $
+// $Id: tag.cpp,v 1.52 2002/08/10 10:17:18 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -271,7 +271,7 @@ using namespace dami;
  ** formatted 'CDM' frames from the unreleased ID3v2 2.01 draft specification.
  **
  ** \author Dirk Mahoney
- ** \version $Id: tag.cpp,v 1.51 2002/07/31 13:45:18 t1mpy Exp $
+ ** \version $Id: tag.cpp,v 1.52 2002/08/10 10:17:18 t1mpy Exp $
  ** \sa ID3_Frame
  ** \sa ID3_Field
  ** \sa ID3_Err
@@ -916,7 +916,7 @@ ID3_Tag& ID3_Tag::operator=( const ID3_Tag &rTag )
   return *this;
 }
 
-bool ID3_Tag::HasTagType(uint16 tt) const
+bool ID3_Tag::HasTagType(ID3_TagType tt) const
 {
   return _impl->HasTagType(tt);
 }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: tag.h,v 1.58 2002/07/28 21:53:56 t1mpy Exp $
+// $Id: tag.h,v 1.59 2002/08/10 10:17:18 t1mpy Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -107,7 +107,7 @@ public:
 
   ID3_Tag&   operator=( const ID3_Tag & );
   
-  bool       HasTagType(uint16 tt) const;
+  bool       HasTagType(ID3_TagType tt) const;
   ID3_V2Spec GetSpec() const;
   bool       SetSpec(ID3_V2Spec);
   
