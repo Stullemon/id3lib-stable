@@ -1,5 +1,14 @@
 2000-05-28  Scott Haug  <scott@id3.org>
 
+	* examples/get_pic.cpp 
+	(main): Removed debugging output, added better regular output
+
+	* src/field.cpp 
+	(BinSize): Minor bugfix for rendering non-unicode textstrings
+
+	* examples/test_compression.cpp 
+	(main): Removed debugging output
+
 	* examples/230-compressed.tag 
 	* examples/230-picture.tag 
 	* examples/230-unicode.tag: 
