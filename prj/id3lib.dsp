@@ -361,5 +361,21 @@ SOURCE=..\zlib\include\zlib.h
 SOURCE=..\config.h.win32
 # End Source File
 # End Group
+# Begin Group "definition file"
+
+# PROP Default_Filter "def"
+# Begin Source File
+
+SOURCE=.\Id3lib.def
+# End Source File
+# End Group
+# Begin Group "Resources"
+
+# PROP Default_Filter "rc"
+# Begin Source File
+
+SOURCE=.\version.rc
+# End Source File
+# End Group
 # End Target
 # End Project
