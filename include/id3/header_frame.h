@@ -1,4 +1,4 @@
-// $Id: header_frame.h,v 1.6 2000/04/05 05:20:52 eldamitri Exp $
+// $Id: header_frame.h,v 1.7 2000/04/09 22:36:45 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -43,6 +43,7 @@ class ID3_FrameHeader : public ID3_Header
 {
 public:
   ID3_FrameHeader();
+  virtual ~ID3_FrameHeader();
   
   virtual size_t Size(void);
   virtual size_t Parse(uchar *buffer);
@@ -55,14 +56,22 @@ public:
  
 protected:
   virtual void Copy(const ID3_Header &hdr);
+  virtual void  SetUnknownFrame(const char*);
 
   ID3_FrameDef *__pFrameDef;
+  bool __bDynFrameDef;
 }
 ;
 
 #endif
 
 // $Log: header_frame.h,v $
+// Revision 1.7  2000/04/09 22:36:45  eldamitri
+// (class ID3_FrameHeader): Added destructor and new method
+// SetUnknownFrame(const char*) for creating a frame with an unknown
+// frame id.  Added __bDynFrameDef member, set when __pFrameDef has been
+// dynamically created.
+//
 // Revision 1.6  2000/04/05 05:20:52  eldamitri
 // Updated initial comment information to reflect license, copyright
 // change.
