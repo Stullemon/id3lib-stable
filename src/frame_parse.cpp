@@ -1,4 +1,4 @@
-// $Id: frame_parse.cpp,v 1.17 2000/09/11 07:46:32 eldamitri Exp $
+// $Id: frame_parse.cpp,v 1.18 2000/09/14 22:03:22 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -82,68 +82,59 @@ size_t ID3_Frame::Parse(const uchar * const buffer, size_t size)
   // set the type of frame based on the parsed header  
   this->_ClearFields(); 
   this->_InitFields(); 
-  try
-  {  
-    ID3_TextEnc enc = ID3TE_ASCII;  // set the default encoding 
-    ID3_V2Spec spec = this->GetSpec(); 
-    // parse the frame's fields  
-    for (ID3_Field** fi = _fields; fi != _fields + _num_fields; fi++)
+
+  ID3_TextEnc enc = ID3TE_ASCII;  // set the default encoding 
+  ID3_V2Spec spec = this->GetSpec(); 
+  // parse the frame's fields  
+  for (ID3_Field** fi = _fields; fi != _fields + _num_fields; fi++)
+  {
+    if (!*fi)
     {
-      if (!*fi)
-      {
-        // Ack!  Why is the field NULL?  Log this...
-        continue;
-      }
-      if (remainder == 0) 
-      { 
-        // there's no remaining data to parse! 
-        _bad_parse = true; 
-        break; 
-      } 
+      // Ack!  Why is the field NULL?  Log this...
+      continue;
+    }
+    if (remainder == 0) 
+    { 
+      // there's no remaining data to parse! 
+      _bad_parse = true; 
+      break; 
+    } 
  
-      if (!(*fi)->InScope(spec)) 
-      { 
-        // this field isn't in scope, so don't attempt to parse into it 
-        // rather, give it some reasonable default value in case someone tries
-        // to access it
-        switch ((*fi)->GetType())
-        {
-          case ID3FTY_INTEGER:
-            **fi = (uint32) 0;
-            break;
-          default:
-            **fi = "";
-            break;
-        }
-        // now continue with the rest of the fields
-        continue; 
-      }
-      
-      (*fi)->SetEncoding(enc);
-      size_t frame_size = (*fi)->Parse(data, remainder); 
-      
-      if (0 == frame_size) 
-      { 
-        // nothing to parse!  ack!  parse error... 
-        _bad_parse = true; 
-        break; 
-      } 
- 
-      if ((*fi)->GetID() == ID3FN_TEXTENC)  
+    if (!(*fi)->InScope(spec)) 
+    { 
+      // this field isn't in scope, so don't attempt to parse into it 
+      // rather, give it some reasonable default value in case someone tries
+      // to access it
+      switch ((*fi)->GetType())
       {
-        enc = static_cast<ID3_TextEnc>((*fi)->Get());  
-      }  
+        case ID3FTY_INTEGER:
+          **fi = (uint32) 0;
+          break;
+        default:
+          **fi = "";
+          break;
+      }
+      // now continue with the rest of the fields
+      continue; 
+    }
       
-      data += frame_size; 
-      remainder -= MIN(frame_size, remainder); 
+    (*fi)->SetEncoding(enc);
+    size_t frame_size = (*fi)->Parse(data, remainder); 
+      
+    if (0 == frame_size) 
+    { 
+      // nothing to parse!  ack!  parse error... 
+      _bad_parse = true; 
+      break; 
+    } 
+ 
+    if ((*fi)->GetID() == ID3FN_TEXTENC)  
+    {
+      enc = static_cast<ID3_TextEnc>((*fi)->Get());  
     }  
-  }  
-  catch (...)  
-  {  
-    // TODO: log this!
-    //cerr << "*** parsing error!" << endl;  
-    // There's been an error in the parsing of the frame.  
-    _bad_parse = true;  
+      
+    data += frame_size; 
+    remainder -= MIN(frame_size, remainder); 
   }  
       
   _changed = false;
