@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.18 2000/05/10 03:35:29 eldamitri Exp $
+// $Id: field.cpp,v 1.19 2000/05/11 12:49:00 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -1009,6 +1009,7 @@ ID3_Field::Render(uchar *buffer)
       {
         bytesUsed = RenderASCIIString(buffer);
       }
+      break;
         
     default:
       ID3_THROW (ID3E_UnknownFieldType);

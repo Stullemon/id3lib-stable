@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.9 2000/05/10 03:29:12 eldamitri Exp $
+// $Id: field_string_unicode.cpp,v 1.10 2000/05/11 12:49:00 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -61,7 +61,8 @@ void ID3_Field::Set(const unicode_t *string)
   
   Set((uchar *) string, nBytes);
   
-  __enc = ID3TE_UNICODE;
+  this->SetEncoding(ID3TE_UNICODE);
+  __type = ID3FTY_TEXTSTRING;
   __changed = true;
   
   return ;

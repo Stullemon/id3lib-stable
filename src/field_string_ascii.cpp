@@ -1,4 +1,4 @@
-// $Id: field_string_ascii.cpp,v 1.9 2000/05/10 14:54:30 eldamitri Exp $
+// $Id: field_string_ascii.cpp,v 1.10 2000/05/11 12:49:00 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -60,7 +60,8 @@ void ID3_Field::Set(const char *sString)
     Set(temp);
     delete [] temp;
       
-    __enc = ID3TE_ASCII;
+    this->SetEncoding(ID3TE_ASCII);
+    __type = ID3FTY_TEXTSTRING;
   }
   
   return ;
@@ -125,10 +126,9 @@ void ID3_Field::Add(const char *sString)
     Add(temp);
     delete [] temp;
     
-    __enc = ID3TE_ASCII;
+    this->SetEncoding(ID3TE_ASCII);
+    __type = ID3FTY_TEXTSTRING;
   }
-  
-  return ;
 }
 
 
