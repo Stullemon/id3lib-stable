@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.18 2000/05/12 21:07:39 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.19 2000/05/23 15:19:33 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -304,6 +304,13 @@ void ID3_Tag::RenderV1ToHandle()
 
   RenderV1(sTag);
 
+  if (__file_handle == NULL)
+  {
+    // log this
+    ID3_THROW(ID3E_NoData);
+    // cerr << "*** Ack! __file_handle is null!" << endl;
+  }
+
   if (ID3_V1_LEN > __file_size)
   {
     if (fseek(__file_handle, 0, SEEK_END) != 0)
@@ -465,9 +472,13 @@ void ID3_Tag::RenderV2ToHandle()
     }
       
     tmpOut.close();
+
     CloseFile();
+
     remove(__file_name);
     rename(sTempFile, __file_name);
+
+    OpenFileForWriting();
     
     __starting_bytes = size;
 #endif
