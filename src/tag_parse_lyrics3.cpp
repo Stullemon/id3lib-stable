@@ -1,4 +1,4 @@
-// $Id: tag_parse_lyrics3.cpp,v 1.23 2000/10/03 04:51:27 eldamitri Exp $
+// $Id: tag_parse_lyrics3.cpp,v 1.24 2000/10/09 04:30:29 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -62,7 +62,7 @@ namespace dami
         {
           val = (val * 10) + (this->readChar() - '0');
         }
-        ID3D_NOTICE( "id3::NumberStringReader::readInteger: val = " << val );
+        ID3D_NOTICE( "io::NumberStringReader::readInteger: val = " << val );
         return val;
       }
     };
@@ -100,7 +100,7 @@ namespace dami
           if (index == text.size())
           {
             this->setCur(this->getCur() - index);
-            ID3D_NOTICE( "id3::NumberStringReader::readInteger: found \"" << text << "\" at " << this->getCur() );
+            ID3D_NOTICE( "io::FinderReader::readInteger: found \"" << text << "\" at " << this->getCur() );
             break;
           }
         }
@@ -123,14 +123,14 @@ namespace dami
           return false;
         }
         bool its = 
-          ('[' == this->readChar() && 
-           isdigit(this->readChar()) && isdigit(this->readChar()) &&
-           ':' == this->readChar() && 
-           isdigit(this->readChar()) && isdigit(this->readChar()) &&
-           ']' == this->readChar());
+        ('[' == this->readChar() && 
+         isdigit(this->readChar()) && isdigit(this->readChar()) &&
+         ':' == this->readChar() && 
+         isdigit(this->readChar()) && isdigit(this->readChar()) &&
+         ']' == this->readChar());
         this->setCur(cur);
         if (its)
-          ID3D_NOTICE( "id3::TimeStampReader::isTimeStamp(): found timestamp, cur = " << this->getCur() );
+          ID3D_NOTICE( "io::TimeStampReader::isTimeStamp(): found timestamp, cur = " << this->getCur() );
         return its;
       }
       
@@ -145,11 +145,14 @@ namespace dami
         ID3D_NOTICE( "TimeStampReader::readTimeStamp(): timestamp = " << sec );
         return sec * 1000;
       }
-      
     };
-    
   };
+};
 
+using namespace dami;
+
+namespace
+{
   String lyrics3ToSylt(ID3_Reader& rdr)
   {
     String dest;
@@ -189,12 +192,12 @@ namespace dami
       dest += '\0';
       
       // put timestamp
-      ID3D_NOTICE( "id3::lyrics3toSylt: ms = " << ms );
+      ID3D_NOTICE( "lyrics3toSylt: ms = " << ms );
       
       dest += renderNumber(ms, sizeof(uint32));
       if (lf)
       {
-        ID3D_NOTICE( "id3::lyrics3toSylt: adding lf" );
+        ID3D_NOTICE( "lyrics3toSylt: adding lf" );
     
         // put the LF
         dest += 0x0A;
@@ -203,258 +206,226 @@ namespace dami
 
     return dest;
   }
+};
 
-  namespace lyr3
+//bool parse(TagImpl& tag, ID3_Reader& reader)
+bool lyr3::v1::parse(ID3_TagImpl& tag, ID3_Reader& reader)
+{
+  io::ExitTrigger et(reader);
+  ID3_Reader::pos_type end = reader.getCur();
+  if (end < reader.getBeg() + 9 + 128)
   {
-    namespace v1
-    {
-
-      //bool parse(TagImpl& tag, ID3_Reader& reader)
-      bool parse(ID3_TagImpl& tag, ID3_Reader& reader)
-      {
-        ID3_Reader::pos_type end = reader.getCur();
-        if (end < 9 + 128)
-        {
-          ID3D_NOTICE( "id3::v1::parse: bailing, not enough bytes to parse, pos = " << end );
-          return false;
-        }
-        reader.setCur(end - (9 + 128));
-        String lyr3id, v1id;
+    ID3D_NOTICE( "id3::v1::parse: bailing, not enough bytes to parse, pos = " << end );
+    return false;
+  }
+  reader.setCur(end - (9 + 128));
         
-        {
-          io::TextReader tr(reader);
+  {
+    io::TextReader tr(reader);
           
-          lyr3id = tr.readText(9);
-          v1id   = tr.readText(3);
-        }
+    if (tr.readText(9) != "LYRICSEND" || tr.readText(3) != "TAG")
+    {
+      return false;
+    }
+  }
         
-        // first check for an ID3v1 tag
-        if (v1id != "TAG")
-        {
-          reader.setCur(end);
-          return false;
-        }
+  // we have a Lyrics3 v1.00 tag
+  if (end < reader.getBeg() + 11 + 9 + 128)
+  {
+    // the file size isn't large enough to actually hold lyrics
+    ID3D_WARNING( "id3::v1::parse: not enough data to parse lyrics3" );
+    return false;
+  }
         
-        // check for lyrics
-        if (lyr3id != "LYRICSEND")
-        {
-          reader.setCur(end);
-          return false;
-        }
+  // reserve enough space for lyrics3 + id3v1 tag
+  size_t window = end - reader.getBeg();
+  size_t lyrDataSize = min<size_t>(window, 11 + 5100 + 9 + 128);
+  reader.setCur(end - lyrDataSize);
+  io::WindowedReader wr(reader, lyrDataSize - (9 + 128));
         
-        // we have a Lyrics3 v1.00 tag
-        if (end < reader.getBeg() + 11 + 9 + 128)
-        {
-          // the file size isn't large enough to actually hold lyrics
-          ID3D_WARNING( "id3::v1::parse: not enough data to parse lyrics3" );
-          reader.setCur(end);
-          return false;
-        }
+  {
+    io::FinderReader fr(wr);
+    if (!fr.findText("LYRICSBEGIN"))
+    {
+      ID3D_WARNING( "id3::v1::parse: couldn't find LYRICSBEGIN, bailing" );
+      return false;
+    }
+  }
         
-        // reserve enough space for lyrics3 + id3v1 tag
-        size_t window = end - reader.getBeg();
-        size_t lyrDataSize = min<size_t>(window, 11 + 5100 + 9 + 128);
-        reader.setCur(end - lyrDataSize);
-        ID3_Reader::pos_type beg = reader.getCur();
-        
-        io::WindowedReader wr(reader);
-        wr.setBeg(beg);
-        wr.setEnd(end - (9 + 128));
-        
-        io::FinderReader fr(wr);
-        if (fr.findText("LYRICSBEGIN"))
-        {
-          beg = fr.getCur();
-          fr.skipChars(11);
-        }
-        else
-        {
-          ID3D_WARNING( "id3::v1::parse: couldn't find LYRICSBEGIN, bailing" );
-          reader.setCur(end);
-          return false;
-        }
-        
-        wr.setBeg(wr.getCur());
-        io::LineFeedReader lfr(wr);
-        io::TextReader tr(lfr);
-        String lyrics = tr.readText();
+  et.setExitPos(wr.getCur());
+  wr.skipChars(11);
+  wr.setBeg(wr.getCur());
 
-        //tag.setLyrics(lyrics);
-        id3::v2::setLyrics(tag, lyrics, "Converted from Lyrics3 v1.00", "XXX");
-        reader.setCur(beg);
-        return true;
-      }
-    };
+  {
+    io::LineFeedReader lfr(wr);
+    io::TextReader tr(lfr);
+    String lyrics = tr.readText();
+    id3::v2::setLyrics(tag, lyrics, "Converted from Lyrics3 v1.00", "XXX");
+  }
+
+  return true;
+}
     
-    namespace v2
+//bool parse(TagImpl& tag, ID3_Reader& reader)
+bool lyr3::v2::parse(ID3_TagImpl& tag, ID3_Reader& reader)
+{
+  io::ExitTrigger et(reader);
+  ID3_Reader::pos_type end = reader.getCur();
+  if (end < reader.getBeg() + 6 + 9 + 128)
+  {
+    ID3D_NOTICE( "lyr3::v2::parse: bailing, not enough bytes to parse, pos = " << reader.getCur() );
+    return false;
+  }
+        
+  reader.setCur(end - (6 + 9 + 128));
+  uint32 lyrSize = 0;
+
+  {
+    io::NumberStringReader nsr(reader);
+    ID3_Reader::pos_type beg = nsr.getCur();
+    lyrSize = nsr.readInteger(6);
+    if (nsr.getCur() < beg + 6)
     {
-      //bool parse(TagImpl& tag, ID3_Reader& reader)
-      bool parse(ID3_TagImpl& tag, ID3_Reader& reader)
-      {
-        ID3_Reader::pos_type end = reader.getCur();
-        if (end < 6 + 9 + 128)
-        {
-          ID3D_NOTICE( "lyr3::v2::parse: bailing, not enough bytes to parse, pos = " << end );
-          reader.setCur(end);
-          return false;
-        }
+      ID3D_NOTICE( "lyr3::v2::parse: couldn't find numeric string, lyrSize = " << lyrSize );
+      return false;
+    }
+  }
+    
+  {
+    io::TextReader tr(reader);
+    if (tr.readText(9) != "LYRICS200" || tr.readText(3) != "TAG")
+    {
+      return false;
+    }
+  }
         
-        reader.setCur(end - (6 + 9 + 128));
-        String lyr3id, v1id;
-        uint32 lyrSize = 0;
+  if (end < reader.getBeg() + lyrSize + 6 + 9 + 128)
+  {
+    ID3D_WARNING( "lyr3::v2::parse: not enough data to parse tag, lyrSize = " << lyrSize );
+    return false;
+  }
+  reader.setCur(end - (lyrSize + 6 + 9 + 128));
         
-        {
-          io::TextReader tr(reader);
-          io::NumberStringReader snr(tr);
-          lyrSize = snr.readInteger(6);
-          lyr3id  =  tr.readText(9);
-          v1id    =  tr.readText(3);
-        }
+  io::WindowedReader wr(reader);
+  wr.setWindow(wr.getCur(), lyrSize);
         
-        // first check for an ID3v1 tag
-        if (v1id != "TAG")
-        {
-          reader.setCur(end);
-          return false;
-        }
+  ID3_Reader::pos_type beg     = wr.getCur();
         
-        if (lyr3id != "LYRICS200")
-        {
-          reader.setCur(end);
-          return false;
-        }
-        
-        if (end < reader.getBeg() + lyrSize + 6 + 9 + 128)
-        {
-          ID3D_WARNING( "lyr3::v2::parse: not enough data to parse tag, lyrSize = " << lyrSize );
-          reader.setCur(end);
-          return false;
-        }
-        reader.setCur(end - (lyrSize + 6 + 9 + 128));
-        
-        io::WindowedReader wr(reader);
-        wr.setWindow(wr.getCur(), lyrSize);
-        
-        ID3_Reader::pos_type beg     = wr.getCur();
-        
-        {
-          io::TextReader tr(wr);
-          String          beginid = tr.readText(11);
+  {
+    io::TextReader tr(wr);
+    String          beginid = tr.readText(11);
           
-          if (beginid != "LYRICSBEGIN")
-          {
-            // not a lyrics v2.00 tag
-            ID3D_WARNING( "lyr3::v2::parse: couldn't find LYRICSBEGIN, bailing, beginid = " << beginid );
-            tr.setCur(end);
-            return false;
-          }
-        }
+    if (beginid != "LYRICSBEGIN")
+    {
+      // not a lyrics v2.00 tag
+      ID3D_WARNING( "lyr3::v2::parse: couldn't find LYRICSBEGIN, bailing, beginid = " << beginid );
+      return false;
+    }
+  }
         
-        bool has_time_stamps = false;
+  bool has_time_stamps = false;
         
-        ID3_Frame* lyr_frame = NULL;
+  ID3_Frame* lyr_frame = NULL;
         
-        while (!wr.atEnd())
-        {
-          string fldName, fldData;
-          uint32 fldSize;
+  while (!wr.atEnd())
+  {
+    string fldName, fldData;
+    uint32 fldSize;
           
-          {
-            io::TextReader tr(wr);
-            fldName = tr.readText(3);
-            ID3D_NOTICE( "lyr3::v2::parse: fldName = " << fldName );
-            io::NumberStringReader snr(tr);
-            fldSize = snr.readInteger(5);
-            ID3D_NOTICE( "lyr3::v2::parse: fldSize = " << fldSize );
-          }
+    {
+      io::TextReader tr(wr);
+      fldName = tr.readText(3);
+      ID3D_NOTICE( "lyr3::v2::parse: fldName = " << fldName );
+      io::NumberStringReader snr(tr);
+      fldSize = snr.readInteger(5);
+      ID3D_NOTICE( "lyr3::v2::parse: fldSize = " << fldSize );
+    }
           
-          {
-            io::WindowedReader wr2(wr);
-            wr2.setWindow(wr.getCur(), fldSize);
-            io::LineFeedReader lfr(wr2);
-            io::TextReader tr(lfr);
+    {
+      io::WindowedReader wr2(wr);
+      wr2.setWindow(wr.getCur(), fldSize);
+      io::LineFeedReader lfr(wr2);
+      io::TextReader tr(lfr);
             
-            fldData = tr.readText(fldSize);
-            ID3D_NOTICE( "lyr3::v2::parse: fldData = \"" << fldData << "\"" );
-          }
+      fldData = tr.readText(fldSize);
+      ID3D_NOTICE( "lyr3::v2::parse: fldData = \"" << fldData << "\"" );
+    }
           
-          // the IND field
-          if (fldName == "IND")
-          {
-            has_time_stamps = (fldData.size() > 1 && fldData[1] == '1');
-          }
+    // the IND field
+    if (fldName == "IND")
+    {
+      has_time_stamps = (fldData.size() > 1 && fldData[1] == '1');
+    }
           
-          // the TITLE field
-          else if (fldName == "ETT")
-          {
-            //tag.setTitle(fldData);
-            id3::v2::setTitle(tag, fldData);
-          }
+    // the TITLE field
+    else if (fldName == "ETT")
+    {
+      //tag.setTitle(fldData);
+      id3::v2::setTitle(tag, fldData);
+    }
           
-          // the ARTIST field
-          else if (fldName == "EAR")
-          {
-            //tag.setArtist(fldData);
-            id3::v2::setArtist(tag, fldData);
-          }
+    // the ARTIST field
+    else if (fldName == "EAR")
+    {
+      //tag.setArtist(fldData);
+      id3::v2::setArtist(tag, fldData);
+    }
           
-          // the ALBUM field
-          else if (fldName == "EAL")
-          {
-            //tag.setAlbum(fldData);
-            id3::v2::setArtist(tag, fldData);
-          }
+    // the ALBUM field
+    else if (fldName == "EAL")
+    {
+      //tag.setAlbum(fldData);
+      id3::v2::setArtist(tag, fldData);
+    }
           
-          // the Lyrics/Music AUTHOR field
-          else if (fldName == "AUT")
-          {
-            //tag.setAuthor(fldData);
-            id3::v2::setLyricist(tag, fldData);
-          }
+    // the Lyrics/Music AUTHOR field
+    else if (fldName == "AUT")
+    {
+      //tag.setAuthor(fldData);
+      id3::v2::setLyricist(tag, fldData);
+    }
           
-          // the INFORMATION field
-          else if (fldName == "INF")
-          {
-            //tag.setInfo(fldData);
-            id3::v2::setComment(tag, fldData, "Lyrics3 v2.00 INF", "XXX");
-          }
+    // the INFORMATION field
+    else if (fldName == "INF")
+    {
+      //tag.setInfo(fldData);
+      id3::v2::setComment(tag, fldData, "Lyrics3 v2.00 INF", "XXX");
+    }
           
-          // the LYRICS field
-          else if (fldName == "LYR")
-          {
-            // if already found an INF field, use it as description
-            String desc =  "Converted from Lyrics3 v2.00";
-            //tag.setLyrics(fldData);
-            if (!has_time_stamps)
-            {
-              lyr_frame = id3::v2::setLyrics(tag, fldData, desc, "XXX");
-            }
-            else
-            {
-              // converts from lyrics3 to SYLT in-place
-              ID3_MemoryReader mr(fldData.data(), fldData.size());
-              ID3D_NOTICE( "lyr3::v2::parse: determining synced lyrics" );
-              String sylt = lyrics3ToSylt (mr);
+    // the LYRICS field
+    else if (fldName == "LYR")
+    {
+      // if already found an INF field, use it as description
+      String desc =  "Converted from Lyrics3 v2.00";
+      //tag.setLyrics(fldData);
+      if (!has_time_stamps)
+      {
+        lyr_frame = id3::v2::setLyrics(tag, fldData, desc, "XXX");
+      }
+      else
+      {
+        // converts from lyrics3 to SYLT in-place
+        ID3_MemoryReader mr(fldData.data(), fldData.size());
+        ID3D_NOTICE( "lyr3::v2::parse: determining synced lyrics" );
+        String sylt = lyrics3ToSylt (mr);
               
-              lyr_frame = id3::v2::setSyncLyrics(tag, sylt, ID3TSF_MS, desc,
-                                                 "XXX", ID3CT_LYRICS);
-              ID3D_NOTICE( "lyr3::v2::parse: determined synced lyrics" );
-            }
-          }
-          else if (fldName == "IMG")
-          {
-            // currently unsupported
-            ID3D_WARNING( "lyr3::v2::parse: IMG field unsupported" );
-          }
-          else
-          {
-            ID3D_WARNING( "lyr3::v2::parse: undefined field id: " << 
-                          fldName );
-          }
-        }
-        reader.setCur(beg);
-        return true;
+        lyr_frame = id3::v2::setSyncLyrics(tag, sylt, ID3TSF_MS, desc,
+                                           "XXX", ID3CT_LYRICS);
+        ID3D_NOTICE( "lyr3::v2::parse: determined synced lyrics" );
       }
     }
-  };
-};
+    else if (fldName == "IMG")
+    {
+      // currently unsupported
+      ID3D_WARNING( "lyr3::v2::parse: IMG field unsupported" );
+    }
+    else
+    {
+      ID3D_WARNING( "lyr3::v2::parse: undefined field id: " << 
+                    fldName );
+    }
+  }
+
+  et.setExitPos(beg);
+  return true;
+}
