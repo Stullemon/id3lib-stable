@@ -1,4 +1,4 @@
-// $Id: field_binary.cpp,v 1.5 1999/11/15 20:15:50 scott Exp $
+// $Id: field_binary.cpp,v 1.6 1999/11/19 17:28:13 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -23,7 +23,7 @@
 #include <id3/field.h>
 
 
-void ID3_Field::Set(uchar *newData, luint newSize)
+void ID3_Field::Set(const uchar *newData, luint newSize)
 {
   Clear();
   
@@ -60,7 +60,7 @@ void ID3_Field::Get(uchar *buffer, luint buffLength)
 }
 
 
-void ID3_Field::FromFile(char *info)
+void ID3_Field::FromFile(const char *info)
 {
   FILE *temp;
   luint fileSize;
@@ -93,7 +93,7 @@ void ID3_Field::FromFile(char *info)
 }
 
 
-void ID3_Field::ToFile(char *info)
+void ID3_Field::ToFile(const char *info)
 {
   if (NULL == info)
     ID3_THROW(ID3E_NoData);
@@ -114,7 +114,7 @@ void ID3_Field::ToFile(char *info)
 }
 
 
-luint ID3_Field::ParseBinary(uchar *buffer, luint posn, luint buffSize)
+luint ID3_Field::ParseBinary(const uchar *buffer, const luint posn, const luint buffSize)
 {
   luint bytesUsed = 0;
   
@@ -146,6 +146,12 @@ luint ID3_Field::RenderBinary(uchar *buffer)
 
 
 // $Log: field_binary.cpp,v $
+// Revision 1.6  1999/11/19 17:28:13  scott
+// (Set): Updated interface to make parameters const.
+// (FromFile): Updated interface to make parameters const.
+// (ToFile): Updated interface to make parameters const.
+// (ParseBinary): Updated interface to make parameters const.
+//
 // Revision 1.5  1999/11/15 20:15:50  scott
 // Added include for config.h.  Minor code cleanup.  Removed
 // assignments from if checks; first makes assignment, then checks
