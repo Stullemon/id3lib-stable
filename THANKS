@@ -1,4 +1,4 @@
-$Id: THANKS,v 1.12 2000/07/05 16:36:55 eldamitri Exp $
+$Id: THANKS,v 1.13 2000/09/05 07:06:07 eldamitri Exp $
 
 id3lib THANKS file
 
@@ -33,16 +33,20 @@ current project maintainer if anyone has been missed.
   (SYLT) dramatically.
 * Michael Little (mike@netlinear.com) provided the delphi code for use with 
   id3com.
+* Peter Luijer (videoripper@hotmail.com) provided much useful documentation
+  on the MusicMatch tagging format.
 * The following individuals have assisted by providing bug reports and (often)
   suggestions for fixes:
-  - Daryl Pawluk (dpawluk@home.com)
-  - John Southerland (jbsouthe@home.com)
-  - Sasa Ðolic (sasad@moderngroove.com)
-  - Peter Thorstenson (swede@openlink.com.br)
-  - Christian Becker (chris@craze.de)
-  - Luca Leonardo Scorcia (scrlln@tin.it)
+  - Ben Noblet (Ben.Noblet@xt3.com.au)
   - Benedikt Roth (Benedikt.Roth@gmx.net)
-  - (nuisance@cmu.edu)
+  - Christian Becker (chris@craze.de)
+  - Daryl Pawluk (dpawluk@home.com)
+  - John Firebaugh (jfirebaugh@mac.com)
+  - John Southerland (jbsouthe@home.com)
+  - Luca Leonardo Scorcia (scrlln@tin.it)
+  - Peter Thorstenson (swede@openlink.com.br)
+  - Sasa Ðolic (sasad@moderngroove.com)
+  - Tim Newsome (nuisance@cmu.edu)
 
 Dirk Mahoney included the following at the end of his documentation on ID3Lib
 3.05a.  It is included in verbatim here.

@@ -1,3 +1,18 @@
+2000-09-04  Scott Haug  <scott@id3.org>
+
+	* src/tag_parse_musicmatch.cpp 
+	(ParseMusicMatch): Complete reimplementation of the function to make
+	it more robust.  Based on new information of the format (thanks to 
+	Peter Luijer for the docs).
+
+2000-08-28  Scott Haug  <scott@id3.org>
+
+	* src/uint28.cpp (Render): 
+	* src/tag_parse_musicmatch.cpp (ParseMusicMatch): 
+	* include/id3/uint28.h (class uint28): 
+	* include/id3/field.h (class ID3_Field): 
+	Portability fixes for the Mac (thanks John Firebaugh)
+
 2000-08-27  Scott Haug  <scott@id3.org>
 
 	* examples/get_pic.cpp: 
