@@ -1,4 +1,4 @@
-# $Id: id3lib.spec.in,v 1.4 2000/04/20 15:11:03 eldamitri Exp $
+# $Id: id3lib.spec.in,v 1.5 2000/04/21 05:53:45 eldamitri Exp $
 
 %define name    @PACKAGE@
 %define	version	@VERSION@
@@ -80,6 +80,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %postun -p /sbin/ldconfig
 
+%ifnarch noarch
+
 %files
 %defattr(-, root, root)
 %doc AUTHORS COPYING ChangeLog HISTORY NEWS README THANKS TODO
@@ -99,14 +101,21 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS COPYING ChangeLog HISTORY NEWS README THANKS TODO
 %{prefix}/bin/id3*
 
+%else
+
 %files doc
 %defattr(-, root, root)
 %doc AUTHORS COPYING ChangeLog HISTORY NEWS README THANKS TODO
 %doc doc/*.* doc/html examples
 
-##########################################################################
+%endif
+
 %changelog
-* Wed Apr 18 2000 Scott Haug <scott@id3.org> 3.7.1-1
+* Thu Apr 20 2000 Scott Haug <scott@id3.org> 3.7.1-2
+- Fixed date of changelog entry for 3.7.1-1
+- Added conditional blocks so docs only get built for noarch target
+
+* Wed Apr 19 2000 Scott Haug <scott@id3.org> 3.7.1-1
 - Release 3.7.1
 - Removed zlib-devel requirement from devel
 - Added doc package to distribute documentation
