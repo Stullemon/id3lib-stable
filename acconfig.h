@@ -29,6 +29,7 @@
  * macros will be made available in the library via constants, functions,
  * or static methods.
  */
+#undef ID3LIB_DEBUG
 #undef _ID3LIB_NAME
 #undef _ID3LIB_DATE
 #undef _ID3LIB_VERSION

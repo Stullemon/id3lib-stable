@@ -30,6 +30,7 @@
  * macros will be made available in the library via constants, functions,
  * or static methods.
  */
+#undef ID3LIB_DEBUG
 #undef _ID3LIB_NAME
 #undef _ID3LIB_DATE
 #undef _ID3LIB_VERSION
@@ -48,8 +49,47 @@
 /* Define if you have the truncate function.  */
 #undef HAVE_TRUNCATE
 
+/* Define if you have the <cctype> header file.  */
+#undef HAVE_CCTYPE
+
+/* Define if you have the <climits> header file.  */
+#undef HAVE_CLIMITS
+
+/* Define if you have the <cstdio> header file.  */
+#undef HAVE_CSTDIO
+
+/* Define if you have the <cstdlib> header file.  */
+#undef HAVE_CSTDLIB
+
+/* Define if you have the <cstring> header file.  */
+#undef HAVE_CSTRING
+
 /* Define if you have the <ctype.h> header file.  */
 #undef HAVE_CTYPE_H
+
+/* Define if you have the <fstream> header file.  */
+#undef HAVE_FSTREAM
+
+/* Define if you have the <fstream.h> header file.  */
+#undef HAVE_FSTREAM_H
+
+/* Define if you have the <iomanip> header file.  */
+#undef HAVE_IOMANIP
+
+/* Define if you have the <iomanip.h> header file.  */
+#undef HAVE_IOMANIP_H
+
+/* Define if you have the <iostream> header file.  */
+#undef HAVE_IOSTREAM
+
+/* Define if you have the <iostream.h> header file.  */
+#undef HAVE_IOSTREAM_H
+
+/* Define if you have the <libcw/debug.h> header file.  */
+#undef HAVE_LIBCW_DEBUG_H
+
+/* Define if you have the <libcw/sys.h> header file.  */
+#undef HAVE_LIBCW_SYS_H
 
 /* Define if you have the <limits.h> header file.  */
 #undef HAVE_LIMITS_H
@@ -62,6 +102,15 @@
 
 /* Define if you have the <stdio.h> header file.  */
 #undef HAVE_STDIO_H
+
+/* Define if you have the <stdlib.h> header file.  */
+#undef HAVE_STDLIB_H
+
+/* Define if you have the <string> header file.  */
+#undef HAVE_STRING
+
+/* Define if you have the <string.h> header file.  */
+#undef HAVE_STRING_H
 
 /* Define if you have the <sys/param.h> header file.  */
 #undef HAVE_SYS_PARAM_H

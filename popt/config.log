@@ -118,7 +118,6 @@ configure:3243: gcc -E  conftest.c >/dev/null 2>conftest.out
 configure:3233: checking for malloc.h
 configure:3243: gcc -E  conftest.c >/dev/null 2>conftest.out
 configure:3233: checking for string.h
-configure:3243: gcc -E  conftest.c >/dev/null 2>conftest.out
 configure:3233: checking for unistd.h
 configure:3233: checking for sys/param.h
 configure:3273: checking for getcwd
