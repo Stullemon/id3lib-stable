@@ -1,4 +1,4 @@
-// $Id: int28.cpp,v 1.2 2000/04/18 22:12:27 eldamitri Exp $
+// $Id: int28.cpp,v 1.3 2000/05/01 13:05:07 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -92,42 +92,3 @@ istream& operator>>(istream& in, int28& val)
   val = temp;
   return in;
 }
-
-// $Log: int28.cpp,v $
-// Revision 1.2  2000/04/18 22:12:27  eldamitri
-// Moved int28.cpp from src/id3/ to src/
-//
-// Revision 1.12  2000/04/10 16:57:47  eldamitri
-// (ProcessBinaries): Minor change to prevent warning in windows.
-//
-// Revision 1.11  2000/04/05 05:21:15  eldamitri
-// Updated initial comment information to reflect license, copyright
-// change.
-//
-// Revision 1.10  2000/01/04 15:42:49  eldamitri
-// For compilation with gcc 2.95.2 and better compatibility with ANSI/ISO
-// standard C++, updated, rearranged, and removed (where necessary)
-// #include directives.
-//
-// Revision 1.9  1999/12/26 15:11:39  scott
-// (set): Now uses ParseNumber, defined in misc_support.  Restructured
-// code.
-//
-// Revision 1.8  1999/12/17 16:13:04  scott
-// Updated opening comment block.
-//
-// Revision 1.7  1999/12/01 18:00:59  scott
-// Changed all of the #include <id3/*> to #include "*" to help ensure that
-// the sources are searched for in the right places (and to make compiling under
-// windows easier).
-//
-// Revision 1.6  1999/11/29 19:26:18  scott
-// Updated the leading license information of the file to reflect new maintainer.
-//
-// Revision 1.5  1999/11/15 20:19:47  scott
-// Added include for config.h. Changed some ints to luints to avoid
-// compiler warnings.
-//
-// Revision 1.4  1999/11/04 04:15:55  scott
-// Added cvs Id and Log tags to beginning and end of file, respectively.
-//

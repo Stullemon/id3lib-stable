@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.7 2000/04/28 16:08:28 eldamitri Exp $
+// $Id: tag.cpp,v 1.8 2000/05/01 13:05:07 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -86,7 +86,7 @@
  ** 'CDM' frames from the unreleased ID3v2 2.01 draft specification.
  **
  ** \author Dirk Mahoney
- ** \version $Id: tag.cpp,v 1.7 2000/04/28 16:08:28 eldamitri Exp $
+ ** \version $Id: tag.cpp,v 1.8 2000/05/01 13:05:07 eldamitri Exp $
  ** \sa ID3_Frame
  ** \sa ID3_Field
  ** \sa ID3_Err
@@ -670,89 +670,3 @@ ID3_Tag::operator=( const ID3_Tag &rTag )
   }
   return *this;
 }
-
-// $Log: tag.cpp,v $
-// Revision 1.7  2000/04/28 16:08:28  eldamitri
-// Updated documentation.
-//
-// Revision 1.6  2000/04/26 15:49:18  eldamitri
-// (SetSpec): Parameter now const
-//
-// Revision 1.5  2000/04/26 03:42:52  eldamitri
-// - Replaced version/revision uchar combination with ID3_V2Spec enums
-// - Deprecated {Get,Set}Version, GetRevision for {Get,Set}Spec
-// - ID3_VerCtl enumeration deprecated in favor of using two ID3_V2Spec
-//   enums to denote field scope
-// - Replaced ID3v2_VERSION, ID3v2_REVISION constants with ID3V2_LATEST
-//   enum
-// - Use ID3V2_UNKNOWN enum rather than 0 for version, revision
-//
-// Revision 1.4  2000/04/24 14:48:34  eldamitri
-// - Added comments originally in include/id3/tag.h
-// - (operator<<): Made frame parameter constant
-// - (AddFrame):
-//   - Made frame parameter constant
-//   - Now adds a copy of the frame onto the tag, rather than the frame
-//     passed in, thus allowing the tag to be repsonsible for deleting
-//     the frame
-// - (AddNewFrame): Deprecated in favor of AttachFrame
-// - (AddFrames): Adds copies of frames
-//
-// Revision 1.3  2000/04/23 17:37:53  eldamitri
-// - Moved def of ID3_PATH_LENGTH from tag.h, since its def requires a
-//   macro defined in config.h, which isn't accessible from the .h files.
-// - __sFileName is now dynamically allocated
-//
-// Revision 1.2  2000/04/18 22:12:51  eldamitri
-// Moved tag.cpp from src/id3/ to src/
-//
-// Revision 1.14  2000/04/05 05:21:15  eldamitri
-// Updated initial comment information to reflect license, copyright
-// change.
-//
-// Revision 1.13  2000/01/04 15:42:49  eldamitri
-// For compilation with gcc 2.95.2 and better compatibility with ANSI/ISO
-// standard C++, updated, rearranged, and removed (where necessary)
-// #include directives.
-//
-// Revision 1.12  1999/12/27 05:30:03  scott
-// (SetupTag): Updated for new version constants.
-//
-// Revision 1.11  1999/12/17 16:13:04  scott
-// Updated opening comment block.
-//
-// Revision 1.10  1999/12/13 04:44:17  scott
-// (SetupTag, ~ID3_Tag): Slight changes to reflect new __sFileName type.
-//
-// Revision 1.9  1999/12/09 03:32:28  scott
-// (ID3_Tag): Added copy constructor implementation.
-// (operator=): Added implementation.
-//
-// Revision 1.8  1999/12/01 18:00:59  scott
-// Changed all of the #include <id3/*> to #include "*" to help ensure that
-// the sources are searched for in the right places (and to make compiling under
-// windows easier).
-//
-// Revision 1.7  1999/11/29 19:26:18  scott
-// Updated the leading license information of the file to reflect new maintainer.
-//
-// Revision 1.6  1999/11/25 18:24:27  scott
-// (SetupTag): Initialized sFileName to NULL rather than the empty string
-// to indicate no filename is present.
-// (ID3_Tag): Deleted sFileName if allocated.  Added call to CloseFile.
-// (AddFrame): Modified to reflect change in interface.  AddFrame now adds
-// a frame without taking responsibility for deallocating the memory when
-// the tag goes out of scope.
-// (AddNewFrame): New method.  AddNewFrame adds a frame and takes
-// responsibility for deallocating the frame when the tag goes out of
-// scope.
-//
-// Revision 1.5  1999/11/15 20:20:17  scott
-// Added include for config.h.  Minor code cleanup.  Removed
-// assignments from if checks; first makes assignment, then checks
-// for appropriate value.  Made private member variable names more
-// descriptive.
-//
-// Revision 1.4  1999/11/04 04:15:55  scott
-// Added cvs Id and Log tags to beginning and end of file, respectively.
-//

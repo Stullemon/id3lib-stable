@@ -1,4 +1,4 @@
-// $Id: tag_parse_v1.cpp,v 1.3 2000/04/23 17:38:07 eldamitri Exp $
+// $Id: tag_parse_v1.cpp,v 1.4 2000/05/01 13:05:07 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -150,58 +150,3 @@ void ID3_Tag::ParseID3v1(void)
     
   return ;
 }
-
-// $Log: tag_parse_v1.cpp,v $
-// Revision 1.3  2000/04/23 17:38:07  eldamitri
-// - Updated ID3_V1_LEN constants to new names
-//
-// Revision 1.2  2000/04/18 22:13:49  eldamitri
-// Moved tag_parse_v1.cpp from src/id3/ to src/
-//
-// Revision 1.15  2000/04/08 04:42:59  eldamitri
-// Changed new ANSI-standard C++ include headers to old-style headers.
-//
-// Revision 1.14  2000/04/05 05:21:15  eldamitri
-// Updated initial comment information to reflect license, copyright
-// change.
-//
-// Revision 1.13  2000/01/04 15:42:49  eldamitri
-// For compilation with gcc 2.95.2 and better compatibility with ANSI/ISO
-// standard C++, updated, rearranged, and removed (where necessary)
-// #include directives.
-//
-// Revision 1.12  1999/12/17 16:13:04  scott
-// Updated opening comment block.
-//
-// Revision 1.11  1999/12/16 14:40:31  scott
-// Fixed inclusion config.h (thanks Alexander Voronin).
-//
-// Revision 1.10  1999/12/05 05:34:27  scott
-// (ParseID3v1): Added STR_V1_COMMENT_DESC as description parameter to
-// call to ID3_AddComment
-//
-// Revision 1.9  1999/12/01 22:19:51  scott
-// (ParseID3v1): Minor fix for windows compatibility (thanks elrod).
-//
-// Revision 1.8  1999/12/01 18:00:59  scott
-// Changed all of the #include <id3/*> to #include "*" to help ensure that
-// the sources are searched for in the right places (and to make compiling under
-// windows easier).
-//
-// Revision 1.7  1999/11/29 19:26:18  scott
-// Updated the leading license information of the file to reflect new maintainer.
-//
-// Revision 1.6  1999/11/19 19:12:46  scott
-// (ID3_RemoveTrailingSpaces): Minor code cleanup.
-// (ParseID3v1): Massive recoding of method to make use of new functions
-// defined in misc_support.  Simplifies flow of method.
-//
-// Revision 1.5  1999/11/15 20:21:15  scott
-// Added include for config.h.  Minor code cleanup.  Removed
-// assignments from if checks; first makes assignment, then checks
-// for appropriate value.  Made private member variable names more
-// descriptive.
-//
-// Revision 1.4  1999/11/04 04:15:55  scott
-// Added cvs Id and Log tags to beginning and end of file, respectively.
-//

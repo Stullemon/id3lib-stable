@@ -1,4 +1,4 @@
-// $Id: field_binary.cpp,v 1.4 2000/04/27 15:51:26 eldamitri Exp $
+// $Id: field_binary.cpp,v 1.5 2000/05/01 13:05:07 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -169,60 +169,3 @@ ID3_Field::RenderBinary(uchar *buffer)
   
   return bytesUsed;
 }
-
-
-
-// $Log: field_binary.cpp,v $
-// Revision 1.4  2000/04/27 15:51:26  eldamitri
-// (Set): Now handles the case when null data is passed in (thanks John Adcock)
-//
-// Revision 1.3  2000/04/24 14:47:50  eldamitri
-// __lFixedLength changed to __ulFixedLength.  A fixed length of 0, rather
-// than -1, represents a variable-length field, since we should never have
-// a fixed field length of 0.
-//
-// Revision 1.2  2000/04/18 22:10:20  eldamitri
-// Moved field_binary.cpp from src/id3/ to src/
-//
-// Revision 1.13  2000/04/17 02:31:35  eldamitri
-// Updated parameters of certain methods with const modifier to match
-// declaration.
-//
-// Revision 1.12  2000/04/05 05:21:15  eldamitri
-// Updated initial comment information to reflect license, copyright
-// change.
-//
-// Revision 1.11  2000/01/04 15:42:49  eldamitri
-// For compilation with gcc 2.95.2 and better compatibility with ANSI/ISO
-// standard C++, updated, rearranged, and removed (where necessary)
-// #include directives.
-//
-// Revision 1.10  1999/12/26 15:10:48  scott
-// Minor reformatting.
-//
-// Revision 1.9  1999/12/17 16:13:03  scott
-// Updated opening comment block.
-//
-// Revision 1.8  1999/12/01 18:00:59  scott
-// Changed all of the #include <id3/*> to #include "*" to help ensure that
-// the sources are searched for in the right places (and to make compiling under
-// windows easier).
-//
-// Revision 1.7  1999/11/29 19:26:18  scott
-// Updated the leading license information of the file to reflect new maintainer.
-//
-// Revision 1.6  1999/11/19 17:28:13  scott
-// (Set): Updated interface to make parameters const.
-// (FromFile): Updated interface to make parameters const.
-// (ToFile): Updated interface to make parameters const.
-// (ParseBinary): Updated interface to make parameters const.
-//
-// Revision 1.5  1999/11/15 20:15:50  scott
-// Added include for config.h.  Minor code cleanup.  Removed
-// assignments from if checks; first makes assignment, then checks
-// for appropriate value.  Made private member variable names more
-// descriptive.
-//
-// Revision 1.4  1999/11/04 04:15:54  scott
-// Added cvs Id and Log tags to beginning and end of file, respectively.
-//

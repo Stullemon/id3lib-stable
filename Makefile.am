@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.16 2000/04/27 02:35:37 eldamitri Exp $
+# $Id: Makefile.am,v 1.17 2000/05/01 13:04:47 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -71,56 +71,3 @@ snapshot: config.h.win32
 	cd $$ss_distdir && cp config.h.win32 config.h && cd ..; \
 	cd $$ss_distdir && zip -r ../$${ss_distdir}.zip * && cd ..; \
 	rm -rf $$ss_distdir
-
-# $Log: Makefile.am,v $
-# Revision 1.16  2000/04/27 02:35:37  eldamitri
-# Updated release directive to clean up windows distribution of unneeded
-# files/directories.
-#
-# Revision 1.15  2000/04/26 20:30:56  eldamitri
-# Copy windows projects over manually
-#
-# Revision 1.14  2000/04/21 19:55:09  eldamitri
-# (docs): Added for creating documentation from top directory
-# (docs-release): Added for automating creation of documentation
-# deliverables
-# (release): Updated to create documentation release
-#
-# Revision 1.13  2000/04/19 02:03:31  eldamitri
-# (SUBDIRS): Added 'examples'
-#
-# Revision 1.12  2000/04/18 05:16:55  eldamitri
-# (EXTRA_DIST): Added HISTORY and id3lib.spec[.in]
-# (id3lib.spec): Added rule for generating from id3lib.spec.in
-# (release): Now depends on id3lib.spec
-#
-# Revision 1.11  2000/04/12 16:31:14  eldamitri
-# (SUBDIRS): Added id3com and libprj
-#
-# Revision 1.10  2000/04/09 14:05:44  eldamitri
-# (config.h.win32): Fixed bug in creating config.h.win32.
-# (release): Added.  Creates id3lib-$(VERSION).tar.gz and
-# id3lib-$(VERSION).zip.
-# (snapshot): Added.  Created id3lib-$(DATE).tar.gz and
-# id3lib-$(DATE).zip
-#
-# Revision 1.9  2000/04/08 04:47:38  eldamitri
-# Updated for config.h.win32.
-#
-# Revision 1.8  2000/04/06 19:36:48  eldamitri
-# * Makefile.am:
-# Put in version requirement for automake (1.4).
-#
-# Revision 1.7  1999/12/03 14:10:11  scott
-# (EXTRA_DIST): Added config.win32.
-#
-# Revision 1.6  1999/12/03 00:45:17  scott
-# (SUBDIRS): Added prj and zlib
-#
-# Revision 1.5  1999/12/01 19:08:59  scott
-# (SUBDIRS): Added "include".
-#
-# Revision 1.4  1999/11/30 19:54:08  scott
-# (EXTRA_DIST): Removed ChangeLog, configure, HISTORY, and TODO.
-# These are included in the distribution automatically.
-#

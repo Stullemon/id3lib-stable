@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.9 2000/04/26 03:41:54 eldamitri Exp $
+# $Id: Makefile.am,v 1.10 2000/05/01 13:05:07 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -50,38 +50,3 @@ libid3_la_LDFLAGS = \
   -version-info $(LT_VERSION) \
   -release $(LT_RELEASE) \
   -export-dynamic
-
-# $Log: Makefile.am,v $
-# Revision 1.9  2000/04/26 03:41:54  eldamitri
-# (the_sources): Added spec.cpp
-#
-# Revision 1.8  2000/04/21 04:59:44  eldamitri
-# (the_sources): Added c_wrapper.cpp
-# (EXTRA_DIST): Removed, since dll_wrapper.cpp is no longer distributed
-#
-# Revision 1.7  2000/04/20 03:47:51  eldamitri
-# (the_sources): Added globals.cpp, removed version.cpp
-#
-# Revision 1.6  2000/04/19 02:02:47  eldamitri
-# Moved from src/id3 to src.
-#
-# Revision 1.10  2000/04/07 04:47:55  eldamitri
-# Updated versioning macros, ala glib (http://www.gtk.org).  Also added a
-# few more tests.
-#
-# Revision 1.9  2000/01/04 16:33:26  eldamitri
-# (the_sources): Moved dll_wrapper.cpp to EXTRA_DIST.
-#
-# Revision 1.8  1999/12/02 01:49:12  scott
-# Removed EXTRA_DIST (no more ChangeLog)
-#
-# Revision 1.7  1999/12/01 18:03:28  scott
-# (INCLUDES): Now points to new, toplevel include directory.
-# (the_headers, id3includedir, id3include_HEADERS): Removed.  Headers are
-# no longer in this directory.
-#
-# Revision 1.6  1999/11/30 20:08:16  scott
-# (the_headers): Added sized_headers.h
-# (the_sources): Added version.cpp
-# (LTVERSION): Updated to make use of configure.in variables.
-#
