@@ -1,4 +1,4 @@
-// $Id: dll_wrapper.cpp,v 1.9 1999/12/01 18:00:59 scott Exp $
+// $Id: dll_wrapper.cpp,v 1.10 1999/12/02 22:51:37 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -37,9 +37,9 @@ struct ID3_VerInfo
 CDLLEXPORT
 void ID3_GetVersion(ID3_VerInfo *info)
 {
-  info->version = ID3LIB_VER;
-  info->revision = ID3LIB_REV;
-  strcpy(info->name, ID3LIB_NAME);
+  info->version = ID3LIB_VERSION;
+  info->revision = ID3LIB_REVISION;
+  strcpy(info->name, PACKAGE);
   
   return ;
 }
@@ -487,6 +487,9 @@ void ID3Field_ToFile(ID3_Field *field, char *fileName)
 #endif
 
 // $Log: dll_wrapper.cpp,v $
+// Revision 1.10  1999/12/02 22:51:37  scott
+// Fixed config.h macros.
+//
 // Revision 1.9  1999/12/01 18:00:59  scott
 // Changed all of the #include <id3/*> to #include "*" to help ensure that
 // the sources are searched for in the right places (and to make compiling under
