@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.5 1999/11/15 20:16:33 scott Exp $
+// $Id: field_string_unicode.cpp,v 1.6 1999/11/16 22:50:29 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -186,13 +186,19 @@ luint ID3_Field::ParseUnicodeString(uchar *buffer, luint posn, luint buffSize)
       while ((posn + bytesUsed) < buffSize &&
              !(buffer[posn + bytesUsed] == 0 && 
                buffer[posn + bytesUsed + 1] == 0))
-        bytesUsed += 2;
+        bytesUsed += sizeof(wchar_t);
     else
       bytesUsed = buffSize - posn;
   }
   
   if (bytesUsed > 0)
   {
+    // Sanity check our indices and sizes before we start copying memory
+    if ((bytesUsed > buffSize) || (posn + bytesUsed > buffSize))
+    {
+      ID3_THROW_DESC(ID3E_BadData, "field information invalid");
+    }
+
     temp = new wchar_t[(bytesUsed / sizeof(wchar_t)) + 1];
     if (NULL == temp)
       ID3_THROW(ID3E_NoMemory);
@@ -220,7 +226,7 @@ luint ID3_Field::ParseUnicodeString(uchar *buffer, luint posn, luint buffSize)
   }
   
   if (__ulFlags & ID3FF_NULL)
-    bytesUsed += 2;
+    bytesUsed += sizeof(wchar_t);
     
   __bHasChanged = false;
   
@@ -264,8 +270,9 @@ luint ID3_Field::RenderUnicodeString(uchar *buffer)
     BOM[0] = 0xFEFF;
   }
   
-  if (bytesUsed == 2 && (__ulFlags & ID3FF_NULL))
-    buffer[0] = buffer[1] = 0;
+  if (bytesUsed == sizeof(wchar_t) && (__ulFlags & ID3FF_NULL))
+    for (size_t i = 0; i < sizeof(wchar_t); i++)
+      buffer[i] = 0;
     
   __bHasChanged = false;
   
@@ -273,6 +280,16 @@ luint ID3_Field::RenderUnicodeString(uchar *buffer)
 }
 
 // $Log: field_string_unicode.cpp,v $
+// Revision 1.6  1999/11/16 22:50:29  scott
+// * field_string_unicode.cpp
+// (ParseUnicodeString): Put in sanity check for indices so that
+// memcpy doesn't go out of bounds. Made unicode code more specific
+// to the type of data storing unicode characters.  This fix doesn't
+// work if the type is different than two bytes in size.  Need to fix
+// so that the type is guaranteed to be two bytes.
+// (RenderUnicodeString): Made unicode code more specific to the type
+// of data storing unicode characters.
+//
 // Revision 1.5  1999/11/15 20:16:33  scott
 // Added include for config.h.  Minor code cleanup.  Removed
 // assignments from if checks; first makes assignment, then checks
