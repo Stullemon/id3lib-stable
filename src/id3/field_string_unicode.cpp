@@ -1,32 +1,29 @@
-// $Id: field_string_unicode.cpp,v 1.7 1999/11/19 17:49:39 scott Exp $
-
-//  The authors have released ID3Lib as Public Domain (PD) and claim no
-//  copyright, patent or other intellectual property protection in this work.
-//  This means that it may be modified, redistributed and used in commercial
-//  and non-commercial software and hardware without restrictions.  ID3Lib is
-//  distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either
-//  express or implied.
-//
-//  The ID3Lib authors encourage improvements and optimisations to be sent to
-//  the ID3Lib coordinator, currently Dirk Mahoney (dirk@id3.org).  Approved
-//  submissions may be altered, and will be included and released under these
-//  terms.
-//
-//  Mon Nov 23 18:34:01 1998
+// $Id: field_string_unicode.cpp,v 1.8 1999/11/29 18:15:19 scott Exp $
+// 
+// The authors have released ID3Lib as Public Domain (PD) and claim no
+// copyright, patent or other intellectual property protection in this work.
+// This means that it may be modified, redistributed and used in commercial
+// and non-commercial software and hardware without restrictions.  ID3Lib is
+// distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either
+// express or implied.
+// 
+// The ID3Lib authors encourage improvements and optimisations to be sent to
+// the ID3Lib coordinator, currently Dirk Mahoney (dirk@id3.org).  Approved
+// submissions may be altered, and will be included and released under these
+// terms.
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-#include <wchar.h>
 #include <string.h>
 #include <stdlib.h>
 #include <id3/field.h>
-
+#include <id3/misc_support.h>
 
 // this function is another way of using Set()
 
-ID3_Field& ID3_Field::operator= (const wchar_t *string)
+ID3_Field& ID3_Field::operator= (const unicode_t *string)
 {
   Set(string);
   
@@ -36,9 +33,10 @@ ID3_Field& ID3_Field::operator= (const wchar_t *string)
 
 // this is Set()
 
-void ID3_Field::Set(const wchar_t *string)
+void ID3_Field::Set(const unicode_t *string)
 {
-  luint nBytes = (-1 == __lFixedLength) ? wcslen(string) : __lFixedLength;
+  luint nBytes =
+    (-1 == __lFixedLength) ? ucslen(string) : __lFixedLength;
   
   // we can simply increment the nBytes count here because we just pilfer
   // the NULL which is present in the string which was passed to us
@@ -48,7 +46,7 @@ void ID3_Field::Set(const wchar_t *string)
   }
     
   // doubling the nBytes because Unicode is twice the size of ASCII
-  nBytes *= sizeof(wchar_t);
+  nBytes *= sizeof(unicode_t);
   
   Set((uchar *) string, nBytes);
   
@@ -59,13 +57,13 @@ void ID3_Field::Set(const wchar_t *string)
 }
 
 
-void ID3_Field::Add(const wchar_t *string)
+void ID3_Field::Add(const unicode_t *string)
 {
   if (NULL == __sData)
     Set(string);
   else
   {
-    wchar_t *temp;
+    unicode_t *temp;
     luint newLen;
     lsint nullOffset = 0;
     
@@ -75,19 +73,20 @@ void ID3_Field::Add(const wchar_t *string)
       nullOffset = -1;
       
     // +1 is for the NULL at the end and the other +1 is for the list divider
-    newLen = 1 + (__ulSize / sizeof(wchar_t)) + wcslen(string) + 1 + nullOffset;
+    newLen = 1 + (__ulSize / sizeof(unicode_t)) + 
+      ucslen(string) + 1 + nullOffset;
     
     // I use the value 1 as a divider because then I can change it to either a
     // '/' or a NULL at render time.  This allows easy use of these functions
     // for text lists or in the IPLS frame
     
-    temp = new wchar_t[newLen];
+    temp = new unicode_t[newLen];
     if (NULL == temp)
       ID3_THROW(ID3E_NoMemory);
 
-    wcscpy(temp, (wchar_t *) __sData);
-    temp[(__ulSize / sizeof(wchar_t)) + nullOffset] = L'\001';
-    wcscpy(&temp[(__ulSize / sizeof(wchar_t)) + 1 + nullOffset], string);
+    ucscpy(temp, (unicode_t *) __sData);
+    temp[(__ulSize / sizeof(unicode_t)) + nullOffset] = L'\001';
+    ucscpy(&temp[(__ulSize / sizeof(unicode_t)) + 1 + nullOffset], string);
       
     Set(temp);
       
@@ -100,7 +99,7 @@ void ID3_Field::Add(const wchar_t *string)
 
 // this is Get()
 
-luint ID3_Field::Get(wchar_t *buffer, const luint maxChars, const luint itemNum)
+luint ID3_Field::Get(unicode_t *buffer, const luint maxChars, const luint itemNum)
 {
   luint charsUsed = 0;
   
@@ -116,7 +115,7 @@ luint ID3_Field::Get(wchar_t *buffer, const luint maxChars, const luint itemNum)
     // before we try to get it
     if (itemNum <= GetNumTextItems() && itemNum > 0)
     {
-      wchar_t *source = (wchar_t *) __sData;
+      unicode_t *source = (unicode_t *) __sData;
       luint posn = 0;
       luint sourceLen = 0;
       luint curItemNum = 1;
@@ -125,7 +124,7 @@ luint ID3_Field::Get(wchar_t *buffer, const luint maxChars, const luint itemNum)
       while (curItemNum < itemNum)
       {
         while (*source != L'\001' && *source != L'\0' && posn <
-               ((__ulSize / sizeof(wchar_t)) + nullOffset))
+               ((__ulSize / sizeof(unicode_t)) + nullOffset))
           source++, posn++;
           
         source++;
@@ -135,7 +134,7 @@ luint ID3_Field::Get(wchar_t *buffer, const luint maxChars, const luint itemNum)
       // now that we are positioned at the first character of the string we
       // want, find the end of it
       while (source[sourceLen] != L'\001' && source[sourceLen] != L'\0' &&
-             posn <((__ulSize / sizeof(wchar_t) + nullOffset)))
+             posn <((__ulSize / sizeof(unicode_t) + nullOffset)))
         sourceLen++, posn++;
         
       if (NULL == buffer)
@@ -143,7 +142,7 @@ luint ID3_Field::Get(wchar_t *buffer, const luint maxChars, const luint itemNum)
 
       luint actualChars = MIN(maxChars, sourceLen);
         
-      wcsncpy(buffer, source, actualChars);
+      ucsncpy(buffer, source, actualChars);
       if (actualChars < maxChars)
         buffer[actualChars] = L'\0';
       charsUsed = actualChars;
@@ -176,8 +175,7 @@ luint ID3_Field::GetNumTextItems(void)
 luint ID3_Field::ParseUnicodeString(const uchar *buffer, const luint posn, const luint buffSize)
 {
   luint nBytes = 0;
-  wchar_t *temp = NULL;
-  
+  unicode_t *temp = NULL;
   if (__lFixedLength != -1)
     nBytes = __lFixedLength;
   else
@@ -186,7 +184,7 @@ luint ID3_Field::ParseUnicodeString(const uchar *buffer, const luint posn, const
       while ((posn + nBytes) < buffSize &&
              !(buffer[posn + nBytes] == 0 && 
                buffer[posn + nBytes + 1] == 0))
-        nBytes += sizeof(wchar_t);
+        nBytes += sizeof(unicode_t);
     else
       nBytes = buffSize - posn;
   }
@@ -199,14 +197,14 @@ luint ID3_Field::ParseUnicodeString(const uchar *buffer, const luint posn, const
       ID3_THROW_DESC(ID3E_BadData, "field information invalid");
     }
 
-    temp = new wchar_t[(nBytes / sizeof(wchar_t)) + 1];
+    temp = new unicode_t[(nBytes / sizeof(unicode_t)) + 1];
     if (NULL == temp)
       ID3_THROW(ID3E_NoMemory);
 
     luint loc = 0;
-      
+
     memcpy(temp, &buffer[posn], nBytes);
-    temp[nBytes / sizeof(wchar_t)] = 0;
+    temp[nBytes / sizeof(unicode_t)] = NULL_UNICODE;
       
     // if there is a BOM, skip past it and check to see if we need to swap
     // the byte order around
@@ -215,9 +213,31 @@ luint ID3_Field::ParseUnicodeString(const uchar *buffer, const luint posn, const
       loc++;
         
       // if we need to swap the byte order
-      if (temp[0] != 0xFEFF)
-        for (int i = loc; i < (int) wcslen(temp); i++)
-          temp[i] = ((temp[i] >> 8) & 0xFF) | (((temp[i]) & 0xFF) << 8);
+      /* TODO: Determine if this the correct check to make sure bytes should
+         be swapped.  For example, the example tag 230-unicode.tag (found in 
+         the distrubitution) has two unicode sections, each that begin with
+         the FEFF magic number.  Each unicode character is, as usual, two
+         bytes.  The first byte is the ascii equivalent; the second is null.
+         Is this the "correct" encoding?  When a little-endian parses each of
+         those characters, the bytes are swapped, so they essentially end up
+         as the ascii equivalent automatically.  The FEFF magic number is also
+         swapped, so the number is evaluated as FFFE.  The original code below
+         forced byteswapping if the value of the first unicode character was
+         not equal to 0xFEFF.  This doesn't work for a little-endian machine,
+         though, since, as the rest of the code now stands, swapping the bytes
+         will not create a correct parse.  Therefore, the code swaps bytes
+         only when the value is equal to FEFF.
+      */
+      if (temp[0] == 0xFEFF)
+      {
+        for (int i = loc; i < (int) ucslen(temp); i++)
+        {
+          uchar
+            u1 = ((uchar *)(&temp[i]))[0],
+            u2 = ((uchar *)(&temp[i]))[1];
+          temp[i] = (u1 << 8) | u2;
+        }
+      }
     }
       
     Set(&temp[loc]);
@@ -226,7 +246,7 @@ luint ID3_Field::ParseUnicodeString(const uchar *buffer, const luint posn, const
   }
   
   if (__ulFlags & ID3FF_NULL)
-    nBytes += sizeof(wchar_t);
+    nBytes += sizeof(unicode_t);
     
   __bHasChanged = false;
   
@@ -243,18 +263,18 @@ luint ID3_Field::RenderUnicodeString(uchar *buffer)
   if (NULL != __sData && __ulSize && nBytes)
   {
     luint i;
-    wchar_t *ourString = (wchar_t *) & buffer[sizeof(wchar_t)];
+    unicode_t *ourString = (unicode_t *) & buffer[sizeof(unicode_t)];
     
-    // we render at sizeof(wchar_t) bytes into the buffer because we make room
+    // we render at sizeof(unicode_t) bytes into the buffer because we make room
     // for the Unicode BOM
-    memcpy(&buffer[sizeof(wchar_t)], (uchar *) __sData, 
-           nBytes - sizeof(wchar_t));
+    memcpy(&buffer[sizeof(unicode_t)], (uchar *) __sData, 
+           nBytes - sizeof(unicode_t));
     
     // now we convert the internal dividers to what they are supposed to be
     for (i = 0; i < nBytes; i++)
       if (ourString[i] == 1)
       {
-        wchar_t sub = L'/';
+        unicode_t sub = L'/';
         
         if (__ulFlags & ID3FF_NULLDIVIDE)
           sub = L'\0';
@@ -266,12 +286,12 @@ luint ID3_Field::RenderUnicodeString(uchar *buffer)
   if (nBytes)
   {
     // render the BOM
-    wchar_t *BOM = (wchar_t *) buffer;
+    unicode_t *BOM = (unicode_t *) buffer;
     BOM[0] = 0xFEFF;
   }
   
-  if (nBytes == sizeof(wchar_t) && (__ulFlags & ID3FF_NULL))
-    for (size_t i = 0; i < sizeof(wchar_t); i++)
+  if (nBytes == sizeof(unicode_t) && (__ulFlags & ID3FF_NULL))
+    for (size_t i = 0; i < sizeof(unicode_t); i++)
       buffer[i] = 0;
     
   __bHasChanged = false;
@@ -280,6 +300,16 @@ luint ID3_Field::RenderUnicodeString(uchar *buffer)
 }
 
 // $Log: field_string_unicode.cpp,v $
+// Revision 1.8  1999/11/29 18:15:19  scott
+// (): Updated methods to use unicode_t instead of wchar_t.  unicode_t is
+// defined in globals.h.  The type unicode_t is more likely to be two
+// bytes on every platform.  Updated calls to unicode methods to more
+// general methods defined in misc_support.cpp.
+// (ParseUnicodeString): Fixed a bug (?) to make unicode parsing work.
+// Not really sure if this is the source of the bug, or if there is a
+// more pervasive misunderstanding of the format of unicode.  Need to
+// check on this.
+//
 // Revision 1.7  1999/11/19 17:49:39  scott
 // (operator=): Updated interface to make parameters const.
 // (Set): Updated interface to make parameters const.  Bug fix for fixed
