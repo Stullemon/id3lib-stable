@@ -1,5 +1,5 @@
 // -*- C++ -*- 
-// $Id: field_impl.h,v 1.4 2000/10/01 00:02:56 eldamitri Exp $
+// $Id: field_impl.h,v 1.5 2000/10/03 00:45:26 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -79,6 +79,10 @@ public:
 
   // binary field functions
   size_t        Set(const uchar*, size_t);
+  size_t        Set(const char* buf, size_t size)
+  { 
+    return this->Set(reinterpret_cast<const uchar *>(buf), size);
+  }
   size_t        Get(uchar*, size_t) const;
   const uchar*  GetBinary() const { return _binary; }
   void          FromFile(const char*);
