@@ -1,3 +1,44 @@
+2000-09-09  Scott Haug  <scott@id3.org>
+
+	* THANKS: 
+	Added Steven Frank.
+
+	* doc/musicmatch.txt: 
+	Minor typo fixes (thanks Peter Luijer)
+
+	* src/field_binary.cpp 
+	(Set): No longer creates copies null or empty data
+
+	* src/field.cpp:
+	All LANGUAGE fields are now binary so that they won't be converted 
+	unnecessarily to unicode.
+
+2000-09-07  Scott Haug  <scott@id3.org>
+
+	* src/tag_parse_musicmatch.cpp 
+	(ParseMusicMatch): Minor changes for warning-free Windows compilation
+
+	* examples/Makefile.am 
+	(EXTRA_DIST): Added 230-syncedlyrics.tag, thatspot.tag, and ozzy.tag
+
+	* doc/musicmatch.txt: 
+	Minor formatting changes
+
+	* doc/index.html.in: 
+	Updated info about projects using idrlib: updated freeamp, added AmpBar
+
+	* doc/Makefile.am 
+	(EXTRA_DIST): Added 'musicmatch.txt' to the list of distribution files
+
+	* doc/musicmatch.txt: 
+	Update documentation on MusicMatch format.
+
+2000-09-06  Scott Haug  <scott@id3.org>
+
+	* src/error.cpp 
+	(ID3_Error): Replaced strdup, since it's not part of standard libraries
+	(thanks Steven Frank)
+
 2000-09-04  Scott Haug  <scott@id3.org>
 
 	* src/tag_parse_musicmatch.cpp 
