@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.20 2000/05/28 05:07:26 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.21 2000/05/28 23:25:06 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -85,22 +85,23 @@ size_t ID3_Tag::Render(uchar *buffer) const
   {
     return 0;
   }
-  size_t bytesUsed = 0;
   
   if (NULL == buffer)
   {
-    ID3_THROW(ID3E_NoBuffer);
+    // log this
+    return 0;
+    //ID3_THROW(ID3E_NoBuffer);
   }
 
-  ID3_TagHeader header;
-  size_t hdr_size = __hdr.Size();
-  
-  bytesUsed += hdr_size;
+  ID3_TagHeader hdr;
+  hdr.SetSpec(ID3V2_LATEST);
+  size_t hdr_size = hdr.Size();
+  size_t bytesUsed = hdr_size;
     
   // set up the encryption and grouping IDs
     
   // ...
-  size_t frame_bytes = RenderFrames(&buffer[bytesUsed], __frames);;
+  size_t frame_bytes = RenderFrames(&buffer[bytesUsed], __frames);
   if (frame_bytes == 0)
   {
     return 0;
@@ -108,16 +109,13 @@ size_t ID3_Tag::Render(uchar *buffer) const
   
   bytesUsed += frame_bytes;
   
-  if (__hdr.GetUnsync())
+  if (this->GetUnsync())
   {
-    uchar *tempz;
-    luint newTagSize;
-    
-    newTagSize = ID3_GetUnSyncSize(&buffer[hdr_size], 
-                                   bytesUsed - hdr_size);
+    size_t newTagSize = ID3_GetUnSyncSize(&buffer[hdr_size], 
+                                         bytesUsed - hdr_size);
     if (newTagSize > 0 && (newTagSize + hdr_size) > bytesUsed)
     {
-      tempz = new uchar[newTagSize];
+      uchar* tempz = new uchar[newTagSize];
       if (NULL == tempz)
       {
         ID3_THROW(ID3E_NoMemory);
@@ -125,7 +123,7 @@ size_t ID3_Tag::Render(uchar *buffer) const
 
       ID3_UnSync(tempz, newTagSize, &buffer[hdr_size],
                  bytesUsed - hdr_size);
-      header.SetUnsync(true);
+      hdr.SetUnsync(true);
 
       memcpy(&buffer[hdr_size], tempz, newTagSize);
       bytesUsed = newTagSize + hdr_size;
@@ -139,8 +137,8 @@ size_t ID3_Tag::Render(uchar *buffer) const
   memset(&buffer[bytesUsed], '\0', nPadding);
   bytesUsed += nPadding;
     
-  header.SetDataSize(bytesUsed - hdr_size);
-  header.Render(buffer);
+  hdr.SetDataSize(bytesUsed - hdr_size);
+  hdr.Render(buffer);
   
   // set the flag which says that the tag hasn't changed
   __changed = false;
@@ -185,10 +183,10 @@ size_t ID3_Tag::Size() const
     return 0;
   }
   ID3_Elem *cur = __frames;
-  ID3_TagHeader header;
+  ID3_TagHeader hdr;
 
-  header.SetSpec(this->GetSpec());
-  size_t bytesUsed = header.Size();
+  hdr.SetSpec(this->GetSpec());
+  size_t bytesUsed = hdr.Size();
   
   size_t frame_bytes = 0;
   while (cur)
@@ -209,13 +207,12 @@ size_t ID3_Tag::Size() const
   
   bytesUsed += frame_bytes;
   // add 30% for sync
-  if (__hdr.GetUnsync())
+  if (this->GetUnsync())
   {
     bytesUsed += bytesUsed / 3;
   }
     
   bytesUsed += PaddingSize(bytesUsed);
-  
   return bytesUsed;
 }
 
