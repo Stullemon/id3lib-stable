@@ -1,0 +1,74 @@
+# $Id: id3lib.spec.in,v 1.1 2000/04/18 05:14:58 eldamitri Exp $
+
+%define name    @PACKAGE@
+%define	version	@VERSION@
+%define	release	1
+%define	prefix	/usr
+
+Name:		%{name}
+Version:	%{version}
+Release:	%{release}
+Summary:	A software library for manipulating ID3v1 and ID3v2 tags.
+Source:		http://download.sourceforge.net/id3lib/%{name}-%{version}.tar.gz
+URL:		http://id3lib.sourceforge.net
+Group:		System Environment/Libraries
+BuildRoot:	%{_tmppath}/%{name}-buildroot
+Copyright:	LGPL
+Prefix:         %{_prefix}
+Docdir:		%{prefix}/doc
+Requires:       zlib
+
+%description
+This package provides a software library for manipulating ID3v1 and ID3v2 tags.
+It provides a convenient interface for software developers to include 
+standards-compliant ID3v1/2 tagging capabilities in their applications.  
+Features include identification of valid tags, automatic size conversions, 
+(re)synchronisation of tag frames, seamless tag (de)compression, and optional
+padding facilities.
+
+%package	devel
+Summary:	Headers for developing programs that will use id3lib
+Group:		Development/Libraries
+Requires:       %{name}, zlib-devel
+
+%description	devel
+This package contains the headers that programmers will need to develop
+applications which will use id3lib, the software library for ID3v1 and ID3v2
+tag manipulation.
+
+%prep
+%setup -q
+
+%build
+CXXFLAGS="$RPM_OPT_FLAGS -fexceptions" ./configure --prefix=%prefix
+uname -a|grep SMP && make -j 2 || make
+
+%install
+rm -rf $RPM_BUILD_ROOT
+
+make prefix=$RPM_BUILD_ROOT%{prefix} install
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%post -p /sbin/ldconfig
+
+%postun -p /sbin/ldconfig
+
+%files
+%defattr(-, root, root)
+%doc AUTHORS COPYING ChangeLog NEWS README THANKS TODO
+%{prefix}/lib/*.so.*
+
+%files devel
+%defattr(-, root, root)
+%doc doc/ src/examples/ AUTHORS COPYING ChangeLog NEWS README THANKS TODO
+%{prefix}/include/id3
+%{prefix}/lib/*.la
+%{prefix}/lib/*.a
+%{prefix}/lib/*.so
+
+##########################################################################
+%changelog
+* Mon Apr 17 2000 Scott Haug <scott@id3.org> 3.7.0-1
+- First (s)rpm build
