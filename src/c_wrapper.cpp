@@ -1,4 +1,4 @@
-// $Id: c_wrapper.cpp,v 1.8 2000/06/10 16:09:39 adcockj Exp $
+// $Id: c_wrapper.cpp,v 1.9 2000/07/02 23:37:16 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -415,6 +415,26 @@ extern "C"
     }
     
     return num;
+  }
+
+
+  ID3_C_EXPORT
+  bool ID3Tag_HasTagType(const ID3Tag *tag, ID3_TagType tt)
+  {
+    bool has_tt = false;
+  
+    try
+    {
+      if (tag)
+      {
+        has_tt = ((const ID3_Tag *) tag)->HasTagType(tt);
+      }
+    }
+    catch (...)
+    {
+    }
+    
+    return has_tt;
   }
 
 
