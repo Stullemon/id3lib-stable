@@ -12,50 +12,39 @@
 //
 //  Mon Nov 23 18:34:01 1998
 
-
-#ifndef	ID3LIB_HEADER_FRAME_H
-#define	ID3LIB_HEADER_FRAME_H
-
+#ifndef ID3LIB_HEADER_FRAME_H
+#define ID3LIB_HEADER_FRAME_H
 
 #include <id3/types.h>
 #include <id3/header.h>
 #include <id3/header_tag.h>
 #include <id3/field.h>
 
-
-#define	ID3FL_TAGALTER							( 1 << 15 )
-#define	ID3FL_FILEALTER							( 1 << 14 )
-#define	ID3FL_SIGNED							( 1 << 13 )
-
-#define	ID3FL_COMPRESSION						( 1 <<  7 )
-#define	ID3FL_ENCRYPTION						( 1 <<  6 )
-#define	ID3FL_GROUPING							( 1 <<  5 )
-
+#define ID3FL_TAGALTER    (1 << 15)
+#define ID3FL_FILEALTER   (1 << 14)
+#define ID3FL_SIGNED      (1 << 13)
+#define ID3FL_COMPRESSION (1 <<  7)
+#define ID3FL_ENCRYPTION  (1 <<  6)
+#define ID3FL_GROUPING    (1 <<  5)
 
 struct ID3_FrameAttr
 {
-  char	textID	[ 5 ];
-  luint	size;
-  luint	flags;
+  char  textID[5];
+  luint size;
+  luint flags;
 };
-
 
 class ID3_FrameHeader : public ID3_Header
 {
 public:
-  virtual luint	Size	( void );
-  void	SetFrameID	( ID3_FrameID id );
-  luint	GetFrameInfo	( ID3_FrameAttr &attr, uchar *buffer );
-  virtual luint	Render	( uchar *buffer );
-  
-  // *** PRIVATE INTERNAL DATA - DO NOT USE *** PRIVATE INTERNAL DATA - DO NOT USE ***
+  virtual luint Size(void);
+  void SetFrameID(ID3_FrameID id);
+  luint GetFrameInfo(ID3_FrameAttr &attr, uchar *buffer);
+  virtual luint Render(uchar *buffer);
   
 protected:
-  ID3_FrameID	frameID; 						// which frame are we the header for?
+  ID3_FrameID   frameID;        // which frame are we the header for?
 }
 ;
 
-
 #endif
-
-

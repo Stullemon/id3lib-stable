@@ -28,13 +28,11 @@
 #define ID3FF_ADJUSTENC         ( 1 << 2 )
 #define ID3FF_ADJUSTEDBY        ( 1 << 3 )
 
-
 enum ID3_TextEnc
 {
   ID3TE_ASCII   = 0,
   ID3TE_UNICODE
 };
-
 
 enum ID3_FieldType
 {
@@ -44,7 +42,6 @@ enum ID3_FieldType
   ID3FTY_ASCIISTRING,
   ID3FTY_UNICODESTRING
 };
-
 
 enum ID3_FieldID
 {
@@ -73,7 +70,6 @@ enum ID3_FieldID
   
   ID3FN_LASTFIELDID
 };
-
 
 enum ID3_FrameID
 {
@@ -130,13 +126,11 @@ enum ID3_FrameID
   ID3FID_CRYPTOREG
 };
 
-
 enum ID3_VerCtl
 {
   ID3VC_HIGHER  = 0,
   ID3VC_LOWER
 };
-
 
 struct ID3_FieldDef
 {
@@ -150,9 +144,7 @@ struct ID3_FieldDef
   ID3_FieldID linkedField;
 };
 
-
 class ID3_Frame;
-
 
 struct ID3_FrameDef
 {
@@ -165,7 +157,6 @@ struct ID3_FrameDef
   bool  (*parseHandler) (ID3_Frame *frame);
   ID3_FieldDef  *fieldDefs;
 };
-
 
 class ID3_Field
 {
@@ -199,10 +190,10 @@ public:
   // *** PRIVATE INTERNAL DATA - DO NOT USE *** PRIVATE INTERNAL DATA - DO NOT USE ***
   
   luint BinSize(bool withExtras = true);
-  bool  HasChanged( void );
+  bool  HasChanged(void);
   void  SetVersion(uchar ver, uchar rev);
-  luint Render  (uchar *buffer);
-  luint Parse   (uchar *buffer, luint posn, luint buffSize);
+  luint Render(uchar *buffer);
+  luint Parse(uchar *buffer, luint posn, luint buffSize);
 
   // STH: Why aren't these private?
   //private:
@@ -231,11 +222,7 @@ protected:
   luint size;
 };
 
-
 ID3_FrameDef *ID3_FindFrameDef(ID3_FrameID id);
 ID3_FrameID   ID3_FindFrameID(char *id);
 
-
 #endif
-
-

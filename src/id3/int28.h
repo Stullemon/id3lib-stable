@@ -12,38 +12,31 @@
 //
 //  Mon Nov 23 18:34:01 1998
 
-
-#ifndef	ID3LIB_TYPES_28BITINT_H
-#define	ID3LIB_TYPES_28BITINT_H
-
+#ifndef ID3LIB_TYPES_28BITINT_H
+#define ID3LIB_TYPES_28BITINT_H
 
 #include <iostream.h>
 #include <id3/types.h>
 
-
 class int28
 {
 public:
-  int28	( luint val = 0 );
-  int28	( uchar *val );
+  int28(luint val = 0);
+  int28(uchar *val);
   
-  uchar	operator[]	( luint posn );
-  friend ostream&	operator<<	( ostream& out, int28& val );
-  luint	get	( void );
+  uchar operator[](luint posn);
+  friend ostream &operator<<(ostream& out, int28& val);
+  luint get(void);
   
   // *** PRIVATE INTERNAL DATA - DO NOT USE *** PRIVATE INTERNAL DATA - DO NOT USE ***
   
 protected:
-  void	set	( luint val );
-  uchar	value[ sizeof ( luint ) ]; 		// the integer stored as a uchar array
+  void set(luint val);
+  uchar value[sizeof(luint)]; // the integer stored as a uchar array
 }
 ;
 
-
-ostream&	operator<<	( ostream& out, int28& val );
-istream&	operator>>	( istream& in, int28& val );
-
+ostream & operator<<(ostream& out, int28& val);
+istream & operator>>(istream& in, int28& val);
 
 #endif
-
-

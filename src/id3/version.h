@@ -12,19 +12,14 @@
 //
 //  Mon Nov 23 18:34:01 1998
 
+#ifndef ID3LIB_VERSION_H
+#define ID3LIB_VERSION_H
 
-#ifndef	ID3LIB_VERSION_H
-#define	ID3LIB_VERSION_H
-
-
-#define	ID3LIB_NAME		"ID3Lib"
-#define	ID3LIB_VERSION		"v3.05a"
-#define	ID3LIB_VER		( 3 )
-#define	ID3LIB_REV		( 5 )
-#define	ID3LIB_DATE		"Mon Nov 23 18:34:01 1998"
-#define	ID3LIB_VERSTRING	ID3LIB_NAME " " ID3LIB_VERSION " " ID3LIB_DATE
-
+#define ID3LIB_NAME             "ID3Lib"
+#define ID3LIB_VERSION          "v3.05a"
+#define ID3LIB_VER              (3)
+#define ID3LIB_REV              (5)
+#define ID3LIB_DATE             "Mon Nov 23 18:34:01 1998"
+#define ID3LIB_VERSTRING        ID3LIB_NAME " " ID3LIB_VERSION " " ID3LIB_DATE
 
 #endif
-
-

@@ -12,48 +12,45 @@
 //
 //  Mon Nov 23 18:34:01 1998
 
-
-#ifndef	ID3LIB_TYPES_H
-#define	ID3LIB_TYPES_H
-
+#ifndef ID3LIB_TYPES_H
+#define ID3LIB_TYPES_H
 
 #include <wchar.h>
 
-
 #ifdef __DLL
-#define	DLLEXPORT	__declspec ( dllexport )
-#define	CDLLEXPORT	extern "C" __declspec ( dllexport )
+#define DLLEXPORT       __declspec ( dllexport )
+#define CDLLEXPORT      extern "C" __declspec ( dllexport )
 #else
-#define	DLLEXPORT
-#define	CDLLEXPORT
+#define DLLEXPORT
+#define CDLLEXPORT
 #endif
 
+typedef       unsigned char   uchar;
+typedef short   signed int    ssint;
+typedef short unsigned int    suint;
+typedef long    signed int    lsint;
+typedef long  unsigned int    luint;
+typedef long           double ldoub;
+typedef long  unsigned int *  bitset;
 
-typedef	unsigned char	uchar;
-typedef short signed int	ssint;
-typedef short unsigned int	suint;
-typedef long signed int	lsint;
-typedef long unsigned int	luint;
-typedef	long double	ldoub;
-typedef long unsigned int *	bitset;
+#define BS_SIZE (sizeof(luint)*8)
+#define BS_SET(v,x)   ((v)[(x) / BS_SIZE] |=  (1 << ((x) % BS_SIZE)))
+#define BS_CLEAR(v,x) ((v)[(x) / BS_SIZE] &= ~(1 << ((x) % BS_SIZE)))
+#define BS_ISSET(v,x) ((v)[(x) / BS_SIZE] &   (1 << ((x) % BS_SIZE)))
 
-#define	BS_SET(v,x)			( (v)[ (x) / ( sizeof ( luint ) * 8 ) ] |=  ( 1 << ( (x) % ( sizeof ( luint ) * 8 ) ) ) )
-#define	BS_CLEAR(v,x)		( (v)[ (x) / ( sizeof ( luint ) * 8 ) ] &= ~( 1 << ( (x) % ( sizeof ( luint ) * 8 ) ) ) )
-#define	BS_ISSET(v,x)		( (v)[ (x) / ( sizeof ( luint ) * 8 ) ] &   ( 1 << ( (x) % ( sizeof ( luint ) * 8 ) ) ) )
-
-#ifndef	NULL
-#define	NULL	(0L)
+#ifndef NULL
+#define NULL (0L)
 #endif
 
-#ifndef	MIN
-inline lsint	MIN	( lsint x, lsint y )
+#ifndef MIN
+inline lsint MIN(lsint x, lsint y)
 {
   return x < y ? x : y;
 }
 #endif
 
-#ifndef	MAX
-inline lsint	MAX	( lsint x, lsint y )
+#ifndef MAX
+inline lsint MAX(lsint x, lsint y)
 {
   return x > y ? x : y;
 }
@@ -63,7 +60,4 @@ inline lsint	MAX	( lsint x, lsint y )
 // may depend on the types defined above
 #include <id3/int28.h>
 
-
 #endif
-
-

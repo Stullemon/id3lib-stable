@@ -12,12 +12,7 @@
 //
 //  Mon Nov 23 18:34:01 1998
 
-
 #ifndef	ID3LIB_EXTERNALS_H
 #define	ID3LIB_EXTERNALS_H
 
-
-
 #endif
-
-

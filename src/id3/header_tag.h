@@ -12,36 +12,27 @@
 //
 //  Mon Nov 23 18:34:01 1998
 
-
-#ifndef	ID3LIB_HEADER_TAG_H
-#define	ID3LIB_HEADER_TAG_H
-
+#ifndef ID3LIB_HEADER_TAG_H
+#define ID3LIB_HEADER_TAG_H
 
 #include <id3/types.h>
 #include <id3/header.h>
 
+#define ID3_TAGID               "ID3"
+#define ID3_TAGHEADERSIZE       (10)
 
-#define	ID3_TAGID								"ID3"
-#define	ID3_TAGHEADERSIZE						( 10 )
-
-
-#define	ID3HF_UNSYNC							( 1 << 7 )
-#define	ID3HF_EXTENDEDHEADER					( 1 << 6 )
-#define	ID3HF_EXPERIMENTAL						( 1 << 5 )
-
+#define ID3HF_UNSYNC            (1 << 7)
+#define ID3HF_EXTENDEDHEADER    (1 << 6)
+#define ID3HF_EXPERIMENTAL      (1 << 5)
 
 class ID3_TagHeader : public ID3_Header
 {
 public:
-  virtual luint	Size	( void );
-  virtual luint	Render	( uchar *buffer );
+  virtual luint Size(void);
+  virtual luint Render(uchar *buffer);
 };
 
-
 CDLLEXPORT
-lsint	ID3_IsTagHeader	( uchar header[ ID3_TAGHEADERSIZE ] );
-
+lsint ID3_IsTagHeader(uchar header[ID3_TAGHEADERSIZE]);
 
 #endif
-
-

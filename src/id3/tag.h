@@ -12,10 +12,8 @@
 //
 //  Mon Nov 23 18:34:01 1998
 
-
 #ifndef ID3LIB_TAG_H
 #define ID3LIB_TAG_H
-
 
 #include <wchar.h>
 #include <stdio.h>
@@ -25,31 +23,27 @@
 #include <id3/header_tag.h>
 #include <id3/version.h>
 
-
 // for file buffers etc
 #define BUFF_SIZE (65536)
 
-
 struct ID3_Elem
 {
-  ID3_Elem *next;
+  ID3_Elem  *next;
   ID3_Frame *frame;
-  uchar *binary;
-  bool tagOwns;
+  uchar     *binary;
+  bool       tagOwns;
 };
-
 
 struct ID3V1_Tag
 {
-  char ID [ 3 ],
-    title [ 30 ],
-    artist [ 30 ],
-    album [ 30 ],
-    year [ 4 ],
-    comment [ 30 ];
+  char ID[3];
+  char title[30];
+  char artist[30];
+  char album[30];
+  char year[4];
+  char comment[30];
   uchar genre;
 };
-
 
 class ID3_Tag
 {
@@ -68,7 +62,7 @@ public:
   void RemoveFrame(ID3_Frame *oldFrame);
   luint Render(uchar *buffer);
   luint Size(void);
-  void Parse(uchar header[ ID3_TAGHEADERSIZE ], uchar *buffer);
+  void Parse(uchar header[ID3_TAGHEADERSIZE], uchar *buffer);
   luint Link(char *fileInfo);
   void Update(void);
   void Strip(bool v1Also = true);
