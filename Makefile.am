@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.15 2000/04/26 20:30:56 eldamitri Exp $
+# $Id: Makefile.am,v 1.16 2000/04/27 02:35:37 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -54,7 +54,9 @@ release: config.h.win32 id3lib.spec
 	$(MAKE) $(AM_MAKEFLAGS) distcheck
 	GZIP=$(GZIP_ENV) $(TAR) zxf $(distdir).tar.gz
 	-cp -R id3com/ prj/ libprj/ $(distdir)
-	-find $(distdir) -type d -name CVS -exec rm -rf {} \;
+	-find $(distdir) -name "*~" -exec rm {} \;
+	-find $(distdir) -type d -name CVS -exec rm -r {} \;
+	-find $(distdir) -name .cvsignore -exec rm {} \;
 	cd $(distdir) && cp config.h.win32 config.h
 	cd $(distdir) && zip -r ../$(distdir).zip *
 	cd $(distdir) && ./configure && $(MAKE) $(AM_MAKEFLAGS) docs-release
@@ -71,6 +73,10 @@ snapshot: config.h.win32
 	rm -rf $$ss_distdir
 
 # $Log: Makefile.am,v $
+# Revision 1.16  2000/04/27 02:35:37  eldamitri
+# Updated release directive to clean up windows distribution of unneeded
+# files/directories.
+#
 # Revision 1.15  2000/04/26 20:30:56  eldamitri
 # Copy windows projects over manually
 #
