@@ -1,4 +1,4 @@
-// $Id: frame_render.cpp,v 1.9 2000/05/12 21:09:40 eldamitri Exp $
+// $Id: frame_render.cpp,v 1.10 2000/05/23 15:24:47 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -34,39 +34,59 @@
 #include <config.h>
 #endif
 
-// at the moment, Render can't be const, since it resets some variables in
-// the header and the fields.  If compression doesn't actually produce something
-// smaller, it will turn off the compression flag in the header.  
-size_t ID3_Frame::Render(uchar *buffer)
+// Ideally, Render should render the frame in the order it is parsed, starting
+// with the header, then any extra info (resulting from header flags), and then
+// the frame data, one field at a time.  This, unfortunately, isn't possible.
+// In order to render the frame header, the data size must be known.  One could
+// query the fields' sizes before rendering them, but it would be faster to
+// render the fields and add their sizes (which is calculated and returned in
+// the fields' Render function) at the same time.
+//
+// Even if we determined this extra processing to be acceptable, it isn't
+// possible to precompute the frame data size without rendering them all when
+// compression is enabled.  When compression is enabled, then the header
+// contains the size of the compressed data.  So all the fields need to
+// rendered to a buffer and compressed before the data size can even be
+// calculated in this scenario.  And the compressed data might even be
+// discarded if it is no smaller than the uncompressed data.
+//
+// So, Render should progress more-or-less as follows.  The fields should be
+// rendered to the target buffer at its desired position (after the projected
+// header and extra bytes (at most 2)).  If compression has been specified,
+// then compress it into a temporary buffer.  If the compressed size is smaller
+// than the uncompressed data, copy the temp buffer to the correct place in the
+// target buffer.  Finally, render the header and the extra info.  The
+// encryption and grouping id's shouldn't be rendered until after the
+// compression takes place, since they will be rendered to a different spots in
+// the buffer depending on whether or not the data is compressed.  This is
+// because the uncompressed data size must come after before the id's if the
+// the data is compressed, but won't be rendered if the data isn't compressed.
+//
+// One could probably implement Render more "naturally" by using more
+// dynamically allocated buffers, but that would degrade performance. Whether
+// or not this performance degradation would cause a significant impact on the
+// overall performane of typeical apps should be looked in to.
+//
+// So, in short, Render is a more complicated function than it should be, but
+// it doesn't look like there's a much better way that's any faster.
+size_t ID3_Frame::Render(uchar *buffer) const
 {
-  size_t bytesUsed = 0;
-  
   if (NULL == buffer)
   {
     ID3_THROW(ID3E_NoBuffer);
   }
+
+  uchar e_id = this->_GetEncryptionID(), g_id = this->_GetGroupingID();
+  size_t decompressed_size = 0;
+  size_t extras = ( e_id > 0 ? 1 : 0 ) + ( g_id > 0 ? 1 : 0 );
+  ID3_FrameHeader hdr = __hdr;
   
-  size_t extras = 0;
-  bool didCompress = false;
-    
-  bytesUsed += __hdr.Size();
-    
-  // here is where we include things like grouping IDs and crypto IDs
-  if (strlen(__encryption_id) > 0)
-  {
-    buffer[bytesUsed] = __encryption_id[0];
-    bytesUsed++;
-    extras++;
-  }
-    
-  if (strlen(__grouping_id) > 0)
-  {
-    buffer[bytesUsed] = __grouping_id[0];
-    bytesUsed++;
-    extras++;
-  }
-    
+  const size_t hdr_size = hdr.Size();
+
+  // 1.  Write out the field data to the buffer, with the assumption that
+  //     we won't be decompressing, since this is the usual behavior
   ID3_TextEnc enc = ID3TE_ASCII;
+  size_t data_size = 0;
     
   for (ID3_Field** fi = __fields; fi != __fields + __num_fields; fi++)
   {
@@ -75,65 +95,69 @@ size_t ID3_Frame::Render(uchar *buffer)
       enc = static_cast<ID3_TextEnc>((*fi)->Get());  
     }
     
-    if (*fi && (*fi)->InScope(this->GetSpec()))
+    if (*fi && (*fi)->InScope(ID3V2_LATEST));
     {
       (*fi)->SetEncoding(enc);
-      bytesUsed += (*fi)->Render(&buffer[bytesUsed]);
+      data_size += (*fi)->Render(&buffer[data_size + hdr_size + extras]);
     }
   }
-    
-  // if we can compress frames individually and we have been asked to compress
-  // the frames
-  if (__hdr.GetCompression() && __hdr.GetSpec() >= ID3V2_3_0)
+
+  // 2.  Attempt to compress if specified
+  if (this->GetCompression())
   {
+    // The zlib documentation specifies that the destination size needs to be
+    // an unsigned long at least 0.1% larger than the source buffer, plus 12
+    // bytes
+    unsigned long new_data_size = data_size + (data_size / 10) + 12;
       
-    bytesUsed -= __hdr.Size();
-      
-    // unsigned long needed for compress
-    unsigned long newFrameSize = bytesUsed + (bytesUsed / 10) + 12;
-      
-    uchar* newTemp = new uchar[newFrameSize];
-    if (NULL == newTemp)
+    uchar* compressed_data = new uchar[new_data_size];
+    if (NULL == compressed_data)
     {
       ID3_THROW(ID3E_NoMemory);
     }
 
-    if (compress(newTemp, &newFrameSize, &buffer[__hdr.Size() + extras],
-                 bytesUsed - extras) != Z_OK)
+    if (compress(compressed_data, &new_data_size, &buffer[hdr_size + extras],
+                 data_size) != Z_OK)
     {
       ID3_THROW(ID3E_zlibError);
     }
 
-    // if the compression actually saves space
-    if ((newFrameSize + sizeof(uint32)) < bytesUsed)
+    // if the compression actually saves space...
+    if ((new_data_size + sizeof(uint32)) < data_size)
     {
-      size_t posn = __hdr.Size();
+      // add 4 bytes to 'extras' for the decompressed size
       extras += sizeof(uint32);
-            
-      memcpy(&buffer[posn + sizeof(uint32)], newTemp, newFrameSize);
-        
-      bytesUsed += newFrameSize + RenderNumber(&buffer[posn], bytesUsed);
-      didCompress = true;
+
+      memcpy(&buffer[hdr_size + extras], compressed_data, new_data_size);
+
+      decompressed_size = data_size;
+      data_size = new_data_size;
     }
-          
-    bytesUsed += __hdr.Size();
-        
-    delete[] newTemp;
-  }
     
-  // perform any encryption here
-  if (strlen(__encryption_id))
-  {
+    delete [] compressed_data;
   }
-    
+  
   // determine which flags need to be set
-  __hdr.SetCompression(didCompress);
-  __hdr.SetEncryption(strlen(__encryption_id) > 0);
-  __hdr.SetGrouping(strlen(__grouping_id) > 0);
-      
-  __hdr.SetDataSize(bytesUsed - __hdr.Size());
-  __hdr.Render(buffer);
+  hdr.SetDataSize(data_size + extras);
+  hdr.SetEncryption(e_id > 0);
+  hdr.SetGrouping(g_id > 0);
+  hdr.SetCompression(decompressed_size > 0);
+
+  hdr.Render(data);
+  uchar* data = buffer + hdr_size;
+  if (decompressed_size)
+  {
+    data += RenderNumber(data, decompressed_size);
+  }
+  if (e_id)
+  {
+    *data++ = e_id;
+  }
+  if (g_id)
+  {
+    *data++ = g_id;
+  }
   __changed = false;
     
-  return bytesUsed;
+  return hdr_size + extras + data_size;
 }
