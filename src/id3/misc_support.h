@@ -1,4 +1,4 @@
-// $Id: misc_support.h,v 1.7 1999/11/29 19:26:18 scott Exp $
+// $Id: misc_support.h,v 1.8 1999/11/30 20:13:09 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -15,7 +15,6 @@
 #ifndef ID3LIB_MISC_SUPPORT_H
 #define ID3LIB_MISC_SUPPORT_H
 
-#include <wchar.h>
 #include <string.h>
 #include <id3/types.h>
 #include <id3/tag.h>
@@ -55,6 +54,9 @@ void ID3_RemoveTrailingSpaces(char *buffer, luint length);
 #endif
 
 // $Log: misc_support.h,v $
+// Revision 1.8  1999/11/30 20:13:09  scott
+// Removed include for wchar.h
+//
 // Revision 1.7  1999/11/29 19:26:18  scott
 // Updated the leading license information of the file to reflect new maintainer.
 //
