@@ -1,4 +1,4 @@
-/* $Id: id3.h,v 1.8 2000/05/02 22:00:19 eldamitri Exp $
+/* $Id: id3.h,v 1.9 2000/05/04 00:56:50 eldamitri Exp $
  * 
  * id3lib: a software library for creating and manipulating id3v1/v2 tags
  * Copyright 1999, 2000  Scott Thomas Haug
@@ -46,7 +46,6 @@ extern "C"
   ID3_C_EXPORT bool        ID3Tag_HasChanged           (ID3Tag *tag);
   ID3_C_EXPORT void        ID3Tag_SetUnsync            (ID3Tag *tag, bool unsync);
   ID3_C_EXPORT void        ID3Tag_SetExtendedHeader    (ID3Tag *tag, bool ext);
-  ID3_C_EXPORT void        ID3Tag_SetCompression       (ID3Tag *tag, bool comp);
   ID3_C_EXPORT void        ID3Tag_SetPadding           (ID3Tag *tag, bool pad);
   ID3_C_EXPORT void        ID3Tag_AddFrame             (ID3Tag *tag, ID3Frame *frame);
   ID3_C_EXPORT void        ID3Tag_AttachFrame          (ID3Tag *tag, ID3Frame *frame);
@@ -72,6 +71,8 @@ extern "C"
   ID3_C_EXPORT void        ID3Frame_SetID              (ID3Frame *frame, ID3_FrameID id);
   ID3_C_EXPORT ID3_FrameID ID3Frame_GetID              (ID3Frame *frame);
   ID3_C_EXPORT ID3Field   *ID3Frame_GetField           (ID3Frame *frame, ID3_FieldID name);
+  ID3_C_EXPORT void        ID3Frame_SetCompression     (ID3Frame *frame, bool comp);
+  ID3_C_EXPORT bool        ID3Frame_GetCompression     (ID3Frame *frame);
 
   /* field wrappers */
   ID3_C_EXPORT void        ID3Field_Clear              (ID3Field *field);
@@ -90,6 +91,9 @@ extern "C"
   ID3_C_EXPORT void        ID3Field_GetBINARY          (ID3Field *field, uchar *buffer, luint buffLength);
   ID3_C_EXPORT void        ID3Field_FromFile           (ID3Field *field, char *fileName);
   ID3_C_EXPORT void        ID3Field_ToFile             (ID3Field *field, char *fileName);
+
+  /* Deprecated */
+  ID3_C_EXPORT void        ID3Tag_SetCompression       (ID3Tag *tag, bool comp);
 
 #ifdef __cplusplus
 }
