@@ -1,4 +1,4 @@
-// $Id: readers.h,v 1.3 2000/10/03 01:21:45 eldamitri Exp $
+// $Id: readers.h,v 1.4 2000/10/09 01:56:05 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -45,7 +45,7 @@ class ID3_IStreamReader : public ID3_Reader
   /** Read up to \c len chars into buf and advance the internal position
    ** accordingly.  Returns the number of characters read into buf.
    **/
-  virtual streamsize readChars(char_type buf[], streamsize len)
+  virtual size_type readChars(char_type buf[], size_type len)
   {
     _stream.read(buf, len);
     return _stream.gcount();
@@ -80,11 +80,11 @@ class ID3_IFStreamReader : public ID3_IStreamReader
   
 class ID3_MemoryReader : public ID3_Reader
 {
-  const char* _beg;
-  const char* _cur;
-  const char* _end;
+  const char_type* _beg;
+  const char_type* _cur;
+  const char_type* _end;
  protected:
-  void setBuffer(const char* buf, size_t size)
+  void setBuffer(const char_type* buf, size_type size)
   {
     _beg = buf;
     _cur = buf;
@@ -95,9 +95,13 @@ class ID3_MemoryReader : public ID3_Reader
   {
     this->setBuffer(NULL, 0);
   }
-  ID3_MemoryReader(const char* buf, size_t size)
+  ID3_MemoryReader(const char_type* buf, size_type size)
   {
     this->setBuffer(buf, size);
+  };
+  ID3_MemoryReader(const char* buf, size_type size)
+  {
+    this->setBuffer(reinterpret_cast<const char_type*>(buf), size);
   };
   virtual ~ID3_MemoryReader() { ; }
   virtual void close() { ; }
@@ -114,7 +118,7 @@ class ID3_MemoryReader : public ID3_Reader
   /** Read up to \c len chars into buf and advance the internal position
    ** accordingly.  Returns the number of characters read into buf.
    **/
-  virtual streamsize readChars(char_type buf[], streamsize len);
+  virtual size_type readChars(char_type buf[], size_type len);
     
   virtual pos_type getCur() 
   { 
@@ -136,7 +140,7 @@ class ID3_MemoryReader : public ID3_Reader
   virtual pos_type setCur(pos_type pos)
   {
     pos_type end = this->getEnd();
-    size_t size = (pos < end) ? pos : end;
+    size_type size = (pos < end) ? pos : end;
     _cur = _beg + size;
     return this->getCur();
   }
