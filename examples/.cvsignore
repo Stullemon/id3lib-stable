@@ -10,6 +10,7 @@ convert
 findeng
 get_pic
 id3convert
+id3cp
 id3info
 id3simple
 id3strip
@@ -20,4 +21,5 @@ test-230-unicode.tag
 test-remove.tag
 testcompression
 testpic
+testremove
 testunicode

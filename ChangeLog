@@ -1,5 +1,20 @@
 2000-06-22  Scott Haug  <scott@id3.org>
 
+	* examples/Makefile.am: 
+	Added id3cp and testremove
+
+	* src/tag_file.cpp 
+	(Link): Reinitializes all file-related member variables when a new file
+	is linked to.
+
+	* examples/thatspot.tag
+	* examples/ozzy.tag
+	* examples/demo_copy.cpp: 
+	Initial revision.
+
+	* Makefile.am 
+	(release): Converts dsw and dsp files to dos format for windows release
+
 	* examples/230-unicode.tag:
 	The BOMs were incorrect.  Now they're correct.
 	
