@@ -10,13 +10,64 @@
 
 AC_INIT(reconf)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(id3lib,3.0.6pre1)
+AM_INIT_AUTOMAKE(id3lib,"3.6")
+
+dnl Checks for programs
+AC_PROG_CXX
+AC_PROG_CXXCPP
 AM_PROG_LIBTOOL
-LF_CONFIGURE_CC
-LF_CONFIGURE_CXX
-LF_HOST_TYPE
-LF_SET_WARNINGS
 AC_PROG_RANLIB
+
+dnl Checks for libraries.
+AC_CHECK_LIB(z,uncompress,,
+  AC_MSG_ERROR([id3lib requires zlib to process compressed frames]))
+
+dnl Checks for header files.
+AC_HEADER_STDC
+AC_HAVE_HEADERS(                \
+  ctype.h                       \
+  limits.h                      \
+  memory.h                      \
+  stdio.h                       \
+  unistd.h                      \
+  wchar.h                       \
+  zlib.h                        \
+  ,,AC_MSG_ERROR([Missing a vital header file for id3lib])
+)
+AC_LANG_SAVE
+AC_LANG_CPLUSPLUS
+AC_HAVE_HEADERS(                \
+  iostream.h                    \
+  ,,AC_MSG_ERROR([Missing a vital header file for id3lib])
+)
+
+dnl Check for functions.
+AC_FUNC_MEMCMP
+AC_HAVE_FUNCS(
+  ftruncate                     \
+  ,,AC_MSG_ERROR([Missing a vital function for id3lib])
+)
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_C_INLINE
+AC_SIZE_T
+
+dnl
+dnl Checks with local macros
+dnl
+
+dnl Checks for the portability of certain c++ features: the bool type and
+dnl for-loop scoping
+LF_CXX_PORTABILITY
+
+dnl Provides a --with-warnings option to the configure script that turns on
+dnl compiler warnings.  Must be used AFTER configuring ALL compilers.
+LF_SET_WARNINGS
+
+dnl Define size-specific types int8, uint8, int16, uint16, int32, uint32
+SH_SIZE_SPECIFIC_TYPES
+
 AC_OUTPUT(                      \
   Makefile                      \
   doc/Makefile                  \
