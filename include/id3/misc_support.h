@@ -1,4 +1,4 @@
-// $Id: misc_support.h,v 1.13 2000/05/04 20:51:35 eldamitri Exp $
+// $Id: misc_support.h,v 1.14 2000/05/06 21:40:25 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,9 +28,6 @@
 #define __ID3LIB_MISC_SUPPORT_H__
 
 #include "tag.h"
-
-uint32 ParseNumber(const uchar *buffer, size_t size = sizeof(uint32));
-void   RenderNumber(uchar *buffer, uint32 val, size_t size = sizeof(uint32));
 
 // defined in 'id3_misc_support.cpp'
 // these are 'convenience functions,' to make using the library easier for the 
@@ -76,17 +73,7 @@ char  *ID3_GetLyricist(ID3_Tag *tag);
 ID3_Frame* ID3_AddLyricist(ID3_Tag *tag, const char *text, bool bReplace = false);
 size_t ID3_RemoveLyricist(ID3_Tag *tag);
 
-void   mbstoucs(unicode_t *unicode, const char *ascii, const luint len);
-void   ucstombs(char *ascii, const unicode_t *unicode, const luint len);
-size_t ucslen(const unicode_t *unicode);
-void   ucscpy(unicode_t *dest, const unicode_t *src);
-void   ucsncpy(unicode_t *dest, const unicode_t *src, size_t len);
-int    ucscmp(const unicode_t *s1, const unicode_t *s2);
-int    ucsncmp(const unicode_t *s1, const unicode_t *s2, size_t len);
-
 char *ID3_GetString(const ID3_Frame *frame, const ID3_FieldID fldName,
                     const size_t nItems = 1);
-// in 'id3_tag_parse_v1.cpp'
-void ID3_RemoveTrailingSpaces(char *buffer, luint length);
 
 #endif /* __ID3LIB_MISC_SUPPORT_H__ */
