@@ -1,4 +1,4 @@
-// $Id: error.cpp,v 1.5 2000/05/03 03:02:56 eldamitri Exp $
+// $Id: error.cpp,v 1.6 2000/05/12 21:07:26 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -50,13 +50,13 @@ static char *ID3_ErrorDescs[] =
   "error in zlib compression library"
 };
   
-ID3_Error::ID3_Error(const ID3_Err eCode, const char *sFileName, 
-                     const luint nLine, const char *sDesc)
+ID3_Error::ID3_Error(ID3_Err eCode, const char *sFileName, 
+                     size_t nLine, const char *sDesc)
 {
   __error = eCode;
   __line_num = nLine;
-  luint nFileNameLen = strlen(sFileName);
-  luint nDescLen = strlen(sDesc);
+  size_t nFileNameLen = strlen(sFileName);
+  size_t nDescLen = strlen(sDesc);
   
   __file_name = new char[nFileNameLen+1];
   __description     = new char[nDescLen+1];
@@ -65,29 +65,29 @@ ID3_Error::ID3_Error(const ID3_Err eCode, const char *sFileName,
 }
 
 
-ID3_Err ID3_Error::GetErrorID(void) const
+ID3_Err ID3_Error::GetErrorID() const
 {
   return __error;
 }
 
 
-char *ID3_Error::GetErrorType(void) const
+char *ID3_Error::GetErrorType() const
 {
   return ID3_ErrorDescs[__error];
 }
 
-char *ID3_Error::GetErrorDesc(void) const
+char *ID3_Error::GetErrorDesc() const
 {
   return __description;
 }
 
-char *ID3_Error::GetErrorFile(void) const
+char *ID3_Error::GetErrorFile() const
 {
   return __file_name;
 }
 
 
-luint ID3_Error::GetErrorLine(void) const
+size_t ID3_Error::GetErrorLine() const
 {
   return __line_num;
 }

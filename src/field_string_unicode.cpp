@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.10 2000/05/11 12:49:00 eldamitri Exp $
+// $Id: field_string_unicode.cpp,v 1.11 2000/05/12 21:07:26 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -47,7 +47,7 @@ ID3_Field& ID3_Field::operator= (const unicode_t *string)
 
 void ID3_Field::Set(const unicode_t *string)
 {
-  luint nBytes = (0 == __length) ? ucslen(string) : __length;
+  size_t nBytes = (0 == __length) ? ucslen(string) : __length;
   
   // we can simply increment the nBytes count here because we just pilfer
   // the NULL which is present in the string which was passed to us
@@ -108,9 +108,9 @@ void ID3_Field::Add(const unicode_t *string)
 
 // this is Get()
 
-luint ID3_Field::Get(unicode_t *buffer, const luint maxChars, const luint itemNum)
+size_t ID3_Field::Get(unicode_t *buffer, size_t maxChars, index_t itemNum)
 {
-  luint charsUsed = 0;
+  size_t charsUsed = 0;
   
   // check to see if there is a string in the frame to copy before we even try
   if (NULL != __data)
@@ -127,9 +127,9 @@ luint ID3_Field::Get(unicode_t *buffer, const luint maxChars, const luint itemNu
     if (itemNum <= GetNumTextItems() && itemNum > 0)
     {
       unicode_t *source = (unicode_t *) __data;
-      luint posn = 0;
-      luint sourceLen = 0;
-      luint curItemNum = 1;
+      size_t posn = 0;
+      size_t sourceLen = 0;
+      index_t curItemNum = 1;
       
       // now we find that element and set the souvre pointer
       while (curItemNum < itemNum)
@@ -157,7 +157,7 @@ luint ID3_Field::Get(unicode_t *buffer, const luint maxChars, const luint itemNu
         ID3_THROW(ID3E_NoBuffer);
       }
 
-      luint actualChars = MIN(maxChars, sourceLen);
+      size_t actualChars = MIN(maxChars, sourceLen);
         
       ucsncpy(buffer, source, actualChars);
       if (actualChars < maxChars)
@@ -172,13 +172,13 @@ luint ID3_Field::Get(unicode_t *buffer, const luint maxChars, const luint itemNu
 }
 
 
-luint ID3_Field::GetNumTextItems() const
+size_t ID3_Field::GetNumTextItems() const
 {
-  luint numItems = 0;
+  size_t numItems = 0;
   
   if (NULL != __data)
   {
-    luint posn = 0;
+    index_t posn = 0;
     
     numItems++;
     
@@ -234,7 +234,7 @@ ID3_Field::ParseUnicodeString(const uchar *buffer, size_t nSize)
       ID3_THROW(ID3E_NoMemory);
     }
 
-    luint loc = 0;
+    size_t loc = 0;
 
     memcpy(temp, buffer, nBytes);
     temp[nBytes / sizeof(unicode_t)] = NULL_UNICODE;
@@ -263,7 +263,7 @@ ID3_Field::ParseUnicodeString(const uchar *buffer, size_t nSize)
       */
       if (temp[0] == 0xFEFF)
       {
-        for (int i = loc; i < (int) ucslen(temp); i++)
+        for (index_t i = loc; i < (int) ucslen(temp); i++)
         {
           uchar
             u1 = ((uchar *)(&temp[i]))[0],
@@ -289,15 +289,14 @@ ID3_Field::ParseUnicodeString(const uchar *buffer, size_t nSize)
 }
 
 
-luint ID3_Field::RenderUnicodeString(uchar *buffer)
+size_t ID3_Field::RenderUnicodeString(uchar *buffer) const
 {
-  luint nBytes = 0;
+  size_t nBytes = 0;
   
   nBytes = BinSize();
   
   if (NULL != __data && __size && nBytes)
   {
-    luint i;
     unicode_t *ourString = (unicode_t *) & buffer[sizeof(unicode_t)];
     
     // we render at sizeof(unicode_t) bytes into the buffer because we make
@@ -305,6 +304,7 @@ luint ID3_Field::RenderUnicodeString(uchar *buffer)
     memcpy(&buffer[sizeof(unicode_t)], (uchar *) __data, 
            nBytes - sizeof(unicode_t));
     
+    index_t i;
     // now we convert the internal dividers to what they are supposed to be
     for (i = 0; i < nBytes; i++)
     {

@@ -1,4 +1,4 @@
-// $Id: utils.cpp,v 1.2 2000/05/06 21:10:16 eldamitri Exp $
+// $Id: utils.cpp,v 1.3 2000/05/12 21:07:26 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -60,11 +60,11 @@ namespace id3
 
   // converts an ASCII string into a Unicode one
 
-  void mbstoucs(unicode_t *unicode, const char *ascii, const luint len)
+  void mbstoucs(unicode_t *unicode, const char *ascii, size_t len)
   {
     if (NULL != ascii && NULL != unicode)
     {
-      for (luint i = 0; i < len; i++)
+      for (index_t i = 0; i < len; i++)
       {
         unicode[i] = ascii[i] & 0xFF;
       }
@@ -73,11 +73,11 @@ namespace id3
 
   // converts a Unicode string into ASCII
 
-  void ucstombs(char *ascii, const unicode_t *unicode, const luint len)
+  void ucstombs(char *ascii, const unicode_t *unicode, size_t len)
   {
     if (NULL != unicode && NULL != ascii)
     {
-      for (luint i = 0; i < len; i++)
+      for (index_t i = 0; i < len; i++)
       {
         ascii[i] = unicode[i] & 0x00FF;
       }

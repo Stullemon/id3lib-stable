@@ -1,4 +1,4 @@
-// $Id: field_string_ascii.cpp,v 1.10 2000/05/11 12:49:00 eldamitri Exp $
+// $Id: field_string_ascii.cpp,v 1.11 2000/05/12 21:07:26 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -70,43 +70,35 @@ void ID3_Field::Set(const char *sString)
 
 // the ::Get() function for ASCII
 
-luint ID3_Field::Get(char *buffer, const luint maxLength, const luint itemNum)
+size_t ID3_Field::Get(char* buffer, size_t maxLength, index_t itemNum)
 {
-  luint bytesUsed = 0;
-  unicode_t *temp;
-  char *ascii;
-  
-  temp = new unicode_t[maxLength];
-  if (NULL == temp)
+  unicode_t* unicode_buffer = new unicode_t[maxLength];
+  if (NULL == unicode_buffer)
   {
-    delete [] temp;
     ID3_THROW(ID3E_NoMemory);
   }
 
-  luint len = Get(temp, maxLength, itemNum);
+  size_t len = Get(unicode_buffer, maxLength, itemNum);
 
-  ascii = new char[len + 1];
-  if (NULL == ascii)
+  char* ascii_buffer = new char[len + 1];
+  if (NULL == ascii_buffer)
   {
-    delete [] ascii;
     ID3_THROW(ID3E_NoMemory);
   }
 
-  luint length;
+  ucstombs(ascii_buffer, unicode_buffer, len + 1);
+
+  size_t ascii_len = strlen(ascii_buffer);
+  size_t length = MIN(ascii_len, maxLength);
         
-  ucstombs(ascii, temp, len + 1);
-        
-  length = MIN(strlen(ascii), maxLength);
-        
-  strncpy(buffer, ascii, length);
+  strncpy(buffer, ascii_buffer, length);
   buffer[length] = '\0';
-  bytesUsed = length;
         
-  delete [] ascii;
+  delete [] ascii_buffer;
     
-  delete [] temp;
+  delete [] unicode_buffer;
     
-  return bytesUsed;
+  return length;
 }
 
 
@@ -114,17 +106,17 @@ void ID3_Field::Add(const char *sString)
 {
   if (sString)
   {
-    unicode_t *temp;
+    unicode_t *unicode_buffer;
     
-    temp = new unicode_t[strlen(sString) + 1];
-    if (NULL == temp)
+    unicode_buffer = new unicode_t[strlen(sString) + 1];
+    if (NULL == unicode_buffer)
     {
       ID3_THROW(ID3E_NoMemory);
     }
 
-    mbstoucs(temp, sString, strlen(sString) + 1);
-    Add(temp);
-    delete [] temp;
+    mbstoucs(unicode_buffer, sString, strlen(sString) + 1);
+    Add(unicode_buffer);
+    delete [] unicode_buffer;
     
     this->SetEncoding(ID3TE_ASCII);
     __type = ID3FTY_TEXTSTRING;
@@ -208,16 +200,16 @@ ID3_Field::ParseASCIIString(const uchar *buffer, size_t nSize)
 }
 
 
-luint ID3_Field::RenderASCIIString(uchar *buffer)
+size_t ID3_Field::RenderASCIIString(uchar *buffer) const
 {
-  luint nChars = BinSize();
+  size_t nChars = BinSize();
 
   if ((NULL != __data) && (nChars > 0))
   {
     ucstombs((char *) buffer, (unicode_t *) __data, nChars);
       
     // now we convert the internal dividers to what they are supposed to be
-    for (luint i = 0; i < nChars; i++)
+    for (index_t i = 0; i < nChars; i++)
     {
       if ('\1' == buffer[i])
       {

@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.10 2000/05/10 13:23:10 eldamitri Exp $
+// $Id: misc_support.cpp,v 1.11 2000/05/12 21:07:26 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -440,10 +440,10 @@ char *ID3_GetTrack(const ID3_Tag *tag)
   return sTrack;
 }
 
-luint ID3_GetTrackNum(const ID3_Tag *tag)
+size_t ID3_GetTrackNum(const ID3_Tag *tag)
 {
   char *sTrack = ID3_GetTrack(tag);
-  luint nTrack = 0;
+  size_t nTrack = 0;
   if (NULL != sTrack)
   {
     nTrack = atoi(sTrack);
@@ -470,12 +470,12 @@ ID3_Frame* ID3_AddTrack(ID3_Tag *tag, uchar ucTrack, uchar ucTotal, bool bReplac
         if (0 == ucTotal)
         {
           sTrack = new char[4];
-          sprintf(sTrack, "%lu", (luint) ucTrack);
+          sprintf(sTrack, "%lu", (size_t) ucTrack);
         }
         else
         {
           sTrack = new char[8];
-          sprintf(sTrack, "%lu/%lu", (luint) ucTrack, (luint) ucTotal);
+          sprintf(sTrack, "%lu/%lu", (size_t) ucTrack, (size_t) ucTotal);
         }
 
         trackFrame->SetID(ID3FID_TRACKNUM);
@@ -526,10 +526,10 @@ char *ID3_GetGenre(const ID3_Tag *tag)
   return sGenre;
 }
 
-luint ID3_GetGenreNum(const ID3_Tag *tag)
+size_t ID3_GetGenreNum(const ID3_Tag *tag)
 {
   char *sGenre = ID3_GetGenre(tag);
-  luint ulGenre = 0xFF;
+  size_t ulGenre = 0xFF;
   if (NULL == sGenre)
   {
     return ulGenre;
@@ -555,7 +555,7 @@ luint ID3_GetGenreNum(const ID3_Tag *tag)
   return ulGenre;
 }
 
-ID3_Frame* ID3_AddGenre(ID3_Tag *tag, luint ucGenre, bool bReplace)
+ID3_Frame* ID3_AddGenre(ID3_Tag *tag, size_t ucGenre, bool bReplace)
 {
   ID3_Frame* pFrame = NULL;
   if (NULL != tag && 0xFF != ucGenre)
@@ -570,7 +570,7 @@ ID3_Frame* ID3_AddGenre(ID3_Tag *tag, luint ucGenre, bool bReplace)
       if (NULL != pFrame)
       {
         char sGenre[6];
-        sprintf(sGenre, "(%lu)", (luint) ucGenre);
+        sprintf(sGenre, "(%lu)", (size_t) ucGenre);
 
         pFrame->SetID(ID3FID_CONTENTTYPE);
         pFrame->Field(ID3FN_TEXT) = sGenre;
@@ -721,7 +721,7 @@ size_t ID3_RemoveLyricist(ID3_Tag *tag)
 }
 
 ID3_Frame* ID3_AddSyncLyrics(ID3_Tag *tag, const char *lang, const char *desc,
-                             const uchar *text, luint textsize, bool bReplace)
+                             const uchar *text, size_t textsize, bool bReplace)
 {
   ID3_Frame* pFrame = NULL;
   // language and descriptor should be mandatory
@@ -769,8 +769,8 @@ ID3_Frame* ID3_AddSyncLyrics(ID3_Tag *tag, const char *lang, const char *desc,
 }
 
 ID3_Frame *ID3_GetSyncLyricsInfo(const ID3_Tag *tag, const char *lang, 
-                                 const char *desc, luint& stampformat, 
-                                 luint& type, luint& size)
+                                 const char *desc, size_t& stampformat, 
+                                 size_t& type, size_t& size)
 {
   // check if a SYLT frame of this language or descriptor exists
   ID3_Frame* pFrameExist = NULL;
@@ -809,7 +809,7 @@ ID3_Frame *ID3_GetSyncLyricsInfo(const ID3_Tag *tag, const char *lang,
 }
 
 ID3_Frame *ID3_GetSyncLyrics(const ID3_Tag *tag, const char *lang, 
-                             const char *desc, const uchar *pData, luint& size)
+                             const char *desc, const uchar *pData, size_t& size)
 {
   // check if a SYLT frame of this language or descriptor exists
   ID3_Frame* pFrameExist = NULL;

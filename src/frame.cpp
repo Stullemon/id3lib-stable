@@ -1,4 +1,4 @@
-// $Id: frame.cpp,v 1.13 2000/05/10 03:27:14 eldamitri Exp $
+// $Id: frame.cpp,v 1.14 2000/05/12 21:07:26 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -73,10 +73,10 @@ ID3_Frame::ID3_Frame(const ID3_Frame& frame)
 
 void ID3_Frame::_InitFieldBits()
 {
-  luint lWordsForFields =
-    (((luint) ID3FN_LASTFIELDID) - 1) / (sizeof(luint) * 8);
+  size_t lWordsForFields =
+    (((uint32) ID3FN_LASTFIELDID) - 1) / (sizeof(uint32) * 8);
   
-  if ((((luint) ID3FN_LASTFIELDID) - 1) % (sizeof(luint) * 8) != 0)
+  if ((((uint32) ID3FN_LASTFIELDID) - 1) % (sizeof(uint32) * 8) != 0)
   {
     lWordsForFields++;
   }
@@ -85,19 +85,19 @@ void ID3_Frame::_InitFieldBits()
   {
     delete [] __field_bitset;
   }
-  __field_bitset = new luint[lWordsForFields];
+  __field_bitset = new uint32[lWordsForFields];
   if (NULL == __field_bitset)
   {
     ID3_THROW(ID3E_NoMemory);
   }
 
-  for (luint i = 0; i < lWordsForFields; i++)
+  for (index_t i = 0; i < lWordsForFields; i++)
   {
     __field_bitset[i] = 0;
   }
 }
 
-ID3_Frame::~ID3_Frame(void)
+ID3_Frame::~ID3_Frame()
 {
   Clear();
   
@@ -113,7 +113,7 @@ bool ID3_Frame::_ClearFields()
   {
     return false;
   }
-  for (luint i = 0; i < __num_fields; i++)
+  for (index_t i = 0; i < __num_fields; i++)
   {
     delete __fields[i];
   }
@@ -131,7 +131,7 @@ bool ID3_Frame::_ClearFields()
   return true;
 }
 
-void ID3_Frame::Clear(void)
+void ID3_Frame::Clear()
 {
   this->_ClearFields();
   __hdr.Clear();
@@ -162,7 +162,7 @@ void ID3_Frame::_InitFields()
     ID3_THROW(ID3E_NoMemory);
   }
 
-  for (luint i = 0; i < __num_fields; i++)
+  for (index_t i = 0; i < __num_fields; i++)
   {
     __fields[i] = new ID3_Field;
     if (NULL == __fields[i])
@@ -203,13 +203,13 @@ bool ID3_Frame::_SetID(ID3_FrameID id)
   return changed;
 }
 
-ID3_FrameID ID3_Frame::GetID(void) const
+ID3_FrameID ID3_Frame::GetID() const
 {
   return __hdr.GetFrameID();
 }
 
 
-bool ID3_Frame::SetSpec(const ID3_V2Spec spec)
+bool ID3_Frame::SetSpec(ID3_V2Spec spec)
 {
   return __hdr.SetSpec(spec);
 }
@@ -270,10 +270,9 @@ void ID3_Frame::_UpdateStringTypes()
 }
 
 
-luint ID3_Frame::Size(void)
+size_t ID3_Frame::Size()
 {
-  luint bytesUsed = 0;
-  bytesUsed += __hdr.Size();
+  size_t bytesUsed = __hdr.Size();
   
   if (strlen(__encryption_id))
   {
@@ -301,7 +300,7 @@ luint ID3_Frame::Size(void)
 }
 
 
-bool ID3_Frame::HasChanged(void) const
+bool ID3_Frame::HasChanged() const
 {
   bool changed = __changed;
   

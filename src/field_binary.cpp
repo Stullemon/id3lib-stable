@@ -1,4 +1,4 @@
-// $Id: field_binary.cpp,v 1.8 2000/05/09 13:30:08 eldamitri Exp $
+// $Id: field_binary.cpp,v 1.9 2000/05/12 21:07:26 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -33,7 +33,7 @@
 #include <config.h>
 #endif
 
-void ID3_Field::Set(const uchar *newData, const luint newSize)
+void ID3_Field::Set(const uchar *newData, size_t newSize)
 {
   Clear();
   
@@ -63,7 +63,7 @@ void ID3_Field::Set(const uchar *newData, const luint newSize)
 }
 
 
-void ID3_Field::Get(uchar *buffer, const luint buffLength)
+void ID3_Field::Get(uchar *buffer, size_t buffLength)
 {
   if (NULL == buffer)
   {
@@ -72,44 +72,36 @@ void ID3_Field::Get(uchar *buffer, const luint buffLength)
     
   if (__data != NULL && __size > 0)
   {
-    luint actualBytes = MIN(buffLength, __size);
-    
-    memcpy(buffer, __data, actualBytes);
+    memcpy(buffer, __data, MIN(buffLength, __size));
   }
-  
-  return ;
 }
 
 
 void ID3_Field::FromFile(const char *info)
 {
-  FILE *temp;
-  luint fileSize;
-  uchar *buffer;
-  
-  if (NULL == info)
+  if (!info)
   {
-    ID3_THROW(ID3E_NoData);
+    return;
   }
     
-  temp = fopen(info, "rb");
-  if (temp != NULL)
+  FILE* temp_file = fopen(info, "rb");
+  if (temp_file != NULL)
   {
-    fseek(temp, 0, SEEK_END);
-    fileSize = ftell(temp);
-    fseek(temp, 0, SEEK_SET);
+    fseek(temp_file, 0, SEEK_END);
+    size_t fileSize = ftell(temp_file);
+    fseek(temp_file, 0, SEEK_SET);
     
-    buffer = new uchar[fileSize];
+    uchar* buffer = new uchar[fileSize];
     if (buffer != NULL)
     {
-      fread(buffer, 1, fileSize, temp);
+      fread(buffer, 1, fileSize, temp_file);
       
-      Set(buffer, fileSize);
+      this->Set(buffer, fileSize);
       
       delete [] buffer;
     }
     
-    fclose(temp);
+    fclose(temp_file);
   }
   
   return ;
@@ -125,13 +117,11 @@ void ID3_Field::ToFile(const char *info) const
     
   if ((__data != NULL) && (__size > 0))
   {
-    FILE *temp;
-    
-    temp = fopen(info, "wb");
-    if (temp != NULL)
+    FILE* temp_file = fopen(info, "wb");
+    if (temp_file != NULL)
     {
-      fwrite(__data, 1, __size, temp);
-      fclose(temp);
+      fwrite(__data, 1, __size, temp_file);
+      fclose(temp_file);
     }
   }
   
@@ -152,15 +142,10 @@ ID3_Field::ParseBinary(const uchar *buffer, size_t nSize)
 }
 
 
-luint 
-ID3_Field::RenderBinary(uchar *buffer)
+size_t ID3_Field::RenderBinary(uchar *buffer) const
 {
-  luint bytesUsed = 0;
-  
-  bytesUsed = BinSize();
+  size_t bytesUsed = BinSize();
   memcpy(buffer, (uchar *) __data, bytesUsed);
-  
   __changed = false;
-  
   return bytesUsed;
 }

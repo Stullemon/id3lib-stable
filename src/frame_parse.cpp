@@ -1,4 +1,4 @@
-// $Id: frame_parse.cpp,v 1.12 2000/05/12 04:18:19 eldamitri Exp $
+// $Id: frame_parse.cpp,v 1.13 2000/05/12 21:07:26 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -31,7 +31,7 @@
 #include <config.h>
 #endif
 
-size_t ID3_Frame::Parse(const uchar * const buffer, luint size) 
+size_t ID3_Frame::Parse(const uchar * const buffer, size_t size) 
 { 
   __bad_parse = false;  
   size_t hdr_size = __hdr.Parse(buffer, size);  
@@ -88,7 +88,7 @@ size_t ID3_Frame::Parse(const uchar * const buffer, luint size)
         switch ((*fi)->GetType())
         {
           case ID3FTY_INTEGER:
-            **fi = (luint) 0;
+            **fi = (uint32) 0;
             break;
           default:
             **fi = "";
@@ -131,29 +131,3 @@ size_t ID3_Frame::Parse(const uchar * const buffer, luint size)
  
   return MIN(hdr_size + data_size, size);  
 } 
-
-/*
-void ID3_Frame::Parse(const uchar *buffer, luint size)
-{
-  luint i;
-  luint posn = 0;
-  
-  for (i = 0; i < __num_fields; i++)
-  {
-    __fields[i]->SetSpec(__hdr.GetSpec());
-    posn += __fields[i]->Parse(buffer, posn, size);
-    
-    // if we just parsed a TEXTENC field, we'd better tell the rest of the
-    // concerned string fields in the frame what they are expected to parse
-    // (ASCII or Unicode)
-    if (ID3FN_TEXTENC == __fields[i]->__id)
-    {
-      UpdateStringTypes();
-    }
-  }
-  
-  __changed = false;
-  
-  return ;
-}
-*/
