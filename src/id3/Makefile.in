@@ -87,7 +87,7 @@ RANLIB = @RANLIB@
 VERSION = @VERSION@
 canonical_host_type = @canonical_host_type@
 
-LTVERSION = 3:5:0
+LTVERSION = 3:6:0
 
 INCLUDES = -I$(srcdir)/..
 
@@ -100,12 +100,14 @@ the_headers =    dll.h                           error.h                        
 lib_LTLIBRARIES = libid3.la 
 
 libid3_la_SOURCES = $(the_sources)
-CXXFLAGS = -Wall -g
+# CXXFLAGS = -Wall
 libid3_la_LIBADD = -lz
 libid3_la_LDFLAGS = -version-info $(LTVERSION)
 
 id3includedir = $(includedir)/id3
 id3include_HEADERS = $(the_headers)
+
+EXTRA_DIST = ChangeLog
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
@@ -122,13 +124,14 @@ field_integer.lo field_string_ascii.lo field_string_unicode.lo frame.lo \
 frame_parse.lo frame_render.lo header.lo header_frame.lo header_tag.lo \
 int28.lo misc_support.lo tag.lo tag_file.lo tag_find.lo tag_parse.lo \
 tag_parse_lyrics3.lo tag_parse_v1.lo tag_render.lo tag_sync.lo
+CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(id3include_HEADERS)
 
-DIST_COMMON =  Makefile.am Makefile.in
+DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)

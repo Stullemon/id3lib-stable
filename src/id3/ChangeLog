@@ -1,5 +1,7 @@
 1999-11-15  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
+	* Makefile.am: Upped the version info to 3.0.6.
+
 	* tag_render.cpp:
 	Added include for config.h.  Minor code cleanup.  Removed
  	assignments from if checks; first makes assignment, then checks
