@@ -1,4 +1,4 @@
-// $Id: readers_compressed.h,v 1.1 2000/10/02 17:08:13 eldamitri Exp $
+// $Id: readers_compressed.h,v 1.2 2000/10/09 01:56:20 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,66 +28,34 @@
 #define _ID3LIB_READERS_COMPRESSED_H_
 
 #include "readers.h"
+#include <zlib.h>
 
 namespace dami
 {
   namespace io
   {
-    class CompressedMemoryReader : public ID3_MemoryReader
+    class CompressedReader : public ID3_MemoryReader
     {
-      char* _uncompressed;
+      char_type* _uncompressed;
      public:
       
-      CompressedMemoryReader(const char* buffer, size_t size, size_t new_size)
-      : _uncompressed(new char[new_size])
+      CompressedReader(ID3_Reader& reader, size_type newSize)
+        : _uncompressed(new char_type[newSize])
       {
-        ::uncompress(reinterpret_cast<uchar*>(_uncompressed),
-                     reinterpret_cast<luint*>(&new_size),
+        size_type oldSize = reader.remainingChars();
+        char_type buffer[oldSize];
+        reader.readChars(buffer, oldSize);
+        ::uncompress(_uncompressed,
+                     reinterpret_cast<luint*>(&newSize),
                      reinterpret_cast<const uchar*>(buffer),
-                     size);
-        this->setBuffer(_uncompressed, new_size);
+                     oldSize);
+        this->setBuffer(_uncompressed, newSize);
       }
       
-      CompressedMemoryReader(const uchar* buffer, size_t size, size_t new_size)
-      : _uncompressed(new char[new_size])
-      {
-        ::uncompress(reinterpret_cast<uchar*>(_uncompressed),
-                     reinterpret_cast<luint*>(&new_size), buffer,
-                     size);
-        this->setBuffer(_uncompressed, new_size);
-      }
-      
-      virtual ~CompressedMemoryReader() 
+      virtual ~CompressedReader() 
       { 
         delete [] _uncompressed; 
       }
-      
-    };
-    
-    class CompressedStreamReader : public ID3_MemoryReader
-    {
-      char* _uncompressed;
-     public:
-      
-      CompressedStreamReader(ID3_Reader& reader, streamsize new_size)
-      : _uncompressed(new char[new_size])
-      {
-        size_t old_size = reader.remainingChars();
-        uchar* buffer = new uchar[old_size];
-        reader.readChars(buffer, old_size);
-        ::uncompress(reinterpret_cast<uchar*>(_uncompressed),
-                     reinterpret_cast<luint*>(&new_size),
-                     reinterpret_cast<const uchar*>(buffer),
-                     old_size);
-        this->setBuffer(_uncompressed, new_size);
-        delete [] buffer;
-      }
-      
-      virtual ~CompressedStreamReader() 
-      { 
-        delete [] _uncompressed; 
-      }
-      
     };
   };
 };
