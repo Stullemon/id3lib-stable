@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.5 2000/04/26 03:42:52 eldamitri Exp $
+// $Id: tag.cpp,v 1.6 2000/04/26 15:49:18 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -444,7 +444,7 @@ bool ID3_Tag::HasChanged(void) const
   return changed;
 }
 
-void ID3_Tag::SetSpec(ID3_V2Spec spec)
+void ID3_Tag::SetSpec(const ID3_V2Spec spec)
 {
   __bHasChanged = __bHasChanged || (spec != __spec);
   __spec = spec;
@@ -626,6 +626,9 @@ ID3_Tag::operator=( const ID3_Tag &rTag )
 }
 
 // $Log: tag.cpp,v $
+// Revision 1.6  2000/04/26 15:49:18  eldamitri
+// (SetSpec): Parameter now const
+//
 // Revision 1.5  2000/04/26 03:42:52  eldamitri
 // - Replaced version/revision uchar combination with ID3_V2Spec enums
 // - Deprecated {Get,Set}Version, GetRevision for {Get,Set}Spec
