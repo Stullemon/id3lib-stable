@@ -1,5 +1,8 @@
 1999-12-02  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
+	* NEWS: 
+	Added update for release 3.6.2.
+
 	* configure.in
 	(id3lib_patch): Upped to 2 for new release 3.6.2
 	(AC_OUTPUT): Added Makefiles for prj and zlib and its subdirs
