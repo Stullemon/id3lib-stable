@@ -1,3 +1,61 @@
+1999-12-08  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* include/id3/misc_support.h 
+	(ID3_GetString): Added nItems parameter for retrieving a string from a
+	list (for example, the involved people list).
+
+	* include/id3/tag.h 
+	(class ID3_Tag): Added copy constructor and operator= method 
+	declarations.
+
+	* include/id3/frame.h 
+	(class ID3_Frame): Added operator= method declaration.
+
+	* include/id3/field.h
+	(class ID3_Field): Added const to Get method.  Added operator= method
+	declaration.
+
+	* src/id3/tag_file.cpp: 
+	Minor code cleanup.
+
+	* src/id3/tag.cpp 
+	(ID3_Tag): Added copy constructor implementation.
+	(operator=): Added implementation.
+
+	* src/id3/misc_support.cpp 
+	(ID3_GetString): Added implementation for new nIndex parameter, which
+	will pull out the nIndex'th string from the field, such as for the
+	involved people list frame.
+	(ID3_GetGenre): Fixed bug that wasn't finding the track num frame 
+	rather than the genre frame (thanks Alexander Voronin).
+
+	* src/id3/frame.cpp 
+	(operator=): Added implementation.
+
+	* src/id3/field_string_unicode.cpp 
+	(Add): Cleaned up and restructured code to make for easier reading. 
+	Also fixed a bug in adding strings to an involved people list frame.
+
+	* src/id3/field_string_ascii.cpp 
+	(ParseASCIIString): Fixed bug which prevented correct parsing of fields
+	separated with NULL dividers (such as the involved people frame).  
+	Slightly restructured the code for better performance.
+
+	* src/id3/field_integer.cpp 
+	(Get): Added const qualifier.
+
+	* src/id3/field.cpp 
+	(): Better comments of the ID3VC_HIGHER/ID3VC_LOWER section in the
+	field defs.
+	(operator=): Added implementation.
+
+	* src/examples/demo_info.cpp 
+	(PrintInformation): Separated out information printing code into this
+	separate function.
+	(main): Added new runtime option -a that will test the ability of
+	id3lib to make copies of tags.  Not very useful in general, but nice
+	for testing the new operator= code.
+
 1999-12-05  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* src/examples/Makefile.am
