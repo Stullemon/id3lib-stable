@@ -1,4 +1,4 @@
-// $Id: tag_find.cpp,v 1.23 2000/10/16 08:55:12 eldamitri Exp $
+// $Id: tag_find.cpp,v 1.24 2000/10/21 22:26:17 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -144,7 +144,7 @@ ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, String data) con
           ID3D_NOTICE( "Find: didn't have the right field" );
         }
 
-        String text(fld->GetText(), fld->Size());
+        String text(fld->GetRawText(), fld->Size());
         ID3D_NOTICE( "Find: text = " << text.c_str() );
 
         if (text == data)
@@ -193,7 +193,7 @@ ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, WString data) co
         {
           continue;
         }
-        WString text = toWString(fld->GetUnicodeText(), fld->Size());
+        WString text = toWString(fld->GetRawUnicodeText(), fld->Size());
 
         if (text == data)
         {
@@ -256,12 +256,11 @@ ID3_Frame *ID3_TagImpl::GetFrameNum(index_t num) const
   }
 
   ID3_Frame *frame = NULL;
-  index_t curNum = numFrames;
+  index_t curNum = 0;
   // search from the cursor to the end
   for (const_iterator cur = _frames.begin(); cur != _frames.end(); ++cur)
   {
-    // compare and advance counter
-    if (num == --curNum)
+    if (curNum++ == num)
     {
       frame = *cur;
       break;
