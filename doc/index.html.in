@@ -1,4 +1,4 @@
-<!-- $Id: index.html.in,v 1.5 2000/04/28 16:36:13 eldamitri Exp $ -->
+<!-- $Id: index.html.in,v 1.6 2000/05/05 03:13:46 eldamitri Exp $ -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
@@ -307,11 +307,22 @@
               <a href="http://www.zlurp.com">Zlurp!</a> is an all-in-one CD
               audio tool for Windows that rips, encodes and tags CDs.
 
+              <br><br>
+              
             <li>
 
               <a href="http://www.adcock8.freeserve.co.uk/">The javpc
               project</a>'s goal is to turn a PC into an audio/visual unit
               sutibale for plugging into a Hi-Fi and TV.
+
+              <br><br>
+
+            <li>
+
+              <a href="http://coconutbeach.hypermart.net/sonize">Sonize</a> is
+              a collection of small but powerful tools integrated in one
+              application that organizes and prepares your mp3 files for
+              publishing on CDROM
 
           </ul>
           
