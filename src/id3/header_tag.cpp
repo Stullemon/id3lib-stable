@@ -1,4 +1,4 @@
-// $Id: header_tag.cpp,v 1.9 1999/12/26 15:11:33 scott Exp $
+// $Id: header_tag.cpp,v 1.10 1999/12/27 05:32:13 scott Exp $
 // 
 // This program is free software; you can distribute it and/or modify it under
 // the terms discussed in the COPYING file, which should have been included
@@ -30,18 +30,18 @@ lsint ID3_IsTagHeader(uchar header[ID3_TAGHEADERSIZE])
 {
   lsint tagSize = -1;
   
-  if (memcmp("ID3", header, 3) == 0)
-    if (header[3] <= ID3_TAGVERSION)
-    {
-      int28 temp = &header[6];
-      tagSize = temp.get();
-    }
+  if ((memcmp(ID3_TAGID, header, ID3_TAGIDSIZE) == 0) &&
+      (header[ID3_TAGIDSIZE] <= ID3v2_VERSION))
+  {
+    int28 temp = &header[6];
+    tagSize = temp.get();
+  }
     
   return tagSize;
 }
 
 
-luint ID3_TagHeader::Size(void)
+size_t ID3_TagHeader::Size(void)
 {
   size_t bytesUsed = ID3_TAGHEADERSIZE;
   
@@ -54,7 +54,7 @@ luint ID3_TagHeader::Size(void)
 }
 
 
-luint ID3_TagHeader::Render(uchar *buffer)
+size_t ID3_TagHeader::Render(uchar *buffer)
 {
   size_t bytesUsed = 0;
   
@@ -98,6 +98,10 @@ luint ID3_TagHeader::Render(uchar *buffer)
 }
 
 // $Log: header_tag.cpp,v $
+// Revision 1.10  1999/12/27 05:32:13  scott
+// (Size, Render): Minor return type change.
+// (ID3_IsTagHeader): Updated for new version constants.
+//
 // Revision 1.9  1999/12/26 15:11:33  scott
 // (Render): Now uses RenderNumber, defined in misc_support.
 //
