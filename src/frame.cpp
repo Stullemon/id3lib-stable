@@ -1,4 +1,4 @@
-// $Id: frame.cpp,v 1.20 2000/06/06 12:22:49 eldamitri Exp $
+// $Id: frame.cpp,v 1.21 2000/06/14 16:38:32 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -40,7 +40,7 @@
  ** the implementation of a complex APIC frame and for a simple text frame.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: frame.cpp,v 1.20 2000/06/06 12:22:49 eldamitri Exp $
+ ** @version $Id: frame.cpp,v 1.21 2000/06/14 16:38:32 eldamitri Exp $
  ** @see ID3_Tag
  ** @see ID3_Field
  ** @see ID3_Err
@@ -186,20 +186,20 @@ void ID3_Frame::_InitFields()
   {
     ID3_THROW(ID3E_InvalidFrameID);
   }
-      
+  
   __num_fields = 0;
-      
+  
   while (info->aeFieldDefs[__num_fields].eID != ID3FN_NOFIELD)
   {
     __num_fields++;
   }
-      
+  
   __fields = new ID3_Field * [__num_fields];
   if (NULL == __fields)
   {
     ID3_THROW(ID3E_NoMemory);
   }
-
+  
   for (index_t i = 0; i < __num_fields; i++)
   {
     __fields[i] = new ID3_Field;
@@ -388,9 +388,9 @@ ID3_Frame::operator=( const ID3_Frame &rFrame )
   return *this;
 }
 
-const char* ID3_Frame::GetDescription(ID3_FrameID eFrameID)
+const char* ID3_Frame::GetDescription(ID3_FrameID id)
 {
-  ID3_FrameDef* myFrameDef = ID3_FindFrameDef(eFrameID);
+  ID3_FrameDef* myFrameDef = ID3_FindFrameDef(id);
   if (myFrameDef != NULL)
   {
     return myFrameDef->sDescription;
