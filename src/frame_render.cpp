@@ -1,4 +1,4 @@
-// $Id: frame_render.cpp,v 1.25 2002/07/05 12:31:36 t1mpy Exp $
+// $Id: frame_render.cpp,v 1.26 2002/07/06 13:52:56 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -103,11 +103,13 @@ void ID3_FrameImpl::Render(ID3_Writer& writer) const
 
   size_t fldSize = flds.size();
   ID3D_NOTICE ( "ID3_FrameImpl::Render(): field size = " << fldSize );
-  if (fldSize == 0)
-  {
-    ID3D_WARNING ( "ID3_FrameImpl::Render(): no field data" );
-    return;
-  }
+// No need to not write empty frames, why would we not? They can be used to fill up padding space
+// which is even recommended in the id3 spec.
+//  if (fldSize == 0)
+//  {
+//    ID3D_WARNING ( "ID3_FrameImpl::Render(): no field data" );
+//    return;
+//  }
   
   // determine which flags need to be set
   uchar eID = this->GetEncryptionID(), gID = this->GetGroupingID();
@@ -131,25 +133,28 @@ void ID3_FrameImpl::Render(ID3_Writer& writer) const
   // write out the header
   hdr.Render(writer);
 
-  // No-man's land!  Not part of the header, not part of the data
-  if (hdr.GetCompression())
+  if (fldSize != 0)
   {
-    io::writeBENumber(writer, origSize, sizeof(uint32));
-    ID3D_NOTICE( "ID3_FrameImpl::Render(): frame is compressed, wrote origSize = " << origSize );
-  }
-  if (hdr.GetEncryption())
-  {
-    writer.writeChar(eID);
-    ID3D_NOTICE( "ID3_FrameImpl::Render(): frame is compressed, encryption id = " << eID );
-  }
-  if (hdr.GetGrouping())
-  {
-    writer.writeChar(gID);
-    ID3D_NOTICE( "ID3_FrameImpl::Render(): frame is compressed, grouping id = " << gID );
-  }
+    // No-man's land!  Not part of the header, not part of the data
+    if (hdr.GetCompression())
+    {
+      io::writeBENumber(writer, origSize, sizeof(uint32));
+      ID3D_NOTICE( "ID3_FrameImpl::Render(): frame is compressed, wrote origSize = " << origSize );
+    }
+    if (hdr.GetEncryption())
+    {
+      writer.writeChar(eID);
+      ID3D_NOTICE( "ID3_FrameImpl::Render(): frame is compressed, encryption id = " << eID );
+    }
+    if (hdr.GetGrouping())
+    {
+      writer.writeChar(gID);
+      ID3D_NOTICE( "ID3_FrameImpl::Render(): frame is compressed, grouping id = " << gID );
+    }
 
-  // Write the field data
-  writer.writeChars(flds.data(), fldSize);
+    // Write the field data
+    writer.writeChars(flds.data(), fldSize);
+  }
   _changed = false;
 }
 

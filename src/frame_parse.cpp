@@ -1,4 +1,4 @@
-// $Id: frame_parse.cpp,v 1.33 2002/07/02 22:12:45 t1mpy Exp $
+// $Id: frame_parse.cpp,v 1.34 2002/07/06 13:53:18 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -37,28 +37,32 @@ namespace
 {
   bool parseFields(ID3_Reader& rdr, ID3_FrameImpl& frame)
   {
+    int iLoop;
+    int iFields;
     io::ExitTrigger et(rdr);
     ID3_TextEnc enc = ID3TE_ASCII;  // set the default encoding 
     ID3_V2Spec spec = frame.GetSpec(); 
     // parse the frame's fields  
-    ID3D_NOTICE( "ID3_FrameImpl::Parse(): num_fields = " << 
-                 frame.NumFields() );
+    iFields = frame.NumFields();
+    ID3D_NOTICE( "ID3_FrameImpl::Parse(): num_fields = " << iFields );
+    iLoop = 0;
     for (ID3_FrameImpl::iterator fi = frame.begin(); fi != frame.end(); ++fi)
     {
       ID3_Field* fp = *fi;
+      ++iLoop;
 
       if (rdr.atEnd())
       { 
         // there's no remaining data to parse! 
         ID3D_WARNING( "ID3_FrameImpl::Parse(): out of data at postion " <<
                       rdr.getCur() );
-        if(fp->GetType() == ID3FTY_TEXTSTRING)  //correct handling of winamp-esque empty frames
-		{
-			// Exit the loop (don't just return true).
-			// This will set the current "pointer" of the reader to the correct value
-			break;
-		}
-
+        if (iLoop == iFields)
+        {
+          //if we are at the last field, (the 'data' field) it's apparently
+          //an empty tag used for filling up padding, it's no problem
+          //break will set the current 'cursor' to the right spot outside the for loop
+          break;
+        }
         return false;
       } 
       
