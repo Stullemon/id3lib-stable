@@ -1,4 +1,4 @@
-// $Id: header.cpp,v 1.4 2000/04/26 03:42:52 eldamitri Exp $
+// $Id: header.cpp,v 1.5 2000/04/26 15:50:24 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -65,12 +65,12 @@ ID3_HeaderInfo* ID3_LookupHeaderInfo(uchar ver, uchar rev)
 
 ID3_Header::ID3_Header(void)
 {
-  SetSpec();
+  SetSpec(ID3V2_LATEST);
   __ulDataSize = 0;
   __ulFlags = 0;
 }
 
-void ID3_Header::SetSpec(ID3_V2Spec spec)
+void ID3_Header::SetSpec(const ID3_V2Spec spec)
 {
   __spec = spec;
   __pInfo = ID3_LookupHeaderInfo(spec);
@@ -132,6 +132,10 @@ ID3_Header &ID3_Header::operator=( const ID3_Header& hdr )
 }
 
 // $Log: header.cpp,v $
+// Revision 1.5  2000/04/26 15:50:24  eldamitri
+// (ID3_Header): Made call to SetSpec have explicit parameter
+// (SetSpec): Parameter now const
+//
 // Revision 1.4  2000/04/26 03:42:52  eldamitri
 // - Replaced version/revision uchar combination with ID3_V2Spec enums
 // - Deprecated {Get,Set}Version, GetRevision for {Get,Set}Spec
