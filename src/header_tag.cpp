@@ -1,4 +1,4 @@
-// $Id: header_tag.cpp,v 1.6 2000/05/03 14:05:34 eldamitri Exp $
+// $Id: header_tag.cpp,v 1.7 2000/05/03 23:24:03 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,10 +28,13 @@
 #include "uint28.h"
 #include "utils.h"
 #include "tag.h"
+#include <string.h>
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+const char* const ID3_TagHeader::ID = "ID3";
 
 bool ID3_TagHeader::SetSpec(const ID3_V2Spec spec)
 {
