@@ -1,4 +1,4 @@
-// $Id: error.cpp,v 1.13 2000/04/08 04:34:37 eldamitri Exp $
+// $Id: error.cpp,v 1.2 2000/04/18 22:10:09 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -94,6 +94,9 @@ luint ID3_Error::GetErrorLine(void) const
 
 
 // $Log: error.cpp,v $
+// Revision 1.2  2000/04/18 22:10:09  eldamitri
+// Moved error.cpp from src/id3/ to src/
+//
 // Revision 1.13  2000/04/08 04:34:37  eldamitri
 // Changed new ANSI-standard C++ include headers to old-style headers.
 //
