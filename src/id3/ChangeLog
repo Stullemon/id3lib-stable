@@ -1,3 +1,110 @@
+1999-11-25  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* version.h: 
+	Added doc++/kdoc/javadoc-like documentation.  Replaced #define's with
+	const's.
+
+	* types.h: Removed typedefs, which are now included in the globas.h
+	file.
+
+	* tag.h
+	(): Added doc++/kdoc/javadoc-like documentation, mostly transcribed
+	from Dirk's ID3Lib Documentation MSWord doc.
+	(ID3_TagTypes): Added.  The different types of tags that can be parsed
+	and/or rendered by id3lib.
+	(class ID3_Tag): Changed the interface to AddFrame slightly.  Now there
+	is two AddTag-like methods: AddTag and AddNewTag.  The former merely
+	attaches the frame to the tag without taking repsonsibility for 
+	deallocating the frame when the tag goes out of scope or is deleted.
+	The latter does take this responsibility.  Granted, there could be a
+	better interface for this, but it works for now...  Update and Strip
+	now return flags which indicate what tags were actually updated or
+	stripped.  Removed OpenLinkedFile method; replaced with 
+	OpenFileForReading, OpenFileForWriting, and CreateFile.
+
+	* frame.h: 
+	Added doc++/kdoc/javadoc-like documentation, mostly transcribed
+	from Dirk's ID3Lib Documentation MSWord doc.
+	
+	* field.h
+	(): Added doc++/kdoc/javadoc-like documentation, mostly transcribed
+	from Dirk's ID3Lib Documentation MSWord doc.
+ 	(ID3_FieldFlags ): Created enumeration to replace generic constants.
+	(ID3_FieldID): Removed.  Replaced in globals.h.
+	(ID3_FrameID): Removed.  Replaced in globals.h.
+	(class ID3_Field): Made the constructor private.
+
+	* error.h 
+	(): Added doc++/kdoc/javadoc-like documentation.
+	(ID3_Err): Added error types SmallBuffer and ReadOnly.
+
+	* misc_support.cpp: Replaced every call to AddFrame with AddNewFrame.
+
+	* tag_render.cpp
+ 	(Render): Replaced manual array initialization with call to memset.
+	(GenerateTempName): Removed method.  No longer used.
+	(RenderV1): New method.  Renders an id3v1 tag to an array.
+	(RenderV1ToHandle): Moved work of writing tag to array to RenderV1.
+	(RenderV2ToHandle): Rather than generating a temporary file name with
+	mktemp (or similar) and opening that file name to a temporary file,
+	we now use tmpfile to create a temporary file directly.  Unfortunately,
+	this means we can't just rename the tempfile to the original file
+	when all the copying is done, so we have to perform a second copy from
+	the temp file back to the original.  This makes the code less efficient
+	but more portable, as we rely on tmpfile for knowing where to create
+	the temporary file.  To improve, we'll need to figure out a portable
+	mechanism for creating temporary files (i.e., resolve the differences
+	between /tmp/ and C:\temp\).
+	
+
+	* tag_parse.cpp 
+	(ProcessBinaries): Minor code reorg.
+
+	* tag_file.cpp
+	(OpenLinkedFile): Removed method.  Replaced with CreateFile,
+ 	OpenFileForReading, and OpenFileForWriting.
+ 	(CreateFile): New method.  Creates a new file with file name sFileName.
+	Throws if unable to.
+	(OpenFileForWriting): New method.  Opens a file with write permissions.
+	Throws if unable to.
+	(OpenFileForReading): New method.  Opens a file with read permissions.
+	Throws if unable to.
+	(CloseFile): New method.  Closes a file.  Returns true if successful,
+	false otherwise.
+	(Link): Now dynamically allocate sFileName.  Make use of new method
+	OpenFileForReading rather than OpenLinkedFile.  Closes the file
+	when done.
+	(Update): Now returns a flag indicating which tags were actually
+	written.  Calls OpenFileForWriting to open the file appropriately.
+	Closes the file when done.
+	(Strip): Now returns a flag indicating which tags were actually
+ 	written.  Now strips a file "in place," by copying the non-stripped
+	information to the beginning of the file and using ftruncate to chop
+	off the rest.  Prevents having to create a temporary file.  Calls
+	OpenFileForWriting to open the file appropriately.  Closes the file
+	when done.
+
+	* tag.cpp 
+	(SetupTag): Initialized sFileName to NULL rather than the empty string
+	to indicate no filename is present.
+	(ID3_Tag): Deleted sFileName if allocated.  Added call to CloseFile.
+	(AddFrame): Modified to reflect change in interface.  AddFrame now adds
+	a frame without taking responsibility for deallocating the memory when
+	the tag goes out of scope.
+	(AddNewFrame): New method.  AddNewFrame adds a frame and takes 
+	responsibility for deallocating the frame when the tag goes out of 
+	scope.
+
+	* error.cpp 
+	(ID3_ErrorDescs): Added descriptions for new error types.
+	(ID3_Error): Minor bugfix in string copying.
+
+	* dll.h: Removed many of the enums and typedefs to globals.h to
+	reduce redundancy.
+
+	* globals.h: Added.  Includes constants, typedefs, and enums common
+	to several files that were redundantly copying them.
+
 1999-11-19  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* tag_render.cpp

@@ -1,5 +1,10 @@
 1999-11-25  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
+	* Makefile.am: Removed demo_strip from the make rules.
+
+	* demo_strip.cpp: Removed.  Functionality now in demo_convert.cpp with
+	the -s flag.
+	
 	* demo_convert.cpp
  	(PrintUsage): Added for printing usage information.
 	(PrintVersion): Added for printing version information.
