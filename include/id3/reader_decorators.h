@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: reader_decorators.h,v 1.6 2000/10/12 22:29:33 eldamitri Exp $
+// $Id: reader_decorators.h,v 1.7 2000/10/13 18:19:48 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -516,8 +516,9 @@ namespace dami
         
         for (size_type i = 0; i < bytes.size(); i++)
         {
+          ID3D_NOTICE( "BinaryNumberReader::readNumber: bytes[i] = " << hex << (uint16) bytes[i] << dec );
           val *= 256; // 2^8
-          val += static_cast<uint32>(bytes[i]);
+          val += static_cast<uint32>(0xFF & bytes[i]);
         }
         return val;
       }
