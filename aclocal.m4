@@ -731,7 +731,7 @@ dnl #undef ID3_DISABLE_ASSERT
 dnl #undef ID3_DISABLE_CHECKS
 dnl END ACCONFIG
 dnl ACCONFIG BOTTOM
-dnl #if defined (ID3_ENABLE_DEBUG) && defined (HAVE_LIBCW_SYS_H)
+dnl #if defined (ID3_ENABLE_DEBUG) && defined (HAVE_LIBCW_SYS_H) && defined (__cplusplus)
 dnl 
 dnl #define DEBUG
 dnl 
@@ -753,6 +753,7 @@ dnl #  define ID3D_NOTICE(x)
 dnl #  define ID3D_WARNING(x)
 dnl 
 dnl #endif /* defined (ID3_ENABLE_DEBUG) && defined (HAVE_LIBCW_SYS_H) */
-dnl
+dnl    
 dnl END ACCONFIG
+
 

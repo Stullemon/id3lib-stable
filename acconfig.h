@@ -75,7 +75,7 @@
 #define false 0
 #endif
    
-#if defined (ID3_ENABLE_DEBUG) && defined (HAVE_LIBCW_SYS_H)
+#if defined (ID3_ENABLE_DEBUG) && defined (HAVE_LIBCW_SYS_H) && defined (__cplusplus)
 
 #define DEBUG
 
@@ -97,5 +97,5 @@
 #  define ID3D_WARNING(x)
 
 #endif /* defined (ID3_ENABLE_DEBUG) && defined (HAVE_LIBCW_SYS_H) */
-dnl
+   
 
