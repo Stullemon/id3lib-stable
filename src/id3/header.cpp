@@ -1,4 +1,4 @@
-// $Id: header.cpp,v 1.13 2000/04/08 04:40:26 eldamitri Exp $
+// $Id: header.cpp,v 1.14 2000/04/10 16:57:18 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -121,13 +121,7 @@ void ID3_Header::Clear()
   //__pInfo = 0;
 }
 
-ID3_Header &ID3_Header::operator=( const ID3_Header &hdr )
-{
-  Copy(hdr);
-  return *this;
-}
-
-void ID3_Header::Copy(const ID3_Header &hdr)
+ID3_Header &ID3_Header::operator=( const ID3_Header& hdr )
 {
   if (this != &hdr)
   {
@@ -136,9 +130,14 @@ void ID3_Header::Copy(const ID3_Header &hdr)
     SetFlags(hdr.GetFlags());
     __pInfo = hdr.__pInfo;
   }
+  return *this;
 }
 
 // $Log: header.cpp,v $
+// Revision 1.14  2000/04/10 16:57:18  eldamitri
+// (Copy): removed.
+// (operator=): Updated implementation so it isn't reliant on Copy.
+//
 // Revision 1.13  2000/04/08 04:40:26  eldamitri
 // Changed new ANSI-standard C++ include headers to old-style headers.
 //

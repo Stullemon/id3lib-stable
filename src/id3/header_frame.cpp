@@ -1,4 +1,4 @@
-// $Id: header_frame.cpp,v 1.14 2000/04/09 22:42:19 eldamitri Exp $
+// $Id: header_frame.cpp,v 1.15 2000/04/10 16:57:28 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -174,38 +174,31 @@ ID3_FrameHeader::GetTextID() const
   return sTextID;
 }
 
-void ID3_FrameHeader::Copy(const ID3_Header &hdr)
+ID3_FrameHeader& ID3_FrameHeader::operator=(const ID3_FrameHeader& hdr)
 {
   if (this != &hdr)
   {
-    try
+    Clear();
+    this->ID3_Header::operator=(hdr);
+    if (!hdr.__bDynFrameDef)
     {
-      Clear();
-      const ID3_FrameHeader &frmhdr = 
-        dynamic_cast<const ID3_FrameHeader &>( hdr );
-      ID3_Header::Copy(frmhdr);
-      if (!frmhdr.__bDynFrameDef)
-      {
-        __pFrameDef = frmhdr.__pFrameDef;
-      }
-      else
-      {
-        __pFrameDef = new ID3_FrameDef;
-        if (NULL == __pFrameDef)
-        {
-        }
-        __pFrameDef->eID = frmhdr.__pFrameDef->eID;
-        __pFrameDef->bTagDiscard = frmhdr.__pFrameDef->bTagDiscard;
-        __pFrameDef->bFileDiscard = frmhdr.__pFrameDef->bFileDiscard;
-        __pFrameDef->parseHandler = frmhdr.__pFrameDef->parseHandler;
-        __pFrameDef->aeFieldDefs = frmhdr.__pFrameDef->aeFieldDefs;
-        strcpy(__pFrameDef->sShortTextID, frmhdr.__pFrameDef->sShortTextID);
-        strcpy(__pFrameDef->sLongTextID, frmhdr.__pFrameDef->sLongTextID);
-        __bDynFrameDef = true;
-      }
+      __pFrameDef = hdr.__pFrameDef;
     }
-    catch (...)
+    else
     {
+      __pFrameDef = new ID3_FrameDef;
+      if (NULL == __pFrameDef)
+      {
+        // TODO: throw something here...
+      }
+      __pFrameDef->eID = hdr.__pFrameDef->eID;
+      __pFrameDef->bTagDiscard = hdr.__pFrameDef->bTagDiscard;
+      __pFrameDef->bFileDiscard = hdr.__pFrameDef->bFileDiscard;
+      __pFrameDef->parseHandler = hdr.__pFrameDef->parseHandler;
+      __pFrameDef->aeFieldDefs = hdr.__pFrameDef->aeFieldDefs;
+      strcpy(__pFrameDef->sShortTextID, hdr.__pFrameDef->sShortTextID);
+      strcpy(__pFrameDef->sLongTextID, hdr.__pFrameDef->sLongTextID);
+      __bDynFrameDef = true;
     }
   }
 }
@@ -238,6 +231,10 @@ void ID3_FrameHeader::Clear()
 }
 
 // $Log: header_frame.cpp,v $
+// Revision 1.15  2000/04/10 16:57:28  eldamitri
+// (Copy): removed.
+// (operator=): Updated implementation so it isn't reliant on Copy.
+//
 // Revision 1.14  2000/04/09 22:42:19  eldamitri
 // (ID3_FrameHeader): Added implementation.
 // (SetUnknownFrame): Added implementation.
