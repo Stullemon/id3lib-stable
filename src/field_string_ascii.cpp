@@ -1,4 +1,4 @@
-// $Id: field_string_ascii.cpp,v 1.15 2000/09/14 22:11:08 eldamitri Exp $
+// $Id: field_string_ascii.cpp,v 1.16 2000/09/21 22:52:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -26,7 +26,7 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include "field.h"
+#include "field_impl.h"
 #include "utils.h"
 
 #if defined HAVE_CONFIG_H
@@ -45,7 +45,7 @@
  **   myFrame.Field(ID3FN_TEXT).Set("ID3Lib is very cool!");
  ** \endcode
  **/
-size_t ID3_Field::Set_i(const char* string, size_t size)
+size_t ID3_FieldImpl::Set_i(const char* string, size_t size)
 {
   this->Clear();
   this->SetEncoding(ID3TE_ASCII);
@@ -73,7 +73,7 @@ size_t ID3_Field::Set_i(const char* string, size_t size)
   return MIN(_chars, size);
 }
 
-size_t ID3_Field::Set(const char *string)
+size_t ID3_FieldImpl::Set(const char *string)
 {
   size_t len = 0;
   if (this->GetType() == ID3FTY_TEXTSTRING)
@@ -104,7 +104,7 @@ size_t ID3_Field::Set(const char *string)
  ** 
  ** \param string The string to add to the field
  **/
-size_t ID3_Field::Add_i(const char *str, size_t strLen)
+size_t ID3_FieldImpl::Add_i(const char *str, size_t strLen)
 {
   size_t len = 0;  // how much of str we copied into this field (max is strLen)
   if (this->GetNumTextItems() == 0)
@@ -155,7 +155,7 @@ size_t ID3_Field::Add_i(const char *str, size_t strLen)
   return len;
 }
 
-size_t ID3_Field::Add(const char *str)
+size_t ID3_FieldImpl::Add(const char *str)
 {
   size_t len = 0;
   if (this->GetType() == ID3FTY_TEXTSTRING)
@@ -203,7 +203,7 @@ size_t ID3_Field::Add(const char *str)
  ** 
  ** \sa Add(const char*)
  **/
-size_t ID3_Field::Get(char* buffer, size_t maxLength) const
+size_t ID3_FieldImpl::Get(char* buffer, size_t maxLength) const
 {
   size_t length = 0;
   if (this->GetType() == ID3FTY_TEXTSTRING && 
@@ -222,7 +222,18 @@ size_t ID3_Field::Get(char* buffer, size_t maxLength) const
   return length;
 }
 
-size_t ID3_Field::Get(char* buffer,     ///< Where to copy the data
+const char* ID3_FieldImpl::GetText() const
+{
+  const char* text = NULL;
+  if (this->GetType() == ID3FTY_TEXTSTRING && 
+      this->GetEncoding() == ID3TE_ASCII)
+  {
+    text = _ascii;
+  }
+  return text;
+}
+
+size_t ID3_FieldImpl::Get(char* buffer,     ///< Where to copy the data
                       size_t maxLength, ///< Max number of characters to copy
                       index_t itemNum   ///< The item number to retrieve
                       ) const
@@ -273,7 +284,7 @@ size_t ID3_Field::Get(char* buffer,     ///< Where to copy the data
 
 
 size_t 
-ID3_Field::ParseASCIIString(const uchar *buffer, size_t nSize)
+ID3_FieldImpl::ParseASCIIString(const uchar *buffer, size_t nSize)
 {
   size_t nChars = 0;
   const char* ascii = (const char*) buffer;
@@ -344,7 +355,7 @@ ID3_Field::ParseASCIIString(const uchar *buffer, size_t nSize)
   return MIN(nChars, nSize);
 }
 
-size_t ID3_Field::RenderString(uchar *buffer) const
+size_t ID3_FieldImpl::RenderString(uchar *buffer) const
 {
   size_t nBytes = 0;
   if (this->GetEncoding() == ID3TE_ASCII)

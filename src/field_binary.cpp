@@ -1,4 +1,4 @@
-// $Id: field_binary.cpp,v 1.15 2000/09/14 21:54:08 eldamitri Exp $
+// $Id: field_binary.cpp,v 1.16 2000/09/21 22:52:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -27,7 +27,7 @@
 
 #include <stdio.h>
 #include <memory.h>
-#include "field.h"
+#include "field_impl.h"
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
@@ -38,9 +38,10 @@
  ** Again, like the string types, the binary Set() function copies the data
  ** so you may dispose of the source data after a call to this method.
  **/
-size_t ID3_Field::Set(const uchar *newData, //< data to assign to this field.
-                      size_t newSize          //< number of bytes to be copied
-                      )
+size_t 
+ID3_FieldImpl::Set(const uchar *newData, //< data to assign to this field.
+                   size_t newSize          //< number of bytes to be copied
+                   )
 {
   if (this->GetType() == ID3FTY_BINARY)
   {
@@ -72,9 +73,9 @@ size_t ID3_Field::Set(const uchar *newData, //< data to assign to this field.
  **   myFrame.Field(ID3FN_DATA).Get(buffer, sizeof(buffer));
  ** \endcode
  **/
-size_t ID3_Field::Get(uchar *buffer,    //< Destination of retrieved string
-                      size_t max_bytes //< Max number of bytes to copy
-                     ) const
+size_t ID3_FieldImpl::Get(uchar *buffer,    //< Destination of retrieved string
+                          size_t max_bytes //< Max number of bytes to copy
+                          ) const
 {
   size_t bytes = 0;
   if (this->GetType() == ID3FTY_BINARY)
@@ -95,8 +96,8 @@ size_t ID3_Field::Get(uchar *buffer,    //< Destination of retrieved string
  **   myFrame.Field(ID3FN_DATA).FromFile("mypic.jpg");
  ** \endcode
  **/
-void ID3_Field::FromFile(const char *info //< Source filename
-                         )
+void ID3_FieldImpl::FromFile(const char *info //< Source filename
+                             )
 {
   if (this->GetType() != ID3FTY_BINARY || NULL == info)
   {
@@ -131,8 +132,8 @@ void ID3_Field::FromFile(const char *info //< Source filename
  **   myFrame.Field(ID3FN_DATA).ToFile("output.bin");
  ** \endcode
  **/
-void ID3_Field::ToFile(const char *info //< Destination filename
-                       ) const
+void ID3_FieldImpl::ToFile(const char *info //< Destination filename
+                           ) const
 {
   if (this->GetType() != ID3FTY_BINARY || NULL == info)
   {
@@ -155,7 +156,7 @@ void ID3_Field::ToFile(const char *info //< Destination filename
 
 
 size_t
-ID3_Field::ParseBinary(const uchar *buffer, size_t size)
+ID3_FieldImpl::ParseBinary(const uchar *buffer, size_t size)
 {
   // copy the remaining bytes, unless we're fixed length, in which case copy
   // the minimum of the remaining bytes vs. the fixed length
@@ -166,7 +167,7 @@ ID3_Field::ParseBinary(const uchar *buffer, size_t size)
 }
 
 
-size_t ID3_Field::RenderBinary(uchar *buffer) const
+size_t ID3_FieldImpl::RenderBinary(uchar *buffer) const
 {
   size_t bytesUsed = this->BinSize();
   ::memcpy(buffer, _binary, bytesUsed);

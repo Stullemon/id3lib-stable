@@ -1,4 +1,4 @@
-// $Id: field_integer.cpp,v 1.11 2000/09/14 21:58:39 eldamitri Exp $
+// $Id: field_integer.cpp,v 1.12 2000/09/21 22:52:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,7 +24,7 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#include "field.h"
+#include "field_impl.h"
 #include "utils.h"
 
 #if defined HAVE_CONFIG_H
@@ -45,7 +45,7 @@
 /** \brief Sets the value of the field to the specified integer.
  ** \param data The data to assign to this field
  **/
-void ID3_Field::Set(uint32 val)
+void ID3_FieldImpl::Set(uint32 val)
 {
   if (this->GetType() == ID3FTY_INTEGER)
   {
@@ -66,7 +66,7 @@ void ID3_Field::Set(uint32 val)
  ** \return The value of the integer field
  **/
 
-size_t ID3_Field::ParseInteger(const uchar *buffer, size_t nSize)
+size_t ID3_FieldImpl::ParseInteger(const uchar *buffer, size_t nSize)
 {
   size_t nBytes = 0;
 
@@ -83,7 +83,7 @@ size_t ID3_Field::ParseInteger(const uchar *buffer, size_t nSize)
 }
 
 
-size_t ID3_Field::RenderInteger(uchar *buffer) const
+size_t ID3_FieldImpl::RenderInteger(uchar *buffer) const
 {
   size_t bytesUsed = RenderNumber(buffer, _integer, this->Size());
   _changed = false;

@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.19 2000/09/14 22:11:08 eldamitri Exp $
+// $Id: field_string_unicode.cpp,v 1.20 2000/09/21 22:52:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -26,7 +26,7 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include "field.h"
+#include "field_impl.h"
 #include "utils.h"
 
 #if defined HAVE_CONFIG_H
@@ -49,7 +49,7 @@
  ** \param string The unicode string to set this field to.
  ** \sa Add(const unicode_t*)
  **/
-size_t ID3_Field::Set_i(const unicode_t *string, size_t size)
+size_t ID3_FieldImpl::Set_i(const unicode_t *string, size_t size)
 {
   this->Clear();
   this->SetEncoding(ID3TE_UNICODE);
@@ -114,7 +114,7 @@ size_t ID3_Field::Set_i(const unicode_t *string, size_t size)
   return MIN(_chars, size);
 }
 
-size_t ID3_Field::Set(const unicode_t *string)
+size_t ID3_FieldImpl::Set(const unicode_t *string)
 {
   size_t len = 0;
   if (this->GetType() == ID3FTY_TEXTSTRING)
@@ -138,7 +138,7 @@ size_t ID3_Field::Set(const unicode_t *string)
  ** Performs similarly as the ASCII Add(const char*) method, taking a unicode_t
  ** string as a parameter rather than an ascii string.
  **/
-size_t ID3_Field::Add_i(const unicode_t* str, size_t strLen)
+size_t ID3_FieldImpl::Add_i(const unicode_t* str, size_t strLen)
 {
   size_t len = 0;
   if (this->GetNumTextItems() == 0)
@@ -188,7 +188,7 @@ size_t ID3_Field::Add_i(const unicode_t* str, size_t strLen)
   return len;
 }
 
-size_t ID3_Field::Add(const unicode_t *str)
+size_t ID3_FieldImpl::Add(const unicode_t *str)
 {
   size_t len = 0;
   if (this->GetType() == ID3FTY_TEXTSTRING)
@@ -226,7 +226,7 @@ size_t ID3_Field::Add(const unicode_t *str)
  **                 people frame, the item number to retrieve.
  ** \sa Get(char *, size_t, index_t)
  **/
-size_t ID3_Field::Get(unicode_t *buffer, size_t maxLength) const
+size_t ID3_FieldImpl::Get(unicode_t *buffer, size_t maxLength) const
 {
   size_t length = 0;
   if (this->GetType() == ID3FTY_TEXTSTRING && 
@@ -244,7 +244,18 @@ size_t ID3_Field::Get(unicode_t *buffer, size_t maxLength) const
   return length;
 }
 
-size_t ID3_Field::Get(unicode_t *buffer, size_t maxLength, index_t itemNum) const
+const unicode_t* ID3_FieldImpl::GetUnicodeText() const
+{
+  const unicode_t* text = NULL;
+  if (this->GetType() == ID3FTY_TEXTSTRING && 
+      this->GetEncoding() == ID3TE_UNICODE)
+  {
+    text = _unicode;
+  }
+  return text;
+}
+
+size_t ID3_FieldImpl::Get(unicode_t *buffer, size_t maxLength, index_t itemNum) const
 {
   size_t length = 0;
   size_t total_items = this->GetNumTextItems();
@@ -298,14 +309,14 @@ size_t ID3_Field::Get(unicode_t *buffer, size_t maxLength, index_t itemNum) cons
  ** 
  ** \return The number of items in a text list.
  **/
-size_t ID3_Field::GetNumTextItems() const
+size_t ID3_FieldImpl::GetNumTextItems() const
 {
   return _num_items;
 }
 
 
 size_t 
-ID3_Field::ParseUnicodeString(const uchar *buffer, size_t nSize)
+ID3_FieldImpl::ParseUnicodeString(const uchar *buffer, size_t nSize)
 {
   size_t nChars = 0;
   const unicode_t* unicode = (const unicode_t*) buffer;
