@@ -1,4 +1,4 @@
-// $Id: tag_find.cpp,v 1.11 2000/05/12 04:01:59 eldamitri Exp $
+// $Id: tag_find.cpp,v 1.12 2000/05/28 03:48:33 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -192,7 +192,7 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, const unicode_t *data)
           (data != NULL) && ucslen(data) > 0 && 
           cur->pFrame->Contains(fld))
       {
-        luint ulSize = cur->pFrame->Field(fld).BinSize();
+        size_t ulSize = cur->pFrame->Field(fld).BinSize();
         unicode_t *wsBuffer = new unicode_t[ulSize];
           
         if (NULL == wsBuffer)
