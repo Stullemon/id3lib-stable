@@ -14,7 +14,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.18 2000/10/03 04:53:47 eldamitri Exp $
+// $Id: demo_info.cpp,v 1.19 2000/10/08 21:10:52 eldamitri Exp $
 
 
 #ifdef HAVE_CONFIG_H
@@ -26,12 +26,14 @@
 #include <id3/tag.h>
 #include <id3/utils.h>
 #include <id3/misc_support.h>
+#include <id3/readers.h>
+#include <id3/reader_decorators.h>
 #include <id3/error.h>
 #include <popt.h>
 
 using namespace dami;
 
-static String VERSION_NUMBER = "$Revision: 1.18 $";
+static String VERSION_NUMBER = "$Revision: 1.19 $";
 
 void PrintUsage(const char *sName)
 {
@@ -263,23 +265,16 @@ void PrintInformation(const ID3_Tag &myTag)
             case ID3CT_TRIVIA:   cout << "Trivia/'pop up' information"; break;
           }
           cout << endl;
-          size_t size = myFrame->GetField(ID3FN_DATA)->Size();
-          const uchar* beg = myFrame->GetField(ID3FN_DATA)->GetBinary();
-          const uchar* cur = beg;
-          const uchar* end = beg + size;
-          while (cur < end)
+          ID3_Field* fld = myFrame->GetField(ID3FN_DATA);
+          if (fld)
           {
-            size_t len = ::min<size_t>(end - cur, ::strlen((char *) cur));
-            cout << String((char*)cur, len);
-            cur += len + 1;
-            if (cur < end)
+            ID3_MemoryReader mr(fld->GetBinary(), fld->BinSize());
+            io::BinaryNumberReader bnr(mr);
+            io::TextReader tr(mr);
+            while (!mr.atEnd())
             {
-              
-              cout 
-                << " [" 
-                << ::parseNumber(cur, ::min<size_t>(end - cur, sizeof(uint32))) 
-                << " " << format << "] ";
-              cur += sizeof(uint32);
+              cout << tr.readText();
+              cout << " [" << bnr.readNumber(sizeof(uint32)) << " " << format << "] ";
             }
           }
           cout << endl;
@@ -361,10 +356,12 @@ int main( unsigned int argc, const char *argv[])
     if (bWarning)
     {
       ID3D_INIT_WARNING();
+      ID3D_WARNING ( "warnings turned on" );
     }
     if (bNotice)
     {
       ID3D_INIT_NOTICE();
+      ID3D_NOTICE ( "notices turned on" );
     }
     const char* filename = NULL;
     while((filename = poptGetArg(con)) != NULL)
