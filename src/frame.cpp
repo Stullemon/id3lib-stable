@@ -1,4 +1,4 @@
-// $Id: frame.cpp,v 1.7 2000/05/01 13:05:07 eldamitri Exp $
+// $Id: frame.cpp,v 1.8 2000/05/02 21:58:23 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -190,11 +190,9 @@ ID3_FrameID ID3_Frame::GetID(void) const
 }
 
 
-void ID3_Frame::SetSpec(const ID3_V2Spec spec)
+bool ID3_Frame::SetSpec(const ID3_V2Spec spec)
 {
-  __bHasChanged = __bHasChanged || (__FrmHdr.GetSpec() != spec);
-  
-  __FrmHdr.SetSpec(spec);
+  return __FrmHdr.SetSpec(spec);
 }
 
 ID3_V2Spec ID3_Frame::GetSpec() const
