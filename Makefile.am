@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.24 2000/09/27 09:08:50 eldamitri Exp $
+# $Id: Makefile.am,v 1.25 2000/10/10 03:54:01 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -26,14 +26,8 @@ else
 zlib_subdir = 
 endif
 
-if ID3_NEEDPOPT
-popt_subdir = popt
-else
-popt_subdir = 
-endif
-
-SUBDIRS =  . m4 $(popt_subdir) $(zlib_subdir) doc include src examples
-DIST_SUBDIRS = . m4 popt zlib doc include src examples
+SUBDIRS =  . m4 $(zlib_subdir) doc include src examples
+DIST_SUBDIRS = . m4 zlib doc include src examples
 
 INCLUDES = @ID3LIB_DEBUG_FLAGS@
 
@@ -72,7 +66,6 @@ release: config.h.win32 id3lib.spec
 	$(MAKE) $(AM_MAKEFLAGS) distcheck
 	GZIP=$(GZIP_ENV) $(TAR) zxf $(distdir).tar.gz
 	-cp -R id3com/ prj/ libprj/ delphi/ $(distdir)
-	-rm -rf $(distdir)/popt
 	-find $(distdir) -name "*~" -exec rm {} \;
 	-find $(distdir) -type d -name CVS -exec rm -r {} \;
 	-find $(distdir) -name .cvsignore -exec rm {} \;
