@@ -1,3 +1,4 @@
 Makefile
 zlib.lib
 config.status
+config.log
