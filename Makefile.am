@@ -1,3 +1,5 @@
+# $Id: Makefile.am,v 1.4 1999/11/30 19:54:08 scott Exp $
+# 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
 # This file is free software; as a special exception the author gives
@@ -8,5 +10,11 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-EXTRA_DIST = ChangeLog reconf configure HISTORY TODO
+EXTRA_DIST = reconf
 SUBDIRS = m4 doc src
+
+# $Log: Makefile.am,v $
+# Revision 1.4  1999/11/30 19:54:08  scott
+# (EXTRA_DIST): Removed ChangeLog, configure, HISTORY, and TODO.
+# These are included in the distribution automatically.
+#
