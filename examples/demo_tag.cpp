@@ -1,8 +1,4 @@
-// $Id: demo_tag.cpp,v 1.3 2000/04/20 03:27:47 eldamitri Exp $
-
-#if defined HAVE_CONFIG_H
-#include <config.h>
-#endif
+// $Id: demo_tag.cpp,v 1.4 2000/04/23 17:36:44 eldamitri Exp $
 
 #include <iostream.h>
 #include <getopt.h>
@@ -11,7 +7,7 @@
 #include <id3/tag.h>
 #include <id3/misc_support.h>
 
-#define VERSION_NUMBER "$Revision: 1.3 $"
+#define VERSION_NUMBER "$Revision: 1.4 $"
 
 void PrintUsage(char *sName)
 {
@@ -59,19 +55,19 @@ void PrintVersion(char *sName)
 
 void DisplayTags(ostream &os, luint nTags)
 {
-  if (!((nTags & V1_TAG) || (nTags & V2_TAG)))
+  if (!((nTags & ID3TT_ID3V1) || (nTags & ID3TT_ID3V2)))
     os << "no tag";
-  if (nTags & V1_TAG)
+  if (nTags & ID3TT_ID3V1)
     os << "v1";
-  if ((nTags & V1_TAG) && (nTags & V2_TAG))
+  if ((nTags & ID3TT_ID3V1) && (nTags & ID3TT_ID3V2))
     os << " and ";
-  if (nTags & V2_TAG)
+  if (nTags & ID3TT_ID3V2)
     os << "v2";
 }
 
 int main( int argc, char *argv[])
 {
-  int ulFlag = BOTH_ID3_TAGS;
+  int ulFlag = ID3TT_ID3;
   int iOpt;
   bool bError = false;
   char
@@ -119,8 +115,8 @@ int main( int argc, char *argv[])
 
     switch (iOpt)
     {
-      case '1': ulFlag   = V1_TAG;      break;
-      case '2': ulFlag   = V2_TAG;      break;
+      case '1': ulFlag   = ID3TT_ID3V1;      break;
+      case '2': ulFlag   = ID3TT_ID3V2;      break;
       case 'a': sArtist  = optarg;      break;
       case 'A': sAlbum   = optarg;      break;
       case 's': sSong    = optarg;      break;
