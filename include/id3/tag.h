@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.13 2000/04/11 03:38:15 eldamitri Exp $
+// $Id: tag.h,v 1.14 2000/04/20 03:45:55 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,21 +24,25 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#ifndef ID3LIB_TAG_H
-#define ID3LIB_TAG_H
+#ifndef __ID3LIB_TAG_H__
+#define __ID3LIB_TAG_H__
+
+#if defined HAVE_SYS_PARAM_H
+#include <sys/param.h>
+#endif
 
 #include <stdio.h>
-#include "types.h"
 #include "frame.h"
 #include "header_frame.h"
 #include "header_tag.h"
-#include "version.h"
 
-#if defined WIN32
-#define MAXPATHLEN 1024
-#else
-#include <sys/param.h>
-#endif
+#ifdef  MAXPATHLEN
+#  define ID3_PATH_LENGTH   (MAXPATHLEN + 1)
+#elif   defined (PATH_MAX)
+#  define ID3_PATH_LENGTH   (PATH_MAX + 1)
+#else   /* !MAXPATHLEN */
+#  define ID3_PATH_LENGTH   (2048 + 1)
+#endif  /* !MAXPATHLEN && !PATH_MAX */
 
 struct ID3_Elem
 {
@@ -93,7 +97,7 @@ const luint LEN_V1_GENRE   =   1;
  **
  ** @author Dirk Mahoney (dirk@id3.org)
  ** @author Scott Thomas Haug (sth2@cs.wustl.edu)
- ** @version $Id: tag.h,v 1.13 2000/04/11 03:38:15 eldamitri Exp $
+ ** @version $Id: tag.h,v 1.14 2000/04/20 03:45:55 eldamitri Exp $
  ** @see ID3_Tag
  **/
 struct ID3V1_Tag
@@ -194,7 +198,7 @@ const luint ALL_TAG_TYPES = BOTH_ID3_TAGS | LYRICS_TAG;
  ** that id3lib 2.16 supports.
  **
  ** @author Dirk Mahoney
- ** @version $Id: tag.h,v 1.13 2000/04/11 03:38:15 eldamitri Exp $
+ ** @version $Id: tag.h,v 1.14 2000/04/20 03:45:55 eldamitri Exp $
  ** @see ID3_Frame
  ** @see ID3_Field
  ** @see ID3_Err
@@ -814,103 +818,8 @@ private:
   bool      __bHasV1Tag;       // does the file have an ID3v1 tag attached?
   bool      __bParseID3v1;     // do we parse the ID3v1 tag?
   bool      __bParseLyrics3;   // do we parse the Lyrics3 tag?
-  char      __sFileName[MAXPATHLEN + 1]; // name of the file we are linked to
+  char      __sFileName[ID3_PATH_LENGTH]; // name of the file we are linked to
   static luint s_ulInstances;  // how many ID3_Tag objects are floating around in this app?
-}
-;
+};
 
 #endif
-
-// $Log: tag.h,v $
-// Revision 1.13  2000/04/11 03:38:15  eldamitri
-// Updated comments for use with doxygen.
-//
-// Revision 1.12  2000/04/10 03:40:56  eldamitri
-// Started updating comments for doxygen.
-//
-// Revision 1.11  2000/04/08 04:32:36  eldamitri
-// Changed new ANSI-standard C++ include headers to old-style headers.
-//
-// Revision 1.10  2000/04/07 19:35:14  eldamitri
-// Added HasV1Tag, HasV2Tag, and HasLyrics (thanks John Adcock).
-//
-// Revision 1.9  2000/04/07 04:45:31  eldamitri
-// Minor cleanup for log comments.
-//
-// Revision 1.8  2000/04/07 04:29:58  eldamitri
-// Added optional parameters to Link to make parsing of id3v1/lyrics3
-// tags optional.
-//
-// Revision 1.7  2000/04/05 05:20:52  eldamitri
-// Updated initial comment information to reflect license, copyright
-// change.
-//
-// Revision 1.6  2000/01/04 15:42:22  eldamitri
-// For compilation with gcc 2.95.2 and better compatibility with ANSI/ISO
-// standard C++, updated, rearranged, and removed (where necessary)
-// #include directives.
-//
-// Revision 1.5  1999/12/17 16:05:02  scott
-// Updated opening comment block.
-//
-// Revision 1.4  1999/12/13 04:23:25  scott
-// (): Include sys/param.h (if available) to define MAXPATHLEN.
-// (class ID3_Tag): Made private methods protected.  Changed __sFileName
-// from a char * to a char array of size MAXPATHLEN+1.
-//
-// Revision 1.3  1999/12/09 02:45:59  scott
-// (class ID3_Tag): Added copy constructor and operator= method
-// declarations.
-//
-// Revision 1.2  1999/12/02 22:45:28  scott
-// Changed all of the #include <id3/*> to #include "*" to help ensure that
-// the sources are searched for in the right places.
-//
-// Revision 1.1  1999/12/01 17:16:10  scott
-// moved from src/id3 to include/id3
-//
-// Revision 1.10  1999/11/29 19:26:18  scott
-// Updated the leading license information of the file to reflect new maintainer.
-//
-// Revision 1.9  1999/11/29 19:09:31  scott
-// Updated documentation to work better with doc++ (probably doesn't work
-// well with kdoc anymore).
-//
-// Revision 1.8  1999/11/25 19:22:18  scott
-// (): Added doc++/kdoc/javadoc-like documentation, mostly transcribed
-// from Dirk's ID3Lib Documentation MSWord doc.
-// (ID3_TagTypes): Added.  The different types of tags that can be parsed
-// and/or rendered by id3lib.
-// (class ID3_Tag): Changed the interface to AddFrame slightly.  Now there
-// is two AddTag-like methods: AddTag and AddNewTag.  The former merely
-// attaches the frame to the tag without taking repsonsibility for
-// deallocating the frame when the tag goes out of scope or is deleted.
-// The latter does take this responsibility.  Granted, there could be a
-// better interface for this, but it works for now...  Update and Strip
-// now return flags which indicate what tags were actually updated or
-// stripped.  Removed OpenLinkedFile method; replaced with
-// OpenFileForReading, OpenFileForWriting, and CreateFile.
-//
-// Revision 1.7  1999/11/19 19:07:13  scott
-// Added new constants: STR_V1_COMMENT_DESC (to be added to
-// the description of comments converted from id3v1 tags); V1_TAG,
-// V2_TAG, and BOTH_TAGS (used for methods Strip and Update to
-// determine which tag to act on); and LEN_V1, LEN_V1_ID,
-// LEN_V1_TITLE, LEN_V1_ARTIST, LEN_V1_ALBUM, LEN_V1_YEAR,
-// LEN_V1_COMMENT, LEN_V1_GENRE (the lengths of the id3v1 tag and its
-// fields). Generalized ID3V1_Tag struct using newly defined
-// constants.  Added 1 to each char array size for null terminator.
-// Added const qualifier to appropriate methods and parameters.  Added
-// declaration of RenderV1ToHandle method.  Renamed "RenderToHandle" to
-// "RenderV2ToHandle".
-//
-// Revision 1.6  1999/11/15 20:20:30  scott
-// Made variable names more descriptive.  Added const qualifier to
-// appropriate methods.
-//
-// Revision 1.5  1999/11/04 04:32:11  scott
-// Initial revision
-//
-// Revision 1.4  1999/11/04 04:15:55  scott
-// Added cvs Id and Log tags to beginning and end of file, respectively.
-//
