@@ -1,3 +1,11 @@
+2000-07-08  Scott Haug  <scott@id3.org>
+
+	* src/tag_render.cpp 
+	(RenderV1): Converts ID3v2 COMM frames to ID3v1 comments more liberally
+
+	* examples/test_remove.cpp 
+	(main): Now adds an ID3v1 comment
+
 2000-07-07  Scott Haug  <scott@id3.org>
 
 	* NEWS 
