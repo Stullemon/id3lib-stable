@@ -1,4 +1,4 @@
-# $Id: configure.in,v 1.18 2000/04/09 14:07:53 eldamitri Exp $
+# $Id: configure.in,v 1.19 2000/04/12 16:36:29 eldamitri Exp $
 
 # Copyright 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -58,7 +58,7 @@ VERSION=$ID3LIB_VERSION
 PACKAGE=id3lib
 
 dnl This is a hack to get the release date using cvs checkin macros
-ID3LIB_DATE="$Date: 2000/04/09 14:07:53 $ID3LIB_UNDEFINED"
+ID3LIB_DATE="$Date: 2000/04/12 16:36:29 $ID3LIB_UNDEFINED"
 ID3LIB_FULLNAME="$PACKAGE-$VERSION"
 
 AC_SUBST(ID3LIB_DATE)
@@ -212,9 +212,14 @@ AC_OUTPUT(                      \
   zlib/lib/Makefile             \
   zlib/prj/Makefile             \
   zlib/src/Makefile             \
+  id3com/Makefile               \
+  libprj/Makefile               \
 )
 
 # $Log: configure.in,v $
+# Revision 1.19  2000/04/12 16:36:29  eldamitri
+# (AC_OUTPUT): Add id3com/Makefile and libprj/Makefile
+#
 # Revision 1.18  2000/04/09 14:07:53  eldamitri
 # Added check for mkstemp.
 #
