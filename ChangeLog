@@ -1,3 +1,38 @@
+2000-06-25  Scott Haug  <scott@id3.org>
+
+	* src/utils.cpp: 
+	Added ID3_IsCRLF, ID3_CRLFtoLF, ID3_TimeToSeconds, and 
+	RemoveTrailingSpaces to utils.cpp
+
+	* src/tag_parse_v1.cpp: 
+	Moved RemoveTrailingSpaces to utils.cpp
+
+	* src/tag_parse_lyrics3.cpp: 
+	Moved ID3_IsCRLF and ID3_CRLFtoLF to utils.cpp
+
+	* src/tag_parse.cpp 
+	(ParseFromHandle): Added conditional call to ParseMusicMatch
+
+	* src/tag.cpp 
+	(AttachFrame): Now simply returns without error if a NULL frame is 
+	passed in.
+
+	* include/id3/utils.h: 
+	Added decl's for ID3_TimeToSeconds, ID3_IsCRLF, ID3_CRLFtoLF, and
+	RemoveTrailingSpaces functions.
+
+	* include/id3/tag.h 
+	(class ID3_Tag): Added decl for ParseMusicMatch
+
+	* include/id3/globals.h 
+	(ID3_TagType): Added ID3TT_MUSICMATCH
+
+	* src/Makefile.am 
+	(id3lib_sources): Added tag_parse_musicmatch.cpp
+
+	* src/tag_parse_musicmatch.cpp: 
+	Initial revision
+
 2000-06-23  Scott Haug  <scott@id3.org>
 
 	* examples/README.txt: 

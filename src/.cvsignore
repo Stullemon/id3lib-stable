@@ -27,6 +27,7 @@ tag_file.lo
 tag_find.lo
 tag_parse.lo
 tag_parse_lyrics3.lo
+tag_parse_musicmatch.lo
 tag_parse_v1.lo
 tag_render.lo
 tag_sync.lo
