@@ -1,4 +1,4 @@
-# $Id: configure.in,v 1.63 2002/07/23 20:06:18 t1mpy Exp $
+# $Id: configure.in,v 1.64 2002/07/26 11:09:38 t1mpy Exp $
 
 # Copyright 1999, 2000 Scott Thomas Haug <eldamitri@users.sourceforge.net>
 # Copyright (C) 2002 Thijmen Klok <thijmen@id3lib.org>
@@ -213,7 +213,9 @@ if test $has_iconv = 1; then
   fi
 
 fi
-AC_SUBST(ICONV_LIB)
+if test "x$ICONV_LIB" != "x"; then
+  LIBS="$LIBS $ICONV_LIB"
+fi
 
 dnl Check for c++ features
 AC_LANG_SAVE
