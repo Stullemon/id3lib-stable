@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.13 2000/05/12 21:08:20 eldamitri Exp $
+// $Id: tag_file.cpp,v 1.14 2000/05/23 15:20:47 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -298,6 +298,7 @@ flags_t ID3_Tag::Update(flags_t ulTagFlag)
     RenderV1ToHandle();
     tags |= ID3TT_ID3V1;
   }
+  CloseFile();
   return tags;
 }
 
