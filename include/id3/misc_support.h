@@ -1,4 +1,4 @@
-// $Id: misc_support.h,v 1.1 1999/12/01 17:16:08 scott Exp $
+// $Id: misc_support.h,v 1.2 1999/12/01 22:10:02 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -45,7 +45,7 @@ size_t ucslen(const unicode_t *unicode);
 void   ucscpy(unicode_t *dest, const unicode_t *src);
 void   ucsncpy(unicode_t *dest, const unicode_t *src, size_t len);
 int    ucscmp(const unicode_t *s1, const unicode_t *s2);
-int    ucsncmp(const unicode_t *s2, const unicode_t *s2, size_t len);
+int    ucsncmp(const unicode_t *s1, const unicode_t *s2, size_t len);
 
 char *ID3_GetString(const ID3_Frame *frame, const ID3_FieldID fldName);
 // in 'id3_tag_parse_v1.cpp'
@@ -54,6 +54,9 @@ void ID3_RemoveTrailingSpaces(char *buffer, luint length);
 #endif
 
 // $Log: misc_support.h,v $
+// Revision 1.2  1999/12/01 22:10:02  scott
+// Minor declaraction problem (thanks, elrod).
+//
 // Revision 1.1  1999/12/01 17:16:08  scott
 // moved from src/id3 to include/id3
 //
