@@ -1,4 +1,4 @@
-// $Id: header.h,v 1.15 2000/09/11 07:46:32 eldamitri Exp $
+// $Id: header.h,v 1.16 2000/09/21 22:10:20 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -44,7 +44,9 @@ public:
   };
 
   ID3_Header() 
-    : _spec (ID3V2_UNKNOWN)
+    : _spec (ID3V2_UNKNOWN),
+      _data_size (0),
+      _changed (false)
   { 
     this->Clear();
     _changed = false;
