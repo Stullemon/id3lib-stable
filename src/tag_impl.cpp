@@ -1,7 +1,8 @@
-// $Id: tag_impl.cpp,v 1.9 2002/07/02 22:14:52 t1mpy Exp $
+// $Id: tag_impl.cpp,v 1.10 2002/07/25 13:51:40 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
+// Copyright 2002 Thijmen Klok (thijmen@id3lib.org)
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -29,7 +30,7 @@
 #endif
 
 #include "tag_impl.h" //has <stdio.h> "tag.h" "header_tag.h" "frame.h" "field.h" "spec.h" "id3lib_strings.h" "utils.h"
-#include "io_helpers.h"
+//#include "io_helpers.h"
 #include "io_strings.h"
 
 using namespace dami;
@@ -96,6 +97,7 @@ ID3_TagImpl::ID3_TagImpl(const char *name)
     _appended_bytes(0),
     _is_file_writable(false)
 {
+  _mp3_info = NULL; // need to do this before this->Clear()
   this->Clear();
   if (name)
   {
@@ -138,6 +140,10 @@ void ID3_TagImpl::Clear()
   _hdr.SetSpec(ID3V2_LATEST);
   
   _tags_to_parse.clear();
+  if (_mp3_info) 
+	  delete _mp3_info; // Also deletes _mp3_header
+
+  _mp3_info = NULL;
 
   _changed = true;
 }
