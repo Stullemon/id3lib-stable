@@ -1,4 +1,4 @@
-/* $Id: demo_simple.c,v 1.3 2000/10/24 05:55:08 eldamitri Exp $
+/* $Id: demo_simple.c,v 1.4 2001/08/05 21:16:12 abscess Exp $
 
  * Copyright 2000 Scott Thomas Haug <scott@id3.org>
  *  
@@ -47,6 +47,44 @@ main( int argc, char *argv[] )
         char title[1024];
         (void) ID3Field_GetASCII(field, title, 1024);
         printf("Title: %s\n", title);
+      }
+      else
+      {
+        printf("Didn't get the field\n");
+      }
+    }
+    else
+    {
+      printf("Didn't get the frame\n");
+    }
+
+    if ((frame = ID3Tag_FindFrameWithID(tag, ID3FID_LEADARTIST)) != NULL)
+    {
+      ID3Field *field;
+      if ((field = ID3Frame_GetField(frame, ID3FN_TEXT)) != NULL)
+      {
+        char artist[1024];
+        (void) ID3Field_GetASCII(field, artist, 1024);
+        printf("Artist: %s\n", artist);
+      }
+      else
+      {
+        printf("Didn't get the field\n");
+      }
+    }
+    else
+    {
+      printf("Didn't get the frame\n");
+    }
+
+    if ((frame = ID3Tag_FindFrameWithID(tag, ID3FID_ALBUM)) != NULL)
+    {
+      ID3Field *field;
+      if ((field = ID3Frame_GetField(frame, ID3FN_TEXT)) != NULL)
+      {
+        char album[1024];
+        (void) ID3Field_GetASCII(field, album, 1024);
+        printf("Album: %s\n", album);
       }
       else
       {
