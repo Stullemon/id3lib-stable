@@ -1,5 +1,11 @@
 2000-04-10  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
+	* src/id3/tag_parse.cpp 
+	(ProcessBinaries): Removed name of caught error since it isn't used.
+
+	* src/id3/header_frame.cpp 
+	(operator=): Fixed bug - now returns *this.
+
 	* prj/id3lib.dsp
 	* irj/id3lib.dsw
 	* zlib/prj/zlib.dsp:
