@@ -3,5 +3,6 @@ config.cache
 config.h
 config.log
 config.status
+id3lib-3.0.6.tar.gz
 libtool
 stamp-h

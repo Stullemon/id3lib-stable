@@ -1,0 +1,8 @@
+1999-11-15  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* configure.in, configure: 
+	Changed the distribution version to 3.0.6pre1.
+
+	* Makefile.am, Makefile.in: 
+	Added EXTRA_DIST and moved EXTRA_SUBDIRS to SUBDIRS.
+
