@@ -1,5 +1,8 @@
 2000-09-14  Scott Haug  <scott@id3.org>
 
+	* Makefile.am: 
+	Delete popt from windows release (doesn't work on windows...)
+
 	* NEWS:
 	* configure.in:
 	* id3lib.spec.in: 
