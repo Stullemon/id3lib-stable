@@ -1,3 +1,13 @@
+2000-04-18  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* Makefile.am 
+	(EXTRA_DIST): Added HISTORY and id3lib.spec[.in]
+	(id3lib.spec): Added rule for generating from id3lib.spec.in
+	(release): Now depends on id3lib.spec
+
+	* id3lib.spec.in: 
+	Added
+
 2000-04-17  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* configure.in: 
