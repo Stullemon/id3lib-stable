@@ -1,4 +1,4 @@
-// $Id: field.h,v 1.26 2000/05/10 15:21:05 eldamitri Exp $
+// $Id: field.h,v 1.27 2000/05/12 21:15:34 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -34,10 +34,10 @@ struct ID3_FieldDef
 {
   ID3_FieldID   eID;
   ID3_FieldType eType;
-  luint         ulFixedLength;
+  size_t        ulFixedLength;
   ID3_V2Spec    eSpecBegin;
   ID3_V2Spec    eSpecEnd;
-  luint         ulFlags;
+  flags_t       ulFlags;
   ID3_FieldID   eLinkedField;
   static const ID3_FieldDef* DEFAULT;
 };
@@ -51,10 +51,8 @@ struct ID3_FrameDef
   ID3_FrameID   eID;
   char          sShortTextID[3 + 1];
   char          sLongTextID[4 + 1];
-  lsint         lPriority;    // currently unused
   bool          bTagDiscard;
   bool          bFileDiscard;
-  bool        (*parseHandler) (ID3_Frame *frame);
   ID3_FieldDef *aeFieldDefs;
   const char *  sDescription;
 };
@@ -69,15 +67,15 @@ struct ID3_FrameDef
  ** for four different data types: integers, ASCII strings, Unicode strings,
  ** and binary data.
  ** 
- ** An integer field supports the Get(), Set(luint), and operator=(luint)
+ ** An integer field supports the Get(), Set(uint32), and operator=(uint32)
  ** methods.
  ** 
  ** Both types of strings support the GetNumTextItems() method.
  ** 
- ** An ASCII string field supports the Get(char*, luint, luint)), 
+ ** An ASCII string field supports the Get(char*, size_t, index_t)), 
  ** Set(const char*), Add(const char*), and operator=(const char*) methods.
  ** 
- ** A Unicode field also supports Get(unicode_t*, luint, luint),
+ ** A Unicode field also supports Get(unicode_t*, size_t, index_t),
  ** Set(const unicode_t*), Add(const unicode_t*), and 
  ** operator=(const unicode_t*).  Without elaborating, the Unicode
  ** methods behave exactly the same as their ASCII counterparts, taking
@@ -93,7 +91,7 @@ struct ID3_FrameDef
  ** converting from Unicode to ASCII, you will experience problems when the
  ** Unicode string contains characters that don't map to ISO-8859-1.
  ** 
- ** A binary field supports the Get(uchar *, luint), Set(const uchar*, luint),
+ ** A binary field supports the Get(uchar *, size_t), Set(const uchar*, size_t),
  ** FromFile(const char*), and ToFile(const char*) methods.  The binary field
  ** holds miscellaneous data that can't easily be described any other way, such
  ** as a JPEG image.
@@ -109,7 +107,7 @@ struct ID3_FrameDef
  ** if you only plan to generate 3.0 tags.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: field.h,v 1.26 2000/05/10 15:21:05 eldamitri Exp $
+ ** @version $Id: field.h,v 1.27 2000/05/12 21:15:34 eldamitri Exp $
  ** \sa ID3_Tag
  ** \sa ID3_Frame
  ** \sa ID3_Err 
@@ -135,27 +133,27 @@ public:
    ** any NULL-terminator.  The same holds true for Unicode---it returns the
    ** number of characters in the field, not bytes, and this does not include
    ** the Unicode BOM, which isn't put in a Unicode string obtained by the
-   ** Get(unicode_t*, luint, luint) method anyway.  For binary and
+   ** Get(unicode_t*, size_t, index_t) method anyway.  For binary and
    ** integer fields, this returns the number of bytes in the field.
    ** 
    ** \code
-   **   luint howBig = myFrame.Field(ID3FN_DATA).Size();
+   **   size_t howBig = myFrame.Field(ID3FN_DATA).Size();
    ** \endcode
    ** 
    ** \return The size of the field, either in bytes (for binary or integer
    **         fields) or characters (for strings).
    **/
-  luint Size() const;
+  size_t Size() const;
 
   /** Returns the number of items in a text list.
    ** 
    ** \code
-   **   luint numItems = myFrame.Field(ID3FN_TEXT).GetNumItems();
+   **   size_t numItems = myFrame.Field(ID3FN_TEXT).GetNumItems();
    ** \endcode
    ** 
    ** \return The number of items in a text list.
    **/
-  luint GetNumTextItems() const;
+  size_t GetNumTextItems() const;
 
   // integer field functions
   /** A shortcut for the Set method.
@@ -167,29 +165,29 @@ public:
    ** \param data The data to assign to this field
    ** \sa Set
    **/
-  ID3_Field& operator= (luint);
+  ID3_Field& operator= (uint32);
 
   /** Sets the value of the field to the specified integer.
    ** 
    ** \param data The data to assign to this field
    **/
-  void Set(luint);
+  void Set(uint32);
 
   /** Returns the value of the integer field.
    ** 
    ** \code
-   **   luint picType = myFrame.Field(ID3FN_PICTURETYPE).Get();
+   **   uint32 picType = myFrame.Field(ID3FN_PICTURETYPE).Get();
    ** \endcode
    **
    ** \return The value of the integer field
    **/
-  luint Get() const;
+  uint32 Get() const;
 
   // ASCII string field functions
   /** Shortcut for the Set operator.
    ** 
    ** \param data The string to assign to this field
-   ** \sa Set(luint)
+   ** \sa Set(uint32)
    **/
   ID3_Field& operator= (const char*);
 
@@ -216,7 +214,7 @@ public:
    ** 
    ** \code
    **   char myBuffer[1024];
-   **   luint charsUsed = myFrame.Field(ID3FN_TEXT).Get(buffer, 1024);
+   **   size_t charsUsed = myFrame.Field(ID3FN_TEXT).Get(buffer, 1024);
    ** \endcode
    ** 
    ** It fills the buffer with as much data from the field as is present in the
@@ -224,7 +222,7 @@ public:
    ** 
    ** \code
    **   char myBuffer[1024];
-   **   luint charsUsed = myFrame.Field(ID3FN_TEXT).Get(buffer, 1024, 3);
+   **   size_t charsUsed = myFrame.Field(ID3FN_TEXT).Get(buffer, 1024, 3);
    ** \endcode
    ** 
    ** This fills the buffer with up to the first 1024 characters from the third
@@ -232,9 +230,9 @@ public:
    ** 
    ** \sa ID3_Field::Add
    **/
-  luint       Get(char *buffer, ///< Where to copy the data
-                  luint,        ///< Maximum number of characters to copy
-                  luint = 1     ///< The item number to retrieve
+  size_t      Get(char *buffer, ///< Where to copy the data
+                  size_t,       ///< Maximum number of characters to copy
+                  index_t = 1   ///< The item number to retrieve
                   );
 
   /** For fields which support this feature, adds a string to the list of
@@ -284,7 +282,7 @@ public:
    **   
    ** \code
    **   unicode_t myBuffer[1024];
-   **   luint charsUsed = myFrame.Field(ID3FN_TEXT).Get(buffer, 1024);
+   **   size_t charsUsed = myFrame.Field(ID3FN_TEXT).Get(buffer, 1024);
    ** \endcode 
    **   
    ** \param buffer   Where the field's data is copied to
@@ -293,7 +291,7 @@ public:
    **                 people frame, the item number to retrieve.
    ** \sa #Get
    **/
-  luint         Get(unicode_t *buffer, luint maxChars, luint itemNum = 1);
+  size_t         Get(unicode_t *buffer, size_t, index_t = 1);
   /** For fields which support this feature, adds a string to the list of
    ** strings currently in the field.
    ** 
@@ -311,7 +309,7 @@ public:
    ** \param newData The data to assign to this field.
    ** \param newSize The number of bytes to be copied from the data array.
    **/
-  void          Set(const uchar *newData, luint newSize);
+  void          Set(const uchar *newData, size_t newSize);
   /** Copies the field's internal string to the buffer.
    ** 
    ** It copies the data in the field into the buffer, for as many bytes as the
@@ -325,7 +323,7 @@ public:
    ** \param buffer Where to copy the contents of the field.
    ** \param length The number of bytes in the buffer
    **/
-  void          Get(uchar *buffer, luint length);
+  void          Get(uchar *buffer, size_t length);
   /** Copies binary data from the file specified to the field.
    ** 
    ** \code
@@ -360,11 +358,11 @@ public:
   
 
 private:
-  luint         BinSize(bool withExtras = true) const;
+  size_t        BinSize(bool withExtras = true) const;
   bool          HasChanged();
   //void          SetSpec(ID3_V2Spec);
-  luint         Render(uchar *buffer);
-  luint         Parse(const uchar *buffer, luint buffSize);
+  size_t        Render(uchar *buffer) const;
+  size_t        Parse(const uchar *buffer, size_t buffSize);
 
 private:
   // To prevent public instantiation, the constructor is made private
@@ -372,24 +370,24 @@ private:
 
   ID3_FieldID   __id;              // the ID of this field
   ID3_FieldType __type;            // what type is this field or should be
-  luint         __length;          // length of field (fixed if positive)
+  size_t        __length;          // length of field (fixed if positive)
   ID3_V2Spec    __spec_begin;      // spec end
   ID3_V2Spec    __spec_end;        // spec begin
-  luint         __flags;           // special field flags
-  bool          __changed;         // field changed since last parse/render?
+  flags_t       __flags;           // special field flags
+  mutable bool  __changed;         // field changed since last parse/render?
   uchar        *__data;
-  luint         __size;
+  size_t        __size;
   ID3_TextEnc   __enc;             // encoding
 protected:
-  luint RenderInteger(uchar *buffer);
-  luint RenderASCIIString(uchar *buffer);
-  luint RenderUnicodeString(uchar *buffer);
-  luint RenderBinary(uchar *buffer);
+  size_t RenderInteger(uchar *buffer) const;
+  size_t RenderASCIIString(uchar *buffer) const;
+  size_t RenderUnicodeString(uchar *buffer) const;
+  size_t RenderBinary(uchar *buffer) const;
   
-  size_t ParseInteger(const uchar *buffer, size_t nSize);
-  size_t ParseASCIIString(const uchar *buffer, size_t nSize);
-  size_t ParseUnicodeString(const uchar *buffer, size_t nSize);
-  size_t ParseBinary(const uchar *buffer, size_t nSize);
+  size_t ParseInteger(const uchar *buffer, size_t);
+  size_t ParseASCIIString(const uchar *buffer, size_t);
+  size_t ParseUnicodeString(const uchar *buffer, size_t);
+  size_t ParseBinary(const uchar *buffer, size_t);
   
 };
 
