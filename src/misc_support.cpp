@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.32 2001/07/30 18:22:53 abscess Exp $
+// $Id: misc_support.cpp,v 1.33 2001/11/05 09:55:33 shadrack Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -352,6 +352,10 @@ char *ID3_GetComment(const ID3_Tag *tag, const char* desc)
   else
   {
     frame = tag->Find(ID3FID_COMMENT);
+    if(frame == tag->Find(ID3FID_COMMENT, ID3FN_DESCRIPTION, STR_V1_COMMENT_DESC))
+      {
+	frame = tag->Find(ID3FID_COMMENT);
+      }
   }
 
   if (frame)

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: helpers.h,v 1.4 2001/07/30 18:22:53 abscess Exp $
+// $Id: helpers.h,v 1.5 2001/11/05 09:55:32 shadrack Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -51,35 +51,44 @@ namespace dami
       ID3_C_EXPORT String     getArtist(const ID3_TagImpl&);
       ID3_C_EXPORT ID3_Frame* setArtist(ID3_TagImpl&, String);
       ID3_C_EXPORT size_t     removeArtists(ID3_TagImpl&);
-      
+
+      ID3_C_EXPORT ID3_Frame* hasAlbum(const ID3_TagImpl&);
       ID3_C_EXPORT String     getAlbum(const ID3_TagImpl&);
       ID3_C_EXPORT ID3_Frame* setAlbum(ID3_TagImpl&, String);
       ID3_C_EXPORT size_t     removeAlbums(ID3_TagImpl&);
       
+      ID3_C_EXPORT ID3_Frame* hasTitle(const ID3_TagImpl&);
       ID3_C_EXPORT String     getTitle(const ID3_TagImpl&);
       ID3_C_EXPORT ID3_Frame* setTitle(ID3_TagImpl&, String);
       ID3_C_EXPORT size_t     removeTitles(ID3_TagImpl&);
       
+      ID3_C_EXPORT ID3_Frame* hasYear(const ID3_TagImpl&);
       ID3_C_EXPORT String     getYear(const ID3_TagImpl&);
       ID3_C_EXPORT ID3_Frame* setYear(ID3_TagImpl&, String);
       ID3_C_EXPORT size_t     removeYears(ID3_TagImpl&);
       
+      ID3_C_EXPORT ID3_Frame* hasV1Comment(const ID3_TagImpl&);
+      //      ID3_C_EXPORT ID3_Frame* hasComment(const ID3_TagImpl&, String desc);
+      ID3_C_EXPORT ID3_Frame* hasComment(const ID3_TagImpl&);
       ID3_C_EXPORT String     getComment(const ID3_TagImpl&, String desc);
       ID3_C_EXPORT String     getV1Comment(const ID3_TagImpl&);
       ID3_C_EXPORT ID3_Frame* setComment(ID3_TagImpl&, String, String, String);
       ID3_C_EXPORT size_t     removeComments(ID3_TagImpl&, String);
       ID3_C_EXPORT size_t     removeAllComments(ID3_TagImpl&);
       
+      ID3_C_EXPORT ID3_Frame* hasTrack(const ID3_TagImpl&);
       ID3_C_EXPORT String     getTrack(const ID3_TagImpl&);
       ID3_C_EXPORT size_t     getTrackNum(const ID3_TagImpl&);
       ID3_C_EXPORT ID3_Frame* setTrack(ID3_TagImpl&, uchar ucTrack, uchar ucTotal);
       ID3_C_EXPORT size_t     removeTracks(ID3_TagImpl&);
       
+      ID3_C_EXPORT ID3_Frame* hasGenre(const ID3_TagImpl&);
       ID3_C_EXPORT String     getGenre(const ID3_TagImpl&);
       ID3_C_EXPORT size_t     getGenreNum(const ID3_TagImpl&);
       ID3_C_EXPORT ID3_Frame* setGenre(ID3_TagImpl&, size_t ucGenre);
       ID3_C_EXPORT size_t     removeGenres(ID3_TagImpl&);
       
+      ID3_C_EXPORT ID3_Frame* hasLyrics(const ID3_TagImpl&);
       ID3_C_EXPORT String     getLyrics(const ID3_TagImpl&);
       ID3_C_EXPORT ID3_Frame* setLyrics(ID3_TagImpl&, String, String, String);
       ID3_C_EXPORT size_t     removeLyrics(ID3_TagImpl&);
@@ -88,6 +97,7 @@ namespace dami
       ID3_C_EXPORT ID3_Frame* setLyricist(ID3_TagImpl&, String);
       ID3_C_EXPORT size_t     removeLyricists(ID3_TagImpl&);
       
+      ID3_C_EXPORT ID3_Frame* hasSyncLyrics(const ID3_TagImpl&, String lang, String desc);
       ID3_C_EXPORT ID3_Frame* setSyncLyrics(ID3_TagImpl&, BString, ID3_TimeStampFormat, 
                                String, String, ID3_ContentType);
       ID3_C_EXPORT BString    getSyncLyrics(const ID3_TagImpl& tag, String lang, String desc);

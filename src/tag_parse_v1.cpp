@@ -1,4 +1,4 @@
-// $Id: tag_parse_v1.cpp,v 1.17 2000/10/29 01:37:29 eldamitri Exp $
+// $Id: tag_parse_v1.cpp,v 1.18 2001/11/05 09:55:33 shadrack Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -73,9 +73,13 @@ bool id3::v1::parse(ID3_TagImpl& tag, ID3_Reader& reader)
   // equivalent of the v1 fields.  When we come across a v1 field that has
   // no current equivalent v2 frame, we create the frame, copy the data
   // from the v1 frame and attach it to the tag
+
+  // (Scott Wheeler) The above comment was nice in theory, but it wasn't
+  // first checking (before my hacks) to see if there already was v2 data.
+
   ID3D_NOTICE("id3::v1::parse: read bytes: " << reader.getCur() - beg);
   String title = io::readTrailingSpaces(reader, ID3_V1_LEN_TITLE);
-  if (title.size() > 0)
+  if (title.size() > 0 && !id3::v2::hasTitle(tag))
   {
     id3::v2::setTitle(tag, title);
   }
@@ -83,7 +87,7 @@ bool id3::v1::parse(ID3_TagImpl& tag, ID3_Reader& reader)
   
   ID3D_NOTICE("id3::v1::parse: read bytes: " << reader.getCur() - beg);
   String artist = io::readTrailingSpaces(reader, ID3_V1_LEN_ARTIST);
-  if (artist.size() > 0)
+  if (artist.size() > 0 && !id3::v2::hasArtist(tag))
   {
     id3::v2::setArtist(tag, artist);
   }
@@ -91,7 +95,7 @@ bool id3::v1::parse(ID3_TagImpl& tag, ID3_Reader& reader)
   
   ID3D_NOTICE("id3::v1::parse: read bytes: " << reader.getCur() - beg);
   String album = io::readTrailingSpaces(reader, ID3_V1_LEN_ALBUM);
-  if (album.size() > 0) 
+  if (album.size() > 0 && !id3::v2::hasAlbum(tag)) 
   {
     id3::v2::setAlbum(tag, album);
   }
@@ -99,7 +103,7 @@ bool id3::v1::parse(ID3_TagImpl& tag, ID3_Reader& reader)
   
   ID3D_NOTICE("id3::v1::parse: read bytes: " << reader.getCur() - beg);
   String year = io::readTrailingSpaces(reader, ID3_V1_LEN_YEAR);
-  if (year.size() > 0)
+  if (year.size() > 0 && !id3::v2::hasYear(tag))
   {
     id3::v2::setYear(tag, year);
   }
@@ -130,7 +134,7 @@ bool id3::v1::parse(ID3_TagImpl& tag, ID3_Reader& reader)
   ID3D_NOTICE("id3::v1::parse: read bytes: " << reader.getCur() - beg);
   // the GENRE field/frame
   uchar genre = reader.readChar();
-  if (genre != 0xFF) 
+  if (genre != 0xFF && !id3::v2::hasGenre(tag)) 
   {
     id3::v2::setGenre(tag, genre);
   }
