@@ -8,7 +8,7 @@
    subject to change. Applications should only use zlib.h.
  */
 
-/* @(#) $Id: zutil.h,v 1.2 2000/05/09 14:32:50 eldamitri Exp $ */
+/* @(#) $Id: zutil.h,v 1.3 2000/10/14 23:29:18 eldamitri Exp $ */
 
 #ifndef _Z_UTIL_H
 #define _Z_UTIL_H
@@ -94,6 +94,11 @@ extern const char *z_errmsg[10]; /* indexed by 2-zlib_error */
 
 #ifdef WIN32 /* Window 95 & Windows NT */
 #  define OS_CODE  0x0b
+#endif
+
+#if defined(WINCE)
+#  include <malloc.h>
+#  include <stdlib.h>
 #endif
 
 #if defined(VAXC) || defined(VMS)

@@ -3,7 +3,7 @@
  * For conditions of distribution and use, see copyright notice in zlib.h 
  */
 
-/* @(#) $Id: zconf.h,v 1.2 2000/05/09 14:32:50 eldamitri Exp $ */
+/* @(#) $Id: zconf.h,v 1.3 2000/10/14 23:29:18 eldamitri Exp $ */
 
 #ifndef _ZCONF_H
 #define _ZCONF_H
@@ -247,6 +247,9 @@ typedef uLong FAR uLongf;
 #endif
 #ifndef z_off_t
 #  define  z_off_t long
+#endif
+#if defined(WINCE) && !defined(isgraph) // TODO: check for version <=2.11
+#  include <ctype2.h>           // NOTE: you must also link in ctype2.lib
 #endif
 
 /* MVS linker does not support external names larger than 8 bytes */

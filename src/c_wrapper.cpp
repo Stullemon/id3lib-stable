@@ -1,4 +1,4 @@
-// $Id: c_wrapper.cpp,v 1.13 2000/10/14 20:46:38 eldamitri Exp $
+// $Id: c_wrapper.cpp,v 1.14 2000/10/14 23:29:18 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -572,17 +572,18 @@ extern "C"
   ID3_C_EXPORT
   bool ID3Frame_GetCompression(const ID3Frame *frame)
   {
+    bool compressed = false;
     try
     {
       if (frame)
       {
-        return ((const ID3_Frame *) frame)->GetCompression();
+        compressed = ((const ID3_Frame *) frame)->GetCompression();
       }
     }
     catch (...)
     {
     }
-    return false;
+    return compressed;
   }
 
 
