@@ -1,3 +1,45 @@
+1999-12-04  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* src/id3/tag_parse_v1.cpp
+	(ParseID3v1): Added STR_V1_COMMENT_DESC as description parameter to 
+	call to ID3_AddComment 
+
+	* include/id3/misc_support.h: 
+	Updated the Add functions so that they accept an option boolean
+	parameter which indicates if the function should replace the current
+	frame, if any.  Made any char * parameters const, if appropriate.
+	Added a Remove function for each of the frame types handled in this
+	file.  Also generalized AddComment so that it now accepts a Description
+	string, which defaults to "".
+
+	* src/id3/misc_support.cpp
+	(ID3_AddArtist): Added extra boolean parameter (see changes for
+	misc_support.h above) as well as the functionality that implements the
+	feature.  If bReplace is true, than the new information replaces the
+	information in the previous Artist frame, if any.  If bReplace is 
+	false, the information is added only if no previous Artist frame
+	existed.
+	(ID3_AddAlbum): See changes for ID3_AddArtist.
+	(ID3_AddTitle): See changes for ID3_AddArtist.
+	(ID3_AddYear): See changes for ID3_AddArtist.
+	(ID3_AddComment): See changes for ID3_AddArtist.  Also generalized
+	implementaiton using the new sDescription parameter.
+	(ID3_AddTrack): See changes for ID3_AddArtist.
+	(ID3_AddGenre): See changes for ID3_AddArtist.
+	(ID3_AddLyrics): See changes for ID3_AddArtist.
+	(ID3_RemoveArtists): Added.  Removes any and all frames that are 
+	associated with artist information (namely, ID3FID_LEADARTIST, 
+	ID3FID_BAND, ID3FID_CONDUCTOR, and ID3FID_COMPOSER) from the tag.
+	(ID3_RemoveAlbums): Added.  Removes any and all album name frames
+	(ID3_RemoveTitles): Added.  Removes any and all song title frames
+	(ID3_RemoveYears): Added.  Removes any and all year frames
+	(ID3_RemoveComments): Added.  Removes any and all comment frames that
+	match the sDescription parameter.  If sDescription is NULL, all comment
+	frames are removed.
+	(ID3_RemoveTracks): Added.  Removes any and all track number frames
+	(ID3_RemoveGenres): Added.  Removes any and all content type frames
+	(ID3_RemoveLyrics): Added.  Removes any and all unsynced lyrics frames
+
 1999-12-03  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* Makefile.am 
@@ -232,7 +274,7 @@
 	Updated to reflect changes from version macros to version functions.
 
 	* m4/Makefile.am
- 	(m4macros): Removed sh_types.m4.
+	(m4macros): Removed sh_types.m4.
 
 	* m4/sh_types.m4:
 	Removed.  Content now in src/id3/sized_types.h (a more appropriate
@@ -361,8 +403,8 @@
 
 	* doc/id3lib305.doc: 
 	Removed.  Replaced with inline documentation found in source,
- 	converted into various formats (html, latex, texinfo, man) using
- 	doc++ or kdoc.
+	converted into various formats (html, latex, texinfo, man) using
+	doc++ or kdoc.
 
 1999-11-25  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
@@ -374,7 +416,7 @@
 
 	* COPYING: 
 	Change from the GPL to the original statement about being in the Public
- 	Domain.
+	Domain.
 
 	* TODO
 	* HISTORY: 
@@ -539,22 +581,22 @@
 
 	* src/id3/tag.h: 
 	Added new constants: STR_V1_COMMENT_DESC (to be added to the
- 	description of comments converted from id3v1 tags); V1_TAG,
- 	V2_TAG, and BOTH_TAGS (used for methods Strip and Update to
- 	determine which tag to act on); and LEN_V1, LEN_V1_ID,
- 	LEN_V1_TITLE, LEN_V1_ARTIST, LEN_V1_ALBUM, LEN_V1_YEAR,
- 	LEN_V1_COMMENT, LEN_V1_GENRE (the lengths of the id3v1 tag and its
- 	fields). Generalized ID3V1_Tag struct using newly defined
- 	constants.  Added 1 to each char array size for null terminator.
-  	Added const qualifier to appropriate methods and parameters.
-  	Added declaration of RenderV1ToHandle method.  Renamed
- 	"RenderToHandle" to "RenderV2ToHandle".
+	description of comments converted from id3v1 tags); V1_TAG,
+	V2_TAG, and BOTH_TAGS (used for methods Strip and Update to
+	determine which tag to act on); and LEN_V1, LEN_V1_ID,
+	LEN_V1_TITLE, LEN_V1_ARTIST, LEN_V1_ALBUM, LEN_V1_YEAR,
+	LEN_V1_COMMENT, LEN_V1_GENRE (the lengths of the id3v1 tag and its
+	fields). Generalized ID3V1_Tag struct using newly defined
+	constants.  Added 1 to each char array size for null terminator.
+ 	Added const qualifier to appropriate methods and parameters.
+ 	Added declaration of RenderV1ToHandle method.  Renamed
+	"RenderToHandle" to "RenderV2ToHandle".
 
 	* src/id3/misc_support.h: 
 	Added the function declarations for ID3_GetString, ID3_GetArtist,
- 	ID3_GetAlbum, ID3_GetTitle, ID3_GetYear, ID3_AddYear,
- 	ID3_GetComment, ID3_AddComment, ID3_GetTrack, ID3_GetTrackNum,
- 	ID3_AddTrack, ID3_GetGenre, ID3_GetGenreNum, and ID3_GetLyrics.
+	ID3_GetAlbum, ID3_GetTitle, ID3_GetYear, ID3_AddYear,
+	ID3_GetComment, ID3_AddComment, ID3_GetTrack, ID3_GetTrackNum,
+	ID3_AddTrack, ID3_GetGenre, ID3_GetGenreNum, and ID3_GetLyrics.
 
 	* src/id3/misc_support.cpp 
 	(ID3_ASCIItoUnicode): Updated interface to make parameters const.  
@@ -632,7 +674,7 @@
 	(ID3_FindFrameID): Updated interface to make parameter const.
 
 	* src/id3/dll_wrapper.cpp
- 	(ID3Tag_Strip): Updated for interface change to
+	(ID3Tag_Strip): Updated for interface change to
 	Tag::Strip.  Now accepts tag flags rather than a v1 boolean.
 
 	* src/examples/Makefile.am: 
@@ -663,7 +705,7 @@
 	
 	* src/id3/field_string_ascii.cpp
 	(ParseASCIIString): Added sanity check for indices so we don't
- 	call memcpy with out-of-bounds indices.
+	call memcpy with out-of-bounds indices.
 
 	* src/id3/field.cpp 
 	(Render): Minor reformatting.
@@ -770,7 +812,7 @@
 	ID3_FrameDefs for easier reading (although most lines are more
 	than 80 chars long now).  Made private member variable names more
 	descriptive.  Fixed bug in SetVersion (was checking "rev != rev").
- 	Adjusted logic somewhat in BinSize to ease code reading.  Fixed
+	Adjusted logic somewhat in BinSize to ease code reading.  Fixed
 	bug in BinSize that was causing incorrect parsing of correct
 	frames, such as COMM (previously assumed a wchar_t is 2 bytes,
 	which might not be true on some platforms).
