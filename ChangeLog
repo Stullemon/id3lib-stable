@@ -13,6 +13,14 @@
 	Coalesced all the ChangeLog's (previously one for each directory) into
 	this toplevel ChangeLog.
 
+	* src/id3/Makefile.am
+	* src/Makefile.am: 
+	Removed EXTRA_DIST (no more ChangeLog)
+
+	* src/examples/Makefile.am
+	* doc/Makefile.am 
+	(EXTRA_DIST): Removed ChangeLog.
+
 	* src/id3/tag_render.cpp
 	(RenderV1ToHandle): Removed reference to tagV1---not used.  Other
 	minor windows-compatibility fixes.  (thanks elrod)

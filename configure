@@ -543,7 +543,7 @@ id3lib_patch=1
 
 id3lib_release=$id3lib_version.$id3lib_revision.$id3lib_patch
 id3lib_name=id3lib
-id3lib_date="$Date: 1999/12/01 22:40:03 $UNDEFINED"
+id3lib_date="$Date: 1999/12/02 01:49:28 $UNDEFINED"
 
 ac_aux_dir=
 for ac_dir in $srcdir $srcdir/.. $srcdir/../..; do
@@ -2909,7 +2909,7 @@ test "$no_create" = yes || $SHELL $CONFIG_STATUS || exit 1
 
 
 # $Log: configure,v $
-# Revision 1.15  1999/12/01 22:40:03  scott
+# Revision 1.16  1999/12/02 01:49:28  scott
 # *** empty log message ***
 #
 # Revision 1.10  1999/12/01 19:13:10  scott

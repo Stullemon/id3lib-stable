@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.5 1999/12/01 22:40:04 scott Exp $
+# $Id: Makefile.in,v 1.6 1999/12/02 01:49:29 scott Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -247,7 +247,7 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 # $Log: Makefile.in,v $
-# Revision 1.5  1999/12/01 22:40:04  scott
+# Revision 1.6  1999/12/02 01:49:29  scott
 # *** empty log message ***
 #
 # Revision 1.2  1999/12/01 19:11:30  scott
