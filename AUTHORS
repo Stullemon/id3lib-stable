@@ -2,4 +2,54 @@ Authors of id3lib.
 See also the files THANKS and ChangeLog.
 
 Dirk Mahoney originally designed and implemented id3lib.
-Scott Thomas Haug branched the project at 3.0.6 for better linux functionality.
+
+Scott Thomas Haug (sth2@cs.wustl.edu) branched the project at 3.0.6 for better
+linux functionality.  Please contact him with patches, bug reports, feature
+requests, and other such comments.
+
+Below the original "contact.txt" has been included.  The information is no
+longer current.  Please see the README file for more complete information.
+
+contact.txt:
+  Further Information and Contacting the Authors
+
+  ID3v2
+
+  Martin Nilsson co-invented ID3v2 and is now co-ordinating all ID3v2-related
+  matters.  He can be reached at 'nilsson@id3.org'.
+
+  ID3v2 has it's own mailing list, 'id3v2@sigge.ml.org', intended primarly for
+  software developers and developers of this and similar standards.  Thanks to
+  Andreas Sigfridsson for hosting it on his server.
+
+  Subscribe to the mailing list by sending a mail with only the word
+  'subscribe' in the body to 'id3v2-request@sigge.ml.org'.  The mailing list
+  server runs majordomo, so you can send a mail to 'majordomo@sigge.ml.org'
+  with the word 'help' in the body for additional help.  If messages to you are
+  returned (unknown address or other problem) you will be removed from the list
+  and will have to resubscribe.
+
+  The official ID3v2 web site can be found at 'http://www.id3.org', with
+  mirrors at...
+
+  http://www.hatman.com/id3v2                     US Mirror
+  http://uq.net.au/~zzdmarti/id3v2                Australasian Mirror
+
+  ID3Lib
+
+  Dirk Mahoney is co-ordinating the ID3Lib project, which is the C++ standard
+  class library and related programming tools.  He can be reached at
+  'dirk@id3.org'.
+
+  ID3Lib also has a mailing list, but it is an 'announcement'-style list.  To
+  subscribe, send an e-mail to 'dirk@id3.org' with the subject as 'ID3LibSub'.
+  This list is the forum for announcements, updates, example sources and hints
+  and tips.  To unsubscribe, send an e-mail to 'dirk@id3.org' with the subject
+  as 'ID3LibUnsub'.
+
+  The official ID3Lib web page can be found at 'http://www.id3.org/id3lib', 
+  with mirrors at...
+
+  http://www.hatman.com/id3v2/id3lib              US Mirror
+  http://uq.net.au/~zzdmarti/id3v2/id3lib         Australasian Mirror
+
