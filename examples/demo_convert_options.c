@@ -12,10 +12,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 /* If we use autoconf.  */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
+
 /* Check for configure's getopt check result.  */
 #ifndef HAVE_GETOPT_LONG
 #include "getopt.h"
@@ -26,20 +28,14 @@
 #include "demo_convert_options.h"
 
 /* Don't define PACKAGE and VERSION if we use automake.  */
-#if defined PACKAGE
-#  undef PACKAGE
-#endif
-#define PACKAGE "id3convert"
-#if defined VERSION
-#  undef VERSION
-#endif
-#define VERSION "3.8.0pre1"
+#define GGO_PACKAGE "id3convert"
+#define GGO_VERSION "3.8.0pre1"
 
 
 void
 print_version (void)
 {
-  printf ("%s %s\n", PACKAGE, VERSION);
+  printf ("%s %s\n", GGO_PACKAGE, GGO_VERSION);
 }
 
 void
@@ -55,7 +51,7 @@ print_help (void)
    -p  --padding   Use padding in the tag (default=off)\n\
    -w  --warning   Turn on warnings (for debugging) (default=off)\n\
    -n  --notice    Turn on notices (for debugging) (default=off)\n\
-", PACKAGE);
+", GGO_PACKAGE);
 }
 
 
@@ -149,7 +145,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
           exit (1);
 
         default:	/* bug: option not considered.  */
-          fprintf (stderr, "%s: option unknown: %c\n", PACKAGE, c);
+          fprintf (stderr, "%s: option unknown: %c\n", GGO_PACKAGE, c);
           abort ();
         } /* switch */
     } /* while */

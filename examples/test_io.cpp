@@ -1,10 +1,8 @@
-// $Id: test_io.cpp,v 1.2 2000/10/14 19:24:38 eldamitri Exp $
+// $Id: test_io.cpp,v 1.3 2000/10/29 01:37:28 eldamitri Exp $
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
-
-#include <id3/debug.h>
 
 #include <id3/readers.h>
 #include <id3/writers.h>

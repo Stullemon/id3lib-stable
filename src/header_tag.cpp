@@ -1,4 +1,4 @@
-// $Id: header_tag.cpp,v 1.20 2000/10/16 08:50:22 eldamitri Exp $
+// $Id: header_tag.cpp,v 1.21 2000/10/29 01:37:29 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,7 +28,7 @@
 #include <config.h>
 #endif
 
-#include "debug.h"
+
 
 #include <string.h>
 

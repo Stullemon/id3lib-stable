@@ -1,10 +1,8 @@
-// $Id: test_compression.cpp,v 1.6 2000/10/14 20:46:38 eldamitri Exp $
+// $Id: test_compression.cpp,v 1.7 2000/10/29 01:37:28 eldamitri Exp $
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
-
-#include <id3/debug.h>
 
 #include <iostream.h>
 #include <id3/tag.h>

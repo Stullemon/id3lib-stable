@@ -1,4 +1,4 @@
-// $Id: field_integer.cpp,v 1.18 2000/10/21 15:35:11 eldamitri Exp $
+// $Id: field_integer.cpp,v 1.19 2000/10/29 01:37:28 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,7 +28,7 @@
 #include <config.h>
 #endif
 
-#include "debug.h"
+
 #include "field_impl.h"
 #include "utils.h"
 #include "io_helpers.h"

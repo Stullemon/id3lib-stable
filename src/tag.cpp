@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.35 2000/10/24 07:00:09 eldamitri Exp $
+// $Id: tag.cpp,v 1.36 2000/10/29 01:37:29 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -37,20 +37,49 @@
 
 using namespace dami;
 
+/** \mainpage id3lib Library Documentation
+ **
+ ** \section tutorial Quick Tutorial
+ ** 
+ ** This tutorial will quickly get you up and running with id3lib.
+ **
+ ** \subsection download Downloading id3lib
+ **
+ ** First, id3lib must be a part of your development environment.
+ **
+ ** \subsection include Preparing your source code
+ **
+ ** To use the basic functionality of id3lib in your C++ code, a single
+ ** \c #include is necessary.
+ **
+ ** \code
+ **   #include <id3/tag.h>
+ ** \endcode
+ **
+ ** There are other files that must be included to access more advanced
+ ** functionality, but this will do for us for now.
+ ** 
+ ** \subsection creation Creating a tag
+ ** 
+ ** Almost all functionality occurs via an ID3_Tag object.  An ID3_Tag object
+ ** basically encapsulates two things: a collection of ID3_Frame objects and
+ ** file information.  The goal is to populate an ID3_Tag object with ID3_Frame
+ ** objects, and the easiest way to do this is to parse a file.
+ **
+ ** \code
+ **   ID3_Tag tag("song.mp3");
+ ** \endcode
+ **
+ **
+ **/
+
 /** \class ID3_Tag tag.h id3/tag.h
  ** \brief The representative class of an id3 tag.
  ** 
  ** The ID3_Tag is, at its simplest, a container for ID3v2 frames.  At its
  ** most complicated, it's a kitchen-sink, monolithic "catch-all" class for
- ** doing everything you can do with tagged audio data.
-
- ** This is the 'container' class for everything else.  It is through an
- ** ID3_Tag that most of the productive stuff happens.  Let's look at what's
- ** required to start using ID3v2 tags.
- ** 
- ** \code
- **   #include <id3/tag.h>
- ** \endcode
+ ** handling almost every task associated with creating, parsing, rendering,
+ ** and manipulating digital audio data using id3lib.
  ** 
  ** This simple \c #include does it all.  In order to read an existing tag, do
  ** the following:
@@ -82,7 +111,7 @@ using namespace dami;
  ** formatted 'CDM' frames from the unreleased ID3v2 2.01 draft specification.
  **
  ** \author Dirk Mahoney
- ** \version $Id: tag.cpp,v 1.35 2000/10/24 07:00:09 eldamitri Exp $
+ ** \version $Id: tag.cpp,v 1.36 2000/10/29 01:37:29 eldamitri Exp $
  ** \sa ID3_Frame
  ** \sa ID3_Field
  ** \sa ID3_Err

@@ -1,4 +1,8 @@
-// $Id: test_remove.cpp,v 1.9 2000/10/21 22:37:04 eldamitri Exp $
+// $Id: test_remove.cpp,v 1.10 2000/10/29 01:37:28 eldamitri Exp $
+
+#if defined(HAVE_CONFIG_H)
+# include "config.h"
+#endif
 
 #include <iostream.h>
 #include <id3/tag.h>

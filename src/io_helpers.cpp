@@ -1,4 +1,4 @@
-// $Id: io_helpers.cpp,v 1.4 2000/10/21 22:17:03 eldamitri Exp $
+// $Id: io_helpers.cpp,v 1.5 2000/10/29 01:37:29 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,7 +28,7 @@
 #include <config.h>
 #endif
 
-#include "debug.h"
+
 
 #include "io_decorators.h"
 #include "io_helpers.h"

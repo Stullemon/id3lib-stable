@@ -9,6 +9,7 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 m4macros =              \
+  id3_debug.m4          \
   id3_cxx.m4 
 
 EXTRA_DIST = $(m4macros) 

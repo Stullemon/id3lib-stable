@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.29 2000/10/21 15:41:06 eldamitri Exp $
+// $Id: field_string_unicode.cpp,v 1.30 2000/10/29 01:37:28 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,7 +28,7 @@
 #include <config.h>
 #endif
 
-#include "debug.h"
+
 
 #include <string.h>
 #include <stdlib.h>

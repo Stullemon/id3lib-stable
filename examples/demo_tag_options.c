@@ -12,10 +12,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 /* If we use autoconf.  */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
+
 /* Check for configure's getopt check result.  */
 #ifndef HAVE_GETOPT_LONG
 #include "getopt.h"
@@ -26,20 +28,14 @@
 #include "demo_tag_options.h"
 
 /* Don't define PACKAGE and VERSION if we use automake.  */
-#if defined PACKAGE
-#  undef PACKAGE
-#endif
-#define PACKAGE "id3tag"
-#if defined VERSION
-#  undef VERSION
-#endif
-#define VERSION "3.8.0pre1"
+#define GGO_PACKAGE "id3tag"
+#define GGO_VERSION "3.8.0pre1"
 
 
 void
 print_version (void)
 {
-  printf ("%s %s\n", PACKAGE, VERSION);
+  printf ("%s %s\n", GGO_PACKAGE, GGO_VERSION);
 }
 
 void
@@ -62,7 +58,7 @@ print_help (void)
    -gSHORT    --genre=SHORT     Set the genre\n\
    -w         --warning         Turn on warnings (for debugging) (default=off)\n\
    -n         --notice          Turn on notices (for debugging) (default=off)\n\
-", PACKAGE);
+", GGO_PACKAGE);
 }
 
 
@@ -174,7 +170,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
         case 'a':	/* Set the artist information.  */
           if (args_info->artist_given)
             {
-              fprintf (stderr, "%s: `--artist' (`-a') option given more than once\n", PACKAGE);
+              fprintf (stderr, "%s: `--artist' (`-a') option given more than once\n", GGO_PACKAGE);
               clear_args ();
               print_help ();
               exit (1);
@@ -186,7 +182,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
         case 'A':	/* Set the album title information.  */
           if (args_info->album_given)
             {
-              fprintf (stderr, "%s: `--album' (`-A') option given more than once\n", PACKAGE);
+              fprintf (stderr, "%s: `--album' (`-A') option given more than once\n", GGO_PACKAGE);
               clear_args ();
               print_help ();
               exit (1);
@@ -198,7 +194,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
         case 's':	/* Set the title information.  */
           if (args_info->song_given)
             {
-              fprintf (stderr, "%s: `--song' (`-s') option given more than once\n", PACKAGE);
+              fprintf (stderr, "%s: `--song' (`-s') option given more than once\n", GGO_PACKAGE);
               clear_args ();
               print_help ();
               exit (1);
@@ -210,7 +206,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
         case 'c':	/* Set the comment information.  */
           if (args_info->comment_given)
             {
-              fprintf (stderr, "%s: `--comment' (`-c') option given more than once\n", PACKAGE);
+              fprintf (stderr, "%s: `--comment' (`-c') option given more than once\n", GGO_PACKAGE);
               clear_args ();
               print_help ();
               exit (1);
@@ -222,7 +218,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
         case 'C':	/* Set the comment description.  */
           if (args_info->desc_given)
             {
-              fprintf (stderr, "%s: `--desc' (`-C') option given more than once\n", PACKAGE);
+              fprintf (stderr, "%s: `--desc' (`-C') option given more than once\n", GGO_PACKAGE);
               clear_args ();
               print_help ();
               exit (1);
@@ -234,7 +230,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
         case 'y':	/* Set the year.  */
           if (args_info->year_given)
             {
-              fprintf (stderr, "%s: `--year' (`-y') option given more than once\n", PACKAGE);
+              fprintf (stderr, "%s: `--year' (`-y') option given more than once\n", GGO_PACKAGE);
               clear_args ();
               print_help ();
               exit (1);
@@ -246,7 +242,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
         case 't':	/* Set the track number.  */
           if (args_info->track_given)
             {
-              fprintf (stderr, "%s: `--track' (`-t') option given more than once\n", PACKAGE);
+              fprintf (stderr, "%s: `--track' (`-t') option given more than once\n", GGO_PACKAGE);
               clear_args ();
               print_help ();
               exit (1);
@@ -258,7 +254,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
         case 'T':	/* Set the total number of tracks.  */
           if (args_info->total_given)
             {
-              fprintf (stderr, "%s: `--total' (`-T') option given more than once\n", PACKAGE);
+              fprintf (stderr, "%s: `--total' (`-T') option given more than once\n", GGO_PACKAGE);
               clear_args ();
               print_help ();
               exit (1);
@@ -270,7 +266,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
         case 'g':	/* Set the genre.  */
           if (args_info->genre_given)
             {
-              fprintf (stderr, "%s: `--genre' (`-g') option given more than once\n", PACKAGE);
+              fprintf (stderr, "%s: `--genre' (`-g') option given more than once\n", GGO_PACKAGE);
               clear_args ();
               print_help ();
               exit (1);
@@ -292,7 +288,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
           exit (1);
 
         default:	/* bug: option not considered.  */
-          fprintf (stderr, "%s: option unknown: %c\n", PACKAGE, c);
+          fprintf (stderr, "%s: option unknown: %c\n", GGO_PACKAGE, c);
           abort ();
         } /* switch */
     } /* while */

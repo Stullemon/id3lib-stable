@@ -19,6 +19,17 @@ endif
 INCLUDES = \
   @ID3LIB_DEBUG_FLAGS@ -I$(top_srcdir)/include/id3 -I$(top_srcdir)/include $(zlib_include)
 
+noinst_HEADERS =                \
+  field_def.h                   \
+  field_impl.h                  \
+  flags.h                       \
+  frame_def.h                   \
+  frame_impl.h                  \
+  header.h                      \
+  header_frame.h                \
+  header_tag.h                  \
+  spec.h                        
+
 id3lib_sources =                \
   c_wrapper.cpp                 \
   field.cpp                     \

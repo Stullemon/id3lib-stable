@@ -18,26 +18,15 @@ the_headers =                   \
   sized_types.h                 \
   tag.h                         \
   writer.h                      \
-  writers.h                     
+  writers.h                     \
+  utils.h                       
 
 id3includedir      = $(includedir)/id3
 id3include_HEADERS = $(the_headers)
 
 noinst_HEADERS =                \
-  debug.h                       \
-  field_def.h                   \
-  field_impl.h                  \
-  flags.h                       \
-  frame_def.h                   \
-  frame_impl.h                  \
-  header.h                      \
-  header_frame.h                \
-  header_tag.h                  \
   helpers.h                     \
   io_decorators.h               \
   io_helpers.h                  \
   io_strings.h                  \
-  strings.h                     \
-  spec.h                        \
-  tag_impl.h                    \
-  utils.h                       
+  strings.h                     
