@@ -8,15 +8,25 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-LDADD_BASE = $(top_builddir)/src/libid3.la
+LDADD_BASE =
 
 if ID3_NEEDPOPT
-LDADD = $(LDADD_BASE) $(top_builddir)/popt/libpopt.la
+popt_lib = $(top_builddir)/popt/libpopt.la
 popt_include = -I$(top_srcdir)/popt
 else
-LDADD = $(LDADD_BASE) -lpopt
+popt_lib = -lpopt
 popt_include =
 endif
+
+if ID3_NEEDZLIB
+zlib_lib = $(top_builddir)/zlib/src/libz.la
+zlib_include = -I$(top_srcdir)/zlib/include
+else
+zlib_lib = -lz
+zlib_include =
+endif
+
+LDADD =  $(top_builddir)/src/libid3.la $(popt_lib) $(zlib_lib)
 
 INCLUDES = -I$(top_srcdir)/include $(popt_include)
 

@@ -101,11 +101,17 @@ PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
 
-LDADD_BASE = $(top_builddir)/src/libid3.la
-@ID3_NEEDPOPT_TRUE@LDADD = $(LDADD_BASE) $(top_builddir)/popt/libpopt.la
-@ID3_NEEDPOPT_FALSE@LDADD = $(LDADD_BASE) -lpopt
+LDADD_BASE = 
+@ID3_NEEDPOPT_TRUE@popt_lib = $(top_builddir)/popt/libpopt.la
+@ID3_NEEDPOPT_FALSE@popt_lib = -lpopt
 @ID3_NEEDPOPT_TRUE@popt_include = -I$(top_srcdir)/popt
 @ID3_NEEDPOPT_FALSE@popt_include = 
+@ID3_NEEDZLIB_TRUE@zlib_lib = $(top_builddir)/zlib/src/libz.la
+@ID3_NEEDZLIB_FALSE@zlib_lib = -lz
+@ID3_NEEDZLIB_TRUE@zlib_include = -I$(top_srcdir)/zlib/include
+@ID3_NEEDZLIB_FALSE@zlib_include = 
+
+LDADD = $(top_builddir)/src/libid3.la $(popt_lib) $(zlib_lib)
 
 INCLUDES = -I$(top_srcdir)/include $(popt_include)
 
@@ -139,90 +145,183 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 id3info_OBJECTS =  demo_info.o
 id3info_LDADD = $(LDADD)
-@ID3_NEEDPOPT_FALSE@id3info_DEPENDENCIES =  \
-@ID3_NEEDPOPT_FALSE@$(top_builddir)/src/libid3.la
-@ID3_NEEDPOPT_TRUE@id3info_DEPENDENCIES =  $(top_builddir)/src/libid3.la \
-@ID3_NEEDPOPT_TRUE@$(top_builddir)/popt/libpopt.la
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_FALSE@id3info_DEPENDENCIES =  \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@id3info_DEPENDENCIES =  \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@id3info_DEPENDENCIES =  \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/popt/libpopt.la
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@id3info_DEPENDENCIES =  \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/popt/libpopt.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
 id3info_LDFLAGS = 
 id3convert_OBJECTS =  demo_convert.o
 id3convert_LDADD = $(LDADD)
-@ID3_NEEDPOPT_FALSE@id3convert_DEPENDENCIES =  \
-@ID3_NEEDPOPT_FALSE@$(top_builddir)/src/libid3.la
-@ID3_NEEDPOPT_TRUE@id3convert_DEPENDENCIES =  \
-@ID3_NEEDPOPT_TRUE@$(top_builddir)/src/libid3.la \
-@ID3_NEEDPOPT_TRUE@$(top_builddir)/popt/libpopt.la
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_FALSE@id3convert_DEPENDENCIES =  \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@id3convert_DEPENDENCIES =  \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@id3convert_DEPENDENCIES =  \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/popt/libpopt.la
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@id3convert_DEPENDENCIES =  \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/popt/libpopt.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
 id3convert_LDFLAGS = 
 id3tag_OBJECTS =  demo_tag.o
 id3tag_LDADD = $(LDADD)
-@ID3_NEEDPOPT_FALSE@id3tag_DEPENDENCIES =  $(top_builddir)/src/libid3.la
-@ID3_NEEDPOPT_TRUE@id3tag_DEPENDENCIES =  $(top_builddir)/src/libid3.la \
-@ID3_NEEDPOPT_TRUE@$(top_builddir)/popt/libpopt.la
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_FALSE@id3tag_DEPENDENCIES =  \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@id3tag_DEPENDENCIES =  \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@id3tag_DEPENDENCIES =  \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/popt/libpopt.la
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@id3tag_DEPENDENCIES =  \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/popt/libpopt.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
 id3tag_LDFLAGS = 
 id3cp_OBJECTS =  demo_copy.o
 id3cp_LDADD = $(LDADD)
-@ID3_NEEDPOPT_FALSE@id3cp_DEPENDENCIES =  $(top_builddir)/src/libid3.la
-@ID3_NEEDPOPT_TRUE@id3cp_DEPENDENCIES =  $(top_builddir)/src/libid3.la \
-@ID3_NEEDPOPT_TRUE@$(top_builddir)/popt/libpopt.la
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_FALSE@id3cp_DEPENDENCIES =  \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@id3cp_DEPENDENCIES =  \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@id3cp_DEPENDENCIES =  \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/popt/libpopt.la
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@id3cp_DEPENDENCIES =  \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/popt/libpopt.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
 id3cp_LDFLAGS = 
 id3simple_OBJECTS =  demo_simple.o
 id3simple_LDADD = $(LDADD)
-@ID3_NEEDPOPT_FALSE@id3simple_DEPENDENCIES =  \
-@ID3_NEEDPOPT_FALSE@$(top_builddir)/src/libid3.la
-@ID3_NEEDPOPT_TRUE@id3simple_DEPENDENCIES =  \
-@ID3_NEEDPOPT_TRUE@$(top_builddir)/src/libid3.la \
-@ID3_NEEDPOPT_TRUE@$(top_builddir)/popt/libpopt.la
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_FALSE@id3simple_DEPENDENCIES =  \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@id3simple_DEPENDENCIES =  \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@id3simple_DEPENDENCIES =  \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/popt/libpopt.la
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@id3simple_DEPENDENCIES =  \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/popt/libpopt.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
 id3simple_LDFLAGS = 
 testpic_OBJECTS =  test_pic.o
 testpic_LDADD = $(LDADD)
-@ID3_NEEDPOPT_FALSE@testpic_DEPENDENCIES =  \
-@ID3_NEEDPOPT_FALSE@$(top_builddir)/src/libid3.la
-@ID3_NEEDPOPT_TRUE@testpic_DEPENDENCIES =  $(top_builddir)/src/libid3.la \
-@ID3_NEEDPOPT_TRUE@$(top_builddir)/popt/libpopt.la
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_FALSE@testpic_DEPENDENCIES =  \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@testpic_DEPENDENCIES =  \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@testpic_DEPENDENCIES =  \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/popt/libpopt.la
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@testpic_DEPENDENCIES =  \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/popt/libpopt.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
 testpic_LDFLAGS = 
 testunicode_OBJECTS =  test_unicode.o
 testunicode_LDADD = $(LDADD)
-@ID3_NEEDPOPT_FALSE@testunicode_DEPENDENCIES =  \
-@ID3_NEEDPOPT_FALSE@$(top_builddir)/src/libid3.la
-@ID3_NEEDPOPT_TRUE@testunicode_DEPENDENCIES =  \
-@ID3_NEEDPOPT_TRUE@$(top_builddir)/src/libid3.la \
-@ID3_NEEDPOPT_TRUE@$(top_builddir)/popt/libpopt.la
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_FALSE@testunicode_DEPENDENCIES =  \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@testunicode_DEPENDENCIES =  \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@testunicode_DEPENDENCIES =  \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/popt/libpopt.la
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@testunicode_DEPENDENCIES =  \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/popt/libpopt.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
 testunicode_LDFLAGS = 
 testcompression_OBJECTS =  test_compression.o
 testcompression_LDADD = $(LDADD)
-@ID3_NEEDPOPT_FALSE@testcompression_DEPENDENCIES =  \
-@ID3_NEEDPOPT_FALSE@$(top_builddir)/src/libid3.la
-@ID3_NEEDPOPT_TRUE@testcompression_DEPENDENCIES =  \
-@ID3_NEEDPOPT_TRUE@$(top_builddir)/src/libid3.la \
-@ID3_NEEDPOPT_TRUE@$(top_builddir)/popt/libpopt.la
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_FALSE@testcompression_DEPENDENCIES =  \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@testcompression_DEPENDENCIES =  \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@testcompression_DEPENDENCIES =  \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/popt/libpopt.la
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@testcompression_DEPENDENCIES =  \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/popt/libpopt.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
 testcompression_LDFLAGS = 
 testremove_OBJECTS =  test_remove.o
 testremove_LDADD = $(LDADD)
-@ID3_NEEDPOPT_FALSE@testremove_DEPENDENCIES =  \
-@ID3_NEEDPOPT_FALSE@$(top_builddir)/src/libid3.la
-@ID3_NEEDPOPT_TRUE@testremove_DEPENDENCIES =  \
-@ID3_NEEDPOPT_TRUE@$(top_builddir)/src/libid3.la \
-@ID3_NEEDPOPT_TRUE@$(top_builddir)/popt/libpopt.la
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_FALSE@testremove_DEPENDENCIES =  \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@testremove_DEPENDENCIES =  \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@testremove_DEPENDENCIES =  \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/popt/libpopt.la
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@testremove_DEPENDENCIES =  \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/popt/libpopt.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
 testremove_LDFLAGS = 
 get_pic_OBJECTS =  get_pic.o
 get_pic_LDADD = $(LDADD)
-@ID3_NEEDPOPT_FALSE@get_pic_DEPENDENCIES =  \
-@ID3_NEEDPOPT_FALSE@$(top_builddir)/src/libid3.la
-@ID3_NEEDPOPT_TRUE@get_pic_DEPENDENCIES =  $(top_builddir)/src/libid3.la \
-@ID3_NEEDPOPT_TRUE@$(top_builddir)/popt/libpopt.la
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_FALSE@get_pic_DEPENDENCIES =  \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@get_pic_DEPENDENCIES =  \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@get_pic_DEPENDENCIES =  \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/popt/libpopt.la
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@get_pic_DEPENDENCIES =  \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/popt/libpopt.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
 get_pic_LDFLAGS = 
 findstr_OBJECTS =  findstr.o
 findstr_LDADD = $(LDADD)
-@ID3_NEEDPOPT_FALSE@findstr_DEPENDENCIES =  \
-@ID3_NEEDPOPT_FALSE@$(top_builddir)/src/libid3.la
-@ID3_NEEDPOPT_TRUE@findstr_DEPENDENCIES =  $(top_builddir)/src/libid3.la \
-@ID3_NEEDPOPT_TRUE@$(top_builddir)/popt/libpopt.la
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_FALSE@findstr_DEPENDENCIES =  \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@findstr_DEPENDENCIES =  \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@findstr_DEPENDENCIES =  \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/popt/libpopt.la
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@findstr_DEPENDENCIES =  \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/popt/libpopt.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
 findstr_LDFLAGS = 
 findeng_OBJECTS =  findeng.o
 findeng_LDADD = $(LDADD)
-@ID3_NEEDPOPT_FALSE@findeng_DEPENDENCIES =  \
-@ID3_NEEDPOPT_FALSE@$(top_builddir)/src/libid3.la
-@ID3_NEEDPOPT_TRUE@findeng_DEPENDENCIES =  $(top_builddir)/src/libid3.la \
-@ID3_NEEDPOPT_TRUE@$(top_builddir)/popt/libpopt.la
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_FALSE@findeng_DEPENDENCIES =  \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@findeng_DEPENDENCIES =  \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_FALSE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@findeng_DEPENDENCIES =  \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_FALSE@$(top_builddir)/popt/libpopt.la
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@findeng_DEPENDENCIES =  \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/popt/libpopt.la \
+@ID3_NEEDPOPT_TRUE@@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
 findeng_LDFLAGS = 
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
