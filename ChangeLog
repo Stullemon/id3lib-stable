@@ -1,3 +1,105 @@
+2002-06-29 Saturday 22:45   Thijmen Klok <thijmen@id3lib.org>
+
+	* macconfig.h (1.5): Added Define for NetBSD and MacOS X 
+
+2002-06-29 Saturday 22:24   Thijmen Klok <thijmen@id3lib.org>
+
+	* configure.in (1.58), configure (1.70): Fixed horribly wrong file 
+
+2002-06-29 Saturday 21:48   Thijmen Klok <thijmen@id3lib.org>
+
+	* config.h.win32 (1.16), config.h.win32.in (1.10, rel-3-7-13),
+	config.h.win32 (1.17), config.h.in (1.22), configure.in (1.57),
+	configure (1.69), src/frame_impl.h (1.3): change for new define
+	HAVE_BITSET for NetBSD and MacOS X 
+
+2002-06-29 Saturday 21:16   Thijmen Klok <thijmen@id3lib.org>
+
+	* include/id3/id3lib_bitset (1.1): Added for NetBSD and MacOs X 
+
+2002-06-29 Saturday 19:35   Thijmen Klok <thijmen@id3lib.org>
+
+	* src/field_integer.cpp (1.20), src/frame.cpp (1.34),
+	src/frame_parse.cpp (1.32), src/frame_render.cpp (1.23),
+	src/globals.cpp (1.5), src/header.cpp (1.10), src/header_frame.cpp
+	(1.21), src/header_tag.cpp (1.22), src/io.cpp (1.2),
+	src/io_decorators.cpp (1.3), src/io_helpers.cpp (1.12),
+	src/readers.cpp (1.6), src/tag.cpp (1.46), src/tag_file.cpp (1.37),
+	src/tag_parse.cpp (1.39), src/tag_parse_lyrics3.cpp (1.30),
+	src/tag_parse_musicmatch.cpp (1.18), src/tag_parse_v1.cpp (1.21),
+	src/tag_render.cpp (1.42), src/utils.cpp (1.23),
+	src/writer_decorators.cpp (1.2), src/writers.cpp (1.2),
+	include/id3/field.h (1.46), include/id3/frame.h (1.41),
+	include/id3/globals.h (1.46), include/id3/helpers.h (1.8),
+	include/id3/id3lib_strings.h (1.2), include/id3/io_decorators.h
+	(1.4), include/id3/io_helpers.h (1.7), include/id3/io_strings.h
+	(1.6), include/id3/misc_support.h (1.27), include/id3/reader.h
+	(1.12), include/id3/readers.h (1.12), include/id3/tag.h (1.55),
+	include/id3/utils.h (1.21), include/id3/writer.h (1.7),
+	include/id3/writers.h (1.10): added trailing newline to prevent
+	compiler warning 
+
+2002-06-29 Saturday 19:18   Thijmen Klok <thijmen@id3lib.org>
+
+	* examples/: demo_tag.cpp (1.15), demo_info.cpp (1.30),
+	demo_copy.cpp (1.11), findeng.cpp (1.6), findstr.cpp (1.6),
+	get_pic.cpp (1.8), test_compression.cpp (1.9), test_io.cpp (1.5),
+	test_pic.cpp (1.10), test_remove.cpp (1.12), test_unicode.cpp
+	(1.8): added trailing linefeed 
+
+2002-06-29 Saturday 19:11   Thijmen Klok <thijmen@id3lib.org>
+
+	* src/utils.cpp (1.22): quickfixed compiling on Solaris regarding
+	iconv, still looking into a more elegant solution 
+
+2002-06-29 Saturday 16:43   Thijmen Klok <thijmen@id3lib.org>
+
+	* src/field_string_unicode.cpp (1.31): fixes compile on some
+	solarises + fix for unicode typo 
+
+2002-06-29 Saturday 16:41   Thijmen Klok <thijmen@id3lib.org>
+
+	* include/dami/lyr3.h (1.3), include/dami/lyr3_impl.h (1.3),
+	include/id3.h (1.18), include/id3/field.h (1.45),
+	include/id3/frame.h (1.40), include/id3/helpers.h (1.7),
+	include/id3/tag.h (1.54), src/c_wrapper.cpp (1.18, rel-3-7-9),
+	src/field.cpp (1.44), src/field_impl.h (1.4),
+	src/field_string_ascii.cpp (1.27), src/frame.cpp (1.33),
+	src/helpers.cpp (1.10), src/io_helpers.cpp (1.11), src/tag.cpp
+	(1.45), src/utils.cpp (1.21), include/id3/globals.h (1.45): fixes
+	compile on some solarises 
+
+2002-06-28 Friday 14:36   Thijmen Klok <thijmen@id3lib.org>
+
+	* src/tag.cpp (1.44): corrected type in comment 
+
+2002-06-28 Friday 13:59   Thijmen Klok <thijmen@id3lib.org>
+
+	* zlib/: include/deflate.h (1.4), include/infblock.h (1.4),
+	include/infcodes.h (1.4), include/inffast.h (1.4),
+	include/inftrees.h (1.4), include/infutil.h (1.4), include/zconf.h
+	(1.5, rel-3-7-13, rel-3-7-12), include/zlib.h (1.5),
+	include/zutil.h (1.5), src/adler32.c (1.4, rel-3-7-12, rel-3-7-11,
+	rel-3-7-10, rel-3-7-9), src/compress.c (1.4), src/crc32.c (1.4),
+	src/deflate.c (1.4), src/gzio.c (1.5), src/infblock.c (1.4),
+	src/infcodes.c (1.4), src/inffast.c (1.4), src/inflate.c (1.4),
+	src/inftrees.c (1.4), src/infutil.c (1.4), src/trees.c (1.4),
+	src/uncompr.c (1.4), src/zutil.c (1.5): removed carriage return 
+
+2002-06-28 Friday 10:32   Thijmen Klok <thijmen@id3lib.org>
+
+	* libtool (1.14): hardly any changes 
+
+2002-06-28 Friday 10:29   Thijmen Klok <thijmen@id3lib.org>
+
+	* ChangeLog (1.125): Added the changes since i started working on
+	this 
+
+2002-06-28 Friday 10:26   Thijmen Klok <thijmen@id3lib.org>
+
+	* configure.in (1.56), configure (1.68): added url for missing
+	headers 
+
 2002-06-27 Thursday 15:02   Thijmen Klok <thijmen@id3lib.org>
 
 	* examples/demo_copy.cpp (1.10): corrected a typo 
@@ -81,10 +183,9 @@
 	include/inftrees.h (1.3), include/infutil.h (1.3), include/zconf.h
 	(1.4), include/zlib.h (1.4), include/zutil.h (1.4), src/adler32.c
 	(1.3), src/compress.c (1.3), src/crc32.c (1.3), src/deflate.c
-	(1.3), src/gzio.c (1.4, rel-3-7-12, rel-3-7-11, rel-3-7-10,
-	rel-3-7-9), src/infblock.c (1.3), src/infcodes.c (1.3),
-	src/inffast.c (1.3), src/inflate.c (1.3), src/inftrees.c (1.3),
-	src/infutil.c (1.3), src/trees.c (1.3), src/uncompr.c (1.3),
+	(1.3), src/gzio.c (1.4), src/infblock.c (1.3), src/infcodes.c
+	(1.3), src/inffast.c (1.3), src/inflate.c (1.3), src/inftrees.c
+	(1.3), src/infutil.c (1.3), src/trees.c (1.3), src/uncompr.c (1.3),
 	src/zutil.c (1.4): updated to zlib version 1.1.4 
 
 2002-06-19 Wednesday 20:21   Thijmen Klok <thijmen@id3lib.org>
@@ -3037,8 +3138,8 @@
 
 2000-06-23 Friday 19:23  adcockj
 
-	* zlib/prj/zlib.dsp (1.5, rel-3-7-13, rel-3-7-12, rel-3-7-13,
-	rel-3-7-12, rel-3-7-11, rel-3-7-10): Changed debug lib to zlibD.lib 
+	* zlib/prj/zlib.dsp (1.5, rel-3-7-13, rel-3-7-12, rel-3-7-11,
+	rel-3-7-10): Changed debug lib to zlibD.lib 
 
 2000-06-23 Friday 19:22  adcockj
 
@@ -4243,7 +4344,7 @@
 
 2000-05-10 Wednesday 05:35  eldamitri
 
-	* src/field.cpp (1.18, rel-3-7-9, rel-3-7-7): 
+	* src/field.cpp (1.18, rel-3-7-7): 
 	- Updated for renamed field flags 
 	- Changed ID3FTY_ASCIISTRING's to ID3FTY_TEXTSTRING's 
 	(ID3_Field): Updated to initialize __enc 
@@ -8028,8 +8129,8 @@
 
 1999-12-01 Wednesday 20:13  scott
 
-	* configure (1.13), configure.in (1.10, rel-3-7-13): Upped the
-	patch number to 1.  
+	* configure (1.13), configure.in (1.10): Upped the patch number to
+	1.  
 
 1999-12-01 Wednesday 20:10  scott
 
