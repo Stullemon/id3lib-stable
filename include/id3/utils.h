@@ -1,4 +1,4 @@
-// $Id: utils.h,v 1.11 2000/09/30 22:10:28 eldamitri Exp $
+// $Id: utils.h,v 1.12 2000/10/03 02:43:37 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -35,7 +35,7 @@
 #include "globals.h"
 #include "strings.h"
 
-namespace id3
+namespace dami
 {
 #ifdef  MAXPATHLEN
 #  define ID3_PATH_LENGTH   (MAXPATHLEN + 1)
@@ -68,11 +68,13 @@ namespace id3
   size_t CRLFtoLF(char *, size_t);
 
   void   removeTrailingSpaces(char*, size_t);
-  id3::string removeTrailingSpaces(id3::string);
+  String removeTrailingSpaces(String);
   
   uint32 parseNumber(const uchar *buffer, size_t size = sizeof(uint32));
   size_t renderNumber(uchar *buffer, uint32 val, size_t size = sizeof(uint32));
-  id3::string renderNumber(uint32 val, size_t size = sizeof(uint32));
+  String renderNumber(uint32 val, size_t size = sizeof(uint32));
+
+  String toString(uint32 val);
   
   void   mbstoucs(unicode_t *unicode, const char *ascii, const size_t len);
   void   ucstombs(char *ascii, const unicode_t *unicode, const size_t len);
