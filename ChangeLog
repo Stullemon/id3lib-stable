@@ -1,3 +1,15 @@
+2000-05-10  Scott Haug  <scott@id3.org>
+
+	* include/id3/misc_support.h: 
+	Updated interface to synced lyrics helper funcs to accept refs instead
+	of pointers, where appropriate.
+
+	* src/misc_support.cpp: 
+	Minor fixes, interface changes
+
+	* src/tag_parse_lyrics3.cpp 
+	(ParseLyrics3): Fixed bug in using new synced lyrics helper func.
+
 2000-05-09  Scott Haug  <scott@id3.org>
 
 	* include/id3/field.h 
