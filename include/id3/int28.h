@@ -1,4 +1,4 @@
-// $Id: int28.h,v 1.7 2000/04/07 04:45:31 eldamitri Exp $
+// $Id: int28.h,v 1.8 2000/04/08 04:32:36 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -27,7 +27,7 @@
 #ifndef ID3LIB_TYPES_28BITINT_H
 #define ID3LIB_TYPES_28BITINT_H
 
-#include <iostream>
+#include <iostream.h>
 #include "types.h"
 
 class int28
@@ -54,6 +54,9 @@ private:
 #endif
 
 // $Log: int28.h,v $
+// Revision 1.8  2000/04/08 04:32:36  eldamitri
+// Changed new ANSI-standard C++ include headers to old-style headers.
+//
 // Revision 1.7  2000/04/07 04:45:31  eldamitri
 // Minor cleanup for log comments.
 //

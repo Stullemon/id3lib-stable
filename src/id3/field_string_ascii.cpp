@@ -1,4 +1,4 @@
-// $Id: field_string_ascii.cpp,v 1.18 2000/04/05 05:21:15 eldamitri Exp $
+// $Id: field_string_ascii.cpp,v 1.19 2000/04/08 04:37:19 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,8 +24,8 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#include <cstring>
-#include <cstdlib>
+#include <string.h>
+#include <stdlib.h>
 #include "field.h"
 #include "misc_support.h"
 
@@ -245,6 +245,9 @@ luint ID3_Field::RenderASCIIString(uchar *buffer)
 }
 
 // $Log: field_string_ascii.cpp,v $
+// Revision 1.19  2000/04/08 04:37:19  eldamitri
+// Changed new ANSI-standard C++ include headers to old-style headers.
+//
 // Revision 1.18  2000/04/05 05:21:15  eldamitri
 // Updated initial comment information to reflect license, copyright
 // change.

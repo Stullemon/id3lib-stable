@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.10 2000/04/07 19:35:14 eldamitri Exp $
+// $Id: tag.h,v 1.11 2000/04/08 04:32:36 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -27,7 +27,7 @@
 #ifndef ID3LIB_TAG_H
 #define ID3LIB_TAG_H
 
-#include <cstdio>
+#include <stdio.h>
 #include "types.h"
 #include "frame.h"
 #include "header_frame.h"
@@ -93,7 +93,7 @@ const luint LEN_V1_GENRE   =   1;
 
     @author Dirk Mahoney (dirk@id3.org)
     @author Scott Thomas Haug (sth2@cs.wustl.edu)
-    @version $Id: tag.h,v 1.10 2000/04/07 19:35:14 eldamitri Exp $
+    @version $Id: tag.h,v 1.11 2000/04/08 04:32:36 eldamitri Exp $
     @see ID3_Tag
 */
 struct ID3V1_Tag
@@ -192,7 +192,7 @@ const luint ALL_TAG_TYPES = BOTH_ID3_TAGS | LYRICS_TAG;
      that id3lib 2.16 supports.
 
      @author Dirk Mahoney
-     @version $Id: tag.h,v 1.10 2000/04/07 19:35:14 eldamitri Exp $
+     @version $Id: tag.h,v 1.11 2000/04/08 04:32:36 eldamitri Exp $
      @see ID3_Frame
      @see ID3_Field
      @see ID3_Err
@@ -860,6 +860,9 @@ private:
 #endif
 
 // $Log: tag.h,v $
+// Revision 1.11  2000/04/08 04:32:36  eldamitri
+// Changed new ANSI-standard C++ include headers to old-style headers.
+//
 // Revision 1.10  2000/04/07 19:35:14  eldamitri
 // Added HasV1Tag, HasV2Tag, and HasLyrics (thanks John Adcock).
 //
