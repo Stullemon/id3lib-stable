@@ -16,7 +16,6 @@ the_headers =                   \
   reader.h                      \
   readers.h                     \
   sized_types.h                 \
-  spec.h                        \
   tag.h                         \
   writer.h                      \
   writers.h                     
@@ -39,5 +38,6 @@ noinst_HEADERS =                \
   io_helpers.h                  \
   io_strings.h                  \
   strings.h                     \
+  spec.h                        \
   tag_impl.h                    \
   utils.h                       
