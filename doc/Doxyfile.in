@@ -148,7 +148,7 @@ CASE_SENSE_NAMES     = NO
 # will generate a verbatim copy of the header file for each class for
 # which an include is specified. Set to NO to disable this.
 
-VERBATIM_HEADERS     = YES
+VERBATIM_HEADERS     = NO
 
 # If the SHOW_INCLUDE_FILES tag is set to YES (the default) then Doxygen
 # will put list of the files that are included by a file in the documentation
@@ -238,7 +238,7 @@ EXAMPLE_PATH         = ../examples
 # and *.h) to filter out the source-files in the directories. If left 
 # blank all files are included.
 
-EXAMPLE_PATTERNS     = *.cpp *.h
+EXAMPLE_PATTERNS     = *.cpp *.c *.h
 
 # The IMAGE_PATH tag can be used to specify one or more files or 
 # directories that contain image that are included in the documentation (see 
@@ -268,7 +268,7 @@ GENERATE_HTML        = YES
 # If a relative path is entered the value of OUTPUT_DIRECTORY will be
 # put in front of it. If left blank `html' will be used as the default path.
 
-HTML_OUTPUT          = html
+HTML_OUTPUT          = @DOX_DIR_HTML@
 
 # The HTML_HEADER tag can be used to specify a personal HTML header for 
 # each generated HTML page. If it is left blank doxygen will generate a 
@@ -338,7 +338,7 @@ GENERATE_LATEX       = YES
 # If a relative path is entered the value of OUTPUT_DIRECTORY will be
 # put in front of it. If left blank `latex' will be used as the default path.
 
-LATEX_OUTPUT         = latex
+LATEX_OUTPUT         = @DOX_DIR_LATEX@
 
 # If the COMPACT_LATEX tag is set to YES Doxygen generates more compact
 # LaTeX documents. This may be useful for small projects and may help to
@@ -392,7 +392,7 @@ GENERATE_RTF         = NO
 # If a relative path is entered the value of OUTPUT_DIRECTORY will be
 # put in front of it. If left blank `rtf' will be used as the default path.
 
-RTF_OUTPUT           = rtf
+RTF_OUTPUT           = @DOX_DIR_RTF@
 
 # If the COMPACT_RTF tag is set to YES Doxygen generates more compact
 # RTF documents. This may be useful for small projects and may help to
@@ -421,7 +421,7 @@ GENERATE_MAN         = NO
 # If a relative path is entered the value of OUTPUT_DIRECTORY will be
 # put in front of it. If left blank `man' will be used as the default path.
 
-MAN_OUTPUT           = man
+MAN_OUTPUT           = @DOX_DIR_MAN@
 
 # The MAN_EXTENSION tag determines the extension that is added to
 # the generated man pages (default is the subroutine's section .3)
@@ -442,7 +442,7 @@ ENABLE_PREPROCESSING = YES
 # names in the source code. If set to NO (the default) only conditional 
 # compilation will be performed.
 
-MACRO_EXPANSION      = NO
+MACRO_EXPANSION      = YES
 
 # If the SEARCH_INCLUDES tag is set to YES (the default) the includes files
 # in the INCLUDE_PATH (see below) will be search if a #include is found.
@@ -461,7 +461,7 @@ INCLUDE_PATH         =
 # or name=definition (no spaces). If the definition and the = are 
 # omitted =1 is assumed.
 
-PREDEFINED           = 
+PREDEFINED           = __cplusplus
 
 # If the EXPAND_ONLY_PREDEF and MACRO_EXPANSION tags are both set to YES
 # then the macro expansion is limited to the macros specified with the
