@@ -1,4 +1,4 @@
-// $Id: tag_parse_lyrics3.cpp,v 1.28 2000/10/29 01:37:29 eldamitri Exp $
+// $Id: tag_parse_lyrics3.cpp,v 1.29 2001/08/05 21:21:13 abscess Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -320,7 +320,7 @@ bool lyr3::v2::parse(ID3_TagImpl& tag, ID3_Reader& reader)
     else if (fldName == "EAL")
     {
       //tag.setAlbum(fldData);
-      id3::v2::setArtist(tag, fldData);
+      id3::v2::setAlbum(tag, fldData);
     }
           
     // the Lyrics/Music AUTHOR field
