@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.34 2000/09/27 06:42:18 eldamitri Exp $
+# $Id: Makefile.in,v 1.35 2000/09/27 09:07:47 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -116,11 +116,9 @@ id3lib_sources =    c_wrapper.cpp                   error.cpp                   
 lib_LTLIBRARIES = libid3.la 
 
 libid3_la_SOURCES = $(id3lib_sources)
-@ID3_NEEDDEBUG_TRUE@ID3_DEBUG_LIBS = -lcwd -lbfd -liberty
-@ID3_NEEDDEBUG_FALSE@ID3_DEBUG_LIBS = 
 
-@ID3_NEEDZLIB_TRUE@LDADD = #$(top_builddir)/zlib/src/libz.la
-@ID3_NEEDZLIB_FALSE@libid3_la_LIBADD = #-lz
+@ID3_NEEDZLIB_TRUE@LDADD = $(top_builddir)/zlib/src/libz.la
+
 libid3_la_LDFLAGS =    -version-info $(LT_VERSION)   -release $(LT_RELEASE)   -export-dynamic
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -133,7 +131,7 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-@ID3_NEEDZLIB_FALSE@libid3_la_DEPENDENCIES = 
+libid3_la_LIBADD = 
 libid3_la_OBJECTS =  c_wrapper.lo error.lo field.lo field_binary.lo \
 field_integer.lo field_string_ascii.lo field_string_unicode.lo frame.lo \
 frame_parse.lo frame_render.lo globals.lo header.lo header_frame.lo \
