@@ -1,4 +1,4 @@
-// $Id: header_tag.cpp,v 1.16 2000/10/03 04:38:12 eldamitri Exp $
+// $Id: header_tag.cpp,v 1.17 2000/10/09 04:28:07 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -37,6 +37,7 @@
 #include "utils.h"
 #include "tag.h"
 #include "reader_decorators.h"
+#include "writer_decorators.h"
 
 using namespace dami;
 
@@ -69,53 +70,49 @@ size_t ID3_TagHeader::Size() const
 }
 
 
-size_t ID3_TagHeader::Render(uchar *buffer) const
+void ID3_TagHeader::Render(ID3_Writer& writer) const
 {
-  size_t size = 0;
-  
-  memcpy(&buffer[size], (uchar *) ID, strlen(ID));
-  size += strlen(ID);
-  
-  buffer[size++] = ID3_V2SpecToVer(ID3V2_LATEST);
-  buffer[size++] = ID3_V2SpecToRev(ID3V2_LATEST);
+  writer.writeChars((uchar *) ID, strlen(ID));
+
+  writer.writeChar(ID3_V2SpecToVer(ID3V2_LATEST));
+  writer.writeChar(ID3_V2SpecToRev(ID3V2_LATEST));
   
   // set the flags byte in the header
-  buffer[size++] = static_cast<uchar>(_flags.get() & MASK8);
+  writer.writeChar(static_cast<uchar>(_flags.get() & MASK8));
   
   uint28 size28(this->GetDataSize());
-  size28.Render(&buffer[size]);
-  size += sizeof(uint32);
+  size28.Render(writer);
 
   // now we render the extended header
   if (_flags.test(EXTENDED))
   {
-    size += ::renderNumber(&buffer[size], _info->extended_bytes);
+    io::BinaryNumberWriter bnw(writer);
+    bnw.writeNumber(_info->extended_bytes, sizeof(uint32));
   }
-  
-  return size;
 }
 
 bool ID3_TagHeader::Parse(ID3_Reader& reader)
 {
-  ID3_Reader::pos_type beg = reader.getCur();
-  uchar data[SIZE];
-  reader.readChars(data, SIZE);
-  if (!(ID3_IsTagHeader(data) > 0))
+  io::ExitTrigger et(reader);
+  if (!ID3_Tag::IsV2Tag(reader))
   {
-    reader.setCur(beg);
+    ID3D_NOTICE( "ID3_TagHeader::Parse(): not an id3v2 header" );
     return false;
   }
 
+  uchar id[3];
+  reader.readChars(id, 3);
   // The spec version is determined with the MAJOR and MINOR OFFSETs
-  uchar major = data[MAJOR_OFFSET];
-  uchar minor = data[MINOR_OFFSET];
+  uchar major = reader.readChar();
+  uchar minor = reader.readChar();
   this->SetSpec(ID3_VerRevToV2Spec(major, minor));
 
   // Get the flags at the appropriate offset
-  _flags.set(static_cast<ID3_Flags::TYPE>(data[FLAGS_OFFSET]));
+  _flags.set(static_cast<ID3_Flags::TYPE>(reader.readChar()));
 
   // set the data size
-  uint28 data_size = uint28(&data[SIZE_OFFSET]);
+  uint28 data_size;
+  data_size.Parse(reader);
   this->SetDataSize(data_size.to_uint32());
   
   if (_flags.test(EXTENDED))
@@ -132,5 +129,6 @@ bool ID3_TagHeader::Parse(ID3_Reader& reader)
       // header (for now, we skip it because we are lazy)
     }
   }
+  et.setExitPos(reader.getCur());
   return true;
 }
