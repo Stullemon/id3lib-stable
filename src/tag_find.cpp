@@ -1,4 +1,4 @@
-// $Id: tag_find.cpp,v 1.3 2000/04/21 04:54:27 eldamitri Exp $
+// $Id: tag_find.cpp,v 1.4 2000/04/24 14:48:52 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -32,6 +32,69 @@
 #include <config.h>
 #endif
 
+  /** Returns a pointer to the next ID3_Frame with the given ID3_FrameID;
+   ** returns NULL if no such frame found.
+   ** 
+   ** If there are multiple frames in the tag with the same ID (which, for some
+   ** frames, is allowed), then subsequent calls to <a href="#Find">Find</a>
+   ** will return subsequent frame pointers, wrapping if necessary.
+   ** 
+   ** \code
+   **   ID3_Frame *myFrame;
+   **   if (myFrame = myTag.Find(ID3FID_TITLE))
+   **   {
+   **     // do something with the frame, like copy
+   **     // the contents into a buffer, display the
+   **     // contents in a window, etc.
+   **     // ...
+   **   }
+   ** \endcode
+   ** 
+   ** You may optionally supply to more parameters ot this method, being an
+   ** ID3_FieldID and a value of some sort.  Depending on the field name/ID you
+   ** supply, you may supply an integer, a char* or a unicode_t* as the third
+   ** parameter.  If you supply an ID3_FrameID, you must also supply a data
+   ** value to compare against.
+   ** 
+   ** This method will then return the first frame that has a matching frame
+   ** ID, and which has a field with the same name as that which you supplied
+   ** in the second parameter, whose calue matches that which you supplied as
+   ** the third parameter.  For example:
+   ** 
+   ** \code
+   **   ID3_Frame *myFrame;
+   **   if (myFrame = myTag.Find(ID3FID_TITLE, ID3FN_TEXT, "Nirvana"))
+   **   {
+   **     // found it, do something with it.
+   **     // ...
+   **   }
+   ** \endcode
+   **     
+   ** This example will return the first TITLE frame and whose TEXT field is
+   ** 'Nirvana'.  Currently there is no provision for things like 'contains',
+   ** 'greater than', or 'less than'.  If there happens to be more than one of
+   ** these frames, subsequent calls to the <a href="#Find">Find</a> method
+   ** will return subsequent frames and will wrap around to the beginning.
+   ** 
+   ** Another example...
+   ** 
+   ** \code
+   **   ID3_Frame *myFrame;
+   **   if (myFrame = myTag.Find(ID3FID_COMMENT, ID3FN_TEXTENC, ID3TE_UNICODE))
+   **   {
+   **     // found it, do something with it.
+   **     // ...
+   **   }
+   ** \endcode
+   ** 
+   ** This returns the first COMMENT frame that uses Unicode as its text
+   ** encdoing.
+   **  
+   ** @name   Find
+   ** @param  id The ID of the frame that is to be located
+   ** @return A pointer to the first frame found that has the given frame id,
+   **         or NULL if no such frame.
+   **/
 ID3_Elem *ID3_Tag::Find(ID3_Frame *frame) const
 {
   ID3_Elem *elem = NULL;
@@ -191,6 +254,21 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, luint data)
   return frame;
 }
 
+  /** Returns a pointer to the frame with the given index; returns NULL if
+   ** there is no such frame at that index.
+   ** 
+   ** Optionally, <a href="#operator[]">operator[]</a> can be used as an
+   ** alternative to this method.  Indexing is 0-based (that is, the first
+   ** frame is number 0, and the last frame in a tag that holds n frames is
+   ** n-1).
+   ** 
+   ** If you wish to have a more comlex searching facility, then at least for
+   ** now you will have to devise it yourself and implement it useing these
+   ** methods.
+   ** 
+   ** @param nIndex The index of the frame that is to be retrieved
+   ** @return A pointer to the requested frame, or NULL if no such frame.
+   **/
 ID3_Frame *ID3_Tag::GetFrameNum(luint num) const
 {
   ID3_Frame *frame = NULL;
@@ -207,12 +285,23 @@ ID3_Frame *ID3_Tag::GetFrameNum(luint num) const
   return frame;
 }
 
+/** Returns a pointer to the frame with the given index; returns NULL if
+ ** there is no such frame at that index.
+ ** 
+ ** @name operator[]
+ ** @param nIndex The index of the frame that is to be retrieved
+ ** @return A pointer to the requested frame, or NULL if no such frame. 
+ ** @see #GetFrameNum
+ **/
 ID3_Frame *ID3_Tag::operator[](luint num) const
 {
   return GetFrameNum(num);
 }
 
 // $Log: tag_find.cpp,v $
+// Revision 1.4  2000/04/24 14:48:52  eldamitri
+// Added comments originally in include/id3/tag.h
+//
 // Revision 1.3  2000/04/21 04:54:27  eldamitri
 // Minor updates
 //

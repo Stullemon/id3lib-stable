@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.4 2000/04/23 17:38:15 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.5 2000/04/24 14:49:10 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -48,6 +48,24 @@
 #  define ID3_PATH_LENGTH   (2048 + 1)
 #endif  /* !MAXPATHLEN && !PATH_MAX */
 
+  /** Renders a binary image of the tag into the supplied buffer.
+   ** 
+   ** See <a href="#Size">Size</a> for an example.  This method returns the
+   ** actual number of the bytes of the buffer used to store the tag.  This
+   ** will be no more than the size of the buffer itself, because
+   ** <a href="#Size">Size</a> over estimates the required buffer size when
+   ** padding is enabled.
+   ** 
+   ** Before calling this method, it is advisable to call <a
+   ** href="#HasChanged">HasChanged</a> first as this will let you know
+   ** whether you should bother rendering the tag.
+   ** 
+   ** @see    ID3_IsTagHeader
+   ** @see    ID3_Tag#HasChanged
+   ** @return The actual number of the bytes of the buffer used to store the
+   **         tag
+   ** @param  buffer The buffer that will contain the rendered tag.
+   **/
 luint ID3_Tag::Render(uchar *buffer)
 {
   luint bytesUsed = 0;
@@ -124,6 +142,36 @@ luint ID3_Tag::Render(uchar *buffer)
   return bytesUsed;
 }
 
+  /** Returns an over estimate of the number of bytes required to store a
+   ** binary version of a tag. 
+   ** 
+   ** When using <a href="#Render">Render</a> to render a binary tag to a
+   ** memory buffer, first use the result of this call to allocate a buffer of
+   ** unsigned chars.
+   ** 
+   ** \code
+   **   luint tagSize;
+   **   uchar *buffer;
+   **   if (myTag.HasChanged())
+   **   {
+   **     if ((tagSize= myTag.Size()) > 0)
+   **     {
+   **       if (buffer = new uchar[tagSize])
+   **       {
+   **         luint actualSize = myTag.Render(buffer);
+   **         // do something useful with the first
+   **         // 'actualSize' bytes of the buffer,
+   **         // like push it down a socket
+   **         delete [] buffer;
+   **       }
+   **     }
+   **   }
+   ** \endcode
+   **
+   ** @see #Render
+   ** @return The (overestimated) number of bytes required to store a binary
+   **         version of a tag
+   **/
 luint ID3_Tag::Size(void) const
 {
   luint bytesUsed = 0;
@@ -166,6 +214,12 @@ void ID3_Tag::RenderExtHeader(uchar *buffer)
 }
 
 
+  /** Renders an id3v1.1 version of the tag into the supplied buffer.
+   ** 
+   ** @return The actual number of the bytes of the buffer used to store the
+   **         tag (should always be 128)
+   ** @param  buffer The buffer that will contain the id3v1.1 tag.
+   **/
 luint ID3_Tag::RenderV1(char *buffer)
 {
   // Sanity check our buffer
@@ -462,6 +516,9 @@ luint ID3_Tag::PaddingSize(luint curSize) const
 
 
 // $Log: tag_render.cpp,v $
+// Revision 1.5  2000/04/24 14:49:10  eldamitri
+// Added comments originally in include/id3/tag.h
+//
 // Revision 1.4  2000/04/23 17:38:15  eldamitri
 // - Moved def of ID3_PATH_LENGTH from tag.h, since its def requires a
 //   macro defined in config.h, which isn't accessible from the .h files.
