@@ -1,4 +1,4 @@
-// $Id: frame.cpp,v 1.24 2000/09/14 22:01:43 eldamitri Exp $
+// $Id: frame.cpp,v 1.25 2000/09/14 22:34:11 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -40,7 +40,7 @@
  ** the implementation of a complex APIC frame and for a simple text frame.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: frame.cpp,v 1.24 2000/09/14 22:01:43 eldamitri Exp $
+ ** @version $Id: frame.cpp,v 1.25 2000/09/14 22:34:11 eldamitri Exp $
  ** @see ID3_Tag
  ** @see ID3_Field
  ** @see ID3_Err
@@ -209,7 +209,7 @@ void ID3_Frame::_InitFields()
     }
     
     // tell the frame that this field is present
-    BS_SET(_field_bitset, _fields[i]->_id);
+    BS_SET(_field_bitset, _fields[i]->GetID());
   }
   
   _changed = true;
@@ -292,7 +292,7 @@ ID3_Field& ID3_Frame::Field(ID3_FieldID fieldName) const
   {
     for (size_t num = 0; num < _num_fields; num++)
     {
-      if (_fields[num]->_id == fieldName)
+      if (_fields[num]->GetID() == fieldName)
       {
         field = _fields[num];
       }
