@@ -1,4 +1,4 @@
-// $Id: tag_parse.cpp,v 1.20 2000/06/25 06:21:01 eldamitri Exp $
+// $Id: tag_parse.cpp,v 1.21 2000/07/01 07:48:35 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -165,78 +165,118 @@ size_t ID3_Tag::Parse(const uchar header[ID3_TagHeader::SIZE],
   // set the flag which says that the tag hasn't changed
   __changed = false;
 
-  // say we have v2 tags
-  __file_tags.add(ID3TT_ID3V2);
-    
   delete [] unsynced_data;
   
-  return hdr_size + data_size;
+  return hdr_size + __hdr.GetDataSize();
 }
 
-
-size_t ID3_Tag::ParseFromHandle()
+size_t ID3_Tag::ParseID3v2(FILE* handle)
 {
   size_t size = 0;
 
-  if (NULL == __file_handle)
+  uchar header[ID3_TAGHEADERSIZE];
+  if (fread(header, 1, sizeof(header), handle) == 0)
   {
-    ID3_THROW(ID3E_NoData);
+    return 0;
+    //ID3_THROW_DESC(ID3E_NoFile, 
+    // "ID3_Tag::ParseFromHandle: Ack! Couldn't read");
+  }
+  
+  lsint tagSize = ID3_IsTagHeader(header);
+  if (tagSize > 0)
+  {
+    uchar* bin = new uchar[tagSize];
+    if (NULL == bin)
+    {
+      ID3_THROW(ID3E_NoMemory);
+    }
+    
+    if (fread(bin, 1, tagSize, handle) == 0)
+    {
+      return 0;
+      //ID3_THROW_DESC(ID3E_NoFile, 
+      //               "ID3_Tag::ParseFromHandle: Ack! Couldn't read");
+    }
+    
+    size += this->Parse(header, bin);
+    
+    delete[] bin;
   }
 
-  if (__tags_to_parse.test(ID3TT_ID3V2))
-  {
-    if (fseek(__file_handle, 0, SEEK_SET) != 0)
-    {
-      return 0;
-      //ID3_THROW_DESC(ID3E_NoFile, 
-      //"ID3_Tag::ParseFromHandle: Ack! Couldn't seek");
-    }
-    
-    uchar header[ID3_TAGHEADERSIZE];
-    if (fread(header, 1, sizeof(header), __file_handle) == 0)
-    {
-      return 0;
-      //ID3_THROW_DESC(ID3E_NoFile, 
-      // "ID3_Tag::ParseFromHandle: Ack! Couldn't read");
-    }
-    
-    lsint tagSize = ID3_IsTagHeader(header);
-    if (tagSize > 0)
-    {
-      uchar* bin = new uchar[tagSize];
-      if (NULL == bin)
-      {
-        ID3_THROW(ID3E_NoMemory);
-      }
-      
-      if (fread(bin, 1, tagSize, __file_handle) == 0)
-      {
-        return 0;
-        //ID3_THROW_DESC(ID3E_NoFile, 
-        //               "ID3_Tag::ParseFromHandle: Ack! Couldn't read");
-      }
-      
-      this->Parse(header, bin);
-      size = tagSize;
-      
-      delete[] bin;
-    }
-  }
-    
-  if (__tags_to_parse.test(ID3TT_MUSICMATCH))
-  {
-    ParseMusicMatch();
-  }
-  
-  if (__tags_to_parse.test(ID3TT_LYRICS))
-  {
-    ParseLyrics3();
-  }
-  
-  if (__tags_to_parse.test(ID3TT_ID3V1))
-  {
-    ParseID3v1();
-  }
-    
   return size;
+}
+
+void ID3_Tag::ParseFromHandle(FILE* handle)
+{
+  if (NULL == handle)
+  {
+    // log this...
+    return;
+    //ID3_THROW(ID3E_NoData);
+  }
+
+  __file_tags.clear();
+
+  size_t bytes = 0;
+  __starting_bytes = 0;
+  do
+  {
+    fseek(handle, __starting_bytes, SEEK_SET);
+    bytes = 0;
+    // Parse tags at the beginning of the file first...
+    if (__tags_to_parse.test(ID3TT_ID3V2))
+    {
+      bytes = ParseID3v2(handle);
+      if (bytes)
+      {
+        // say we have v2 tags
+        __file_tags.add(ID3TT_ID3V2);
+      }
+    }
+    __starting_bytes += bytes;
+  } while (bytes);
+  
+  __ending_bytes = 0;
+  do
+  {
+    bytes = 0;
+    // ...then the tags at the end
+    if (!bytes && __tags_to_parse.test(ID3TT_MUSICMATCH))
+    {
+      fseek(handle, 0 - __ending_bytes, SEEK_END);
+      bytes = ParseMusicMatch(handle);
+      if (bytes)
+      {
+        __file_tags.add(ID3TT_MUSICMATCH);
+      }
+    }
+    if (!bytes && __tags_to_parse.test(ID3TT_LYRICS3))
+    {
+      fseek(handle, 0 - __ending_bytes, SEEK_END);
+      bytes = ParseLyrics3(handle);
+      if (bytes)
+      {
+        __file_tags.add(ID3TT_LYRICS3);
+      }
+    }
+    if (!bytes && __tags_to_parse.test(ID3TT_LYRICS3V2))
+    {
+      fseek(handle, 0 - __ending_bytes, SEEK_END);
+      bytes = ParseLyrics3v2(handle);
+      if (bytes)
+      {
+        __file_tags.add(ID3TT_LYRICS3V2);
+      }
+    }
+    if (!bytes && __tags_to_parse.test(ID3TT_ID3V1))
+    {
+      fseek(handle, 0 - __ending_bytes, SEEK_END);
+      bytes = ParseID3v1(handle);
+      if (bytes)
+      {
+        __file_tags.add(ID3TT_ID3V1);
+      }
+    }
+    __ending_bytes += bytes;
+  } while (bytes);
 }
