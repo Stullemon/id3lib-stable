@@ -1,4 +1,4 @@
-// $Id: tag_parse.cpp,v 1.19 2000/04/10 16:58:13 eldamitri Exp $
+// $Id: tag_parse.cpp,v 1.20 2000/04/10 20:57:57 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -236,7 +236,7 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
           }
         }
       }
-      catch (ID3_Error err)
+      catch (ID3_Error&)
       {
         // There's been an error in the parsing of the frame.  It shouldn't be
         // attached.
@@ -425,6 +425,10 @@ luint ID3_Tag::ParseFromHandle(void)
 }
 
 // $Log: tag_parse.cpp,v $
+// Revision 1.20  2000/04/10 20:57:57  eldamitri
+// * src/id3/tag_parse.cpp
+// (ProcessBinaries): Removed name of caught error since it isn't used.
+//
 // Revision 1.19  2000/04/10 16:58:13  eldamitri
 // (ProcessBinaries): Minor change to prevent warning in windows.
 //
