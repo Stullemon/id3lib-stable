@@ -1,0 +1,9 @@
+1999-11-15  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* Makefile.am: Added macros to allow for compiling test programs
+	id3convert and id3info.
+
+	* demo_convert.cpp: More descriptive error message.
+
+	* demo_main.cpp: Reformatted, dos2unix, cleaned up code, etc.
+

@@ -1,3 +1,5 @@
+.deps
+.kdbgrc.id3info
 Makefile
 convert
 jules.mp3
