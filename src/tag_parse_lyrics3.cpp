@@ -1,4 +1,4 @@
-// $Id: tag_parse_lyrics3.cpp,v 1.7 2000/05/06 05:42:04 eldamitri Exp $
+// $Id: tag_parse_lyrics3.cpp,v 1.8 2000/05/06 21:16:06 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -29,6 +29,7 @@
 #include <string.h>
 #include <memory.h>
 #include "tag.h"
+#include "utils.h"
 #include "misc_support.h"
 
 #if defined HAVE_CONFIG_H
@@ -96,15 +97,26 @@ luint ID3_StripTimeStamps(char *buffer, luint size)
   return newSize;
 }
 
+luint ID3_RenderTimeStamp(uchar* buffer, luint ms, bool lf)
+{
+  uchar* dest = buffer;
+
+  // put synch identifier
+  *dest++ = '\0';
+  
+  // put timestamp
+  dest += RenderNumber(dest, ms, sizeof(uint32));
+  if (lf)
+  {
+    // put the LF
+    *dest++ = 0x0A;
+  }
+  
+  return dest - buffer;
+}
+
 luint ID3_Lyrics3ToSylt(uchar *buffer, luint size)
 {
-  luint newSize = 0;
-  uchar *dest = buffer;
-  uchar *source = buffer;
-  luint ms;
-  bool  bFirstTimeStamp = true;
-  luint *pts;
-  
   if ((buffer == NULL) || (size == 0))
   {
     // TODO: log this
@@ -112,63 +124,56 @@ luint ID3_Lyrics3ToSylt(uchar *buffer, luint size)
     //ID3_THROW(ID3E_NoData);
   }
 
+  uchar *dest = buffer;
+  uchar *source = buffer;
+  luint ms;
+  bool lf = false, first = true;
+  
   while (source < (buffer + size))
   {
-    if (*source == '[')
+    if (0x0A == *source)
     {
-      // check if first timestamp
-      if (bFirstTimeStamp)
-      {
-        bFirstTimeStamp = false;
-      }
-      else
-      {
-        // put synch identifier
-        *dest++ = '\0';
-
-        // put timestamp
-        RenderNumber(dest, ms, sizeof(uint32));
-        dest += sizeof(uint32);
-      }
-
-      // timestamp found skip [
-      source++;
-
-      // get minutes and ms
-      size_t minutes = strtol((const char*)source, NULL, 10);
-
-      // skip :
-      source += 3;
-
-      size_t seconds = strtol((const char*)source, NULL, 10);
-
-      // skip ]
-      source += 3;
-
-      // get seconds and ms
-      ms = ((60 * minutes) + seconds) * 1000;
-
-    }
-    else if (*source == 0x0A)
-    {
+      lf = true;
       source++;
     }
-    else
+    else if ('[' != *source)
     {
       *dest++ = *source++;
     }
+    else
+    {
+      // check if first timestamp
+      if (first)
+      {
+        first = false;
+      }
+      else
+      {
+        dest += ID3_RenderTimeStamp(dest, ms, lf);
+      }
+      
+      // timestamp found skip [
+      source++;
+      
+      // get minutes and ms
+      size_t minutes = strtol((char*)source, NULL, 10);
+      
+      // skip :
+      source += 3;
+      
+      size_t seconds = strtol((char*)source, NULL, 10);
+      
+      // skip ]
+      source += 3;
+      
+      // get seconds and ms
+      ms = ((60 * minutes) + seconds) * 1000;
+    }
   }
 
-  // put the last synch identifier
-  *dest++ = '\0';
-
-  // put the last timestamp
-  RenderNumber(dest, ms, sizeof(uint32));
-  dest += sizeof(uint32);
+  dest += ID3_RenderTimeStamp(dest, ms, lf);
   
-  newSize = dest - buffer;
-    
-  return newSize;
+  return dest - buffer;
 }
 
 void ID3_Tag::ParseLyrics3()
