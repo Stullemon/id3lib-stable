@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.6 2000/04/26 15:49:18 eldamitri Exp $
+// $Id: tag.cpp,v 1.7 2000/04/28 16:08:28 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -42,6 +42,56 @@
 #  define ID3_PATH_LENGTH   (2048 + 1)
 #endif  /* !MAXPATHLEN && !PATH_MAX */
 
+/** \class ID3_Tag
+ ** \brief The representative class of an id3 tag.
+ ** 
+ ** This is the 'container' class for everything else.  It is through an
+ ** ID3_Tag that most of the productive stuff happens.  
+ ** Let's look at what's
+ ** required to start using ID3v2 tags.
+ ** 
+ ** \code
+ **   #include <id3/tag.h>
+ ** \endcode
+ ** 
+ ** This simple \c #include does it all.  In order to read an
+ ** existing tag, do the following:
+ **
+ ** \code
+ **   ID3_Tag myTag;
+ **   myTag.Link("something.mp3");
+ ** \endcode
+ ** 
+ ** That is all there is to it.  Now all you have to do is use the 
+ ** Find() method to locate the frames you are interested in
+ ** is the following:
+ ** 
+ ** \code
+ **   ID3_Frame *myFrame;
+ **   if (myTag.Find(ID3FID_TITLE) == myFrame)
+ **   {
+ **     char title[1024];
+ **     myFrame->Field(ID3FN_TEXT).Get(title, 1024);
+ **     cout << "Title: " << title << endl;
+ **   }
+ ** \endcode
+ ** 
+ ** This code snippet locates the ID3FID_TITLE frame and copies the contents of
+ ** the text field into a buffer and displays the buffer.  Not difficult, eh?
+ **
+ ** When using the ID3_Tag::Link() method, you automatically gain access to any
+ ** ID3v1/1.1, ID3v2, and Lyrics3 v2.0 tags present in the file.  The class
+ ** will automaticaly parse and convert any of these foreign tag formats into
+ ** ID3v2 tags.  Also, id3lib will correctly parse any correctly formatted
+ ** 'CDM' frames from the unreleased ID3v2 2.01 draft specification.
+ **
+ ** \author Dirk Mahoney
+ ** \version $Id: tag.cpp,v 1.7 2000/04/28 16:08:28 eldamitri Exp $
+ ** \sa ID3_Frame
+ ** \sa ID3_Field
+ ** \sa ID3_Err
+ **/
+
 luint ID3_Tag::s_ulInstances = 0;
 
 /** Copies a frame to the tag.  The frame parameter can thus safely be deleted
@@ -60,8 +110,8 @@ luint ID3_Tag::s_ulInstances = 0;
  ** Both these methods copy the given frame to the tag---the tag creates its
  ** own copy of the frame.
  ** 
- ** @name operator<<
- ** @param frame The frame to be added to the tag.
+ ** \name operator<<
+ ** \param frame The frame to be added to the tag.
  **/
 ID3_Tag& operator<<(ID3_Tag& tag, const ID3_Frame& frame)
 {
@@ -79,16 +129,15 @@ ID3_Tag& operator<<(ID3_Tag& tag, const ID3_Frame *frame)
 }
 
 
-  /** Default constructor; it can accept an optional filename as a parameter.
-   **
-   ** If this file exists, it will be opened and all id3lib-supported tags will
-   ** be parsed and converted to id3v2 if necessary.  After the conversion, the
-   ** file will remain unchanged, and will continue to do so until you use the
-   ** <a href="#Update"><code>Update</code></a> method on the tag (if you
-   ** choose to <code>Update</code> at all).
-   **
-   ** @param name The filename of the mp3 file to link to
-   **/
+/** Default constructor; it can accept an optional filename as a parameter.
+ **
+ ** If this file exists, it will be opened and all id3lib-supported tags will
+ ** be parsed and converted to id3v2 if necessary.  After the conversion, the
+ ** file will remain unchanged, and will continue to do so until you use the
+ ** Update() method on the tag (if you choose to Update() at all).
+ **
+ ** \param name The filename of the mp3 file to link to
+ **/
 ID3_Tag::ID3_Tag(char *name)
 {
   SetupTag(name);
@@ -98,7 +147,7 @@ ID3_Tag::ID3_Tag(char *name)
 
   /** Standard copy constructor.
    **
-   ** @param tag What is copied into this tag
+   ** \param tag What is copied into this tag
    **/
 ID3_Tag::ID3_Tag(const ID3_Tag &tag)
 {
@@ -244,8 +293,8 @@ void ID3_Tag::AddFrame(const ID3_Frame& frame)
  ** not create its own copy of the frame.  Frames created by an application
  ** must exist until the frame is removed or the tag is finished with it.
  ** 
- ** @param pFrame A pointer to the frame that is being added to the tag.
- ** @see ID3_Frame
+ ** \param pFrame A pointer to the frame that is being added to the tag.
+ ** \sa ID3_Frame
  **/
 void ID3_Tag::AddFrame(const ID3_Frame *frame)
 {
@@ -268,7 +317,7 @@ void ID3_Tag::AddFrame(const ID3_Frame *frame)
  **   myTag.AttachFrame(frame);
  ** \endcode
  ** 
- ** @param frame A pointer to the frame that is being added to the tag.
+ ** \param frame A pointer to the frame that is being added to the tag.
  **/
 void ID3_Tag::AttachFrame(ID3_Frame *frame)
 {
@@ -310,10 +359,10 @@ void ID3_Tag::AttachFrame(ID3_Frame *frame)
  **   myTag.AddFrames(myFrames, 10);
  ** \endcode
  ** 
- ** @see ID3_Frame
- ** @see ID3_Frame#AddFrame
- ** @param pNewFrames A pointer to an array of frames to be added to the tag.
- ** @param nFrames The number of frames in the array pNewFrames.
+ ** \sa ID3_Frame
+ ** \sa ID3_Frame#AddFrame
+ ** \param pNewFrames A pointer to an array of frames to be added to the tag.
+ ** \param nFrames The number of frames in the array pNewFrames.
  **/
 void ID3_Tag::AddFrames(const ID3_Frame *frames, luint numFrames)
 {
@@ -344,8 +393,8 @@ void ID3_Tag::AddFrames(const ID3_Frame *frames, luint numFrames)
  **   }
  ** \endcode
  **   
- ** @see ID3_Tag#Find
- ** @param pOldFrame A pointer to the frame that is to be removed from the
+ ** \sa ID3_Tag#Find
+ ** \param pOldFrame A pointer to the frame that is to be removed from the
  **                  tag
  **/
 void ID3_Tag::RemoveFrame(ID3_Frame *frame)
@@ -394,12 +443,10 @@ void ID3_Tag::RemoveFromList(ID3_Elem *which, ID3_Elem **list)
    ** or update.
    **
    ** If you have a tag linked to a file, you do not need this method since the
-   ** <a href="#Update">Update</a> method will check for changes before writing
-   ** the tag.
+   ** Update() method will check for changes before writing the tag.
    ** 
    ** This method is primarily intended as a status indicator for applications
-   ** and for applications that use the <a href="#Parse">Parse</a> and <a
-   ** href="#Render">Render</a> methods.
+   ** and for applications that use the Parse() and Render() methods.
    **
    ** Setting a field, changed the ID of an attached frame, setting or grouping
    ** or encryption IDs, and clearing a frame or field all constitute a change
@@ -413,7 +460,7 @@ void ID3_Tag::RemoveFromList(ID3_Elem *which, ID3_Elem **list)
    **   }
    ** \endcode
    
-   ** @return Whether or not the tag has been altered.
+   ** \return Whether or not the tag has been altered.
    **/
 bool ID3_Tag::HasChanged(void) const
 {
@@ -470,7 +517,7 @@ ID3_V2Spec ID3_Tag::GetSpec() const
    **   myTag.SetUnsync(false);
    ** \endcode
    ** 
-   ** @param bSync Whether the tag should be unsynchronized
+   ** \param bSync Whether the tag should be unsynchronized
    **/
 void ID3_Tag::SetUnsync(bool newSync)
 {
@@ -499,7 +546,7 @@ void ID3_Tag::SetUnsync(bool newSync)
    **   myTag.SetExtendedHeader(true);
    ** \endcode
    ** 
-   ** @param bExt Whether to render an extended header
+   ** \param bExt Whether to render an extended header
    **/
 void ID3_Tag::SetExtendedHeader(bool ext)
 {
@@ -533,7 +580,7 @@ void ID3_Tag::SetExtendedHeader(bool ext)
  ** defined, the tags are simply rendered without compression to ensure
  ** compliance to the relevant version of the standard.
  ** 
- ** @param bComp Whether to render the tag's frames in a compressed format.
+ ** \param bComp Whether to render the tag's frames in a compressed format.
  **/
 void ID3_Tag::SetCompression(bool comp)
 {
@@ -575,7 +622,7 @@ void ID3_Tag::SetCompression(bool comp)
  **   myTag.SetPadding(false);
  ** \endcode
  ** 
- ** @param bPad Whether or not render the tag with padding.
+ ** \param bPad Whether or not render the tag with padding.
  **/
 void ID3_Tag::SetPadding(bool pad)
 {
@@ -590,10 +637,9 @@ void ID3_Tag::SetPadding(bool pad)
   /** Returns the number of frames present in the tag object.
    ** 
    ** This includes only those frames that id3lib recognises.  This is used as
-   ** the upper bound on calls to the <a href="#GetFrame">GetFrame</a> and <a
-   ** href="#operator[]">operator[]</a> methods.
+   ** the upper bound on calls to the GetFrame() and operator[]() methods.
    ** 
-   ** @return The number of frames present in the tag object.
+   ** \return The number of frames present in the tag object.
    **/
 luint ID3_Tag::NumFrames(void) const
 {
@@ -626,6 +672,9 @@ ID3_Tag::operator=( const ID3_Tag &rTag )
 }
 
 // $Log: tag.cpp,v $
+// Revision 1.7  2000/04/28 16:08:28  eldamitri
+// Updated documentation.
+//
 // Revision 1.6  2000/04/26 15:49:18  eldamitri
 // (SetSpec): Parameter now const
 //
