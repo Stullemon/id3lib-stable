@@ -1,4 +1,5 @@
 # Copyright 2000 Scott Thomas Haug <scott@id3.org>
+# Copyright 2002 Thijmen Klok <thijmen@id3lib.org>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -10,6 +11,7 @@
 
 m4macros =              \
   id3_debug.m4          \
+  id3_unicode.m4        \
   id3_cxx.m4 
 
 EXTRA_DIST = $(m4macros) 
