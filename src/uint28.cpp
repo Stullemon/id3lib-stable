@@ -1,5 +1,5 @@
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
-// $Id: uint28.cpp,v 1.2 2000/05/02 16:50:26 eldamitri Exp $
+// $Id: uint28.cpp,v 1.3 2000/05/03 23:24:10 eldamitri Exp $
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -23,8 +23,8 @@
 // http://download.sourceforge.net/id3lib/
 
 #include "uint28.h"
-#include <cstring>
-#include <iomanip>
+#include <string.h>
+#include <iomanip.h>
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
@@ -37,6 +37,7 @@ uint28& uint28::operator=(const uchar* const data)
   {
     __value = (__value << 7) | static_cast<uint32>(data[i]) & MASK7;
   }
+  return *this;
 }
 
 void uint28::Render(uchar* data) const
@@ -67,7 +68,7 @@ ostream& operator<<(ostream& os, uint28& val)
 istream& operator>>(istream& in, uint28& val)
 {
   uchar data[sizeof(uint32) + 1];
-  in >> std::setw(sizeof(uint32) + 1) >> data;
+  in >> setw(sizeof(uint32) + 1) >> data;
   val = data;
   return in;
 }
