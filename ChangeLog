@@ -1,3 +1,33 @@
+2002-07-23 Tuesday 16:15   Thijmen Klok <thijmen@id3lib.org>
+
+	* config.h.win32 (1.19), configure (1.73), configure.in (1.62),
+	macconfig.h (1.7): higher version because of devel release 
+
+2002-07-23 Tuesday 15:57   Thijmen Klok <thijmen@id3lib.org>
+
+	* NEWS (1.27, rel-3-7-10): added url for latest news 
+
+2002-07-23 Tuesday 15:47   Thijmen Klok <thijmen@id3lib.org>
+
+	* examples/: Makefile.am (1.22), Makefile.in (1.24),
+	demo_simple.cpp (1.1): renamed demo_simple.c to demo_simple.cpp 
+
+2002-07-23 Tuesday 15:22   Thijmen Klok <thijmen@id3lib.org>
+
+	* examples/: Makefile.am (1.21), Makefile.in (1.23), crc53865.mp3
+	(1.1): added crc53865.mp3 for new routine GetMp3HeaderInfo 
+
+2002-07-23 Tuesday 15:20   Thijmen Klok <thijmen@id3lib.org>
+
+	* include/id3/globals.h (1.50), examples/demo_info.cpp (1.31),
+	include/id3/tag.h (1.57), src/mp3_header.h (1.2), src/mp3_parse.cpp
+	(1.2), src/tag.cpp (1.49), src/tag_impl.h (1.5): changed name of
+	GetMp3Header and Mp3_Header 
+
+2002-07-22 Monday 20:28   Thijmen Klok <thijmen@id3lib.org>
+
+	* ChangeLog (1.131): added mp3 header info additions 
+
 2002-07-22 Monday 19:56   Thijmen Klok <thijmen@id3lib.org>
 
 	* include/id3/globals.h (1.49), include/id3/tag.h (1.56),
@@ -5042,8 +5072,8 @@
 
 2000-04-25 Tuesday 02:16  eldamitri
 
-	* NEWS (1.9), configure.in (1.27, rel-3-7-10) (utags: rel-3-7-3): 
-	Updated for 3.7.3 release 
+	* NEWS (1.9), configure.in (1.27) (utags: rel-3-7-3): Updated for
+	3.7.3 release 
 
 2000-04-24 Monday 22:21  eldamitri
 
