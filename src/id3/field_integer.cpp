@@ -1,4 +1,4 @@
-// $Id: field_integer.cpp,v 1.8 1999/12/01 18:00:59 scott Exp $
+// $Id: field_integer.cpp,v 1.9 1999/12/09 03:32:02 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -39,7 +39,7 @@ void ID3_Field::Set(luint newData)
 }
 
 
-luint ID3_Field::Get(void)
+luint ID3_Field::Get(void) const
 {
   return (luint) __sData;
 }
@@ -57,10 +57,14 @@ luint ID3_Field::ParseInteger(const uchar *buffer, const luint posn, const luint
     bytesUsed = 4;
     
     if (__lFixedLength != -1)
+    {
       bytesUsed = MIN(__lFixedLength, bytesUsed);
+    }
 
-    for(i = 0; i < bytesUsed; i++)
+    for (i = 0; i < bytesUsed; i++)
+    {
       temp |= (buffer[posn + i] << (((bytesUsed - i) - 1) * 8));
+    }
       
     Set(temp);
     __bHasChanged = false;
@@ -85,6 +89,9 @@ luint ID3_Field::RenderInteger(uchar *buffer)
 }
 
 // $Log: field_integer.cpp,v $
+// Revision 1.9  1999/12/09 03:32:02  scott
+// (Get): Added const qualifier.
+//
 // Revision 1.8  1999/12/01 18:00:59  scott
 // Changed all of the #include <id3/*> to #include "*" to help ensure that
 // the sources are searched for in the right places (and to make compiling under
