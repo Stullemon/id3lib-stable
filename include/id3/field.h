@@ -1,4 +1,4 @@
-// $Id: field.h,v 1.32 2000/09/11 07:46:31 eldamitri Exp $
+// $Id: field.h,v 1.33 2000/09/14 16:14:27 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -32,13 +32,13 @@
 
 struct ID3_FieldDef
 {
-  ID3_FieldID   eID;
-  ID3_FieldType eType;
-  size_t        ulFixedLength;
-  ID3_V2Spec    eSpecBegin;
-  ID3_V2Spec    eSpecEnd;
-  flags_t       ulFlags;
-  ID3_FieldID   eLinkedField;
+  ID3_FieldID   _id;
+  ID3_FieldType _type;
+  size_t        _fixed_length;
+  ID3_V2Spec    _spec_begin;
+  ID3_V2Spec    _spec_end;
+  flags_t       _flags;
+  ID3_FieldID   _linked_field;
   static const ID3_FieldDef* DEFAULT;
 };
 
@@ -65,35 +65,44 @@ public:
   
   void Clear();
 
-  size_t Size() const { return this->BinSize(false); }
+  size_t Size() const;
   size_t GetNumTextItems() const;
 
   // integer field functions
   ID3_Field&    operator= (uint32 val) { this->Set(val); return *this; }
   void          Set(uint32);
-  uint32        Get() const { return (uint32) _data; }
+  uint32        Get() const 
+  { 
+    if (this->GetType() == ID3FTY_INTEGER)
+    {
+      return _integer; 
+    }
+    return 0;
+  }
 
   // ASCII string field functions
   ID3_Field&    operator= (const char* s) { this->Set(s); return *this; }
   void          Set(const char*);
-  size_t        Get(char*, size_t, index_t = 1) const;
+  size_t        Get(char*, size_t) const;
+  size_t        Get(char*, size_t, index_t) const;
   void          Add(const char*);
 
   // Unicode string field functions
   ID3_Field&    operator= (const unicode_t* s) { this->Set(s); return *this; }
   void          Set(const unicode_t*);
-  size_t        Get(unicode_t *buffer, size_t, index_t = 1) const;
+  size_t        Get(unicode_t *buffer, size_t) const;
+  size_t        Get(unicode_t *buffer, size_t, index_t) const;
   void          Add(const unicode_t*);
 
   // binary field functions
   void          Set(const uchar*, size_t);
-  void          Get(uchar*, size_t) const;
+  size_t        Get(uchar*, size_t) const;
   void          FromFile(const char*);
   void          ToFile(const char *sInfo) const;
   
   // miscelaneous functions
   ID3_Field&    operator=( const ID3_Field & );
-  const uchar*  GetBinary() const { return _data; }
+  const uchar*  GetBinary() const { return _binary; }
   bool          InScope(ID3_V2Spec spec) const
   { return _spec_begin <= spec && spec <= _spec_end; }
 
@@ -105,30 +114,45 @@ public:
   
 
 private:
-  size_t        BinSize(bool withExtras = true) const;
+  size_t        BinSize() const;
   bool          HasChanged();
   //void          SetSpec(ID3_V2Spec);
   size_t        Render(uchar *buffer) const;
   size_t        Parse(const uchar *buffer, size_t buffSize);
+  void          Set_i(const char*, size_t);
+  void          Set_i(const unicode_t*, size_t);
+  void          Add_i(const char*, size_t);
+  void          Add_i(const unicode_t*, size_t);
 
 private:
   // To prevent public instantiation, the constructor is made private
   ID3_Field();
+  ID3_Field(const ID3_FieldDef&);
 
-  ID3_FieldID   _id;              // the ID of this field
-  ID3_FieldType _type;            // what type is this field or should be
-  size_t        _length;          // length of field (fixed if positive)
-  ID3_V2Spec    _spec_begin;      // spec end
-  ID3_V2Spec    _spec_end;        // spec begin
-  flags_t       _flags;           // special field flags
-  mutable bool  _changed;         // field changed since last parse/render?
-  uchar        *_data;
-  size_t        _size;
-  ID3_TextEnc   _enc;             // encoding
+  const ID3_FieldID   _id;          // the ID of this field
+  const ID3_FieldType _type;        // what type is this field or should be
+  const ID3_V2Spec    _spec_begin;  // spec end
+  const ID3_V2Spec    _spec_end;    // spec begin
+  const flags_t       _flags;       // special field flags
+  mutable bool        _changed;     // field changed since last parse/render?
+  union                             // anonymous union; contents in class scope
+  {
+    uchar*            _binary;      // for binary strings
+    char*             _ascii;       // for ascii strings
+    unicode_t*        _unicode;     // for unicode strings
+    uint32            _integer;     // for numbers
+  };
+  const size_t        _fixed_length;// for fixed length fields (0 if not)
+  union
+  {
+    size_t            _bytes;       // the size of the field in bytes
+    size_t            _chars;       // the number of characters in the field
+  };
+  size_t              _num_items;   // the number of items in the text string
+  ID3_TextEnc         _enc;         // encoding for text fields
 protected:
   size_t RenderInteger(uchar *buffer) const;
-  size_t RenderASCIIString(uchar *buffer) const;
-  size_t RenderUnicodeString(uchar *buffer) const;
+  size_t RenderString(uchar *buffer) const;
   size_t RenderBinary(uchar *buffer) const;
   
   size_t ParseInteger(const uchar *buffer, size_t);
