@@ -1,4 +1,4 @@
-// $Id: int28.cpp,v 1.8 1999/12/17 16:13:04 scott Exp $
+// $Id: int28.cpp,v 1.9 1999/12/26 15:11:39 scott Exp $
 // 
 // This program is free software; you can distribute it and/or modify it under
 // the terms discussed in the COPYING file, which should have been included
@@ -17,72 +17,75 @@
 #endif
 
 #include "int28.h"
+#include "misc_support.h"
 
-int28::int28(luint val)
+int28::int28(uint32 val)
 {
   set(val);
 }
 
 
-int28::int28(uchar *val)
+int28::int28(uchar val[sizeof(uint32)])
 {
-  for (luint i = 0; i < sizeof(luint); i++)
-    value[i] = val[i];
+  set(val);
 }
 
-
-void int28::set(luint val)
+void int28::set(uchar val[sizeof(uint32)])
 {
-  for (luint i = 0; i < sizeof(luint); i++)
-    value[sizeof(luint) - 1 - i] = (uchar)((val >> (i * 7)) & 127) & 0xFF;
-    
-  return ;
-}
+  for (size_t i = 0; i < sizeof(uint32); i++)
+  {
+    __acValue[i] = val[i];
+  }
 
-
-luint int28::get(void)
-{
-  luint newSize = 0L;
   uchar bytes [4];
-  
-  bytes[3] = value[3] | ((value[2] & 1) << 7);
-  bytes[2] = ((value[2] >> 1) & 63) | ((value[1] & 3) << 6);
-  bytes[1] = ((value[1] >> 2) & 31) | ((value[0] & 7) << 5);
-  bytes[0] = ((value[0] >> 3) & 15);
-  
-  newSize = bytes[3] | ((luint) bytes[2] << 8) |
-    ((luint) bytes[1] << 16) | ((luint) bytes[0] << 24);
-  
-  return newSize;
+  bytes[0] = ((__acValue[0] >> 3) & MASK4);
+  bytes[1] = ((__acValue[1] >> 2) & MASK5) | ((__acValue[0] & MASK3) << 5);
+  bytes[2] = ((__acValue[2] >> 1) & MASK6) | ((__acValue[1] & MASK2) << 6);
+  bytes[3] = ((__acValue[3] >> 0) & MASK7) | ((__acValue[2] & MASK1) << 7);
+
+  __nValue = ParseNumber(bytes);
 }
 
-
-uchar int28::operator[](luint posn)
+void int28::set(uint32 val)
 {
-  return value[posn];
+  __nValue = val;
+  for (size_t i = 0; i < sizeof(uint32); i++)
+  {
+    __acValue[sizeof(uint32) - 1 - i] = 
+      (uchar) ((val >> (i * 7)) & MASK7) & MASK8;
+  }
 }
 
+uint32 int28::get(void)
+{
+  return __nValue;
+}
+
+uchar int28::operator[](size_t posn)
+{
+  return __acValue[posn];
+}
 
 ostream& operator<<(ostream& out, int28& val)
 {
-  out.write(val.value, sizeof(val));
-  
+  out.write(val.__acValue, sizeof(uint32));
   return out;
 }
 
 
 istream& operator>>(istream& in, int28& val)
 {
-  uchar temp [sizeof(luint)];
-  
+  uchar temp [sizeof(uint32)];
   in.read(temp, sizeof(temp));
-  
   val = temp;
-  
   return in;
 }
 
 // $Log: int28.cpp,v $
+// Revision 1.9  1999/12/26 15:11:39  scott
+// (set): Now uses ParseNumber, defined in misc_support.  Restructured
+// code.
+//
 // Revision 1.8  1999/12/17 16:13:04  scott
 // Updated opening comment block.
 //
