@@ -1,4 +1,4 @@
-// $Id: error.h,v 1.4 1999/11/04 04:32:11 scott Exp $
+// $Id: error.h,v 1.5 1999/11/15 20:15:13 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -37,25 +37,33 @@ enum ID3_Err
 class ID3_Error
 {
 public:
-  ID3_Err GetErrorID(void);
-  char   *GetErrorDesc(void);
-  char   *GetErrorFile(void);
-  luint   GetErrorLine(void);
+  ID3_Err GetErrorID(void) const;
+  char   *GetErrorType(void) const;
+  char   *GetErrorDesc(void) const;
+  char   *GetErrorFile(void) const;
+  luint   GetErrorLine(void) const;
   
-  // *** PRIVATE INTERNAL DATA - DO NOT USE ***
+  ID3_Error(const ID3_Err eID, const char *sFileName, const luint nLineNum, 
+            const char *sDescription);
 private:
-  ID3_Error(ID3_Err id, char *file, luint lineNum);
-protected:
-  ID3_Err error;
-  luint errLine;
-  char  errFile[ 256 ];
+  ID3_Err __eError;
+  luint   __nErrLine;
+  char   *__sErrFileName;
+  char   *__sErrDesc;
 };
 
-#define ID3_THROW(x) throw ID3_Error(x, __FILE__, __LINE__)
+#define ID3_THROW(x) throw ID3_Error(x, __FILE__, __LINE__, "")
+#define ID3_THROW_DESC(x, y) throw ID3_Error(x, __FILE__, __LINE__, y)
 
 #endif
 
 // $Log: error.h,v $
+// Revision 1.5  1999/11/15 20:15:13  scott
+// Made constructor public.  Added new interface to error reporting
+// to allow for more descriptive error messages (this should still be
+// worked on).  Made private member variable names more descriptive.
+// Added const qualifier to appropriate methods.
+//
 // Revision 1.4  1999/11/04 04:32:11  scott
 // Initial revision
 //
