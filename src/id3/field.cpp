@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.18 2000/04/09 22:37:34 eldamitri Exp $
+// $Id: field.cpp,v 1.19 2000/04/14 03:39:45 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -218,7 +218,7 @@ static ID3_FieldDef ID3FD_LinkedInfo[] =
     ID3FN_NOFIELD                       // LINKED FIELD
   },
   {
-    ID3FN_TEXT,                         // FIELD NAME
+    ID3FN_ID,                           // FIELD NAME
     ID3FTY_ASCIISTRING,                 // FIELD TYPE
     3, 2, 0,                            // FIXED LEN, VERSION, REVISION
     ID3VC_LOWER,                        // VERSION CONTROL SCOPE
@@ -226,7 +226,7 @@ static ID3_FieldDef ID3FD_LinkedInfo[] =
     ID3FN_NOFIELD                       // LINKED FIELD
   },
   {
-    ID3FN_TEXT,                         // FIELD NAME
+    ID3FN_ID,                           // FIELD NAME
     ID3FTY_ASCIISTRING,                 // FIELD TYPE
     4, 3, 0,                            // FIXED LEN, VERSION, REVISION
     ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
@@ -424,7 +424,7 @@ static ID3_FieldDef ID3FD_Registration[] =
     ID3FN_NOFIELD                       // LINKED FIELD
   },
   {
-    ID3FN_SYMBOL,                       // FIELD NAME
+    ID3FN_ID,                           // FIELD NAME
     ID3FTY_INTEGER,                     // FIELD TYPE
     1, 3, 0,                            // FIXED LEN, VERSION, REVISION
     ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
@@ -926,6 +926,10 @@ ID3_Field::operator=( const ID3_Field &rField )
 }
 
 // $Log: field.cpp,v $
+// Revision 1.19  2000/04/14 03:39:45  eldamitri
+// (ID3FD_LinkedInfo): Fixed bug in definition of LinkedInfo array.
+// (ID3FD_Registration): Renamed ID3FN_SYMBOL to ID3FN_ID
+//
 // Revision 1.18  2000/04/09 22:37:34  eldamitri
 // Added implementation for DEFAULT.
 //
