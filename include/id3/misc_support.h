@@ -1,16 +1,16 @@
-// $Id: misc_support.h,v 1.5 1999/12/09 02:45:52 scott Exp $
+// $Id: misc_support.h,v 1.6 1999/12/17 16:05:02 scott Exp $
 // 
-// The authors have released ID3Lib as Public Domain (PD) and claim no
-// copyright, patent or other intellectual property protection in this work.
-// This means that it may be modified, redistributed and used in commercial
-// and non-commercial software and hardware without restrictions.  ID3Lib is
-// distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either
-// express or implied.
-// 
-// The ID3Lib authors encourage improvements and optimisations to be sent to
-// the ID3Lib coordinator, currently Scott Haug (sth2@cs.wustl.edu).  Approved
-// submissions may be altered, and will be included and released under these
-// terms.
+// This program is free software; you can distribute it and/or modify it under 
+// the terms discussed in the COPYING file, which should have been included  
+// with this distribution.                                                  
+//                                                                           
+// This program is distributed in the hope that it will be useful, but WITHOUT 
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+// FITNESS FOR A PARTICULAR PURPOSE.  See the COPYING file for more details. 
+//                                                                           
+// The id3lib authors encourage improvements and optimisations to be sent to   
+// the id3lib coordinator.  Please see the README file for details on where  
+// to send such submissions. 
 
 #ifndef ID3LIB_MISC_SUPPORT_H
 #define ID3LIB_MISC_SUPPORT_H
@@ -75,6 +75,9 @@ void ID3_RemoveTrailingSpaces(char *buffer, luint length);
 #endif
 
 // $Log: misc_support.h,v $
+// Revision 1.6  1999/12/17 16:05:02  scott
+// Updated opening comment block.
+//
 // Revision 1.5  1999/12/09 02:45:52  scott
 // (ID3_GetString): Added nItems parameter for retrieving a string from a
 // list (for example, the involved people list).

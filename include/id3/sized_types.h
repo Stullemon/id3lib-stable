@@ -1,4 +1,16 @@
-// $Id: sized_types.h,v 1.1 1999/12/01 17:16:09 scott Exp $
+// $Id: sized_types.h,v 1.2 1999/12/17 16:05:02 scott Exp $
+//  
+// This program is free software; you can distribute it and/or modify it under 
+// the terms discussed in the COPYING file, which should have been included  
+// with this distribution.                                                  
+//                                                                           
+// This program is distributed in the hope that it will be useful, but WITHOUT 
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+// FITNESS FOR A PARTICULAR PURPOSE.  See the COPYING file for more details. 
+//                                                                           
+// The id3lib authors encourage improvements and optimisations to be sent to   
+// the id3lib coordinator.  Please see the README file for details on where  
+// to send such submissions. 
 
 /* 
  * This file defines size-specific typedefs based on the macros defined in
