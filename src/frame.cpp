@@ -1,7 +1,8 @@
-// $Id: frame.cpp,v 1.34 2002/06/29 17:35:39 t1mpy Exp $
+// $Id: frame.cpp,v 1.35 2002/08/10 10:42:42 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
+// Copyright 2002 Thijmen Klok (thijmen@id3lib.org)
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -28,7 +29,7 @@
 #include <config.h>
 #endif
 
-#include "frame.h"
+//#include "frame.h"
 #include "readers.h"
 #include "frame_impl.h"
 
@@ -42,7 +43,7 @@
  ** text frame.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: frame.cpp,v 1.34 2002/06/29 17:35:39 t1mpy Exp $
+ ** @version $Id: frame.cpp,v 1.35 2002/08/10 10:42:42 t1mpy Exp $
  ** @see ID3_Tag
  ** @see ID3_Field
  ** @see ID3_Err

@@ -11,7 +11,7 @@
 
 the_headers =                   \
   field.h                       \
-  frame.h                       \
+  id3lib_frame.h                \
   globals.h                     \
   misc_support.h                \
   reader.h                      \
