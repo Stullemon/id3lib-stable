@@ -1,3 +1,59 @@
+1999-12-02  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* zlib/include/deflate.h
+	* zlib/include/infblock.h
+	* zlib/include/infcodes.h
+	* zlib/include/inffast.h
+	* zlib/include/inffixed.h
+	* zlib/include/inftrees.h
+	* zlib/include/infutil.h
+	* zlib/include/trees.h
+	* zlib/include/zconf.h
+	* zlib/include/zlib.h
+	* zlib/include/zutil.h
+	* zlib/prj/zlib.dsp
+	* zlib/prj/zlib.dsw
+	* zlib/prj/zlib.mak
+	* zlib/src/adler32.c
+	* zlib/src/compress.c
+	* zlib/src/crc32.c
+	* zlib/src/deflate.c
+	* zlib/src/gzio.c
+	* zlib/src/infblock.c
+	* zlib/src/infcodes.c
+	* zlib/src/inffast.c
+	* zlib/src/inflate.c
+	* zlib/src/inftrees.c
+	* zlib/src/infutil.c
+	* zlib/src/trees.c
+	* zlib/src/uncompr.c
+	* zlib/src/zutil.c:
+	Added for windows compilation. (thanks elrod)
+
+	* src/id3/dll_wrapper.cpp: 
+	Fixed config.h macros. (thanks elrod)
+
+	* prj/id3lib.dsp
+	* prj/id3lib.dsw
+	* prj/id3lib.mak
+	* config.win32: 
+	Added to the distribution for windows compilation. (thanks elrod)
+
+	* include/id3/dll.h
+	* include/id3/error.h
+	* include/id3/field.h 
+	* include/id3/frame.h 
+	* include/id3/globals.h 
+	* include/id3/header.h 
+	* include/id3/header_frame.h 
+	* include/id3/header_tag.h 
+	* include/id3/int28.h 
+	* include/id3/misc_support.h 
+	* include/id3/tag.h 
+	* include/id3/types.h:
+	Changed all of the #include <id3/*> to #include "*" to help ensure that
+	the sources are searched for in the right places.
+	 
 1999-12-01  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* configure.in: 
