@@ -1,4 +1,4 @@
-// $Id: frame_render.cpp,v 1.9 1999/12/26 15:11:09 scott Exp $
+// $Id: frame_render.cpp,v 1.10 1999/12/27 05:48:00 scott Exp $
 // 
 // This program is free software; you can distribute it and/or modify it under
 // the terms discussed in the COPYING file, which should have been included
@@ -31,14 +31,10 @@ luint ID3_Frame::Render(uchar *buffer)
     ID3_THROW(ID3E_NoBuffer);
   }
 
-  ID3_FrameHeader header;
-  ID3_FrameDef *info;
-  luint flags;
   luint extras = 0;
   bool didCompress = false;
     
-  header.SetVersion(__ucVersion, __ucRevision);
-  bytesUsed += header.Size();
+  bytesUsed += __FrmHdr.Size();
     
   // here is where we include things like grouping IDs and crypto IDs
   if (strlen(__sEncryptionID) > 0)
@@ -61,20 +57,21 @@ luint ID3_Frame::Render(uchar *buffer)
     
   for (luint i = 0; i < __ulNumFields; i++)
   {
-    __apFields[i]->SetVersion(__ucVersion, __ucRevision);
+    __apFields[i]->SetVersion(__FrmHdr.GetVersion(), __FrmHdr.GetRevision());
     bytesUsed += __apFields[i]->Render(&buffer[bytesUsed]);
   }
     
   // if we can compress frames individually and we have been asked to compress
   // the frames
-  if (__bCompression && __ucVersion >= 3)
+  if (__FrmHdr.GetFlags() & ID3FL_COMPRESSION && 
+      __FrmHdr.GetVersion() >= 3)
   {
     luint newFrameSize;
     uchar *newTemp;
       
-    bytesUsed -= header.Size();
+    bytesUsed -= __FrmHdr.Size();
       
-    newFrameSize = bytesUsed +(bytesUsed / 10) + 12;
+    newFrameSize = bytesUsed + (bytesUsed / 10) + 12;
       
     newTemp = new uchar[newFrameSize];
     if (NULL == newTemp)
@@ -82,7 +79,7 @@ luint ID3_Frame::Render(uchar *buffer)
       ID3_THROW(ID3E_NoMemory);
     }
 
-    if (compress(newTemp, &newFrameSize, &buffer[header.Size() + extras],
+    if (compress(newTemp, &newFrameSize, &buffer[__FrmHdr.Size() + extras],
                  bytesUsed - extras) != Z_OK)
     {
       ID3_THROW(ID3E_zlibError);
@@ -93,7 +90,7 @@ luint ID3_Frame::Render(uchar *buffer)
     {
       luint posn;
             
-      posn = header.Size();
+      posn = __FrmHdr.Size();
       extras += sizeof(uint32);
             
       memcpy(&buffer[posn + sizeof(uint32)], newTemp, newFrameSize);
@@ -104,7 +101,7 @@ luint ID3_Frame::Render(uchar *buffer)
       didCompress = true;
     }
           
-    bytesUsed += header.Size();
+    bytesUsed += __FrmHdr.Size();
         
     delete[] newTemp;
   }
@@ -115,49 +112,46 @@ luint ID3_Frame::Render(uchar *buffer)
   }
     
   // determine which flags need to be set
-  info = ID3_FindFrameDef(__FrameID);
-  if (NULL == info)
-  {
-    ID3_THROW(ID3E_InvalidFrameID);
-  }
-
-  flags = 0;
-      
-  if (info->bTagDiscard)
-  {
-    flags |= ID3FL_TAGALTER;
-  }
-        
-  if (info->bFileDiscard)
-  {
-    flags |= ID3FL_FILEALTER;
-  }
-        
   if (didCompress)
   {
-    flags |= ID3FL_COMPRESSION;
+    __FrmHdr.AddFlags(ID3FL_COMPRESSION);
   }
-        
+  else
+  {
+    __FrmHdr.RemoveFlags(ID3FL_COMPRESSION);
+  }
+
   if (strlen(__sEncryptionID) > 0)
   {
-    flags |= ID3FL_ENCRYPTION;
+    __FrmHdr.AddFlags(ID3FL_ENCRYPTION);
   }
-        
+  else
+  {
+    __FrmHdr.RemoveFlags(ID3FL_ENCRYPTION);
+  }
+
   if (strlen(__sGroupingID) > 0)
   {
-    flags |= ID3FL_GROUPING;
+    __FrmHdr.AddFlags(ID3FL_GROUPING);
+  }
+  else
+  {
+    __FrmHdr.RemoveFlags(ID3FL_GROUPING);
   }
       
-  header.SetFrameID(__FrameID);
-  header.SetFlags(flags);
-  header.SetDataSize(bytesUsed - header.Size());
-  header.Render(buffer);
+  __FrmHdr.SetDataSize(bytesUsed - __FrmHdr.Size());
+  __FrmHdr.Render(buffer);
   __bHasChanged = false;
     
   return bytesUsed;
 }
 
 // $Log: frame_render.cpp,v $
+// Revision 1.10  1999/12/27 05:48:00  scott
+// (Render): Moved header processing tasks to the header object, now a
+// member of ID3_Frame.  Similar changes made due to removal of redundant
+// information from frame object.
+//
 // Revision 1.9  1999/12/26 15:11:09  scott
 // (Render): Now uses RenderNumber, defined in misc_support.
 //
