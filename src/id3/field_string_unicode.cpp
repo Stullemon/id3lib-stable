@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.6 1999/11/16 22:50:29 scott Exp $
+// $Id: field_string_unicode.cpp,v 1.7 1999/11/19 17:49:39 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -26,7 +26,7 @@
 
 // this function is another way of using Set()
 
-ID3_Field& ID3_Field::operator= (wchar_t *string)
+ID3_Field& ID3_Field::operator= (const wchar_t *string)
 {
   Set(string);
   
@@ -36,19 +36,21 @@ ID3_Field& ID3_Field::operator= (wchar_t *string)
 
 // this is Set()
 
-void ID3_Field::Set(wchar_t *string)
+void ID3_Field::Set(const wchar_t *string)
 {
-  luint bytesUsed = wcslen(string);
+  luint nBytes = (-1 == __lFixedLength) ? wcslen(string) : __lFixedLength;
   
-  // we can simply increment the bytesUsed count here because we just pilfer
+  // we can simply increment the nBytes count here because we just pilfer
   // the NULL which is present in the string which was passed to us
   if (__ulFlags & ID3FF_NULL)
-    bytesUsed++;
+  {
+    nBytes++;
+  }
     
-  // doubling the bytesUsed because Unicode is twice the size of ASCII
-  bytesUsed *= sizeof(wchar_t);
+  // doubling the nBytes because Unicode is twice the size of ASCII
+  nBytes *= sizeof(wchar_t);
   
-  Set((uchar *) string, bytesUsed);
+  Set((uchar *) string, nBytes);
   
   __eType = ID3FTY_UNICODESTRING;
   __bHasChanged = true;
@@ -57,7 +59,7 @@ void ID3_Field::Set(wchar_t *string)
 }
 
 
-void ID3_Field::Add(wchar_t *string)
+void ID3_Field::Add(const wchar_t *string)
 {
   if (NULL == __sData)
     Set(string);
@@ -98,7 +100,7 @@ void ID3_Field::Add(wchar_t *string)
 
 // this is Get()
 
-luint ID3_Field::Get(wchar_t *buffer, luint maxChars, luint itemNum)
+luint ID3_Field::Get(wchar_t *buffer, const luint maxChars, const luint itemNum)
 {
   luint charsUsed = 0;
   
@@ -136,16 +138,14 @@ luint ID3_Field::Get(wchar_t *buffer, luint maxChars, luint itemNum)
              posn <((__ulSize / sizeof(wchar_t) + nullOffset)))
         sourceLen++, posn++;
         
-      // we subtract 1 here so we have room for the NULL terminator
-      maxChars--;
-      
       if (NULL == buffer)
         ID3_THROW(ID3E_NoBuffer);
 
       luint actualChars = MIN(maxChars, sourceLen);
         
       wcsncpy(buffer, source, actualChars);
-      buffer[actualChars] = L'\0';
+      if (actualChars < maxChars)
+        buffer[actualChars] = L'\0';
       charsUsed = actualChars;
     }
   }
@@ -173,40 +173,40 @@ luint ID3_Field::GetNumTextItems(void)
 }
 
 
-luint ID3_Field::ParseUnicodeString(uchar *buffer, luint posn, luint buffSize)
+luint ID3_Field::ParseUnicodeString(const uchar *buffer, const luint posn, const luint buffSize)
 {
-  luint bytesUsed = 0;
+  luint nBytes = 0;
   wchar_t *temp = NULL;
   
   if (__lFixedLength != -1)
-    bytesUsed = __lFixedLength;
+    nBytes = __lFixedLength;
   else
   {
     if (__ulFlags & ID3FF_NULL)
-      while ((posn + bytesUsed) < buffSize &&
-             !(buffer[posn + bytesUsed] == 0 && 
-               buffer[posn + bytesUsed + 1] == 0))
-        bytesUsed += sizeof(wchar_t);
+      while ((posn + nBytes) < buffSize &&
+             !(buffer[posn + nBytes] == 0 && 
+               buffer[posn + nBytes + 1] == 0))
+        nBytes += sizeof(wchar_t);
     else
-      bytesUsed = buffSize - posn;
+      nBytes = buffSize - posn;
   }
   
-  if (bytesUsed > 0)
+  if (nBytes > 0)
   {
     // Sanity check our indices and sizes before we start copying memory
-    if ((bytesUsed > buffSize) || (posn + bytesUsed > buffSize))
+    if ((nBytes > buffSize) || (posn + nBytes > buffSize))
     {
       ID3_THROW_DESC(ID3E_BadData, "field information invalid");
     }
 
-    temp = new wchar_t[(bytesUsed / sizeof(wchar_t)) + 1];
+    temp = new wchar_t[(nBytes / sizeof(wchar_t)) + 1];
     if (NULL == temp)
       ID3_THROW(ID3E_NoMemory);
 
     luint loc = 0;
       
-    memcpy(temp, &buffer[posn], bytesUsed);
-    temp[bytesUsed / sizeof(wchar_t)] = 0;
+    memcpy(temp, &buffer[posn], nBytes);
+    temp[nBytes / sizeof(wchar_t)] = 0;
       
     // if there is a BOM, skip past it and check to see if we need to swap
     // the byte order around
@@ -226,21 +226,21 @@ luint ID3_Field::ParseUnicodeString(uchar *buffer, luint posn, luint buffSize)
   }
   
   if (__ulFlags & ID3FF_NULL)
-    bytesUsed += sizeof(wchar_t);
+    nBytes += sizeof(wchar_t);
     
   __bHasChanged = false;
   
-  return bytesUsed;
+  return nBytes;
 }
 
 
 luint ID3_Field::RenderUnicodeString(uchar *buffer)
 {
-  luint bytesUsed = 0;
+  luint nBytes = 0;
   
-  bytesUsed = BinSize();
+  nBytes = BinSize();
   
-  if (NULL != __sData && __ulSize && bytesUsed)
+  if (NULL != __sData && __ulSize && nBytes)
   {
     luint i;
     wchar_t *ourString = (wchar_t *) & buffer[sizeof(wchar_t)];
@@ -248,10 +248,10 @@ luint ID3_Field::RenderUnicodeString(uchar *buffer)
     // we render at sizeof(wchar_t) bytes into the buffer because we make room
     // for the Unicode BOM
     memcpy(&buffer[sizeof(wchar_t)], (uchar *) __sData, 
-           bytesUsed - sizeof(wchar_t));
+           nBytes - sizeof(wchar_t));
     
     // now we convert the internal dividers to what they are supposed to be
-    for (i = 0; i < bytesUsed; i++)
+    for (i = 0; i < nBytes; i++)
       if (ourString[i] == 1)
       {
         wchar_t sub = L'/';
@@ -263,23 +263,33 @@ luint ID3_Field::RenderUnicodeString(uchar *buffer)
       }
   }
   
-  if (bytesUsed)
+  if (nBytes)
   {
     // render the BOM
     wchar_t *BOM = (wchar_t *) buffer;
     BOM[0] = 0xFEFF;
   }
   
-  if (bytesUsed == sizeof(wchar_t) && (__ulFlags & ID3FF_NULL))
+  if (nBytes == sizeof(wchar_t) && (__ulFlags & ID3FF_NULL))
     for (size_t i = 0; i < sizeof(wchar_t); i++)
       buffer[i] = 0;
     
   __bHasChanged = false;
   
-  return bytesUsed;
+  return nBytes;
 }
 
 // $Log: field_string_unicode.cpp,v $
+// Revision 1.7  1999/11/19 17:49:39  scott
+// (operator=): Updated interface to make parameters const.
+// (Set): Updated interface to make parameters const.  Bug fix for fixed
+// length strings.  Minor variable renaming.
+// (Add): Updated interface to make parameters const.
+// (Get): Updated interface to make parameters const.  Fixed bug which
+// would add a null character to the string regardless of the length of
+// string requested.  Now only adds a null when the actual length of the
+// string is less than the maxium number of characters requested.
+//
 // Revision 1.6  1999/11/16 22:50:29  scott
 // * field_string_unicode.cpp
 // (ParseUnicodeString): Put in sanity check for indices so that
