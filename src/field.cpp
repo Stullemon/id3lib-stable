@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.4 2000/04/26 03:42:52 eldamitri Exp $
+// $Id: field.cpp,v 1.5 2000/04/26 15:53:30 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -452,6 +452,30 @@ static ID3_FieldDef ID3FD_Popularimeter[] =
   },
   { ID3FN_NOFIELD }
 };
+
+static ID3_FieldDef ID3FD_Private[] =
+{
+  {
+    ID3FN_OWNER,                        // FIELD NAME
+    ID3FTY_ASCIISTRING,                 // FIELD TYPE
+    0,                                  // FIXED LEN
+    ID3V2_3_0,                          // INITIAL SPEC
+    ID3V2_LATEST,                       // ENDING SPEC
+    ID3FF_NULL,                         // FLAGS
+    ID3FN_NOFIELD                       // LINKED FIELD
+  },
+  {
+    ID3FN_DATA,                         // FIELD NAME
+    ID3FTY_BINARY,                      // FIELD TYPE
+    0,                                  // FIXED LEN
+    ID3V2_3_0,                          // INITIAL SPEC
+    ID3V2_LATEST,                       // ENDING SPEC
+    ID3FF_NONE,                         // FLAGS
+    ID3FN_NOFIELD                       // LINKED FIELD
+  },
+  { ID3FN_NOFIELD }
+};
+  
   
 static ID3_FieldDef ID3FD_Registration[] =
 {
@@ -581,6 +605,7 @@ static ID3_FieldDef ID3FD_Volume[] =
 // LINK  LNK  ID3FID_LINKEDINFO        Linked information
 // PCNT  CNT  ID3FID_PLAYCOUNTER       Play counter
 // POPM  POP  ID3FID_POPULARIMETER     Popularimeter
+// PRIV       ID3FID_PRIVATE           Private frame
 // TALB  TAL  ID3FID_ALBUM             Album/Movie/Show title
 // TBPM  TBP  ID3FID_BPM               BPM (beats per minute)
 // TCOM  TCM  ID3FID_COMPOSER          Composer
@@ -642,7 +667,6 @@ static ID3_FieldDef ID3FD_Volume[] =
 // MLLT  MLL  ID3FID_MPEGLOOKUP        MPEG location lookup table
 // OWNE       ID3FID_OWNERSHIP         Ownership frame
 // POSS       ID3FID_POSITIONSYNC      Position synchronisation frame
-// PRIV       ID3FID_PRIVATE           Private frame
 // RBUF  BUF  ID3FID_BUFFERSIZE        Recommended buffer size
 // RVAD  RVA  ID3FID_VOLUMEADJ         Relative volume adjustment
 // RVRB  REV  ID3FID_REVERB            Reverb
@@ -671,7 +695,7 @@ static  ID3_FrameDef ID3_FrameDefs[] =
   {ID3FID_PLAYCOUNTER,       "CNT", "PCNT", 0, false, false, NULL, ID3FD_PlayCounter},
   {ID3FID_POPULARIMETER,     "POP", "POPM", 0, false, false, NULL, ID3FD_Popularimeter},
   {ID3FID_POSITIONSYNC,      "   ", "POSS", 0, false, true,  NULL, ID3FD_Unimplemented},
-  {ID3FID_PRIVATE,           "   ", "PRIV", 0, false, false, NULL, ID3FD_Unimplemented},
+  {ID3FID_PRIVATE,           "   ", "PRIV", 0, false, false, NULL, ID3FD_Private},
   {ID3FID_BUFFERSIZE,        "BUF", "RBUF", 0, false, false, NULL, ID3FD_Unimplemented},
   {ID3FID_VOLUMEADJ,         "RVA", "RVAD", 0, false, true,  NULL, ID3FD_Unimplemented},
   {ID3FID_REVERB,            "REV", "RVRB", 0, false, false, NULL, ID3FD_Unimplemented},
@@ -962,6 +986,11 @@ ID3_Field::operator=( const ID3_Field &rField )
 }
 
 // $Log: field.cpp,v $
+// Revision 1.5  2000/04/26 15:53:30  eldamitri
+// Updated lists of supported/unsupported frames (PRIV now supported)
+// (ID3FD_Private): Added definition
+// (ID3_FrameDefs): Updated Private's definition
+//
 // Revision 1.4  2000/04/26 03:42:52  eldamitri
 // - Replaced version/revision uchar combination with ID3_V2Spec enums
 // - Deprecated {Get,Set}Version, GetRevision for {Get,Set}Spec
