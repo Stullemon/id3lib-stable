@@ -1,4 +1,4 @@
-// $Id: tag_find.cpp,v 1.19 2000/10/03 04:51:27 eldamitri Exp $
+// $Id: tag_find.cpp,v 1.20 2000/10/09 04:29:40 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -36,69 +36,6 @@
 
 using namespace dami;
 
-  /** Returns a pointer to the next ID3_Frame with the given ID3_FrameID;
-   ** returns NULL if no such frame found.
-   ** 
-   ** If there are multiple frames in the tag with the same ID (which, for some
-   ** frames, is allowed), then subsequent calls to <a href="#Find">Find</a>
-   ** will return subsequent frame pointers, wrapping if necessary.
-   ** 
-   ** \code
-   **   ID3_Frame *myFrame;
-   **   if (myFrame = myTag.Find(ID3FID_TITLE))
-   **   {
-   **     // do something with the frame, like copy
-   **     // the contents into a buffer, display the
-   **     // contents in a window, etc.
-   **     // ...
-   **   }
-   ** \endcode
-   ** 
-   ** You may optionally supply to more parameters ot this method, being an
-   ** ID3_FieldID and a value of some sort.  Depending on the field name/ID you
-   ** supply, you may supply an integer, a char* or a unicode_t* as the third
-   ** parameter.  If you supply an ID3_FrameID, you must also supply a data
-   ** value to compare against.
-   ** 
-   ** This method will then return the first frame that has a matching frame
-   ** ID, and which has a field with the same name as that which you supplied
-   ** in the second parameter, whose calue matches that which you supplied as
-   ** the third parameter.  For example:
-   ** 
-   ** \code
-   **   ID3_Frame *myFrame;
-   **   if (myFrame = myTag.Find(ID3FID_TITLE, ID3FN_TEXT, "Nirvana"))
-   **   {
-   **     // found it, do something with it.
-   **     // ...
-   **   }
-   ** \endcode
-   **     
-   ** This example will return the first TITLE frame and whose TEXT field is
-   ** 'Nirvana'.  Currently there is no provision for things like 'contains',
-   ** 'greater than', or 'less than'.  If there happens to be more than one of
-   ** these frames, subsequent calls to the <a href="#Find">Find</a> method
-   ** will return subsequent frames and will wrap around to the beginning.
-   ** 
-   ** Another example...
-   ** 
-   ** \code
-   **   ID3_Frame *myFrame;
-   **   if (myFrame = myTag.Find(ID3FID_COMMENT, ID3FN_TEXTENC, ID3TE_UNICODE))
-   **   {
-   **     // found it, do something with it.
-   **     // ...
-   **   }
-   ** \endcode
-   ** 
-   ** This returns the first COMMENT frame that uses Unicode as its text
-   ** encdoing.
-   **  
-   ** @name   Find
-   ** @param  id The ID of the frame that is to be located
-   ** @return A pointer to the first frame found that has the given frame id,
-   **         or NULL if no such frame.
-   **/
 ID3_Elem *ID3_TagImpl::Find(const ID3_Frame *frame) const
 {
   ID3_Elem *elem = NULL;
@@ -152,21 +89,7 @@ ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id) const
   return frame;
 }
 
-ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fld, const char *data) const
-{
-  size_t len = strlen(data) + 1;
-  unicode_t *temp = new unicode_t[len];
-
-  ::mbstoucs(temp, data, len);
-    
-  ID3_Frame* frame = Find(id, fld, temp);
-    
-  delete[] temp;
-  
-  return frame;
-}
-
-ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fld, const unicode_t *data) const
+ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, const char *data) const
 {
   ID3_Frame *frame = NULL;
   
@@ -196,19 +119,19 @@ ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fld, const unicode_t *d
     for (ID3_Elem *cur = pStart; cur != pFinish; cur = cur->pNext)
     {
       if ((cur->pFrame != NULL) && (cur->pFrame->GetID() == id) &&
-          cur->pFrame->Contains(fld))
+          cur->pFrame->Contains(fldID))
       {
-        size_t ulSize = cur->pFrame->Field(fld).Size();
-        unicode_t *wsBuffer = new unicode_t[ulSize + 1];
+        ID3_Field* fld = cur->pFrame->GetField(fldID);
+        if (NULL == fld)
+        {
+          continue;
+        }
 
-        wsBuffer[ulSize] = NULL_UNICODE;
-        cur->pFrame->Field(fld).Get(wsBuffer, ulSize);
-          
-        bool bInFrame = (::ucscmp(wsBuffer, data) == 0);
-          
-        delete [] wsBuffer;
+        const char* text = fld->GetText();
+        size_t fldSize = fld->Size();
 
-        if (bInFrame)
+        if ((text == NULL && ::strlen(data) == 0) ||
+            (text != NULL && ::strcmp(fld->GetText(), data) == 0))
         {
           // We've found a valid frame.  Set cursor to be the next element
           frame = cur->pFrame;
@@ -222,7 +145,59 @@ ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fld, const unicode_t *d
   return frame;
 }
 
-ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fld, uint32 data) const
+ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, const unicode_t *data) const
+{
+  ID3_Frame *frame = NULL;
+  
+  // reset the cursor if it isn't set
+  if (NULL == _cursor)
+  {
+    _cursor = _frames;
+  }
+
+  if (NULL == data)
+  {
+    return frame;
+  }
+
+  for (int iCount = 0; iCount < 2 && frame == NULL; iCount++)
+  {
+    // We want to cycle through the list to find the matching frame.  We
+    // should start from the cursor, search each successive frame, wrapping
+    // if necessary.  The enclosing loop and the assignment statments below
+    // ensure that we first start at the cursor and search to the end of the
+    // list and, if unsuccessful, start from the beginning of the list and
+    // search to the cursor.
+    ID3_Elem
+      *pStart  = (0 == iCount ? _cursor : _frames), 
+      *pFinish = (0 == iCount ? NULL     : _cursor);
+    // search from the cursor to the end
+    for (ID3_Elem *cur = pStart; cur != pFinish; cur = cur->pNext)
+    {
+      if ((cur->pFrame != NULL) && (cur->pFrame->GetID() == id) &&
+          cur->pFrame->Contains(fldID))
+      {
+        ID3_Field* fld = cur->pFrame->GetField(fldID);
+        if (NULL == fld)
+        {
+          continue;
+        }
+
+        if (::ucscmp(fld->GetUnicodeText(), data) == 0)
+        {
+          // We've found a valid frame.  Set cursor to be the next element
+          frame = cur->pFrame;
+          _cursor = cur->pNext;
+          break;
+        }
+      }
+    }
+  }
+  
+  return frame;
+}
+
+ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, uint32 data) const
 {
   ID3_Frame *frame = NULL;
   
@@ -245,7 +220,7 @@ ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fld, uint32 data) const
     for (ID3_Elem *cur = pStart; cur != pFinish; cur = cur->pNext)
     {
       if ((cur->pFrame != NULL) && (cur->pFrame->GetID() == id) &&
-          (cur->pFrame->Field(fld).Get() == data))
+          (cur->pFrame->GetField(fldID)->Get() == data))
       {
         // We've found a valid frame.  Set the cursor to be the next element
         frame = cur->pFrame;
