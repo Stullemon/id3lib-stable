@@ -1,3 +1,88 @@
+2000-05-09  Scott Haug  <scott@id3.org>
+
+	* include/id3/field.h 
+	(class ID3_Field): Added InScope and GetID methods, removed SetSpec
+	method and __spec member variable, updated Parse* methods to only 
+	accept two parameters, not three
+
+	* include/id3/frame.h 
+	(class ID3_Frame): Changed SetID() and Parse() methods to return a bool
+	to indicate if the frame has changed; added BadParse() and
+	GetDataSize() methods, added __bad_parse member variable
+
+	* include/id3/header_frame.h 
+	(class ID3_FrameHeader): Added GetExtrasSize(), SetExpandedSize(),
+	GetExpandedSize(), SetEncryptionID(), GetEncryptionID(),
+	SetGroupingID(), and GetGroupingID() methods, as well as
+	__encryption_id, __grouping_id, and __expanded_size member variables
+
+	* include/id3/header_tag.h 
+	(class ID3_TagHeader): Added GetUnsync() method
+
+	* include/id3/tag.h 
+	(class ID3_Tag): Added ParseFrames() method, __hdr member variable
+
+	* src/field.cpp 
+	(ID3_Field): Removed initialization of __spec
+	(SetSpec): Removed
+	(BinSize): No longer checks spec (relies on calling function)
+	(Parse): Updated for new parameters, no longer checks spec (relies on
+	calling function)
+	(Render): No longer checks spec (relies on calling function)
+	(operator=): No longer copies over spec
+
+	* src/field_binary.cpp 
+	(ParseBinary): Updated for new parameters
+
+	* src/field_integer.cpp 
+	(ParseInteger): Updated for new parameters
+
+	* src/field_string_ascii.cpp 
+	(ParseASCIIString): Updated for new parameters
+
+	* src/field_string_unicode.cpp 
+	(ParseUnicodeString): Updated for new parameters
+
+	* src/frame.cpp 
+	(_ClearFields): Added implementation
+	(Clear): Updated to use _ClearFields
+	(_SetID): Added implementation
+	(SetID): Now returns bool indicating if the frame changed
+	(Size): Now checks to see if a field is in scope before adding its
+	size
+
+	* src/frame_parse.cpp 
+	(Parse): New implementation
+
+	* src/frame_render.cpp 
+	(Render): Minor implementation change
+
+	* src/header_frame.cpp 
+	(SetFrameID): Minor implementation change
+	(Parse): Now checks for compression, encryption, and grouping
+
+	* src/header_tag.cpp 
+	(Parse): Updated to prepare for handling extended headers
+
+	* src/tag_parse.cpp 
+	(ParseFrames): Added implementation
+	(Parse): New implementation, using ParseFrames
+
+2000-05-08  Scott Haug  <scott@id3.org>
+
+	* include/id3/globals.h: 
+	* include/id3/misc_support.h: 
+	* src/misc_support.cpp: 
+	* src/tag_parse_lyrics3.cpp: 
+	Updated with new enums, helper functions for adding synced lyrics
+	(thanks Severino Delaurenti).
+
+	* examples/demo_info.cpp 
+	(PrintInformation): Updated for new names of ContentType enums
+
+	* doc/index.html.in: 
+	Updated to mention COM as a supported language.
+
 2000-05-07  Scott Haug  <scott@id3.org>
 
 	* include/id3/error.h 
