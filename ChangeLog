@@ -1,5 +1,9 @@
 2000-06-25  Scott Haug  <scott@id3.org>
 
+	* include/id3/globals.h 
+	(NULL_UNICODE): Defined using a #define so it will compile correctly 
+	for C
+
 	* examples/demo_info.cpp
 	* examples/demo_convert.cpp 
 	(main): Now links against all tags
