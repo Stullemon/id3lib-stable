@@ -1,4 +1,4 @@
-// $Id: field_integer.cpp,v 1.12 2000/09/21 22:52:56 eldamitri Exp $
+// $Id: field_integer.cpp,v 1.13 2000/09/27 08:23:44 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,12 +24,14 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#include "field_impl.h"
-#include "utils.h"
-
 #if defined HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include "debug.h"
+#include "field_impl.h"
+#include "utils.h"
+#include "reader_decorators.h"
 
 /** \fn ID3_Field& ID3_Field::operator=(uint32 val)
  ** \brief A shortcut for the Set method.
@@ -66,26 +68,36 @@ void ID3_FieldImpl::Set(uint32 val)
  ** \return The value of the integer field
  **/
 
-size_t ID3_FieldImpl::ParseInteger(const uchar *buffer, size_t nSize)
-{
-  size_t nBytes = 0;
+/** \fn uint32 ID3_Field::Get() const
+ ** \brief Returns the value of the integer field.
+ ** 
+ ** \code
+ **   uint32 picType = myFrame.Field(ID3FN_PICTURETYPE).Get();
+ ** \endcode
+ **
+ ** \return The value of the integer field
+ **/
 
-  if (buffer != NULL && nSize > 0)
+void ID3_FieldImpl::ParseInteger(ID3_Reader& reader)
+{
+  ID3D_NOTICE( "ID3_FieldImpl::ParseInteger(): beg = " << reader.getBeg() );
+  ID3D_NOTICE( "ID3_FieldImpl::ParseInteger(): cur = " << reader.getCur() );
+  ID3D_NOTICE( "ID3_FieldImpl::ParseInteger(): end = " << reader.getEnd() );
+
+  if (reader.peekChar() != ID3_Reader::END_OF_READER)
   {
     this->Clear();
     size_t fixed = this->Size();
-    nBytes = (fixed > 0) ? MIN(nSize, fixed) : nSize;
-    this->Set(ParseNumber(buffer, nBytes));
+    size_t nBytes = (fixed > 0) ? fixed : sizeof(uint32);
+    id3::NumberReader nr(reader);
+    this->Set(nr.readNumber(nBytes));
     _changed = false;
   }
-  
-  return nBytes;
 }
-
 
 size_t ID3_FieldImpl::RenderInteger(uchar *buffer) const
 {
-  size_t bytesUsed = RenderNumber(buffer, _integer, this->Size());
+  size_t bytesUsed = id3::renderNumber(buffer, _integer, this->Size());
   _changed = false;
   return bytesUsed;
 }
