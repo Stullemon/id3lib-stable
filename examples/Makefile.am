@@ -52,7 +52,7 @@ id3convert_SOURCES      = demo_convert_options.c demo_convert.cpp
 
 id3tag_SOURCES          = demo_tag_options.c     demo_tag.cpp
 
-id3simple_SOURCES       = demo_simple.c
+id3simple_SOURCES       = demo_simple.cpp
 testpic_SOURCES         = test_pic.cpp
 testunicode_SOURCES     = test_unicode.cpp
 testcompression_SOURCES = test_compression.cpp

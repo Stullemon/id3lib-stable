@@ -152,7 +152,7 @@ id3convert_SOURCES = demo_convert_options.c demo_convert.cpp
 
 id3tag_SOURCES = demo_tag_options.c     demo_tag.cpp
 
-id3simple_SOURCES = demo_simple.c
+id3simple_SOURCES = demo_simple.cpp
 testpic_SOURCES = test_pic.cpp
 testunicode_SOURCES = test_unicode.cpp
 testcompression_SOURCES = test_compression.cpp
@@ -738,7 +738,7 @@ id3info$(EXEEXT): $(id3info_OBJECTS) $(id3info_DEPENDENCIES)
 	$(CXXLINK) $(id3info_LDFLAGS) $(id3info_OBJECTS) $(id3info_LDADD) $(LIBS)
 id3simple$(EXEEXT): $(id3simple_OBJECTS) $(id3simple_DEPENDENCIES) 
 	@rm -f id3simple$(EXEEXT)
-	$(LINK) $(id3simple_LDFLAGS) $(id3simple_OBJECTS) $(id3simple_LDADD) $(LIBS)
+	$(CXXLINK) $(id3simple_LDFLAGS) $(id3simple_OBJECTS) $(id3simple_LDADD) $(LIBS)
 id3tag$(EXEEXT): $(id3tag_OBJECTS) $(id3tag_DEPENDENCIES) 
 	@rm -f id3tag$(EXEEXT)
 	$(CXXLINK) $(id3tag_LDFLAGS) $(id3tag_OBJECTS) $(id3tag_LDADD) $(LIBS)
