@@ -1,4 +1,4 @@
-// $Id: field.h,v 1.29 2000/06/06 12:21:38 eldamitri Exp $
+// $Id: field.h,v 1.30 2000/06/14 16:13:28 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -53,7 +53,7 @@ struct ID3_FrameDef
   char          sLongTextID[4 + 1];
   bool          bTagDiscard;
   bool          bFileDiscard;
-  ID3_FieldDef* aeFieldDefs;
+  const ID3_FieldDef* aeFieldDefs;
   const char *  sDescription;
 };
 
@@ -139,7 +139,7 @@ protected:
 };
 
 // Ack! Not for public use
-ID3_FrameDef *ID3_FindFrameDef(const ID3_FrameID id);
+ID3_FrameDef *ID3_FindFrameDef(ID3_FrameID id);
 ID3_FrameID   ID3_FindFrameID(const char *id);
 
 #endif /* __ID3LIB_FIELD_H__ */
