@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.12 2000/05/12 04:05:25 eldamitri Exp $
+// $Id: tag_file.cpp,v 1.13 2000/05/12 21:08:20 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -74,7 +74,7 @@ bool exists(const char *name)
   
   if (NULL == name)
   {
-    ID3_THROW(ID3E_NoData);
+    return false;
   }
 
   in = fopen(name, "rb");
@@ -89,7 +89,7 @@ bool exists(const char *name)
 
 
 
-void ID3_Tag::CreateFile()
+ID3_Err ID3_Tag::CreateFile()
 {
   CloseFile();
 
@@ -99,7 +99,7 @@ void ID3_Tag::CreateFile()
   // Check to see if file could not be created
   if (NULL == __file_handle)
   {
-    ID3_THROW(ID3E_ReadOnly);
+    return ID3E_ReadOnly;
   }
 
   // Determine the size of the file
@@ -107,13 +107,13 @@ void ID3_Tag::CreateFile()
   __file_size = ftell(__file_handle);
   fseek(__file_handle, 0, SEEK_SET);
   
-  return ;
+  return ID3E_NoError;
 }
 
 ID3_Err ID3_Tag::OpenFileForWriting()
 {
   CloseFile();
-  
+  __file_size = 0;
   if (exists(__file_name))
   {
     // Try to open the file for reading and writing.
@@ -121,14 +121,12 @@ ID3_Err ID3_Tag::OpenFileForWriting()
   }
   else
   {
-    ID3_THROW(ID3E_NoFile);
     return ID3E_NoFile;
   }
 
   // Check to see if file could not be opened for writing
   if (NULL == __file_handle)
   {
-    ID3_THROW(ID3E_ReadOnly);
     return ID3E_ReadOnly;
   }
 
@@ -149,7 +147,6 @@ ID3_Err ID3_Tag::OpenFileForReading()
   
   if (NULL == __file_handle)
   {
-    ID3_THROW(ID3E_NoFile);
     return ID3E_NoFile;
   }
 
@@ -233,17 +230,19 @@ size_t ID3_Tag::Link(const char *fileInfo, flags_t tag_types)
   
   if (NULL == fileInfo)
   {
-    ID3_THROW(ID3E_NoData);
+    return 0;
   }
 
-  strcpy(__file_name, fileInfo);
-    
   // if we were attached to some other file then abort
   if (__file_handle != NULL)
   {
-    ID3_THROW(ID3E_TagAlreadyAttached);
+    // Log this
+    return 0;
+    //ID3_THROW(ID3E_TagAlreadyAttached);
   }
   
+  strcpy(__file_name, fileInfo);
+    
   if (ID3E_NoError != OpenFileForReading())
   {
     __starting_bytes = 0;
@@ -257,12 +256,12 @@ size_t ID3_Tag::Link(const char *fileInfo, flags_t tag_types)
   
   if (__starting_bytes > 0)
   {
-    __starting_bytes += ID3_TAGHEADERSIZE;
+    __starting_bytes += ID3_TagHeader::SIZE;
   }
 
   // the file size represents the file size _without_ the beginning ID3v2 tag
   // info
-  __file_size -= __starting_bytes;
+  __file_size -= MIN(__file_size, __starting_bytes);
   return __starting_bytes;
 }
 
@@ -281,7 +280,17 @@ size_t ID3_Tag::Link(const char *fileInfo, flags_t tag_types)
 flags_t ID3_Tag::Update(flags_t ulTagFlag)
 {
   OpenFileForWriting();
+  if (NULL == __file_handle)
+  {
+    CreateFile();
+  }
   flags_t tags = ID3TT_NONE;
+
+  if ((ulTagFlag & ID3TT_ID3V2) && HasChanged())
+  {
+    RenderV2ToHandle();
+    tags |= ID3TT_ID3V2;
+  }
 
   if ((ulTagFlag & ID3TT_ID3V1) && 
       (!this->HasTagType(ID3TT_ID3V1) || this->HasChanged()))
@@ -289,12 +298,6 @@ flags_t ID3_Tag::Update(flags_t ulTagFlag)
     RenderV1ToHandle();
     tags |= ID3TT_ID3V1;
   }
-  if ((ulTagFlag & ID3TT_ID3V2) && HasChanged())
-  {
-    RenderV2ToHandle();
-    tags |= ID3TT_ID3V2;
-  }
-
   return tags;
 }
 
