@@ -1,4 +1,4 @@
-// $Id: frame.cpp,v 1.10 2000/05/03 14:09:14 eldamitri Exp $
+// $Id: frame.cpp,v 1.11 2000/05/03 17:13:28 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -360,10 +360,7 @@ const char* ID3_Frame::GetDescription(ID3_FrameID eFrameID)
   {
     return myFrameDef->sDescription;
   }
-  else
-  {
-    return "Unknown";
-  }
+  return NULL;
 }
 
 const char* ID3_Frame::GetDescription() const
@@ -373,9 +370,6 @@ const char* ID3_Frame::GetDescription() const
   {
     return def->sDescription;
   }
-  else
-  {
-    return "Unknown";
-  }
+  return NULL;
 }
 
