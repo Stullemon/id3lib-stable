@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.5 2000/05/01 13:05:07 eldamitri Exp $
+// $Id: tag_file.cpp,v 1.6 2000/05/02 21:56:01 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -375,6 +375,7 @@ luint ID3_Tag::Strip(const luint ulTagFlag)
         size_t nBytesWritten = fwrite(aucBuffer, 1, nBytesRead, __fFileHandle);
         if (nBytesRead > nBytesWritten)
         {
+          // TODO: log this
           cerr << "--- attempted to write " << nBytesRead << " bytes, "
                << "only wrote " << nBytesWritten << endl;
         }
