@@ -1,5 +1,9 @@
 2000-09-21  Scott Haug  <scott@id3.org>
 
+	* include/id3/reader.h 
+	* include/id3/reader_decorators.h: 
+	Initial release
+
 	* doc/index.html.in: 
 	Added empeg to list of projects
 
