@@ -1,4 +1,4 @@
-# $Id: configure.in,v 1.43 2000/09/15 00:03:02 eldamitri Exp $
+# $Id: configure.in,v 1.44 2000/09/27 03:26:42 eldamitri Exp $
 
 # Copyright 1999, 2000 Scott Thomas Haug <eldamitri@users.sourceforge.net>
 #  
@@ -72,7 +72,7 @@ VERSION=$ID3LIB_VERSION
 PACKAGE=$ID3LIB_NAME
 
 dnl This is a hack to get the release date using cvs checkin macros
-ID3LIB_DATE="$Date: 2000/09/15 00:03:02 $ID3LIB_UNDEFINED"
+ID3LIB_DATE="$Date: 2000/09/27 03:26:42 $ID3LIB_UNDEFINED"
 ID3LIB_FULLNAME=$ID3LIB_NAME-$ID3LIB_VERSION
 
 AC_SUBST(ID3LIB_DATE)
@@ -129,6 +129,7 @@ AC_CHECK_LIB(popt,poptGetContext)#,,
 
 AM_CONDITIONAL(ID3_NEEDZLIB, test x$ac_cv_lib_z_uncompress = xno)
 AM_CONDITIONAL(ID3_NEEDPOPT, test x$ac_cv_lib_popt_poptGetContext = xno)
+AM_CONDITIONAL(ID3_NEEDDEBUG, test x$enable_debug = xyes)
 
 dnl Checks for header files.
 AC_HEADER_STDC
@@ -138,12 +139,23 @@ AC_HAVE_HEADERS(                \
   limits.h                      \
   memory.h                      \
   stdio.h                       \
+  stdlib.h                      \
+  string.h                      \
   unistd.h                      \
   ,,AC_MSG_ERROR([Missing a vital header file for id3lib])
 )
 AC_LANG_SAVE
 AC_LANG_CPLUSPLUS
-AC_CHECK_HEADER(iostream.h iomanip.h)
+AC_HAVE_HEADERS(libcw/sys.h)
+AC_HAVE_HEADERS(cctype climits cstdio cstdlib cstring)
+AC_HAVE_HEADERS(fstream iostream iomanip)
+AC_HAVE_HEADERS(                \
+  string                        \
+  fstream.h                     \
+  iostream.h                    \
+  iomanip.h                     \
+  ,,AC_MSG_ERROR([Missing a vital header file for id3lib])
+)
 
 dnl Check for functions.
 AC_FUNC_MEMCMP
@@ -170,7 +182,7 @@ LF_SET_WARNINGS
 
 dnl Provides a --honor-std option to the configure script that honors the
 dnl std namespace.  Must be used AFTER configuring ALL compilers.
-LF_HONOR_STD
+dnl LF_HONOR_STD
 
 dnl ACCONFIG TEMPLATE
 dnl 
@@ -179,6 +191,7 @@ dnl  * determining internal versioning information.  The intent is that these
 dnl  * macros will be made available in the library via constants, functions,
 dnl  * or static methods.
 dnl  */
+dnl #undef ID3LIB_DEBUG
 dnl #undef _ID3LIB_NAME
 dnl #undef _ID3LIB_DATE
 dnl #undef _ID3LIB_VERSION
