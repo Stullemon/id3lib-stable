@@ -1,3 +1,72 @@
+2000-04-25  Scott Haug  <scott@id3.org>
+
+	* include/id3/field.h: 
+	- ID3_VerCtl enumeration deprecated in favor of using two ID3_V2Spec
+	  enums to denote field scope
+	- Deprecated (private) SetVersion in favor of SetSpec
+	- Replaced version/revision uchar combination with ID3_V2Spec enums
+
+	* include/id3/frame.h: 
+	Replaced (protected) SetVersion with SetSpec
+
+	* include/id3/globals.h: 
+	- Removed ID3_SpecVersion (not used anyway)
+	- Defined ID3_V1Spec and ID3_V2Spec to enumerate various iterations
+	  of each specification
+
+	* include/id3/header.h: 
+	- Now inherits from ID3_Speccable
+	- Deprecated SetVersion, added SetSpec and GetSpec
+	- Deprecated ID3_LookupHeaderInfo(uchar, uchar) in favor of
+	  ID3_LookupHeaderInfo(ID3_V2Spec)
+	- Removed ID3v2_{VERSION,REVISION}; now use ID3V2_LATEST instead
+	- Replaced version/revision uchar combination with ID3_V2Spec enums
+
+	* include/id3/spec.h: 
+	Added; defines ID3_Speccable pure virtual class, which provides 
+	{Get,Set}Spec methods and deprecated {Get,Set}Version, GetRevision
+
+	* include/id3/Makefile.am 
+	(the_headers): Added spec.h
+
+	* include/id3/tag.h 
+	- Removed default params for deprecated Link(char *, bool, bool) since 
+	  they were causing ambiguity for Link(char *, luint)
+	- Now inherits from ID3_Speccable
+	- Deprecated SetVersion, added SetSpec and GetSpec
+
+	* src/c_wrapper.cpp 
+	(ID3Tag_AttachFrame): Added implementation
+
+	* src/spec.cpp: 
+	Initial release; implements functions ID3_V2SpecToVer, ID3_V2SpecToRev,
+	and ID3_VerRevToV2Spec declared in spec.h
+
+	* src/field.cpp 
+	* src/frame.cpp 
+	* src/frame_parse.cpp 
+	* src/frame_render.cpp
+	* src/header.cpp 
+	* src/header_tag.cpp
+	* src/tag.cpp: 
+	* src/tag_parse.cpp 
+	* src/tag_render.cpp: 
+	- Replaced version/revision uchar combination with ID3_V2Spec enums
+	- Deprecated {Get,Set}Version, GetRevision for {Get,Set}Spec
+	- ID3_VerCtl enumeration deprecated in favor of using two ID3_V2Spec
+	  enums to denote field scope
+	- Replaced ID3v2_VERSION, ID3v2_REVISION constants with ID3V2_LATEST
+	  enum
+	- Use ID3V2_UNKNOWN enum rather than 0 for version, revision
+
+	* doc/index.html.in: 
+	- Minor reformatting
+	- Added Zlurp! to list of projects using id3lib
+	- Added "Valid HTML 4.01" image, link to validator
+
+	* src/Makefile.am 
+	(the_sources): Added spec.cpp
+
 2000-04-24  Scott Haug  <scott@id3.org>
 
 	* NEWS 
