@@ -1,4 +1,4 @@
-// $Id: field_integer.cpp,v 1.14 2000/09/30 22:11:43 eldamitri Exp $
+// $Id: field_integer.cpp,v 1.15 2000/10/03 04:38:12 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -32,6 +32,8 @@
 #include "field_impl.h"
 #include "utils.h"
 #include "reader_decorators.h"
+
+using namespace dami;
 
 /** \fn ID3_Field& ID3_Field::operator=(uint32 val)
  ** \brief A shortcut for the Set method.
@@ -89,7 +91,7 @@ bool ID3_FieldImpl::ParseInteger(ID3_Reader& reader)
     this->Clear();
     size_t fixed = this->Size();
     size_t nBytes = (fixed > 0) ? fixed : sizeof(uint32);
-    id3::NumberReader nr(reader);
+    ::io::NumberReader nr(reader);
     this->Set(nr.readNumber(nBytes));
     _changed = false;
     success = true;
@@ -99,7 +101,7 @@ bool ID3_FieldImpl::ParseInteger(ID3_Reader& reader)
 
 size_t ID3_FieldImpl::RenderInteger(uchar *buffer) const
 {
-  size_t bytesUsed = id3::renderNumber(buffer, _integer, this->Size());
+  size_t bytesUsed = ::renderNumber(buffer, _integer, this->Size());
   _changed = false;
   return bytesUsed;
 }

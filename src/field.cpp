@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.33 2000/09/30 22:11:01 eldamitri Exp $
+// $Id: field.cpp,v 1.34 2000/10/03 04:38:12 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -37,6 +37,8 @@
 #include "field_def.h"
 #include "frame_def.h"
 #include "readers.h"
+
+using namespace dami;
 
 // This is used for unimplemented frames so that their data is preserved when
 // parsing and rendering
@@ -880,7 +882,7 @@ static  ID3_FrameDef ID3_FrameDefs[] =
  ** if you only plan to generate 3.0 tags.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: field.cpp,v 1.33 2000/09/30 22:11:01 eldamitri Exp $
+ ** @version $Id: field.cpp,v 1.34 2000/10/03 04:38:12 eldamitri Exp $
  ** \sa ID3_Tag
  ** \sa ID3_Frame
  ** \sa ID3_Err 
@@ -1117,7 +1119,7 @@ size_t ID3_FieldImpl::Size() const
 
 size_t ID3_FieldImpl::Parse(const uchar *buffer, size_t buffSize)
 {
-  id3::MemoryReader mr(reinterpret_cast<const char *>(buffer), buffSize);
+  ID3_MemoryReader mr(reinterpret_cast<const char *>(buffer), buffSize);
   ID3_Reader::pos_type beg = mr.getCur();
   this->Parse(mr);
   return mr.getCur() - beg;
@@ -1275,14 +1277,14 @@ bool ID3_FieldImpl::SetEncoding(ID3_TextEnc enc)
       {
         unicode_t* unicode = _unicode;
         _ascii = new char[size];
-        id3::ucstombs(_ascii, unicode, size);
+        ::ucstombs(_ascii, unicode, size);
         delete [] unicode;
       }
       else if (_enc == ID3TE_ASCII && enc == ID3TE_UNICODE)
       {
         char* ascii = _ascii;
         _unicode = new unicode_t[size];
-        id3::mbstoucs(_unicode, ascii, size);
+        ::mbstoucs(_unicode, ascii, size);
         delete [] ascii;
       }
     }

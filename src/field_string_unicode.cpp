@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.22 2000/09/30 22:12:23 eldamitri Exp $
+// $Id: field_string_unicode.cpp,v 1.23 2000/10/03 04:38:12 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -33,6 +33,8 @@
 #if defined HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+using namespace dami;
 
 /** \fn ID3_Field& ID3_Field::operator=(const unicode_t*)
  ** \brief Shortcut for the Set operator.
@@ -112,7 +114,7 @@ size_t ID3_FieldImpl::Set_i(const unicode_t *string, size_t size)
     _num_items = 1;
   }
 
-  return id3::min(_chars, size);
+  return ::min(_chars, size);
 }
 
 size_t ID3_FieldImpl::Set(const unicode_t *string)
@@ -126,7 +128,7 @@ size_t ID3_FieldImpl::Set(const unicode_t *string)
     }
     else
     {
-      len = this->Set_i(string, id3::ucslen(string));
+      len = this->Set_i(string, ::ucslen(string));
     }
   }
   return len;
@@ -200,7 +202,7 @@ size_t ID3_FieldImpl::Add(const unicode_t *str)
     }
     else
     {
-      len = this->Add_i(str, id3::ucslen(str));
+      len = this->Add_i(str, ::ucslen(str));
     }
   }
   return len;
@@ -235,7 +237,7 @@ size_t ID3_FieldImpl::Get(unicode_t *buffer, size_t maxLength) const
       buffer != NULL && maxLength > 0)
   {
     size_t size = this->Size();
-    length = id3::min(maxLength, size);
+    length = ::min(maxLength, size);
     memcpy((void *)buffer, (void *)_unicode, length * 2);
     if (length < maxLength)
     {
@@ -275,7 +277,7 @@ size_t ID3_FieldImpl::Get(unicode_t *buffer, size_t maxLength, index_t itemNum) 
       {
         break;
       }
-      cur += id3::ucslen(cur) + 1;
+      cur += ::ucslen(cur) + 1;
       num++;
     }
     if (cur < end)
@@ -288,7 +290,7 @@ size_t ID3_FieldImpl::Get(unicode_t *buffer, size_t maxLength, index_t itemNum) 
       }
       else
       {
-        length = id3::ucslen(cur);
+        length = ::ucslen(cur);
       }
       ::memcpy((void *)buffer, (void *)cur, length * 2);
       if (length < maxLength)
@@ -321,14 +323,14 @@ bool ID3_FieldImpl::ParseUnicodeString(ID3_Reader& reader)
   ID3D_NOTICE( "ID3_Frame::ParseUText(): reader.getCur() = " << reader.getCur() );
   ID3D_NOTICE( "ID3_Frame::ParseUText(): reader.getEnd() = " << reader.getEnd() );
   this->Clear();
-  id3::TextReader tr(reader);
+  ::io::TextReader tr(reader);
   tr.setEncoding(ID3TE_UNICODE);
   
   size_t fixed_size = this->Size();
   if (fixed_size)
   {
     // The string is of fixed length
-    id3::string unicode = tr.readText(fixed_size);
+    ::String unicode = tr.readText(fixed_size);
     this->Set_i(unicode.data(), unicode.size() / 2);
     ID3D_NOTICE( "ID3_Frame::ParseUText(): fixed size string = " << unicode );
   }
@@ -338,20 +340,20 @@ bool ID3_FieldImpl::ParseUnicodeString(ID3_Reader& reader)
     // characters in the reader
     while (!tr.atEnd())
     {
-      id3::string unicode = tr.readText();
+      ::String unicode = tr.readText();
       this->Add_i((unicode_t *)unicode.data(), unicode.size() / 2);
       ID3D_NOTICE( "ID3_Frame::ParseUText(): adding string = " << unicode );
     }
   }
   else if (_flags & ID3FF_CSTR)
   {
-    id3::string unicode = tr.readText();
+    ::String unicode = tr.readText();
     this->Set_i((unicode_t *)unicode.data(), unicode.size() / 2);
     ID3D_NOTICE( "ID3_Frame::ParseUText(): null terminated string = " << unicode );
   }
   else
   {
-    id3::string unicode;
+    ::String unicode;
     // not null terminated.  
     const size_t BUFSIZ = 1024;
     while (!tr.atEnd())

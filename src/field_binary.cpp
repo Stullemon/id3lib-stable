@@ -1,4 +1,4 @@
-// $Id: field_binary.cpp,v 1.18 2000/09/30 22:11:27 eldamitri Exp $
+// $Id: field_binary.cpp,v 1.19 2000/10/03 04:38:12 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -34,6 +34,8 @@
 
 #include "field_impl.h"
 #include "reader_decorators.h"
+
+using namespace dami;
 
 /** Copies the supplied unicode string to the field.
  ** 
@@ -161,8 +163,8 @@ bool ID3_FieldImpl::ParseBinary(ID3_Reader& reader)
 {
   // copy the remaining bytes, unless we're fixed length, in which case copy
   // the minimum of the remaining bytes vs. the fixed length
-  id3::BinaryReader br(reader);
-  id3::bstring binary = br.getBinary();
+  ::io::BinaryReader br(reader);
+  ::BString binary = br.getBinary();
   this->Set(binary.data(), binary.size());
   _changed = false;
   return true;

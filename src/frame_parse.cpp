@@ -1,4 +1,4 @@
-// $Id: frame_parse.cpp,v 1.21 2000/10/01 00:31:18 eldamitri Exp $
+// $Id: frame_parse.cpp,v 1.22 2000/10/03 04:38:12 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -35,68 +35,80 @@
 #include "frame_impl.h"
 #include "utils.h"
 #include "reader_decorators.h"
-#include "readers.h"
+#include "readers_compressed.h"
 
-namespace id3
+namespace dami
 {
-  bool parseFields(ID3_Reader& rdr, ID3_FrameImpl& frame)
+  namespace id3
   {
-    ExitTrigger et(rdr);
-    ID3_TextEnc enc = ID3TE_ASCII;  // set the default encoding 
-    ID3_V2Spec spec = frame.GetSpec(); 
-    // parse the frame's fields  
-    ID3D_NOTICE( "ID3_FrameImpl::Parse(): num_fields = " << frame.GetNumFields() );
-    for (size_t i = 0; i < frame.GetNumFields(); ++i)
+    namespace v2
     {
-      if (rdr.atEnd())
-      { 
-        // there's no remaining data to parse! 
-        ID3D_WARNING( "ID3_FrameImpl::Parse(): frame is out of data at postion " <<
-                      rdr.getCur() );
-        return false;
-      } 
-      
-      ID3D_NOTICE( "ID3_FrameImpl::Parse(): field #" << i );
-      ID3_Field* fp = frame.GetFieldAt(i);
-      if (NULL == fp)
-      {
-        // Ack!  Why is the field NULL?  Log this...
-        ID3D_WARNING( "ID3_FrameImpl::Parse(): field is null" );
-        continue;
-      }
-      
-      if (!fp->InScope(spec)) 
-      {
-        ID3D_NOTICE( "ID3_FrameImpl::Parse(): field is not in scope" );
-        // continue with the rest of the fields
-        continue; 
-      }
-      
-      fp->SetEncoding(enc);
-      ID3_Reader::pos_type beg = rdr.getCur();
-      et.setExitPos(beg);
-      ID3D_NOTICE( "ID3_FrameImpl::Parse(): parsing field, cur = " << beg );
-      ID3D_NOTICE( "ID3_FrameImpl::Parse(): parsing field, end = " << rdr.getEnd() );
-      if (!fp->Parse(rdr) || rdr.getCur() == beg) 
-      { 
-        // nothing to parse!  ack!  parse error... 
-        ID3D_WARNING( "ID3_FrameImpl::Parse(): no data parsed, bad parse" );
-        return false;
-      }
-      
-      if (fp->GetID() == ID3FN_TEXTENC)  
-      {
-        enc = static_cast<ID3_TextEnc>(fp->Get());  
-        ID3D_NOTICE( "ID3_FrameImpl::Parse(): found encoding = " << enc );
-      }
-    }
-    et.setExitPos(rdr.getCur());
-  }
+      bool parseFields(ID3_Reader& rdr, ID3_FrameImpl& frame);
+    };
+  };
 };
+
+using namespace dami;
+
+bool id3::v2::parseFields(ID3_Reader& rdr, ID3_FrameImpl& frame)
+{
+  ::io::ExitTrigger et(rdr);
+  ID3_TextEnc enc = ID3TE_ASCII;  // set the default encoding 
+  ID3_V2Spec spec = frame.GetSpec(); 
+  // parse the frame's fields  
+  ID3D_NOTICE( "ID3_FrameImpl::Parse(): num_fields = " << 
+               frame.GetNumFields() );
+  for (size_t i = 0; i < frame.GetNumFields(); ++i)
+  {
+    if (rdr.atEnd())
+    { 
+      // there's no remaining data to parse! 
+      ID3D_WARNING( "ID3_FrameImpl::Parse(): out of data at postion " <<
+                    rdr.getCur() );
+      return false;
+    } 
+    
+    ID3D_NOTICE( "ID3_FrameImpl::Parse(): field #" << i );
+    ID3_Field* fp = frame.GetFieldAt(i);
+    if (NULL == fp)
+    {
+      // Ack!  Why is the field NULL?  Log this...
+      ID3D_WARNING( "ID3_FrameImpl::Parse(): field is null" );
+      continue;
+    }
+    
+    if (!fp->InScope(spec)) 
+    {
+      ID3D_NOTICE( "ID3_FrameImpl::Parse(): field is not in scope" );
+      // continue with the rest of the fields
+      continue; 
+    }
+    
+    fp->SetEncoding(enc);
+    ID3_Reader::pos_type beg = rdr.getCur();
+    et.setExitPos(beg);
+    ID3D_NOTICE( "ID3_FrameImpl::Parse(): parsing field, cur = " << beg );
+    ID3D_NOTICE( "ID3_FrameImpl::Parse(): parsing field, end = " << 
+                 rdr.getEnd() );
+    if (!fp->Parse(rdr) || rdr.getCur() == beg) 
+    { 
+      // nothing to parse!  ack!  parse error... 
+      ID3D_WARNING( "ID3_FrameImpl::Parse(): no data parsed, bad parse" );
+      return false;
+    }
+    
+    if (fp->GetID() == ID3FN_TEXTENC)  
+    {
+      enc = static_cast<ID3_TextEnc>(fp->Get());  
+      ID3D_NOTICE( "ID3_FrameImpl::Parse(): found encoding = " << enc );
+    }
+  }
+  et.setExitPos(rdr.getCur());
+}
 
 bool ID3_FrameImpl::Parse(ID3_Reader& reader) 
 { 
-  id3::ExitTrigger et(reader);
+  ::io::ExitTrigger et(reader);
   ID3D_NOTICE( "ID3_FrameImpl::Parse(): reader.getBeg() = " << reader.getBeg() );
   ID3D_NOTICE( "ID3_FrameImpl::Parse(): reader.getCur() = " << reader.getCur() );
   ID3D_NOTICE( "ID3_FrameImpl::Parse(): reader.getEnd() = " << reader.getEnd() );
@@ -118,7 +130,7 @@ bool ID3_FrameImpl::Parse(ID3_Reader& reader)
     ID3D_WARNING( "ID3_FrameImpl::Parse(): not enough data to parse frame" );
     return false;
   }
-  id3::WindowedReader wr(reader, data_size);
+  ::io::WindowedReader wr(reader, data_size);
   ID3D_NOTICE( "ID3_FrameImpl::Parse(): window getBeg() = " << wr.getBeg() );
   ID3D_NOTICE( "ID3_FrameImpl::Parse(): window getCur() = " << wr.getCur() );
   ID3D_NOTICE( "ID3_FrameImpl::Parse(): window getEnd() = " << wr.getEnd() );
@@ -126,7 +138,7 @@ bool ID3_FrameImpl::Parse(ID3_Reader& reader)
   unsigned long expanded_size = 0;
   if (_hdr.GetCompression())
   {
-    id3::NumberReader nr(wr);
+    ::io::NumberReader nr(wr);
     expanded_size = nr.readNumber(sizeof(uint32));
     ID3D_NOTICE( "ID3_FrameImpl::Parse(): frame is compressed, expanded_size = " << expanded_size );
   }
@@ -153,12 +165,12 @@ bool ID3_FrameImpl::Parse(ID3_Reader& reader)
   // expand out the data if it's compressed 
   if (!_hdr.GetCompression())
   {
-    success = id3::parseFields(wr, *this);
+    success = ::id3::v2::parseFields(wr, *this);
   }
   else
   {
-    id3::CompressedStreamReader csr(wr, expanded_size);
-    success = id3::parseFields(csr, *this);
+    ::io::CompressedStreamReader csr(wr, expanded_size);
+    success = ::id3::v2::parseFields(csr, *this);
   }
   et.setExitPos(wr.getCur());
 

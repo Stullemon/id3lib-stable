@@ -1,4 +1,4 @@
-// $Id: field_string_ascii.cpp,v 1.18 2000/09/30 22:12:09 eldamitri Exp $
+// $Id: field_string_ascii.cpp,v 1.19 2000/10/03 04:38:12 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -36,6 +36,8 @@
 #include "utils.h"
 #include "reader_decorators.h"
 
+using namespace dami;
+
 /** \fn ID3_Field& ID3_Field::operator=(const char* data)
  ** \brief Shortcut for the Set operator.
  ** \param data The string to assign to this field
@@ -57,7 +59,7 @@ size_t ID3_FieldImpl::Set_i(const char* string, size_t size)
     _chars = size;
     _ascii = new char[_chars];
   }
-  ::memcpy(_ascii, string, id3::min(_chars, size));
+  ::memcpy(_ascii, string, ::min(_chars, size));
   if (size < _chars)
   {
     ::memset(_ascii + size, '\0', _chars - size);
@@ -73,7 +75,7 @@ size_t ID3_FieldImpl::Set_i(const char* string, size_t size)
     _num_items = 1;
   }
 
-  return id3::min(_chars, size);
+  return ::min(_chars, size);
 }
 
 size_t ID3_FieldImpl::Set(const char *string)
@@ -214,7 +216,7 @@ size_t ID3_FieldImpl::Get(char* buffer, size_t maxLength) const
       buffer != NULL && maxLength > 0)
   {
     size_t size = this->Size();
-    length = id3::min(maxLength, size);
+    length = ::min(maxLength, size);
     ::memcpy(buffer, _ascii, length);
     if (length < maxLength)
     {
@@ -290,14 +292,14 @@ bool ID3_FieldImpl::ParseASCIIString(ID3_Reader& reader)
   ID3D_NOTICE( "ID3_Field::ParseText(): reader.getCur() = " << reader.getCur() );
   ID3D_NOTICE( "ID3_Field::ParseText(): reader.getEnd() = " << reader.getEnd() );
   this->Clear();
-  id3::TextReader tr(reader);
+  ::io::TextReader tr(reader);
   
   size_t fixed_size = this->Size();
   if (fixed_size)
   {
     ID3D_NOTICE( "ID3_Field::ParseText(): fixed size string" );
     // The string is of fixed length
-    id3::string ascii = tr.readText(fixed_size);
+    ::String ascii = tr.readText(fixed_size);
     this->Set_i(ascii.data(), ascii.size());
     ID3D_NOTICE( "ID3_Field::ParseText(): fixed size string = " << ascii );
   }
@@ -308,7 +310,7 @@ bool ID3_FieldImpl::ParseASCIIString(ID3_Reader& reader)
     // characters in the reader
     while (!tr.atEnd())
     {
-      id3::string ascii = tr.readText();
+      ::String ascii = tr.readText();
       this->Add_i(ascii.data(), ascii.size());
       ID3D_NOTICE( "ID3_Field::ParseText(): adding string = " << ascii );
     }
@@ -316,14 +318,14 @@ bool ID3_FieldImpl::ParseASCIIString(ID3_Reader& reader)
   else if (_flags & ID3FF_CSTR)
   {
     ID3D_NOTICE( "ID3_Field::ParseText(): null terminated string" );
-    id3::string ascii = tr.readText();
+    ::String ascii = tr.readText();
     this->Set_i(ascii.data(), ascii.size());
     ID3D_NOTICE( "ID3_Field::ParseText(): null terminated string = " << ascii );
   }
   else
   {
     ID3D_NOTICE( "ID3_Field::ParseText(): last field string" );
-    id3::string ascii;
+    ::String ascii;
     // not null terminated.  
     const size_t BUFSIZ = 1024;
     while (!tr.atEnd())
