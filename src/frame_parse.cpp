@@ -1,4 +1,4 @@
-// $Id: frame_parse.cpp,v 1.11 2000/05/10 14:49:01 eldamitri Exp $
+// $Id: frame_parse.cpp,v 1.12 2000/05/12 04:18:19 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -45,7 +45,7 @@ size_t ID3_Frame::Parse(const uchar * const buffer, luint size)
   // data is the part of the buffer that appears after the header  
   const uchar * data = &buffer[hdr_size]; 
   uchar* expanded_data = NULL;
-      
+  
   // expand out the data if it's compressed 
   if (__hdr.GetCompression())
   {  
