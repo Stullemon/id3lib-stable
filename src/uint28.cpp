@@ -1,5 +1,5 @@
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
-// $Id: uint28.cpp,v 1.3 2000/05/03 23:24:10 eldamitri Exp $
+// $Id: uint28.cpp,v 1.4 2000/06/14 16:43:57 eldamitri Exp $
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -23,52 +23,65 @@
 // http://download.sourceforge.net/id3lib/
 
 #include "uint28.h"
-#include <string.h>
 #include <iomanip.h>
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-uint28& uint28::operator=(const uchar* const data)
+size_t uint28::Parse(const uchar* data)
 {
-  __value = 0;
+  uint32 val = 0;
+  // For each byte of the first 4 bytes in the string...
   for (size_t i = 0; i < sizeof(uint32); ++i)
   {
-    __value = (__value << 7) | static_cast<uint32>(data[i]) & MASK7;
+    // ...append the last 7 bits to the end of the temp integer...
+    val = (val << BITSUSED) | static_cast<uint32>(data[i]) & MASK(BITSUSED);
   }
-  return *this;
+  // ...and assign this value to the object
+  *this = val;
+  // We should always parse 4 characters
+  return sizeof(uint32);
 }
 
-void uint28::Render(uchar* data) const
+size_t uint28::Render(uchar* data) const
 {
-  memset(data, '\0', sizeof(uint32));
-  
-  for (uint32 val = this->to_uint32(), i = 0; i < sizeof(uint32); 
-       val >>= 7, ++i)
+  uint32 val = this->to_uint32();
+  // This loop renders the value to the character buffer in reverse order, as 
+  // it is easy to extract the last 7 bits of an integer.  This is why the
+  // loop shifts the value of the integer by 7 bits for each iteration.
+  for (size_t i = 0; i < sizeof(uint32); ++i)
   {
-    data[sizeof(uint32) - i - 1] = static_cast<uchar>(val & MASK7);
+    // Extract the last BITSUSED bits from val and put it in its appropriate
+    // place in the data buffer
+    data[sizeof(uint32) - i - 1] = static_cast<uchar>(val & MASK(BITSUSED));
+
+    // The last BITSUSED bits were extracted from the val.  So shift it to the
+    // right by that many bits for the next iteration
+    val >>= BITSUSED;
   }
   
-  // return data;
+  // Should always render 4 bytes
+  return sizeof(uint32);
 }
 
-ostream& operator<<(ostream& os, uint28& val)
+ostream& operator<<(ostream& os, const uint28& val)
 {
+  // The easiest way to write a 28-bit integer to a char stream is to render
+  // it to a char buffer and then write the char buffer to the stream
   uchar data[sizeof(uint32)];
   val.Render(data);
-  for (uchar* p = data; p != data + sizeof(uint32); ++p)
-  {
-    os << *p;
-  }
+  os.write(data, sizeof(uint32));
   return os;
 }
 
-
 istream& operator>>(istream& in, uint28& val)
 {
-  uchar data[sizeof(uint32) + 1];
-  in >> setw(sizeof(uint32) + 1) >> data;
+  // The easiest way to extract a 28-bit integer from a char stream is to 
+  // read 4 bytes into a char buffer and then extract the 28-bit integer from
+  // the buffer
+  uchar data[sizeof(uint32)];
+  in.read(data, sizeof(uint32));
   val = data;
   return in;
 }
