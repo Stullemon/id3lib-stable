@@ -14,7 +14,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.6 1999/12/26 00:29:55 scott Exp $
+// $Id: demo_info.cpp,v 1.7 2000/04/15 18:44:54 eldamitri Exp $
 
 
 #if defined HAVE_CONFIG_H
@@ -311,7 +311,7 @@ void PrintInformation(ID3_Tag &myTag)
         {
           char *sOwner = ID3_GetString(myFrame, ID3FN_OWNER);
           size_t 
-            nSymbol = myFrame->Field(ID3FN_SYMBOL).Get(),
+            nSymbol = myFrame->Field(ID3FN_ID).Get(),
             nDataSize = myFrame->Field(ID3FN_DATA).Size();
           cout << "(" << nSymbol << "): " << sOwner
                << ", " << nDataSize << " bytes";
@@ -439,6 +439,9 @@ int main( int argc, char *argv[])
 }
 
 // $Log: demo_info.cpp,v $
+// Revision 1.7  2000/04/15 18:44:54  eldamitri
+// (PrintInformation): Renamed ID3FN_SYMBOL to ID3FN_ID
+//
 // Revision 1.6  1999/12/26 00:29:55  scott
 // (GetDescription): Reformatted.  Descriptions now match those from
 // www.id3.org.  Added descriptions for new frame id's.
