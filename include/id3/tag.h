@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.41 2000/09/11 07:46:32 eldamitri Exp $
+// $Id: tag.h,v 1.42 2000/09/21 22:23:30 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -31,6 +31,7 @@
 #include "header_tag.h"
 #include "frame.h"
 #include "spec.h"
+#include "error.h"
 
 struct ID3_Elem
 {
