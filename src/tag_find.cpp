@@ -1,4 +1,4 @@
-// $Id: tag_find.cpp,v 1.10 2000/05/08 04:07:39 eldamitri Exp $
+// $Id: tag_find.cpp,v 1.11 2000/05/12 04:01:59 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -218,7 +218,7 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, const unicode_t *data)
   return frame;
 }
 
-ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, luint data) const
+ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, uint32 data) const
 {
   ID3_Frame *frame = NULL;
   
@@ -269,18 +269,25 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, luint data) const
    ** @param nIndex The index of the frame that is to be retrieved
    ** @return A pointer to the requested frame, or NULL if no such frame.
    **/
-ID3_Frame *ID3_Tag::GetFrameNum(luint num) const
+ID3_Frame *ID3_Tag::GetFrameNum(index_t num) const
 {
-  ID3_Frame *frame = NULL;
+  const size_t num_frames = this->NumFrames();
+  if (num >= num_frames)
+  {
+    return NULL;
+  }
 
-  luint curNum = 0;
+  ID3_Frame *frame = NULL;
+  index_t curNum = num_frames;
   for (ID3_Elem *cur = __frames; cur != NULL; cur = cur->pNext)
+  {
     // compare and advance counter
-    if (num == curNum++)
+    if (num == --curNum)
     {
       frame = cur->pFrame;
       break;
     }
+  }
   
   return frame;
 }
@@ -293,7 +300,7 @@ ID3_Frame *ID3_Tag::GetFrameNum(luint num) const
  ** @return A pointer to the requested frame, or NULL if no such frame. 
  ** @see #GetFrameNum
  **/
-ID3_Frame *ID3_Tag::operator[](luint num) const
+ID3_Frame *ID3_Tag::operator[](index_t num) const
 {
   return GetFrameNum(num);
 }
