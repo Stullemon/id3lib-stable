@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.30 2000/09/14 22:31:39 eldamitri Exp $
+// $Id: field.cpp,v 1.31 2000/09/21 22:39:58 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -25,8 +25,10 @@
 // http://download.sourceforge.net/id3lib/
 
 #include <string.h>
-#include "field.h"
+#include "field_impl.h"
 #include "utils.h"
+#include "field_def.h"
+#include "frame_def.h"
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
@@ -874,13 +876,13 @@ static  ID3_FrameDef ID3_FrameDefs[] =
  ** if you only plan to generate 3.0 tags.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: field.cpp,v 1.30 2000/09/14 22:31:39 eldamitri Exp $
+ ** @version $Id: field.cpp,v 1.31 2000/09/21 22:39:58 eldamitri Exp $
  ** \sa ID3_Tag
  ** \sa ID3_Frame
  ** \sa ID3_Err 
  **/
 
-ID3_Field::ID3_Field()
+ID3_FieldImpl::ID3_FieldImpl()
   : _id(ID3FN_NOFIELD),
     _type(ID3FTY_INTEGER),
     _spec_begin(ID3V2_EARLIEST),
@@ -896,7 +898,7 @@ ID3_Field::ID3_Field()
   this->Clear();
 }
 
-ID3_Field::ID3_Field(const ID3_FieldDef& def)
+ID3_FieldImpl::ID3_FieldImpl(const ID3_FieldDef& def)
   : _id(def._id),
     _type(def._type),
     _spec_begin(def._spec_begin),
@@ -920,7 +922,7 @@ ID3_Field::ID3_Field(const ID3_FieldDef& def)
   this->Clear();
 }
 
-ID3_Field::~ID3_Field()
+ID3_FieldImpl::~ID3_FieldImpl()
 {
   if (_type == ID3FTY_INTEGER)
   {
@@ -957,7 +959,7 @@ ID3_Field::~ID3_Field()
  ** \sa ID3_Tag::Clear()
  ** \sa ID3_Frame::Clear()
  **/
-void ID3_Field::Clear()
+void ID3_FieldImpl::Clear()
 {
   if (_type == ID3FTY_TEXTSTRING)
   {
@@ -1042,7 +1044,7 @@ void ID3_Field::Clear()
 }
 
 bool
-ID3_Field::HasChanged() const
+ID3_FieldImpl::HasChanged() const
 {
   return _changed;
 }
@@ -1066,7 +1068,7 @@ ID3_Field::HasChanged() const
  **         fields) or characters (for strings).
  **/
 
-size_t ID3_Field::BinSize() const
+size_t ID3_FieldImpl::BinSize() const
 {
   size_t size = this->Size();
   if (_type == ID3FTY_TEXTSTRING)
@@ -1088,7 +1090,7 @@ size_t ID3_Field::BinSize() const
   return size;
 }
 
-size_t ID3_Field::Size() const
+size_t ID3_FieldImpl::Size() const
 {
   size_t size = 0;
   // check to see if we are within the legal limit for this field 0 means
@@ -1109,7 +1111,7 @@ size_t ID3_Field::Size() const
   return size;
 }
 
-size_t ID3_Field::Parse(const uchar *buffer, size_t buffSize)
+size_t ID3_FieldImpl::Parse(const uchar *buffer, size_t buffSize)
 {
   size_t bytesUsed       = 0;
   
@@ -1186,7 +1188,7 @@ ID3_FindFrameID(const char *id)
   return fid;
 }
 
-size_t ID3_Field::Render(uchar *buffer) const
+size_t ID3_FieldImpl::Render(uchar *buffer) const
 {
   size_t bytesUsed = 0;
   
@@ -1213,7 +1215,7 @@ size_t ID3_Field::Render(uchar *buffer) const
 }
 
 ID3_Field &
-ID3_Field::operator=( const ID3_Field &rhs )
+ID3_FieldImpl::operator=( const ID3_Field &rhs )
 {
   if (this != &rhs && this->GetType() == rhs.GetType())
   {
@@ -1228,16 +1230,16 @@ ID3_Field::operator=( const ID3_Field &rhs )
       {
         if (rhs.GetEncoding() == ID3TE_UNICODE)
         {
-          this->Set_i(rhs._unicode, rhs.Size());
+          this->Set_i(rhs.GetUnicodeText(), rhs.Size());
         }
         else if (rhs.GetEncoding() == ID3TE_ASCII)
         {
-          this->Set_i(rhs._ascii, rhs.Size());
+          this->Set_i(rhs.GetText(), rhs.Size());
         }
       }
       case ID3FTY_BINARY:
       {
-        this->Set(rhs._binary, rhs.Size());
+        this->Set(rhs.GetBinary(), rhs.Size());
         break;
       }
       default:
@@ -1249,7 +1251,7 @@ ID3_Field::operator=( const ID3_Field &rhs )
   return *this;
 }
 
-bool ID3_Field::SetEncoding(ID3_TextEnc enc)
+bool ID3_FieldImpl::SetEncoding(ID3_TextEnc enc)
 {
   bool changed = this->IsEncodable() && (enc != this->GetEncoding()) &&
     (ID3TE_NONE < enc && enc < ID3TE_NUMENCODINGS);
