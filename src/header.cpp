@@ -1,4 +1,4 @@
-// $Id: header.cpp,v 1.2 2000/04/18 22:11:53 eldamitri Exp $
+// $Id: header.cpp,v 1.3 2000/04/20 03:49:42 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -48,12 +48,14 @@ ID3_HeaderInfo *ID3_LookupHeaderInfo(uchar ver, uchar rev)
 {
   ID3_HeaderInfo *info = NULL;
   for (size_t i = 0; ID3_VersionInfo[i].ucVersion != 0; i++)
+  {
     if (ID3_VersionInfo[i].ucVersion  == ver &&
         ID3_VersionInfo[i].ucRevision == rev)
     {
       info = &ID3_VersionInfo[i];
       break;
     }
+  }
     
   return info;
 }
@@ -134,6 +136,9 @@ ID3_Header &ID3_Header::operator=( const ID3_Header& hdr )
 }
 
 // $Log: header.cpp,v $
+// Revision 1.3  2000/04/20 03:49:42  eldamitri
+// (ID3_LookupHeaderInfo): Minor update
+//
 // Revision 1.2  2000/04/18 22:11:53  eldamitri
 // Moved header.cpp from src/id3/ to src/
 //
