@@ -1,4 +1,4 @@
-// $Id: utils.cpp,v 1.7 2000/09/11 07:46:32 eldamitri Exp $
+// $Id: utils.cpp,v 1.8 2000/09/27 07:38:51 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -31,12 +31,10 @@
 #include <config.h>
 #endif
 
-#if defined ID3_UNDEFINED
 namespace id3
 {
-#endif /* ID3_UNDEFINED */
 
-  size_t ID3_TimeToSeconds(const char* data, size_t size)
+  size_t timeToSeconds(const char* data, size_t size)
   {
     size_t seconds = 0;
     size_t cur = 0;
@@ -59,7 +57,7 @@ namespace id3
     return seconds + cur;
   }
 
-  bool ID3_IsCRLF(const char* begin, const char* end)
+  bool isCRLF(const char* begin, const char* end)
   {
     if (begin > end || (end - begin) < 2)
     {
@@ -69,7 +67,7 @@ namespace id3
     return 0x0D == *cur++ && 0x0A == *cur;
   }
   
-  size_t ID3_CRLFtoLF(char *buffer, size_t size)
+  size_t CRLFtoLF(char *buffer, size_t size)
   {
     size_t newSize = 0;
     char *dest = buffer;
@@ -79,12 +77,12 @@ namespace id3
     {
       // TODO: log this
       return 0;
-      // ID3_THROW(ID3E_NoData);
+      // THROW(ID3E_NoData);
     }
     
     while (source < (buffer + size))
     {
-      if (ID3_IsCRLF(source, buffer + size))
+      if (isCRLF(source, buffer + size))
       {
         source++;
       }
@@ -99,7 +97,7 @@ namespace id3
     return newSize;
   }
 
-  void RemoveTrailingSpaces(char *buffer, size_t length)
+  void removeTrailingSpaces(char *buffer, size_t length)
   {
     for (size_t i = length; i > 0 && 0x20 == buffer[i-1]; --i)
     {
@@ -108,7 +106,7 @@ namespace id3
   }
 
   // Extract a 32-bit number from a 4-byte character array
-  uint32 ParseNumber(const uchar *buffer, size_t size)
+  uint32 parseNumber(const uchar *buffer, size_t size)
   {
     size_t num = 0;
     for (size_t nIndex = 0; nIndex < size; nIndex++)
@@ -119,7 +117,7 @@ namespace id3
     return num;
   }
 
-  size_t RenderNumber(uchar *buffer, uint32 val, size_t size)
+  size_t renderNumber(uchar *buffer, uint32 val, size_t size)
   {
     uint32 num = val;
     for (size_t i = 0; i < size; i++)
@@ -235,7 +233,7 @@ namespace id3
     return file.is_open() != 0;
   }
   
-  ID3_Err ID3_CreateFile(const char* name, fstream& file)
+  ID3_Err createFile(const char* name, fstream& file)
   {
     if (file.is_open())
     {
@@ -251,7 +249,33 @@ namespace id3
     return ID3E_NoError;
   }
   
-  size_t ID3_GetFileSize(fstream& file)
+  size_t getFileSize(fstream& file)
+  {
+    size_t size = 0;
+    if (file.is_open())
+    {
+      streamoff curpos = file.tellg();
+      file.seekg(0, ios::end);
+      size = file.tellg();
+      file.seekg(curpos);
+    }
+    return size;
+  }
+  
+  size_t getFileSize(ifstream& file)
+  {
+    size_t size = 0;
+    if (file.is_open())
+    {
+      streamoff curpos = file.tellg();
+      file.seekg(0, ios::end);
+      size = file.tellg();
+      file.seekg(curpos);
+    }
+    return size;
+  }
+  
+  size_t getFileSize(ofstream& file)
   {
     size_t size = 0;
     if (file.is_open())
@@ -264,7 +288,7 @@ namespace id3
     return size;
   }
   
-  ID3_Err ID3_OpenWritableFile(const char* name, fstream& file)
+  ID3_Err openWritableFile(const char* name, fstream& file)
   {
     if (!exists(name))
     {
@@ -284,7 +308,27 @@ namespace id3
     return ID3E_NoError;
   }
   
-  ID3_Err ID3_OpenReadableFile(const char* name, fstream& file)
+  ID3_Err openWritableFile(const char* name, ofstream& file)
+  {
+    if (!exists(name))
+    {
+      return ID3E_NoFile;
+    }
+    
+    if (file.is_open())
+    {
+      file.close();
+    }
+    file.open(name, ios::in | ios::out | ios::binary | ios::nocreate);
+    if (!file)
+    {
+      return ID3E_ReadOnly;
+    }
+    
+    return ID3E_NoError;
+  }
+  
+  ID3_Err openReadableFile(const char* name, fstream& file)
   {
     if (file.is_open())
     {
@@ -299,7 +343,20 @@ namespace id3
     return ID3E_NoError;
   }
   
-#if defined ID3_UNDEFINED
+  ID3_Err openReadableFile(const char* name, ifstream& file)
+  {
+    if (file.is_open())
+    {
+      file.close();
+    }
+    file.open(name, ios::in | ios::binary | ios::nocreate);
+    if (!file)
+    {
+      return ID3E_NoFile;
+    }
+    
+    return ID3E_NoError;
+  }
+  
 }
-#endif /* ID3_UNDEFINED */
 
