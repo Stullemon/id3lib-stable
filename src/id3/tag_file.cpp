@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.9 1999/12/01 22:16:36 scott Exp $
+// $Id: tag_file.cpp,v 1.10 1999/12/09 03:32:33 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -30,12 +30,16 @@ bool exists(char *name)
   FILE *in = NULL;
   
   if (NULL == name)
+  {
     ID3_THROW(ID3E_NoData);
+  }
 
   in = fopen(name, "rb");
   doesExist = (NULL != in);
   if (doesExist)
+  {
     fclose(in);
+  }
     
   return doesExist;
 }
@@ -49,7 +53,9 @@ void ID3_Tag::CreateFile(void)
 
   // Check to see if file could not be created
   if (NULL == __fFileHandle)
+  {
     ID3_THROW(ID3E_ReadOnly);
+  }
 
   // Determine the size of the file
   fseek(__fFileHandle, 0, SEEK_END);
@@ -64,15 +70,21 @@ void ID3_Tag::OpenFileForWriting(void)
   CloseFile();
   
   if (exists(__sFileName))
+  {
     // Try to open the file for reading and writing.
     __fFileHandle = fopen(__sFileName, "rb+");
+  }
   else
+  {
     // No such file to open
     ID3_THROW(ID3E_NoFile);
+  }
 
   // Check to see if file could not be opened for writing
   if (NULL == __fFileHandle)
+  {
     ID3_THROW(ID3E_ReadOnly);
+  }
 
   // Determine the size of the file
   fseek(__fFileHandle, 0, SEEK_END);
@@ -88,7 +100,9 @@ void ID3_Tag::OpenFileForReading(void)
 
   __fFileHandle = fopen(__sFileName, "rb");
   if (NULL == __fFileHandle)
+  {
     ID3_THROW(ID3E_NoFile);
+  }
 
   // Determine the size of the file
   fseek(__fFileHandle, 0, SEEK_END);
@@ -101,7 +115,10 @@ void ID3_Tag::OpenFileForReading(void)
 bool ID3_Tag::CloseFile(void)
 {
   bool bReturn = ((NULL != __fFileHandle) && (0 == fclose(__fFileHandle)));
-  if (bReturn) __fFileHandle = NULL;
+  if (bReturn)
+  {
+    __fFileHandle = NULL;
+  }
   return bReturn;
 }
 
@@ -110,17 +127,24 @@ luint ID3_Tag::Link(char *fileInfo)
   luint posn = 0;
   
   if (NULL == fileInfo)
+  {
     ID3_THROW(ID3E_NoData);
+  }
 
   size_t nLen = strlen(fileInfo) + 1;
   if (NULL != __sFileName)
+  {
     delete [] __sFileName;
+    __sFileName = NULL;
+  }
   __sFileName = new char[nLen];
   strncpy(__sFileName, fileInfo, nLen);
     
   // if we were attached to some other file then abort
   if (__fFileHandle != NULL)
+  {
     ID3_THROW(ID3E_TagAlreadyAttached);
+  }
 
   OpenFileForReading();
 
@@ -129,7 +153,9 @@ luint ID3_Tag::Link(char *fileInfo)
   CloseFile();
     
   if (__ulOldTagSize > 0)
+  {
     __ulOldTagSize += ID3_TAGHEADERSIZE;
+  }
       
   __ulFileSize -= __ulOldTagSize;
   posn = __ulOldTagSize;
@@ -255,8 +281,10 @@ luint ID3_Tag::Strip(const luint ulTagFlag)
         fseek(__fFileHandle, nNextWrite, SEEK_SET);
         size_t nBytesWritten = fwrite(aucBuffer, 1, nBytesRead, __fFileHandle);
         if (nBytesRead > nBytesWritten)
+        {
           cerr << "--- attempted to write " << nBytesRead << " bytes, "
                << "only wrote " << nBytesWritten << endl;
+        }
         // Marke the current spot as the next write position
         nNextWrite = ftell(__fFileHandle);
         nBytesCopied += nBytesWritten;
@@ -264,9 +292,13 @@ luint ID3_Tag::Strip(const luint ulTagFlag)
 
 
       if (nBytesCopied == nBytesToCopy)
+      {
         break;
+      }
       if (nBytesToRead < BUFF_SIZE)
+      {
         break;
+      }
     }
 
     CloseFile();
@@ -284,7 +316,9 @@ luint ID3_Tag::Strip(const luint ulTagFlag)
     ulTags |= V2_TAG;
   }
   if (ulTags && (truncate(__sFileName, nNewFileSize) == -1))
+  {
     ID3_THROW(ID3E_NoFile);
+  }
 
   __ulOldTagSize = (ulTags & V2_TAG) ? 0 : __ulOldTagSize;
   __ulExtraBytes = (ulTags & V1_TAG) ? 0 : __ulExtraBytes;
@@ -299,6 +333,9 @@ luint ID3_Tag::Strip(const luint ulTagFlag)
 
 
 // $Log: tag_file.cpp,v $
+// Revision 1.10  1999/12/09 03:32:33  scott
+// Minor code cleanup.
+//
 // Revision 1.9  1999/12/01 22:16:36  scott
 // (truncate): Added.  Defined only for windows, which doesn't have
 // unistd.h available (thanks elrod).
