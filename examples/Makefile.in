@@ -131,7 +131,7 @@ get_pic_SOURCES = get_pic.cpp
 findeng_SOURCES = findeng.cpp
 findstr_SOURCES = findstr.cpp
 
-EXTRA_DIST =    composer.jpg            demo_main.cpp           221-compressed.tag      230-compressed.tag      230-picture.tag         230-unicode.tag
+EXTRA_DIST =    composer.jpg            demo_main.cpp           221-compressed.tag      230-compressed.tag      230-picture.tag         230-unicode.tag         230-syncedlyrics.tag    thatspot.tag            ozzy.tag              
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h

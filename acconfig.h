@@ -29,16 +29,16 @@
  * macros will be made available in the library via constants, functions,
  * or static methods.
  */
-#undef __ID3LIB_NAME
-#undef __ID3LIB_DATE
-#undef __ID3LIB_VERSION
-#undef __ID3LIB_FULLNAME
-#undef __ID3LIB_MAJOR_VERSION
-#undef __ID3LIB_MINOR_VERSION
-#undef __ID3LIB_PATCH_VERSION
-#undef __ID3LIB_INTERFACE_AGE
-#undef __ID3LIB_BINARY_AGE
-#undef __ID3_COMPILED_WITH_DEBUGGING
+#undef _ID3LIB_NAME
+#undef _ID3LIB_DATE
+#undef _ID3LIB_VERSION
+#undef _ID3LIB_FULLNAME
+#undef _ID3LIB_MAJOR_VERSION
+#undef _ID3LIB_MINOR_VERSION
+#undef _ID3LIB_PATCH_VERSION
+#undef _ID3LIB_INTERFACE_AGE
+#undef _ID3LIB_BINARY_AGE
+#undef _ID3_COMPILED_WITH_DEBUGGING
 /* */
 
 @BOTTOM@
