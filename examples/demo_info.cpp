@@ -14,7 +14,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.17 2000/09/30 22:16:54 eldamitri Exp $
+// $Id: demo_info.cpp,v 1.18 2000/10/03 04:53:47 eldamitri Exp $
 
 
 #ifdef HAVE_CONFIG_H
@@ -26,9 +26,12 @@
 #include <id3/tag.h>
 #include <id3/utils.h>
 #include <id3/misc_support.h>
+#include <id3/error.h>
 #include <popt.h>
 
-static const char* VERSION_NUMBER = "$Revision: 1.17 $";
+using namespace dami;
+
+static String VERSION_NUMBER = "$Revision: 1.18 $";
 
 void PrintUsage(const char *sName)
 {
@@ -155,7 +158,7 @@ void PrintInformation(const ID3_Tag &myTag)
         }
         case ID3FID_INVOLVEDPEOPLE:
         {
-          size_t nItems = myFrame->Field(ID3FN_TEXT).GetNumTextItems();
+          size_t nItems = myFrame->GetField(ID3FN_TEXT)->GetNumTextItems();
           for (size_t nIndex = 0; nIndex < nItems; nIndex++)
           {
             char *sPeople = ID3_GetString(myFrame, ID3FN_TEXT, nIndex);
@@ -176,8 +179,8 @@ void PrintInformation(const ID3_Tag &myTag)
             *sDesc     = ID3_GetString(myFrame, ID3FN_DESCRIPTION),
             *sFormat   = ID3_GetString(myFrame, ID3FN_IMAGEFORMAT);
           size_t
-            nPicType   = myFrame->Field(ID3FN_PICTURETYPE).Get(),
-            nDataSize  = myFrame->Field(ID3FN_DATA).Size();
+            nPicType   = myFrame->GetField(ID3FN_PICTURETYPE)->Get(),
+            nDataSize  = myFrame->GetField(ID3FN_DATA)->Size();
           cout << "(" << sDesc << ")[" << sFormat << ", "
                << nPicType << "]: " << sMimeType << ", " << nDataSize
                << " bytes" << endl;
@@ -193,7 +196,7 @@ void PrintInformation(const ID3_Tag &myTag)
             *sDesc = ID3_GetString(myFrame, ID3FN_DESCRIPTION), 
             *sFileName = ID3_GetString(myFrame, ID3FN_FILENAME);
           size_t 
-            nDataSize = myFrame->Field(ID3FN_DATA).Size();
+            nDataSize = myFrame->GetField(ID3FN_DATA)->Size();
           cout << "(" << sDesc << ")[" 
                << sFileName << "]: " << sMimeType << ", " << nDataSize
                << " bytes" << endl;
@@ -205,7 +208,7 @@ void PrintInformation(const ID3_Tag &myTag)
         case ID3FID_UNIQUEFILEID:
         {
           char *sOwner = ID3_GetString(myFrame, ID3FN_TEXT);
-          size_t nDataSize = myFrame->Field(ID3FN_DATA).Size();
+          size_t nDataSize = myFrame->GetField(ID3FN_DATA)->Size();
           cout << sOwner << ", " << nDataSize
                << " bytes" << endl;
           delete [] sOwner;
@@ -213,7 +216,7 @@ void PrintInformation(const ID3_Tag &myTag)
         }
         case ID3FID_PLAYCOUNTER:
         {
-          size_t nCounter = myFrame->Field(ID3FN_COUNTER).Get();
+          size_t nCounter = myFrame->GetField(ID3FN_COUNTER)->Get();
           cout << nCounter << endl;
           break;
         }
@@ -221,8 +224,8 @@ void PrintInformation(const ID3_Tag &myTag)
         {
           char *sEmail = ID3_GetString(myFrame, ID3FN_EMAIL);
           size_t
-            nCounter = myFrame->Field(ID3FN_COUNTER).Get(),
-            nRating = myFrame->Field(ID3FN_RATING).Get();
+            nCounter = myFrame->GetField(ID3FN_COUNTER)->Get(),
+            nRating = myFrame->GetField(ID3FN_RATING)->Get();
           cout << sEmail << ", counter=" 
                << nCounter << " rating=" << nRating << endl;
           delete [] sEmail;
@@ -233,8 +236,8 @@ void PrintInformation(const ID3_Tag &myTag)
         {
           char *sOwner = ID3_GetString(myFrame, ID3FN_OWNER);
           size_t 
-            nSymbol = myFrame->Field(ID3FN_ID).Get(),
-            nDataSize = myFrame->Field(ID3FN_DATA).Size();
+            nSymbol = myFrame->GetField(ID3FN_ID)->Get(),
+            nDataSize = myFrame->GetField(ID3FN_DATA)->Size();
           cout << "(" << nSymbol << "): " << sOwner
                << ", " << nDataSize << " bytes" << endl;
           break;
@@ -245,8 +248,8 @@ void PrintInformation(const ID3_Tag &myTag)
             *sDesc = ID3_GetString(myFrame, ID3FN_DESCRIPTION), 
             *sLang = ID3_GetString(myFrame, ID3FN_LANGUAGE);
           size_t
-            nTimestamp = myFrame->Field(ID3FN_TIMESTAMPFORMAT).Get(),
-            nRating = myFrame->Field(ID3FN_CONTENTTYPE).Get();
+            nTimestamp = myFrame->GetField(ID3FN_TIMESTAMPFORMAT)->Get(),
+            nRating = myFrame->GetField(ID3FN_CONTENTTYPE)->Get();
           const char* format = (2 == nTimestamp) ? "ms" : "frames";
           cout << "(" << sDesc << ")[" << sLang << "]: ";
           switch (nRating)
@@ -260,21 +263,21 @@ void PrintInformation(const ID3_Tag &myTag)
             case ID3CT_TRIVIA:   cout << "Trivia/'pop up' information"; break;
           }
           cout << endl;
-          size_t size = myFrame->Field(ID3FN_DATA).Size();
-          const uchar* beg = myFrame->Field(ID3FN_DATA).GetBinary();
+          size_t size = myFrame->GetField(ID3FN_DATA)->Size();
+          const uchar* beg = myFrame->GetField(ID3FN_DATA)->GetBinary();
           const uchar* cur = beg;
           const uchar* end = beg + size;
           while (cur < end)
           {
-            size_t len = id3::min<size_t>(end - cur, ::strlen((char *) cur));
-            cout << id3::string((char*)cur, len);
+            size_t len = ::min<size_t>(end - cur, ::strlen((char *) cur));
+            cout << String((char*)cur, len);
             cur += len + 1;
             if (cur < end)
             {
               
               cout 
                 << " [" 
-                << id3::parseNumber(cur, id3::min<size_t>(end - cur, sizeof(uint32))) 
+                << ::parseNumber(cur, ::min<size_t>(end - cur, sizeof(uint32))) 
                 << " " << format << "] ";
               cur += sizeof(uint32);
             }
