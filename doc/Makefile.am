@@ -10,11 +10,14 @@
 
 SUBDIRS = html latex man texinfo
 EXTRA_DIST =            \
-  bugreport.txt         \
+  3d-logo.gif           \
+  attilas_id3logo.jpg   \
+  fillpx.gif            \
   id3guide.html         \
-  id3v2-3.00.txt        \
+  id3lib-manual.php     \
+  id3v2.3.0.html        \
+  id3v2.3.0.txt         \
   id3v2.gif             \
   id3v2.ico             \
   id3v2.png             \
-  logo.txt              \
-  software.txt
+  index.html
