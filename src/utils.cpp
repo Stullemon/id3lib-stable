@@ -1,4 +1,4 @@
-// $Id: utils.cpp,v 1.29 2004/04/11 15:25:50 t1mpy Exp $
+// $Id: utils.cpp,v 1.30 2004/04/11 15:31:08 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -39,7 +39,7 @@
 
 #if defined HAVE_ICONV_H
 // check if we have all unicodes
-#if (defined(ID3_ICONV_FORMAT_UTF16BE) && defined(ID3_ICONV_FORMAT_UTF16) && defined(ID3_ICONV_FORMAT_UTF8) && defined(ID3_ICONV_FORMAT_ASCII))
+#if (defined(ID3_ICONV_FORMAT_UTF16BE) && defined(ID3_ICONV_FORMAT_UTF16) && defined(ID3_ICONV_FORMAT_UTF8) && defined(ID3_ICONV_FORMAT_ISO_8859_1))
 # include <iconv.h>
 # include <errno.h>
 #else
@@ -166,7 +166,7 @@ namespace
     switch (enc)
     {
       case ID3TE_ASCII:
-        format = ID3_ICONV_FORMAT_ASCII;
+        format = ID3_ICONV_FORMAT_ISO_8859_1;
         break;
 
       case ID3TE_UTF16:
