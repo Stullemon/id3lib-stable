@@ -1,4 +1,14 @@
-$Id: NEWS,v 1.6 2000/04/17 05:10:08 eldamitri Exp $
+$Id: NEWS,v 1.7 2000/04/20 04:59:44 eldamitri Exp $
+
+2000-04-19 Version 3.7.1
+
+* Interface changed: functions in version.{h,cpp} replaced with constants 
+  defined in globals.h
+* Added a spec file for creating rpm's
+* C interface now defined in include/id3.h, replaces include/src/dll.h; 
+* Lots of file movement.  src/id3/* to src/; src/examples to examples;
+* Examples now compiled as installable binaries, rather than 'checks'
+* Removed unnecessary files: externals.h, types.h, version.{h,cpp}, dll.h
 
 2000-04-15 Version 3.7.0
 
