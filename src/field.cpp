@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.10 2000/05/02 22:18:31 eldamitri Exp $
+// $Id: field.cpp,v 1.11 2000/05/02 22:43:17 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -687,8 +687,6 @@ static ID3_FieldDef ID3FD_Volume[] =
 // SYLT  SLT  ID3FID_SYNCEDLYRICS      Synchronized lyric/text
 // SYTC  STC  ID3FID_SYNCEDTEMPO       Synchronized tempo codes
 //       CRM  ID3FID_METACRYPTO        Encrypted meta frame
-by the way i noticed that the "description" fields are out of whack in fields.cpp
-in ID3_FrameDef from PCNT to PRIV.
 static  ID3_FrameDef ID3_FrameDefs[] =
 {
   //                          short  long      tag    file
