@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: v1_impl.h,v 1.2 2000/10/23 04:32:33 eldamitri Exp $
+// $Id: v1_impl.h,v 1.1 2000/10/23 06:16:50 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
