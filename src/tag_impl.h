@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: tag_impl.h,v 1.5 2002/07/23 13:20:30 t1mpy Exp $
+// $Id: tag_impl.h,v 1.6 2002/07/31 12:53:50 t1mpy Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -123,7 +123,7 @@ public:
   
   static size_t IsV2Tag(ID3_Reader&);
 
-  Mp3_Headerinfo* GetMp3HeaderInfo() const { if (_mp3_info) return _mp3_info->GetMp3HeaderInfo(); else return NULL; }
+  const Mp3_Headerinfo* GetMp3HeaderInfo() const { if (_mp3_info) return _mp3_info->GetMp3HeaderInfo(); else return NULL; }
 
   iterator         begin()       { return _frames.begin(); }
   iterator         end()         { return _frames.end(); }
