@@ -1,4 +1,4 @@
-// $Id: field_integer.cpp,v 1.13 2000/09/27 08:23:44 eldamitri Exp $
+// $Id: field_integer.cpp,v 1.14 2000/09/30 22:11:43 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -78,13 +78,13 @@ void ID3_FieldImpl::Set(uint32 val)
  ** \return The value of the integer field
  **/
 
-void ID3_FieldImpl::ParseInteger(ID3_Reader& reader)
+bool ID3_FieldImpl::ParseInteger(ID3_Reader& reader)
 {
   ID3D_NOTICE( "ID3_FieldImpl::ParseInteger(): beg = " << reader.getBeg() );
   ID3D_NOTICE( "ID3_FieldImpl::ParseInteger(): cur = " << reader.getCur() );
   ID3D_NOTICE( "ID3_FieldImpl::ParseInteger(): end = " << reader.getEnd() );
-
-  if (reader.peekChar() != ID3_Reader::END_OF_READER)
+  bool success = false;
+  if (!reader.atEnd())
   {
     this->Clear();
     size_t fixed = this->Size();
@@ -92,7 +92,9 @@ void ID3_FieldImpl::ParseInteger(ID3_Reader& reader)
     id3::NumberReader nr(reader);
     this->Set(nr.readNumber(nBytes));
     _changed = false;
+    success = true;
   }
+  return success;
 }
 
 size_t ID3_FieldImpl::RenderInteger(uchar *buffer) const
