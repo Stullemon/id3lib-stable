@@ -1,3 +1,8 @@
+2000-06-23  Scott Haug  <scott@id3.org>
+
+	* examples/230-syncedlyrics.tag: 
+	Updated based on new conversion rules for lyrics3 v2.00
+
 2000-06-22  Scott Haug  <scott@id3.org>
 
 	* NEWS 
