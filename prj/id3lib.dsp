@@ -186,6 +186,10 @@ SOURCE=..\src\tag_file.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\mp3_parse.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\tag_find.cpp
 # End Source File
 # Begin Source File
@@ -267,6 +271,10 @@ SOURCE=..\include\id3\id3lib_streams.h
 # Begin Source File
 
 SOURCE=..\include\id3\header.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\mp3_header.h
 # End Source File
 # Begin Source File
 

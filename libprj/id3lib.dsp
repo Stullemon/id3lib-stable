@@ -189,6 +189,10 @@ SOURCE=..\src\tag_parse.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\mp3_parse.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\tag_parse_lyrics3.cpp
 # End Source File
 # Begin Source File
@@ -246,6 +250,10 @@ SOURCE=..\include\id3\flags.h
 # Begin Source File
 
 SOURCE=..\include\id3\frame.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\mp3_header.h
 # End Source File
 # Begin Source File
 
