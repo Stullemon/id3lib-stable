@@ -1,4 +1,4 @@
-// $Id: utils.h,v 1.6 2000/05/12 21:16:11 eldamitri Exp $
+// $Id: utils.h,v 1.7 2000/06/25 06:19:19 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -33,6 +33,12 @@
 namespace id3
 {
 #endif /* ID3_UNDEFINED */
+  size_t ID3_TimeToSeconds(const char*, size_t);
+  bool ID3_IsCRLF(const char*, const char*);
+  size_t ID3_CRLFtoLF(char *, size_t);
+
+  void   RemoveTrailingSpaces(char*, size_t);
+  
   uint32 ParseNumber(const uchar *buffer, size_t size = sizeof(uint32));
   size_t RenderNumber(uchar *buffer, uint32 val, size_t size = sizeof(uint32));
   
