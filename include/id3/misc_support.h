@@ -1,4 +1,4 @@
-// $Id: misc_support.h,v 1.12 2000/04/28 22:04:35 eldamitri Exp $
+// $Id: misc_support.h,v 1.13 2000/05/04 20:51:35 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -53,13 +53,13 @@ size_t ID3_RemoveYears(ID3_Tag *tag);
 
 char  *ID3_GetComment(ID3_Tag *tag);
 ID3_Frame* ID3_AddComment(ID3_Tag *tag, const char *text,
-                      const char *sDescription = "", bool bReplace = false);
+                          const char *sDescription = "", bool bReplace = false);
 size_t ID3_RemoveComments(ID3_Tag *tag, const char *sDescription = NULL);
 
 char  *ID3_GetTrack(ID3_Tag *tag);
 luint  ID3_GetTrackNum(ID3_Tag *tag);
 ID3_Frame* ID3_AddTrack(ID3_Tag *tag, uchar ucTrack, uchar ucTotal = 0,
-                    bool bReplace = false);
+                        bool bReplace = false);
 ID3_Frame* ID3_AddTrack(ID3_Tag *tag, uchar ucTrack, bool bReplace);
 size_t ID3_RemoveTracks(ID3_Tag *tag);
 
@@ -71,6 +71,10 @@ size_t ID3_RemoveGenres(ID3_Tag *tag);
 char  *ID3_GetLyrics(ID3_Tag *tag);
 ID3_Frame* ID3_AddLyrics(ID3_Tag *tag, const char *text, bool bReplace = false);
 size_t ID3_RemoveLyrics(ID3_Tag *tag);
+
+char  *ID3_GetLyricist(ID3_Tag *tag);
+ID3_Frame* ID3_AddLyricist(ID3_Tag *tag, const char *text, bool bReplace = false);
+size_t ID3_RemoveLyricist(ID3_Tag *tag);
 
 void   mbstoucs(unicode_t *unicode, const char *ascii, const luint len);
 void   ucstombs(char *ascii, const unicode_t *unicode, const luint len);
