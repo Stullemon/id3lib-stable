@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.6 1999/12/03 00:45:17 scott Exp $
+# $Id: Makefile.am,v 1.7 1999/12/03 14:10:11 scott Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -10,10 +10,13 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-EXTRA_DIST = reconf
+EXTRA_DIST = reconf config.win32
 SUBDIRS = m4 doc src include prj zlib
 
 # $Log: Makefile.am,v $
+# Revision 1.7  1999/12/03 14:10:11  scott
+# (EXTRA_DIST): Added config.win32.
+#
 # Revision 1.6  1999/12/03 00:45:17  scott
 # (SUBDIRS): Added prj and zlib
 #
