@@ -1,4 +1,4 @@
-// $Id: field.h,v 1.5 1999/11/04 04:32:11 scott Exp $
+// $Id: field.h,v 1.6 1999/11/15 20:15:36 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -25,10 +25,11 @@
 
 
 // field flags
-#define ID3FF_NULL              ( 1 << 0 )
-#define ID3FF_NULLDIVIDE        ( 1 << 1 )
-#define ID3FF_ADJUSTENC         ( 1 << 2 )
-#define ID3FF_ADJUSTEDBY        ( 1 << 3 )
+const luint ID3FF_NONE       = 0;
+const luint ID3FF_NULL       = 1 << 0;
+const luint ID3FF_NULLDIVIDE = 1 << 1;
+const luint ID3FF_ADJUSTENC  = 1 << 2;
+const luint ID3FF_ADJUSTEDBY = 1 << 3;
 
 enum ID3_TextEnc
 {
@@ -136,79 +137,82 @@ enum ID3_VerCtl
 
 struct ID3_FieldDef
 {
-  ID3_FieldID   id;
-  ID3_FieldType type;
-  lsint fixedLength;
-  uchar version;
-  uchar revision;
-  ID3_VerCtl control;
-  luint flags;
-  ID3_FieldID linkedField;
+  ID3_FieldID   eID;
+  ID3_FieldType eType;
+  lsint         lFixedLength;
+  uchar         ucVersion;
+  uchar         ucRevision;
+  ID3_VerCtl    eControl;
+  luint         ulFlags;
+  ID3_FieldID   eLinkedField;
 };
 
 class ID3_Frame;
+class ID3_Tag;
 
 struct ID3_FrameDef
 {
-  ID3_FrameID   id;
-  char  *shortTextID;
-  char  *longTextID;
-  lsint priority;
-  bool  tagDiscard;
-  bool  fileDiscard;
+  ID3_FrameID   eID;
+  char         *sShortTextID;
+  char         *sLongTextID;
+  lsint         lPriority;    // currentyl unused
+  bool          bTagDiscard;
+  bool          bFileDiscard;
   bool  (*parseHandler) (ID3_Frame *frame);
-  ID3_FieldDef  *fieldDefs;
+  ID3_FieldDef *aeFieldDefs;
 };
 
 class ID3_Field
 {
+  friend ID3_Frame;
+  friend ID3_Tag;
 public:
   ID3_Field(void);
   ~ID3_Field(void);
   
-  void  Clear(void);
-  luint Size(void);
-  luint GetNumTextItems ( void );
+  void          Clear(void);
+  luint         Size(void);
+  luint         GetNumTextItems(void);
   // integer field functions
-  ID3_Field& operator= (luint newData);
-  void  Set(luint newData);
-  luint Get(void);
+  ID3_Field    &operator= (luint newData);
+  void          Set(luint newData);
+  luint         Get(void);
   // Unicode string field functions
-  ID3_Field &operator= (wchar_t *string);
-  void  Set(wchar_t *string);
-  luint Get(wchar_t *buffer, luint maxChars, luint itemNum = 1);
-  void  Add(wchar_t *string);
+  ID3_Field    &operator= (wchar_t *string);
+  void          Set(wchar_t *string);
+  luint         Get(wchar_t *buffer, luint maxChars, luint itemNum = 1);
+  void          Add(wchar_t *string);
   // ASCII string field functions
-  ID3_Field &operator= (char *string);
-  void  Set(char *string);
-  luint Get(char *buffer, luint maxChars, luint itemNum = 1);
-  void  Add(char *string );
+  ID3_Field    &operator= (char *string);
+  void          Set(char *string);
+  luint         Get(char *buffer, luint maxChars, luint itemNum = 1);
+  void          Add(char *string );
   // binary field functions
-  void  Set(uchar *newData, luint newSize);
-  void  Get(uchar *buffer, luint buffLength);
-  void  FromFile(char *info);
-  void  ToFile(char *info);
+  void          Set(uchar *newData, luint newSize);
+  void          Get(uchar *buffer, luint buffLength);
+  void          FromFile(char *info);
+  void          ToFile(char *info);
   
-  // *** PRIVATE INTERNAL DATA - DO NOT USE *** PRIVATE INTERNAL DATA - DO NOT USE ***
 private:
-  luint BinSize(bool withExtras = true);
-  bool  HasChanged(void);
-  void  SetVersion(uchar ver, uchar rev);
-  luint Render(uchar *buffer);
-  luint Parse(uchar *buffer, luint posn, luint buffSize);
+  luint         BinSize(bool withExtras = true);
+  bool          HasChanged(void);
+  void          SetVersion(uchar ver, uchar rev);
+  luint         Render(uchar *buffer);
+  luint         Parse(uchar *buffer, luint posn, luint buffSize);
 
-  // STH: Why aren't these private?
-  //private:
-  ID3_FieldID name;    // the ID of this field
-  ID3_FieldType type;  // what type is this field or should be
-  lsint fixedLength;   // if this is positive, the length of the field is fixed
-  uchar ioVersion;     // specific version
-  uchar ioRevision;    // specific revision
-  ID3_VerCtl control;  // render if ver/rev is higher, or lower than frame::version, frame::revision?
-  luint flags;         // special field flags
-  uchar version;       // the version being rendered/parsed
-  uchar revision;      // the revision being rendered/parsed
-  bool  hasChanged;    // has the field changed since the last parse/render?
+private:
+  ID3_FieldID   __eName;           // the ID of this field
+  ID3_FieldType __eType;           // what type is this field or should be
+  lsint         __lFixedLength;    // length of field (fixed if positive)
+  uchar         __ucIOVersion;     // specific version
+  uchar         __ucIORevision;    // specific revision
+  ID3_VerCtl    __eControl;        // render if ver/rev is higher, or lower than frame::version, frame::revision?
+  luint         __ulFlags;         // special field flags
+  uchar         __ucVersion;       // the version being rendered/parsed
+  uchar         __ucRevision;      // the revision being rendered/parsed
+  bool          __bHasChanged;     // field changed since last parse/render?
+  uchar        *__sData;
+  luint         __ulSize;
 protected:
   luint RenderInteger(uchar *buffer);
   luint RenderASCIIString(uchar *buffer);
@@ -220,8 +224,6 @@ protected:
   luint ParseUnicodeString(uchar *buffer, luint posn, luint buffSize);
   luint ParseBinary(uchar *buffer, luint posn, luint buffSize);
   
-  uchar *data;
-  luint size;
 };
 
 ID3_FrameDef *ID3_FindFrameDef(ID3_FrameID id);
@@ -230,6 +232,12 @@ ID3_FrameID   ID3_FindFrameID(char *id);
 #endif
 
 // $Log: field.h,v $
+// Revision 1.6  1999/11/15 20:15:36  scott
+// Made ID3_Frame and ID3_Tag friends of the ID3_Field class to allow
+// access to the private members in ID3_Field.  Made ID3FF field
+// flags const luints, rather than #define's.  Made member variable
+// names of classes and structs more descriptive.
+//
 // Revision 1.5  1999/11/04 04:32:11  scott
 // Initial revision
 //
