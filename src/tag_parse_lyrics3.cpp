@@ -1,4 +1,4 @@
-// $Id: tag_parse_lyrics3.cpp,v 1.14 2000/06/22 23:22:25 eldamitri Exp $
+// $Id: tag_parse_lyrics3.cpp,v 1.15 2000/06/23 15:51:08 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -234,7 +234,8 @@ void ID3_Tag::ParseLyrics3()
       const size_t max_lyr_size = 11 + 5100 + 9 + 128;
 
       size_t lyr_buffer_size = MIN(max_lyr_size, __file_size);
-      fseek(__file_handle, -(lyr_buffer_size), SEEK_END);
+      // Using binary minus rather than unary minus to avoid compiler warning
+      fseek(__file_handle, 0 - lyr_buffer_size, SEEK_END);
 
       char lyr_buffer[max_lyr_size];
       fread(lyr_buffer, 1, lyr_buffer_size, __file_handle);
@@ -275,7 +276,8 @@ void ID3_Tag::ParseLyrics3()
       id_buffer[6] = '\0';
       size_t lyr_size = atoi(id_buffer);
       
-      fseek(__file_handle, -(lyr_size + 6 + 9 + 3), SEEK_CUR);
+      // Using binary minus rather than unary minus to avoid compiler warning
+      fseek(__file_handle, 0 - (lyr_size + 6 + 9 + 3), SEEK_CUR);
       fread(id_buffer, 1, 11, __file_handle);
 
       if (memcmp(id_buffer, "LYRICSBEGIN", 11) != 0)
