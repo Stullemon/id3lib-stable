@@ -1,4 +1,4 @@
-/* $Id: globals.h,v 1.34 2000/10/09 01:54:13 eldamitri Exp $
+/* $Id: globals.h,v 1.35 2000/10/14 18:58:42 eldamitri Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags Copyright
  * 1999, 2000 Scott Thomas Haug
@@ -298,7 +298,7 @@ ID3_ENUM(ID3_V1Lengths)
  **
  ** @author Dirk Mahoney (dirk@id3.org)
  ** @author Scott Thomas Haug (sth2@cs.wustl.edu)
- ** @version $Id: globals.h,v 1.34 2000/10/09 01:54:13 eldamitri Exp $
+ ** @version $Id: globals.h,v 1.35 2000/10/14 18:58:42 eldamitri Exp $
  ** @see ID3_Tag
  **/
 ID3_STRUCT(ID3V1_Tag)
@@ -430,16 +430,4 @@ ID3_ENUM(ID3_TimeStampFormat)
 #  define NULL ((void*) 0)
 #endif
 
-#undef MAX
-#define MAX(a, b)  (((a) > (b)) ? (a) : (b))
-  
-#undef MIN
-#define MIN(a, b)  (((a) < (b)) ? (a) : (b))
-  
-#undef ABS
-#define ABS(a)   (((a) < 0) ? -(a) : (a))
-
-#undef CLAMP
-#define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
- 
 #endif /* _ID3LIB_GLOBALS_H_ */
