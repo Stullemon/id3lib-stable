@@ -11,7 +11,7 @@ unit ID3COM_TLB;
 // manual modifications will be lost.                                       //
 // ************************************************************************ //
 
-// PASTLWTR : $Revision: 1.1 $
+// PASTLWTR : $Revision: 1.2 $
 // File generated on 5/14/00 4:08:32 PM from Type Library described below.
 
 // ************************************************************************ //
