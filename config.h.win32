@@ -29,7 +29,7 @@
 /* #undef ID3_ENABLE_DEBUG */
 /* #undef ID3_DISABLE_ASSERT */
 /* #undef ID3_DISABLE_CHECKS */
-/* #undef  ID3_ICONV_FORMAT_UTF16BE */
+/* #undef ID3_ICONV_FORMAT_UTF16BE */
 /* #undef ID3_ICONV_FORMAT_UTF16 */
 /* #undef ID3_ICONV_FORMAT_UTF8 */
 /* #undef ID3_ICONV_FORMAT_ASCII */
@@ -45,6 +45,7 @@
 /* #undef HAVE_GETOPT_LONG */
 #define _ID3LIB_NAME "id3lib"
 #define _ID3LIB_VERSION "3.8.0pre3.3"
+#define _ID3LIB_VERSION0 "3.8.0pre3.3\0" //added for resource file
 #define _ID3LIB_FULLNAME "id3lib-3.8.0pre3.3"
 #define _ID3LIB_MAJOR_VERSION 3
 #define _ID3LIB_MINOR_VERSION 8

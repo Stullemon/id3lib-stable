@@ -1,8 +1,11 @@
 #define APSTUDIO_READONLY_SYMBOLS
 #define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
-#include <windows.h>
+#ifndef RC_INVOKED
+#define RC_INVOKED
+#endif
+#include <winver.h>
 #undef APSTUDIO_READONLY_SYMBOLS
-
+#include "../config.h" //for id3lib version info
 #ifndef _MAC
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -10,31 +13,22 @@
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,8,0,0
- PRODUCTVERSION 3,8,0,0
- FILEFLAGSMASK 0x3fL
-#ifdef _DEBUG
- FILEFLAGS 0x1L
-#else
- FILEFLAGS 0x0L
-#endif
- FILEOS 0x40004L
- FILETYPE 0x2L
- FILESUBTYPE 0x0L
-BEGIN
+ FILEVERSION _ID3LIB_MAJOR_VERSION,_ID3LIB_MINOR_VERSION,_ID3LIB_PATCH_VERSION,_ID3LIB_INTERFACE_AGE
+ PRODUCTVERSION _ID3LIB_MAJOR_VERSION,_ID3LIB_MINOR_VERSION,_ID3LIB_PATCH_VERSION,_ID3LIB_INTERFACE_AGE
+
+ BEGIN
     BLOCK "StringFileInfo"
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "Comments", "id3lib is a library for tagging mp3's with ID3v1 or ID3v2 tags\0"
-            VALUE "CompanyName", "id3lib\0"
-            VALUE "FileDescription", "id3lib Dynamic Link Library\0"
-            VALUE "FileVersion", "3.8.0\0"
-            VALUE "InternalName", "id3lib\0"
+            VALUE "Comments", "ID3lib is a library for tagging mp3's with ID3v1 or ID3v2 tags\0"
+            VALUE "CompanyName", "http://www.id3lib.org/\0"
+            VALUE "FileDescription", "ID3lib Dynamic Link Library\0"
+            VALUE "FileVersion", _ID3LIB_VERSION0//"\0"
             VALUE "LegalCopyright", "Copyright © 2002 Thijmen Klok\0"
-            VALUE "OriginalFilename", "id3lib.dll\0"
-            VALUE "ProductName", "id3lib Dynamic Link Library\0"
-            VALUE "ProductVersion", "3.8.0\0"
+            VALUE "OriginalFilename", "ID3lib.dll\0"
+            VALUE "ProductName", "ID3lib Dynamic Link Library\0"
+            VALUE "ProductVersion", _ID3LIB_VERSION0//"\0"
         END
     END
     BLOCK "VarFileInfo"
