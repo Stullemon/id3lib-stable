@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.36 2000/10/15 06:39:26 eldamitri Exp $
+// $Id: field.cpp,v 1.37 2000/10/21 07:22:24 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -882,7 +882,7 @@ static  ID3_FrameDef ID3_FrameDefs[] =
  ** if you only plan to generate 3.0 tags.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: field.cpp,v 1.36 2000/10/15 06:39:26 eldamitri Exp $
+ ** @version $Id: field.cpp,v 1.37 2000/10/21 07:22:24 eldamitri Exp $
  ** \sa ID3_Tag
  ** \sa ID3_Frame
  ** \sa ID3_Err 
@@ -895,9 +895,7 @@ ID3_FieldImpl::ID3_FieldImpl()
     _spec_end(ID3V2_LATEST),
     _flags(0),
     _changed(false),
-    _integer(0),
-    _fixed_length(0),
-    _bytes(0),
+    _fixed_size(0),
     _num_items(0),
     _enc(ID3TE_NONE)
 {
@@ -911,53 +909,15 @@ ID3_FieldImpl::ID3_FieldImpl(const ID3_FieldDef& def)
     _spec_end(def._spec_end),
     _flags(def._flags),
     _changed(false),
-    _fixed_length(def._fixed_length),
-    _bytes(_fixed_length),
+    _fixed_size(def._fixed_size),
     _num_items(0),
     _enc((_type == ID3FTY_TEXTSTRING) ? ID3TE_ASCII : ID3TE_NONE)
 {
-  if (_type == ID3FTY_TEXTSTRING)
-  {
-    _ascii = NULL;
-    _chars = _fixed_length;
-  }
-  else if (_type == ID3FTY_BINARY)
-  {
-    _binary = NULL;
-  }
   this->Clear();
 }
 
 ID3_FieldImpl::~ID3_FieldImpl()
 {
-  if (_type == ID3FTY_INTEGER)
-  {
-    _integer = 0;
-  }
-  else if (_type == ID3FTY_BINARY)
-  {
-    if (_binary != NULL)
-    {
-      delete [] _binary;
-    }
-  }
-  else if (_type == ID3FTY_TEXTSTRING)
-  {
-    if (this->GetEncoding() == ID3TE_UNICODE)
-    {
-      if (_unicode != NULL)
-      {
-        delete [] _unicode;
-      }
-    }
-    else if (this->GetEncoding() == ID3TE_ASCII)
-    {
-      if (_ascii != NULL)
-      {
-        delete [] _ascii;
-      }
-    }
-  }
 }
 
 /** Clears any data and frees any memory associated with the field
@@ -967,74 +927,34 @@ ID3_FieldImpl::~ID3_FieldImpl()
  **/
 void ID3_FieldImpl::Clear()
 {
-  if (_type == ID3FTY_TEXTSTRING)
-  {
-    _chars = _fixed_length;
-  }
-  else
-  {
-    _bytes = _fixed_length;
-  }
   switch (_type)
   {
     case ID3FTY_INTEGER:
     {
       _integer = 0;
-      if (_bytes == 0)
-      {
-        _bytes = sizeof(uint32);
-      }
       break;
     }
     case ID3FTY_BINARY:
     {
-      if (_binary != NULL)
+      _binary.erase();
+      if (_fixed_size > 0)
       {
-        delete [] _binary;
-      }
-      if (_bytes == 0)
-      {
-        _binary = NULL;
-      }
-      else
-      {
-        _binary = new uchar[_bytes];
-        ::memset(_binary, '\0', _bytes);
+        _binary.assign(_fixed_size, '\0');
       }
       break;
     }
     case ID3FTY_TEXTSTRING:
     {
-      if (this->GetEncoding() == ID3TE_UNICODE)
+      _text.erase();
+      if (_fixed_size > 0)
       {
-        if (_unicode != NULL)
+        if (this->GetEncoding() == ID3TE_UNICODE)
         {
-          delete [] _unicode;
+          _text.assign(_fixed_size * 2, '\0');
         }
-        if (_chars == 0)
+        else if (this->GetEncoding() == ID3TE_ASCII)
         {
-          _unicode = NULL;
-        }
-        else
-        {
-          _unicode = new unicode_t[_chars];
-          ::memset((void *)_unicode, '\0', _chars * 2);
-        }
-      }
-      else if (this->GetEncoding() == ID3TE_ASCII)
-      {
-        if (_ascii != NULL)
-        {
-          delete [] _ascii;
-        }
-        if (_chars == 0)
-        {
-          _ascii = NULL;
-        }
-        else
-        {
-          _ascii = new char[_chars];
-          ::memset(_ascii, '\0', _chars);
+          _text.assign(_fixed_size, '\0');
         }
       }
       break;
@@ -1076,6 +996,10 @@ ID3_FieldImpl::HasChanged() const
 
 size_t ID3_FieldImpl::BinSize() const
 {
+  if (_fixed_size > 0)
+  {
+    return _fixed_size;
+  }
   size_t size = this->Size();
   if (_type == ID3FTY_TEXTSTRING)
   {
@@ -1101,17 +1025,21 @@ size_t ID3_FieldImpl::Size() const
   size_t size = 0;
   // check to see if we are within the legal limit for this field 0 means
   // arbitrary length field
-  if (_fixed_length > 0)
+  if (_fixed_size > 0)
   {
-    size = _fixed_length;
+    size = _fixed_size;
+  }
+  else if (_type == ID3FTY_INTEGER)
+  {
+    size = sizeof(uint32);
   }
   else if (_type == ID3FTY_TEXTSTRING)
   {
-    size = _chars;
+    size = _text.size();
   }
   else
   {
-    size = _bytes;
+    size = _binary.size();
   }
 
   return size;
@@ -1136,14 +1064,7 @@ bool ID3_FieldImpl::Parse(ID3_Reader& reader)
         
     case ID3FTY_TEXTSTRING:
     {
-      if (this->GetEncoding() == ID3TE_UNICODE)
-      {
-        success = this->ParseUnicodeString(reader);
-      }
-      else
-      {
-        success = this->ParseASCIIString(reader);
-      }
+      success = this->ParseText(reader);
       break;
     }
 
@@ -1210,7 +1131,7 @@ void ID3_FieldImpl::Render(ID3_Writer& writer) const
         
     case ID3FTY_TEXTSTRING:
     {
-      RenderString(writer);
+      RenderText(writer);
       break;
     }
         
@@ -1225,29 +1146,25 @@ void ID3_FieldImpl::Render(ID3_Writer& writer) const
 ID3_Field &
 ID3_FieldImpl::operator=( const ID3_Field &rhs )
 {
-  if (this != &rhs && this->GetType() == rhs.GetType())
+  const ID3_FieldImpl* fld = (const ID3_FieldImpl*) &rhs;
+  if (this != &rhs && this->GetType() == fld->GetType())
   {
-    switch (rhs.GetType())
+    switch (fld->GetType())
     {
       case ID3FTY_INTEGER:
       {
-        *this = rhs.Get();
+        this->SetInteger(fld->GetInteger());
         break;
       }
       case ID3FTY_TEXTSTRING:
       {
-        if (rhs.GetEncoding() == ID3TE_UNICODE)
-        {
-          this->Set_i(rhs.GetUnicodeText(), rhs.Size());
-        }
-        else if (rhs.GetEncoding() == ID3TE_ASCII)
-        {
-          this->Set_i(rhs.GetText(), rhs.Size());
-        }
+        this->SetEncoding(fld->GetEncoding());
+        this->SetText(fld->GetText());
+        break;
       }
       case ID3FTY_BINARY:
       {
-        this->Set(rhs.GetBinary(), rhs.Size());
+        this->SetBinary(fld->GetBinary());
         break;
       }
       default:
@@ -1265,24 +1182,13 @@ bool ID3_FieldImpl::SetEncoding(ID3_TextEnc enc)
     (ID3TE_NONE < enc && enc < ID3TE_NUMENCODINGS);
   if (changed)
   {
-    // REMEMBER: _unicode and _ascii are in a union!
-    size_t size = this->Size();
-    if (size > 0)
+    if (_enc == ID3TE_UNICODE && enc == ID3TE_ASCII)
     {
-      if (_enc == ID3TE_UNICODE && enc == ID3TE_ASCII)
-      {
-        unicode_t* unicode = _unicode;
-        _ascii = new char[size];
-        ucstombs(_ascii, unicode, size);
-        delete [] unicode;
-      }
-      else if (_enc == ID3TE_ASCII && enc == ID3TE_UNICODE)
-      {
-        char* ascii = _ascii;
-        _unicode = new unicode_t[size];
-        mbstoucs(_unicode, ascii, size);
-        delete [] ascii;
-      }
+      _text = ucstombs(_text);
+    }
+    else if (_enc == ID3TE_ASCII && enc == ID3TE_UNICODE)
+    {
+      _text = mbstoucs(_text);
     }
     _enc = enc;
     _changed = true;
