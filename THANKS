@@ -2,11 +2,21 @@ id3lib THANKS file
 
 id3lib was originally written by Dirk Mahoney.
 
-id3lib was branched at version 3.05a by Scott Thomas Haug, who intended to 
-implement better linux compatibility and functionality.
+Since version 3.05a, several individuals have helped further the development of
+id3lib.  They are listed below.  Please inform the current project maintainer
+if anyone has been missed.
 
-Dirk Mahoney included the following at the end of his documentation on id3lib.
-It is included in verbatim here.
+o Scott Thomas Haug (sth2@cs.wustl.edu) helped revitalize the project after
+  3.05a.  He restructured and cleaned up most of the code to allow for better
+  cross-platform functionality and easier development.
+o Kamran (kamran@musicmatch.com) fixed several bugs in MusicMatch's internal 
+  version of ID3Lib which were merged into the current public version of 
+  id3lib.
+o Alexander Voronin (av@oskarsb.ru) has submitted several patches to fix a 
+  variety of bugs. 
+
+Dirk Mahoney included the following at the end of his documentation on ID3Lib
+3.05a.  It is included in verbatim here.
 
   Special Thanks and Credits
 
