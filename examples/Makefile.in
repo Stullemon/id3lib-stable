@@ -107,12 +107,13 @@ INCLUDES = -I$(top_srcdir)/include
 LDADD = $(top_builddir)/src/libid3.la
 
 bin_PROGRAMS = id3info id3convert id3tag
-check_PROGRAMS = id3simple testpic
+check_PROGRAMS = id3simple testpic get_pic
 id3info_SOURCES = demo_info.cpp
 id3convert_SOURCES = demo_convert.cpp
 id3tag_SOURCES = demo_tag.cpp
 id3simple_SOURCES = demo_simple.c
 testpic_SOURCES = test_pic.cpp
+get_pic_SOURCES = get_pic.cpp
 
 EXTRA_DIST =    demo_main.cpp           221-compressed.tag      230-compressed.tag      230-picture.tag         230-unicode.tag
 
@@ -146,6 +147,10 @@ testpic_OBJECTS =  test_pic.o
 testpic_LDADD = $(LDADD)
 testpic_DEPENDENCIES =  $(top_builddir)/src/libid3.la
 testpic_LDFLAGS = 
+get_pic_OBJECTS =  get_pic.o
+get_pic_LDADD = $(LDADD)
+get_pic_DEPENDENCIES =  $(top_builddir)/src/libid3.la
+get_pic_LDFLAGS = 
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -164,9 +169,9 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = gtar
 GZIP_ENV = --best
 DEP_FILES =  .deps/demo_convert.P .deps/demo_info.P .deps/demo_simple.P \
-.deps/demo_tag.P .deps/test_pic.P
-SOURCES = $(id3info_SOURCES) $(id3convert_SOURCES) $(id3tag_SOURCES) $(id3simple_SOURCES) $(testpic_SOURCES)
-OBJECTS = $(id3info_OBJECTS) $(id3convert_OBJECTS) $(id3tag_OBJECTS) $(id3simple_OBJECTS) $(testpic_OBJECTS)
+.deps/demo_tag.P .deps/get_pic.P .deps/test_pic.P
+SOURCES = $(id3info_SOURCES) $(id3convert_SOURCES) $(id3tag_SOURCES) $(id3simple_SOURCES) $(testpic_SOURCES) $(get_pic_SOURCES)
+OBJECTS = $(id3info_OBJECTS) $(id3convert_OBJECTS) $(id3tag_OBJECTS) $(id3simple_OBJECTS) $(testpic_OBJECTS) $(get_pic_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -264,6 +269,10 @@ id3simple: $(id3simple_OBJECTS) $(id3simple_DEPENDENCIES)
 testpic: $(testpic_OBJECTS) $(testpic_DEPENDENCIES)
 	@rm -f testpic
 	$(CXXLINK) $(testpic_LDFLAGS) $(testpic_OBJECTS) $(testpic_LDADD) $(LIBS)
+
+get_pic: $(get_pic_OBJECTS) $(get_pic_DEPENDENCIES)
+	@rm -f get_pic
+	$(CXXLINK) $(get_pic_LDFLAGS) $(get_pic_OBJECTS) $(get_pic_LDADD) $(LIBS)
 .cpp.o:
 	$(CXXCOMPILE) -c $<
 .cpp.lo:
