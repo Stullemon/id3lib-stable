@@ -1,4 +1,4 @@
-// $Id: misc_support.h,v 1.19 2000/06/22 23:05:19 eldamitri Exp $
+// $Id: misc_support.h,v 1.20 2000/07/07 23:03:43 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -50,7 +50,7 @@ char*      ID3_GetYear(const ID3_Tag*);
 ID3_Frame* ID3_AddYear(ID3_Tag*, const char*, bool replace = false);
 size_t     ID3_RemoveYears(ID3_Tag*);
 
-char*      ID3_GetComment(const ID3_Tag*);
+char*      ID3_GetComment(const ID3_Tag*, const char* desc = NULL);
 ID3_Frame* ID3_AddComment(ID3_Tag*, const char*, bool = false);
 ID3_Frame* ID3_AddComment(ID3_Tag*, const char*, const char*, bool = false);
 ID3_Frame* ID3_AddComment(ID3_Tag*, const char*, const char*, const char*, 
