@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.9 2000/05/01 16:36:57 eldamitri Exp $
+// $Id: tag.cpp,v 1.10 2000/05/02 21:56:16 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -86,7 +86,7 @@
  ** 'CDM' frames from the unreleased ID3v2 2.01 draft specification.
  **
  ** \author Dirk Mahoney
- ** \version $Id: tag.cpp,v 1.9 2000/05/01 16:36:57 eldamitri Exp $
+ ** \version $Id: tag.cpp,v 1.10 2000/05/02 21:56:16 eldamitri Exp $
  ** \sa ID3_Frame
  ** \sa ID3_Field
  ** \sa ID3_Err
@@ -490,10 +490,12 @@ bool ID3_Tag::HasChanged(void) const
   return changed;
 }
 
-void ID3_Tag::SetSpec(const ID3_V2Spec spec)
+bool ID3_Tag::SetSpec(ID3_V2Spec spec)
 {
-  __bHasChanged = __bHasChanged || (spec != __spec);
+  bool changed = (spec != __spec);
+  __bHasChanged = __bHasChanged || changed;
   __spec = spec;
+  return changed;
 }
 
 ID3_V2Spec ID3_Tag::GetSpec() const
