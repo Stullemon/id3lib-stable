@@ -1,4 +1,4 @@
-// $Id: writer.h,v 1.1 2000/10/08 20:47:32 eldamitri Exp $
+// $Id: writer.h,v 1.2 2000/10/14 19:13:43 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -27,7 +27,6 @@
 #ifndef _ID3LIB_WRITER_H_
 #define _ID3LIB_WRITER_H_
 
-#include "debug.h"
 #include "globals.h"
 
 class ID3_Writer
@@ -78,16 +77,16 @@ class ID3_Writer
     return ch;
   }
 
-  virtual size_type writeChars(const char* buf, size_type len)
-  {
-    return this->writeChars(reinterpret_cast<const char_type *>(buf), len);
-  }
   /** Write up to \c len characters into buf and advance the internal position
    ** accordingly.  Returns the number of characters write into buf.  Note that
    ** the value returned may be less than the number of bytes that the internal
    ** position advances, due to multi-byte characters.
    **/
   virtual size_type writeChars(const char_type buf[], size_type len) = 0;
+  virtual size_type writeChars(const char buf[], size_type len)
+  {
+    return this->writeChars(reinterpret_cast<const char_type *>(buf), len);
+  }
 
   virtual bool atEnd()
   {
