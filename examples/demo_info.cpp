@@ -14,7 +14,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.31 2002/07/23 13:20:30 t1mpy Exp $
+// $Id: demo_info.cpp,v 1.32 2002/07/28 21:53:56 t1mpy Exp $
 
 
 #ifdef HAVE_CONFIG_H
@@ -33,7 +33,7 @@ using namespace dami;
 using std::cout;
 using std::endl;
 
-static String VERSION_NUMBER = "$Revision: 1.31 $";
+static String VERSION_NUMBER = "$Revision: 1.32 $";
 
 void PrintUsage(const char *sName)
 {
@@ -341,7 +341,7 @@ int main( unsigned int argc, char * const argv[])
     ID3_Tag myTag;
     
     myTag.Link(filename, ID3TT_ALL);
-    Mp3_Headerinfo* mp3info;
+    const Mp3_Headerinfo* mp3info;
     mp3info = myTag.GetMp3HeaderInfo();
 
     cout << endl << "*** Tag information for " << filename << endl;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: tag.h,v 1.57 2002/07/23 13:20:30 t1mpy Exp $
+// $Id: tag.h,v 1.58 2002/07/28 21:53:56 t1mpy Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -100,7 +100,7 @@ public:
   
   size_t     NumFrames() const;
 
-  Mp3_Headerinfo* GetMp3HeaderInfo() const;
+  const Mp3_Headerinfo* GetMp3HeaderInfo() const;
 
   Iterator*  CreateIterator();
   ConstIterator* CreateIterator() const;
