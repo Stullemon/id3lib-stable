@@ -1,4 +1,4 @@
-// $Id: reader.h,v 1.1 2000/09/22 04:40:04 eldamitri Exp $
+// $Id: reader.h,v 1.2 2000/09/27 08:02:22 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -27,6 +27,8 @@
 #ifndef _ID3LIB_READER_H_
 #define _ID3LIB_READER_H_
 
+#include "debug.h"
+
 class ID3_Reader
 {
  public:
@@ -36,73 +38,80 @@ class ID3_Reader
   typedef unsigned long long pos_type;
   typedef long long off_type;
   typedef long long int_type;
+  static const int_type END_OF_READER = -1;
   
   /** Close the reader.  Any further actions on the reader should fail.
    **/
   virtual void close() = 0;
 
-  /** Read a single byte and advance the internal position.  Returns EOF if
-   ** there isn't a byte to read.
+  /** Return the beginning position in the reader */
+  virtual pos_type getBeg() { return static_cast<pos_type>(0); }
+
+  /** Return the ending position in the reader */
+  virtual pos_type getEnd() { return static_cast<pos_type>(-1); }
+
+  /** Return the current position in the reader */
+  virtual pos_type getCur() = 0;
+
+  /** Set the value of the current position for reading.
    **/
-  virtual int_type readByte()
-  { 
-    if (this->peek() == EOF) 
-    { 
-      return EOF; 
-    }
-    int_type ch = EOF;
-    this->readBytes(&static_cast<char_type>(ch), 1);
-    return ch;
-  }
+  virtual pos_type setCur(pos_type pos) = 0;
 
   /**
    ** Read a single character and advance the internal position.  Note that the
    ** interal position may advance more than one byte for a single character 
-   ** read.  Returns EOF if there isn't a character to read.
+   ** read.  Returns END_OF_READER if there isn't a character to read.
    **/
-  virtual int_type readChar() { return this->readByte(); }
+  virtual int_type readChar() 
+  {
+    if (this->peekChar() == END_OF_READER) 
+    { 
+      return END_OF_READER; 
+    }
+    char_type ch;
+    this->readChars(&ch, 1);
+    return ch;
+  }
 
   /**
-   ** Return the next byte to be read without advancing the internal 
-   ** position.  Returns EOF if there isn't a byte to read.
+   ** Return the next character to be read without advancing the internal 
+   ** position.  Returns END_OF_READER if there isn't a character to read.
    **/
-  virtual int_type peek() = 0;
+  virtual int_type peekChar() = 0;
   
-  /** Read up to \c len bytes into buf and advance the internal position
-   ** accordingly.  Returns the number of bytes read into buf.
-   **/
-  virtual streamsize readBytes(char_type buf[], streamsize len) = 0;
-
   /** Read up to \c len characters into buf and advance the internal position
    ** accordingly.  Returns the number of characters read into buf.  Note that
    ** the value returned may be less than the number of bytes that the internal
    ** position advances, due to multi-byte characters.
    **/
-  virtual streamsize readChars(char_type buf[], streamsize len)
-  { return this->readBytes(buf, len); }
+  virtual streamsize readChars(char_type buf[], streamsize len) = 0;
   
-  /** Skip up to \c len bytes in the stream and advance the internal position
-   ** accordingly.  Returns the number of bytes actually skipped (may be less).
+  /** Skip up to \c len chars in the stream and advance the internal position
+   ** accordingly.  Returns the number of characters actually skipped (may be 
+   ** less than requested).
    **/
-  virtual int_type skipBytes(streamsize len)
+  virtual streamsize skipChars(streamsize len)
   {
     char_type bytes[len];
-    return this->readBytes(bytes, len);
+    return this->readChars(bytes, len);
   }
 
-  /** Skip up to \c len characters in the stream and advance the internal
-   ** position accordingly.  Returns the number of bytes actually skipped (may
-   ** be less).
-   **/
-  virtual int_type skipChars(streamsize len) { return this->skipBytes(len); }
+  virtual streamsize remainingChars()
+  {
+    pos_type end = this->getEnd(), cur = this->getCur();
+    ID3D_NOTICE( "ID3_Reader::remainingChars(): [cur, end] = [" << cur << ", " << end << "]" );
+    if (end == pos_type(-1))
+    {
+      return streamsize(-1);
+    }
 
-  /** Returns the value of the internal position.
-   **/
-  virtual pos_type tell() = 0;
+    if (end >= cur)
+    {
+      return end - cur;
+    }
 
-  /** Set the value of the internal position for reading.
-   **/
-  virtual pos_type seek(pos_type pos) = 0;
+    return 0;
+  }
 };
 
 #endif /* _ID3LIB_READER_H_ */
