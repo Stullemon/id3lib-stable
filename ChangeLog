@@ -1,3 +1,36 @@
+2002-11-24 Sunday 20:34   Thijmen Klok <thijmen@id3lib.org>
+
+	* id3com/id3com.dsp (1.20): added link32 to zlib 
+
+2002-11-24 Sunday 18:33   Thijmen Klok <thijmen@id3lib.org>
+
+	* src/tag_parse.cpp (1.47): fixed a bug which caused v1 tags to be
+	ignored after a lyrics v2 tag 
+
+2002-11-24 Sunday 17:31   Thijmen Klok <thijmen@id3lib.org>
+
+	* src/tag_parse.cpp (1.46): fixed a stupid bug of mine, affecting
+	wrong handling of id3v1 tags 
+
+2002-11-03 Sunday 01:41   Thijmen Klok <thijmen@id3lib.org>
+
+	* src/field.cpp (1.47): fixes access to invalid framedefs 
+
+2002-11-02 Saturday 23:28   Thijmen Klok <thijmen@id3lib.org>
+
+	* id3com/win32.readme.first.txt (1.4),
+	libprj/win32.readme.first.txt (1.4), prj/win32.readme.first.txt
+	(1.4): improved comment on delphi 
+
+2002-11-02 Saturday 22:02   Thijmen Klok <thijmen@id3lib.org>
+
+	* src/tag_file.cpp (1.42): fixed a bug in RenderV2ToFile, file was
+	not cleared and thus eof mark was still set 
+
+2002-11-02 Saturday 19:10   Thijmen Klok <thijmen@id3lib.org>
+
+	* ChangeLog (1.137): added todays work 
+
 2002-11-02 Saturday 19:07   Thijmen Klok <thijmen@id3lib.org>
 
 	* config.h.win32 (1.24), configure (1.78), configure.in (1.67),
