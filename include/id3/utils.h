@@ -1,4 +1,4 @@
-// $Id: utils.h,v 1.7 2000/06/25 06:19:19 eldamitri Exp $
+// $Id: utils.h,v 1.8 2000/07/11 04:02:59 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -27,12 +27,26 @@
 #ifndef __ID3LIB_UTILS_H__
 #define __ID3LIB_UTILS_H__
 
+#if defined HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #include "globals.h"
+#include <fstream.h>
 
 #if defined ID3_UNDEFINED
 namespace id3
 {
 #endif /* ID3_UNDEFINED */
+
+#ifdef  MAXPATHLEN
+#  define ID3_PATH_LENGTH   (MAXPATHLEN + 1)
+#elif   defined (PATH_MAX)
+#  define ID3_PATH_LENGTH   (PATH_MAX + 1)
+#else   /* !MAXPATHLEN */
+#  define ID3_PATH_LENGTH   (2048 + 1)
+#endif  /* !MAXPATHLEN && !PATH_MAX */
+
   size_t ID3_TimeToSeconds(const char*, size_t);
   bool ID3_IsCRLF(const char*, const char*);
   size_t ID3_CRLFtoLF(char *, size_t);
@@ -54,6 +68,12 @@ namespace id3
   size_t     ID3_GetUnSyncSize(uchar *, size_t);
   void       ID3_UnSync(uchar *, size_t, const uchar *, size_t);
   size_t     ID3_ReSync(uchar *, size_t);
+
+  // file utils
+  size_t ID3_GetFileSize(fstream&);
+  ID3_Err ID3_CreateFile(const char*, fstream&);
+  ID3_Err ID3_OpenWritableFile(const char*, fstream&);
+  ID3_Err ID3_OpenReadableFile(const char*, fstream&);
 
 #if defined ID3_UNDEFINED
 }
