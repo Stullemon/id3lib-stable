@@ -22,7 +22,10 @@
 
 /* And now the rest of the boys */
 #undef CXX_HAS_BUGGY_FOR_LOOPS
+/* the following is added due to a bug in autoconf, checking for booleans in gcc while g++ is used for compiling */
+#ifndef __cplusplus
 #undef CXX_HAS_NO_BOOL
+#endif
 #undef ID3_ENABLE_DEBUG
 #undef ID3_DISABLE_ASSERT
 #undef ID3_DISABLE_CHECKS
