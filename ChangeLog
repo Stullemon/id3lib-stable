@@ -1,3 +1,82 @@
+2000-04-24  Scott Haug  <scott@id3.org>
+
+	* id3com/id3com.dsp: 
+	Added c_wrapper.cpp and globals.cpp
+
+	* include/id3.h: 
+	- Added decl for ID3Tag_AttachFrame
+	- ID3Tag_{Parse,Update,Strip} now all return ID3_Err's
+	- ID3Tag_UpdateType renamed to ID3Tag_UpdateByTagType, returns ID3_Err
+
+	* include/id3/field.h: 
+	FixedLength is now unsigned, since a 0 rather than a -1 will represent
+	a variable-length field
+
+	* include/id3/frame.h: 
+	Added decl for copy constructor
+
+	* include/id3/globals.h: 
+	Replaced C++ comments for C comments
+
+	* include/id3/tag.h: 
+	- Moved doxygen comments to appropriate cpp file
+	- AddNewFrame deprecated for AttachFrame
+	- Link(char *, bool, bool) deprecated for Link(char *, luint)
+	- OpenFileFor{Reading,Writing} now returns an ID3_Err rather than void
+
+	* src/c_wrapper.cpp 
+	(ID3Tag_Parse): Now returns an ID3_Err
+	(ID3Tag_Update): Now returns an ID3_Err
+	(ID3Tag_UpdateByTagType): Renamed from UpdateType, now returns an 
+	ID3_Err
+	(ID3Tag_Strip): Now returns an ID3_Err
+
+	* src/error.cpp 
+	(ID3_ErrorDescs): Added "no error" to list
+
+	* src/field.cpp 
+	* src/field_binary.cpp 
+	* src/field_integer.cpp 
+	* src/field_string_ascii.cpp
+	* src/field_string_unicode.cpp: 
+	__lFixedLength changed to __ulFixedLength.  A fixed length of 0, rather
+	than -1, represents a variable-length field, since we should never have
+	a fixed field length of 0.
+
+	* src/frame.cpp 
+	(ID3_Frame): Added copy constructor implementation
+
+	* src/misc_support.cpp: 
+	- Calls to AddNewFrame replaced with calls to AttachFrame
+	- Minor changes to prevent warnings w/gcc
+
+	* src/tag.cpp 
+	- Added comments originally in include/id3/tag.h
+	- (operator<<): Made frame parameter constant
+	- (AddFrame): 
+	  - Made frame parameter constant
+	  - Now adds a copy of the frame onto the tag, rather than the frame
+	    passed in, thus allowing the tag to be repsonsible for deleting
+	    the frame
+	- (AddNewFrame): Deprecated in favor of AttachFrame
+	- (AddFrames): Adds copies of frames
+
+	* src/tag_file.cpp: 
+	- Added comments originally in include/id3/tag.h
+	- (OpenFileForWriting): Now returns ID3_Err rather than void
+	- (OpenFileForReading): Now returns ID3_Err rather than void
+	- (Link): Deprecated Link(char *, bool, bool) for Link(char *, luint),
+	  which accepts an unsigned int representing the tag types to parse.
+
+	* src/tag_parse.cpp: 
+	- Added comments originally in include/id3/tag.h
+	- (ParseFromHandle): Conditionally parses tag types based on
+	  __ulTagsToParse, which replaces __bParseLyrics3 and __bParseID3v1
+
+	* src/tag_find.cpp: 
+	* src/tag_render.cpp: 
+	Added comments originally in include/id3/tag.h
+
 2000-04-23  Scott Haug  <scott@id3.org>
 
 	* examples/demo_info.cpp: 
