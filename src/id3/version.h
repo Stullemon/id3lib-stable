@@ -1,4 +1,4 @@
-// $Id: version.h,v 1.7 1999/11/29 19:26:18 scott Exp $
+// $Id: version.h,v 1.8 1999/11/30 20:16:35 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -14,35 +14,35 @@
 
 #ifndef ID3LIB_VERSION_H
 #define ID3LIB_VERSION_H
-/** id3lib defines some constant symbols that applications are free to use.
+
+/** id3lib defines some functions for making known the libraries version info.
     
     <p>
     
     They are used to identify the version and date of the id3lib that is
     currently being used.
-   
-    <p>
-    
-    For example...
-    
-    <pre>cout << "Using " << ID3LIB_VERSTRING << endl;</pre>
-
-    @name version_constants
 */
-/// The name of the library
-const char  ID3LIB_NAME[]      = "ID3Lib";
-/// The full library version
-const char  ID3LIB_VERSION[]   = "v3.6";
-/// The library version
-const luint ID3LIB_VER         = 3;
-/// The library revision
-const luint ID3LIB_REV         = 6;
-/// The library date
-const char  ID3LIB_DATE[]      = "$Date: 1999/11/29 19:26:18 $";
+/// Returns the name of the library (i.e., "id3lib")
+const char *ID3_Name(void);
+/// Returns the library release (i.e., "3.6.0")
+const char *ID3_Release(void);
+/// Returns the full name of the library (i.e., "id3lib-3.6.0")
+const char *ID3_FullName(void);
+/// Returns the library version (i.e., 3)
+unsigned short ID3_Version(void);
+/// Returns the library revision (i.e., 6)
+unsigned short ID3_Revision(void);
+/// Returns the library patch (i.e., 0)
+unsigned short ID3_Patch(void);
 
 #endif
 
 // $Log: version.h,v $
+// Revision 1.8  1999/11/30 20:16:35  scott
+// Changed from preprocessor macros to functions.  Now changes to top
+// level configure.in with regards to version info will be reflected in
+// these functions without having to change this file.
+//
 // Revision 1.7  1999/11/29 19:26:18  scott
 // Updated the leading license information of the file to reflect new maintainer.
 //
