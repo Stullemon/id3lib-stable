@@ -25,7 +25,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 // This file will be processed by the MIDL tool to
-// produce the type library (ID3libCOM.tlb) and marshalling code.
+// produce the type library (ID3COM.tlb) and marshalling code.
 
 import "oaidl.idl";
 import "ocidl.idl";
@@ -93,67 +93,92 @@ import "ocidl.idl";
 	]
 	enum
 	{
-		ID3_NOFRAME			= 0,
-		ID3_ORIGALBUM,
-		ID3_PUBLISHER,
-		ID3_ENCODEDBY,
-		ID3_ENCODERSETTINGS,
-		ID3_ORIGFILENAME,
-		ID3_LANGUAGE,
-		ID3_PARTINSET,
-		ID3_DATE,
-		ID3_TIME,
-		ID3_RECORDINGDATES,
-		ID3_MEDIATYPE,
-		ID3_FILETYPE,
-		ID3_NETRADIOSTATION,
-		ID3_NETRADIOOWNER,
-		ID3_LYRICIST,
-		ID3_ORIGARTIST,
-		ID3_ORIGLYRICIST,
-		ID3_SUBTITLE,
-		ID3_MIXARTIST,
-		ID3_USERTEXT,
-		ID3_CONTENTGROUP,
-		ID3_TITLE,
-		ID3_LEADARTIST,
-		ID3_BAND,
-		ID3_ALBUM,
-		ID3_YEAR,
-		ID3_CONDUCTOR,
-		ID3_COMPOSER,
-		ID3_COPYRIGHT,
-		ID3_CONTENTTYPE,
-		ID3_TRACKNUM,
-		ID3_COMMENT,
-		ID3_WWWAUDIOFILE,
-		ID3_WWWARTIST,
-		ID3_WWWAUDIOSOURCE,
-		ID3_WWWCOMMERCIALINFO,
-		ID3_WWWCOPYRIGHT,
-		ID3_WWWPUBLISHER,
-		ID3_WWWPAYMENT,
-		ID3_WWWRADIOPAGE,
-		ID3_WWWUSER,
-		ID3_INVOLVEDPEOPLE,
-		ID3_UNSYNCEDLYRICS,
-		ID3_PICTURE,
-		ID3_GENERALOBJECT,
-		ID3_UNIQUEFILEID,
-		ID3_PLAYCOUNTER,
-		ID3_POPULARIMETER,
-		ID3_GROUPINGREG,
-		ID3_CRYPTOREG
+		  /* ???? */ ID3_NOFRAME = 0,       /**< No known frame */
+		  /* AENC */ ID3_AUDIOCRYPTO,       /**< Audio encryption */
+		  /* APIC */ ID3_PICTURE,           /**< Attached picture */
+		  /* COMM */ ID3_COMMENT,           /**< Comments */
+		  /* COMR */ ID3_COMMERCIAL,        /**< Commercial frame */
+		  /* ENCR */ ID3_CRYPTOREG,         /**< Encryption method registration */
+		  /* EQUA */ ID3_EQUALIZATION,      /**< Equalization */
+		  /* ETCO */ ID3_EVENTTIMING,       /**< Event timing codes */
+		  /* GEOB */ ID3_GENERALOBJECT,     /**< General encapsulated object */
+		  /* GRID */ ID3_GROUPINGREG,       /**< Group identification registration */
+		  /* IPLS */ ID3_INVOLVEDPEOPLE,    /**< Involved people list */
+		  /* LINK */ ID3_LINKEDINFO,        /**< Linked information */
+		  /* MCDI */ ID3_CDID,              /**< Music CD identifier */
+		  /* MLLT */ ID3_MPEGLOOKUP,        /**< MPEG location lookup table */
+		  /* OWNE */ ID3_OWNERSHIP,         /**< Ownership frame */
+		  /* PRIV */ ID3_PRIVATE,           /**< Private frame */
+		  /* PCNT */ ID3_PLAYCOUNTER,       /**< Play counter */
+		  /* POPM */ ID3_POPULARIMETER,     /**< Popularimeter */
+		  /* POSS */ ID3_POSITIONSYNC,      /**< Position synchronisation frame */
+		  /* RBUF */ ID3_BUFFERSIZE,        /**< Recommended buffer size */
+		  /* RVAD */ ID3_VOLUMEADJ,         /**< Relative volume adjustment */
+		  /* RVRB */ ID3_REVERB,            /**< Reverb */
+		  /* SYLT */ ID3_SYNCEDLYRICS,      /**< Synchronized lyric/text */
+		  /* SYTC */ ID3_SYNCEDTEMPO,       /**< Synchronized tempo codes */
+		  /* TALB */ ID3_ALBUM,             /**< Album/Movie/Show title */
+		  /* TBPM */ ID3_BPM,               /**< BPM (beats per minute) */
+		  /* TCOM */ ID3_COMPOSER,          /**< Composer */
+		  /* TCON */ ID3_CONTENTTYPE,       /**< Content type */
+		  /* TCOP */ ID3_COPYRIGHT,         /**< Copyright message */
+		  /* TDAT */ ID3_DATE,              /**< Date */
+		  /* TDLY */ ID3_PLAYLISTDELAY,     /**< Playlist delay */
+		  /* TENC */ ID3_ENCODEDBY,         /**< Encoded by */
+		  /* TEXT */ ID3_LYRICIST,          /**< Lyricist/Text writer */
+		  /* TFLT */ ID3_FILETYPE,          /**< File type */
+		  /* TIME */ ID3_TIME,              /**< Time */
+		  /* TIT1 */ ID3_CONTENTGROUP,      /**< Content group description */
+		  /* TIT2 */ ID3_TITLE,             /**< Title/songname/content description */
+		  /* TIT3 */ ID3_SUBTITLE,          /**< Subtitle/Description refinement */
+		  /* TKEY */ ID3_INITIALKEY,        /**< Initial key */
+		  /* TLAN */ ID3_LANGUAGE,          /**< Language(s) */
+		  /* TLEN */ ID3_SONGLEN,           /**< Length */
+		  /* TMED */ ID3_MEDIATYPE,         /**< Media type */
+		  /* TOAL */ ID3_ORIGALBUM,         /**< Original album/movie/show title */
+		  /* TOFN */ ID3_ORIGFILENAME,      /**< Original filename */
+		  /* TOLY */ ID3_ORIGLYRICIST,      /**< Original lyricist(s)/text writer(s) */
+		  /* TOPE */ ID3_ORIGARTIST,        /**< Original artist(s)/performer(s) */
+		  /* TORY */ ID3_ORIGYEAR,          /**< Original release year */
+		  /* TOWN */ ID3_FILEOWNER,         /**< File owner/licensee */
+		  /* TPE1 */ ID3_LEADARTIST,        /**< Lead performer(s)/Soloist(s) */
+		  /* TPE2 */ ID3_BAND,              /**< Band/orchestra/accompaniment */
+		  /* TPE3 */ ID3_CONDUCTOR,         /**< Conductor/performer refinement */
+		  /* TPE4 */ ID3_MIXARTIST,         /**< Interpreted, remixed, or otherwise modified by */
+		  /* TPOS */ ID3_PARTINSET,         /**< Part of a set */
+		  /* TPUB */ ID3_PUBLISHER,         /**< Publisher */
+		  /* TRCK */ ID3_TRACKNUM,          /**< Track number/Position in set */
+		  /* TRDA */ ID3_RECORDINGDATES,    /**< Recording dates */
+		  /* TRSN */ ID3_NETRADIOSTATION,   /**< Internet radio station name */
+		  /* TRSO */ ID3_NETRADIOOWNER,     /**< Internet radio station owner */
+		  /* TSIZ */ ID3_SIZE,              /**< Size */
+		  /* TSRC */ ID3_ISRC,              /**< ISRC (international standard recording code) */
+		  /* TSSE */ ID3_ENCODERSETTINGS,   /**< Software/Hardware and settings used for encoding */
+		  /* TXXX */ ID3_USERTEXT,          /**< User defined text information */
+		  /* TYER */ ID3_YEAR,              /**< Year */
+		  /* UFID */ ID3_UNIQUEFILEID,      /**< Unique file identifier */
+		  /* USER */ ID3_TERMSOFUSE,        /**< Terms of use */
+		  /* USLT */ ID3_UNSYNCEDLYRICS,    /**< Unsynchronized lyric/text transcription */
+		  /* WCOM */ ID3_WWWCOMMERCIALINFO, /**< Commercial information */
+		  /* WCOP */ ID3_WWWCOPYRIGHT,      /**< Copyright/Legal infromation */
+		  /* WOAF */ ID3_WWWAUDIOFILE,      /**< Official audio file webpage */
+		  /* WOAR */ ID3_WWWARTIST,         /**< Official artist/performer webpage */
+		  /* WOAS */ ID3_WWWAUDIOSOURCE,    /**< Official audio source webpage */
+		  /* WORS */ ID3_WWWRADIOPAGE,      /**< Official internet radio station homepage */
+		  /* WPAY */ ID3_WWWPAYMENT,        /**< Payment */
+		  /* WPUB */ ID3_WWWPUBLISHER,      /**< Official publisher webpage */
+		  /* WXXX */ ID3_WWWUSER,           /**< User defined URL link */
+		  /*      */ ID3_METACRYPTO         /**< Encrypted meta frame (id3v2.2.x) */
 	} eID3FrameTypes;
 
 	[
 		object,
 		uuid(A513A24E-C749-11D3-841C-0008C782A257),
 		dual,
-		helpstring("IID3Field Interface"),
+		helpstring("IID3ComField Interface"),
 		pointer_default(unique)
 	]
-	interface IID3Field : IDispatch
+	interface IID3ComField : IDispatch
 	{
 		[propget, id(1), helpstring("property Text")] HRESULT Text([in] long ItemNum, [out, retval] BSTR *pVal);
 		[propput, id(1), helpstring("property Text")] HRESULT Text([in] long ItemNum, [in] BSTR newVal);
@@ -169,12 +194,12 @@ import "ocidl.idl";
 		object,
 		uuid(AEBA98BE-C36C-11D3-841B-0008C782A257),
 		dual,
-		helpstring("IID3Frame Interface"),
+		helpstring("IID3ComFrame Interface"),
 		pointer_default(unique)
 	]
-	interface IID3Frame : IDispatch
+	interface IID3ComFrame : IDispatch
 	{
-		[propget, id(1), helpstring("property Field")] HRESULT Field([in] eID3FieldTypes FieldType, [out, retval] IID3Field** pVal);
+		[propget, id(1), helpstring("property Field")] HRESULT Field([in] eID3FieldTypes FieldType, [out, retval] IID3ComField** pVal);
 		[id(2), helpstring("method Clear")] HRESULT Clear();
 		[propget, id(3), helpstring("property ID")] HRESULT ID([out, retval] eID3FrameTypes *pVal);
 		[propput, id(3), helpstring("property ID")] HRESULT ID([in] eID3FrameTypes newVal);
@@ -185,17 +210,17 @@ import "ocidl.idl";
 		object,
 		uuid(AEBA98BC-C36C-11D3-841B-0008C782A257),
 		dual,
-		helpstring("IID3Tag Interface"),
+		helpstring("IID3ComTag Interface"),
 		pointer_default(unique)
 	]
-	interface IID3Tag : IDispatch
+	interface IID3ComTag : IDispatch
 	{
 		[id(1), helpstring("method Link")] HRESULT Link(BSTR* FileName);
 		[id(2), helpstring("method Clear")] HRESULT Clear();
 		[propget, id(3), helpstring("property HasChanged")] HRESULT HasChanged([out, retval] VARIANT_BOOL *pVal);
-		[id(4), helpstring("method FindFrame")] HRESULT FindFrame([in] eID3FrameTypes FrameID, [in, defaultvalue(TRUE)] VARIANT_BOOL CreateNewIfNotFound, [out, retval] IID3Frame** pVal);
+		[id(4), helpstring("method FindFrame")] HRESULT FindFrame([in] eID3FrameTypes FrameID, [in, defaultvalue(TRUE)] VARIANT_BOOL CreateNewIfNotFound, [out, retval] IID3ComFrame** pVal);
 		[propget, id(5), helpstring("property NumFrames")] HRESULT NumFrames([out, retval] long *pVal);
-		[propget, id(6), helpstring("property FrameByNum")] HRESULT FrameByNum([in] long FrameNum, [out, retval] IID3Frame** pVal);
+		[propget, id(6), helpstring("property FrameByNum")] HRESULT FrameByNum([in] long FrameNum, [out, retval] IID3ComFrame** pVal);
 		[id(7), helpstring("method SaveV1Tag")] HRESULT SaveV1Tag();
 		[id(8), helpstring("method StripV1Tag")] HRESULT StripV1Tag();
 		[id(9), helpstring("method SaveV2Tag")] HRESULT SaveV2Tag();
@@ -219,7 +244,7 @@ import "ocidl.idl";
 		[propget, id(19), helpstring("property HasV1Tag")] HRESULT HasV1Tag([out, retval] VARIANT_BOOL *pVal);
 		[propget, id(20), helpstring("property HasV2Tag")] HRESULT HasV2Tag([out, retval] VARIANT_BOOL *pVal);
 		[propget, id(21), helpstring("property HasLyrics")] HRESULT HasLyrics([out, retval] VARIANT_BOOL *pVal);
-		[id(22), helpstring("method FindFrameString")] HRESULT FindFrameString([in] eID3FrameTypes FrameID, [in] eID3FieldTypes FieldType, [in] BSTR FindString, [in, defaultvalue(TRUE)] VARIANT_BOOL CreateNewIfNotFound, [out, retval] IID3Frame** pVal);
+		[id(22), helpstring("method FindFrameString")] HRESULT FindFrameString([in] eID3FrameTypes FrameID, [in] eID3FieldTypes FieldType, [in] BSTR FindString, [in, defaultvalue(TRUE)] VARIANT_BOOL CreateNewIfNotFound, [out, retval] IID3ComFrame** pVal);
 		[propget, id(23), helpstring("property PlayCount")] HRESULT PlayCount([in] BSTR EMailAddress, [out, retval] long *pVal);
 		[propput, id(23), helpstring("property PlayCount")] HRESULT PlayCount([in] BSTR EMailAddress, [in] long newVal);
 		[propget, id(24), helpstring("property Popularity")] HRESULT Popularity([in] BSTR EMailAddress, [out, retval] short *pVal);
@@ -235,33 +260,33 @@ import "ocidl.idl";
 	version(1.0),
 	helpstring("ID3COM 1.0 Type Library")
 ]
-library ID3COMLib
+library ID3COM
 {
 	importlib("stdole32.tlb");
 	importlib("stdole2.tlb");
 
 	[
 		uuid(AEBA98BD-C36C-11D3-841B-0008C782A257),
-		helpstring("ID3Tag Class")
+		helpstring("ID3ComTag Class")
 	]
-	coclass ID3Tag
+	coclass ID3ComTag
 	{
-		[default] interface IID3Tag;
+		[default] interface IID3ComTag;
 	};
 	[
 		uuid(AEBA98BF-C36C-11D3-841B-0008C782A257),
-		helpstring("ID3Frame Class")
+		helpstring("ID3ComFrame Class")
 	]
-	coclass ID3Frame
+	coclass ID3ComFrame
 	{
-		[default] interface IID3Frame;
+		[default] interface IID3ComFrame;
 	};
 	[
 		uuid(A513A24F-C749-11D3-841C-0008C782A257),
-		helpstring("ID3Field Class")
+		helpstring("ID3ComField Class")
 	]
-	coclass ID3Field
+	coclass ID3ComField
 	{
-		[default] interface IID3Field;
+		[default] interface IID3ComField;
 	};
 };

@@ -2,9 +2,9 @@
 
 
 /* File created by MIDL compiler version 5.01.0164 */
-/* at Tue Apr 11 16:31:12 2000
+/* at Wed Apr 26 11:28:25 2000
  */
-/* Compiler settings for C:\home\scott\id3lib\ID3COM\id3com.idl:
+/* Compiler settings for C:\home\scott\id3lib\3.7.4\id3com\id3com.idl:
     Oicf (OptLev=i2), W1, Zp8, env=Win32, ms_ext, c_ext
     error checks: allocation ref bounds_check enum stub_data 
 */
@@ -59,17 +59,17 @@ extern const MIDL_PROC_FORMAT_STRING __MIDL_ProcFormatString;
    GUID={0x00020400,0x0000,0x0000,{0xC0,0x00,0x00,0x00,0x00,0x00,0x00,0x46}} */
 
 
-/* Object interface: IID3Field, ver. 0.0,
+/* Object interface: IID3ComField, ver. 0.0,
    GUID={0xA513A24E,0xC749,0x11D3,{0x84,0x1C,0x00,0x08,0xC7,0x82,0xA2,0x57}} */
 
 
 extern const MIDL_STUB_DESC Object_StubDesc;
 
 
-extern const MIDL_SERVER_INFO IID3Field_ServerInfo;
+extern const MIDL_SERVER_INFO IID3ComField_ServerInfo;
 
 #pragma code_seg(".orpc")
-static const unsigned short IID3Field_FormatStringOffsetTable[] = 
+static const unsigned short IID3ComField_FormatStringOffsetTable[] = 
     {
     (unsigned short) -1,
     (unsigned short) -1,
@@ -85,32 +85,32 @@ static const unsigned short IID3Field_FormatStringOffsetTable[] =
     202
     };
 
-static const MIDL_SERVER_INFO IID3Field_ServerInfo = 
+static const MIDL_SERVER_INFO IID3ComField_ServerInfo = 
     {
     &Object_StubDesc,
     0,
     __MIDL_ProcFormatString.Format,
-    &IID3Field_FormatStringOffsetTable[-3],
+    &IID3ComField_FormatStringOffsetTable[-3],
     0,
     0,
     0,
     0
     };
 
-static const MIDL_STUBLESS_PROXY_INFO IID3Field_ProxyInfo =
+static const MIDL_STUBLESS_PROXY_INFO IID3ComField_ProxyInfo =
     {
     &Object_StubDesc,
     __MIDL_ProcFormatString.Format,
-    &IID3Field_FormatStringOffsetTable[-3],
+    &IID3ComField_FormatStringOffsetTable[-3],
     0,
     0,
     0
     };
 
-CINTERFACE_PROXY_VTABLE(15) _IID3FieldProxyVtbl = 
+CINTERFACE_PROXY_VTABLE(15) _IID3ComFieldProxyVtbl = 
 {
-    &IID3Field_ProxyInfo,
-    &IID_IID3Field,
+    &IID3ComField_ProxyInfo,
+    &IID_IID3ComField,
     IUnknown_QueryInterface_Proxy,
     IUnknown_AddRef_Proxy,
     IUnknown_Release_Proxy ,
@@ -118,18 +118,18 @@ CINTERFACE_PROXY_VTABLE(15) _IID3FieldProxyVtbl =
     0 /* (void *)-1 /* IDispatch::GetTypeInfo */ ,
     0 /* (void *)-1 /* IDispatch::GetIDsOfNames */ ,
     0 /* IDispatch_Invoke_Proxy */ ,
-    (void *)-1 /* IID3Field::get_Text */ ,
-    (void *)-1 /* IID3Field::put_Text */ ,
-    (void *)-1 /* IID3Field::get_Long */ ,
-    (void *)-1 /* IID3Field::put_Long */ ,
-    (void *)-1 /* IID3Field::Clear */ ,
-    (void *)-1 /* IID3Field::CopyDataToFile */ ,
-    (void *)-1 /* IID3Field::CopyDataFromFile */ ,
-    (void *)-1 /* IID3Field::get_NumTextItems */
+    (void *)-1 /* IID3ComField::get_Text */ ,
+    (void *)-1 /* IID3ComField::put_Text */ ,
+    (void *)-1 /* IID3ComField::get_Long */ ,
+    (void *)-1 /* IID3ComField::put_Long */ ,
+    (void *)-1 /* IID3ComField::Clear */ ,
+    (void *)-1 /* IID3ComField::CopyDataToFile */ ,
+    (void *)-1 /* IID3ComField::CopyDataFromFile */ ,
+    (void *)-1 /* IID3ComField::get_NumTextItems */
 };
 
 
-static const PRPC_STUB_FUNCTION IID3Field_table[] =
+static const PRPC_STUB_FUNCTION IID3ComField_table[] =
 {
     STUB_FORWARDING_FUNCTION,
     STUB_FORWARDING_FUNCTION,
@@ -145,27 +145,27 @@ static const PRPC_STUB_FUNCTION IID3Field_table[] =
     NdrStubCall2
 };
 
-CInterfaceStubVtbl _IID3FieldStubVtbl =
+CInterfaceStubVtbl _IID3ComFieldStubVtbl =
 {
-    &IID_IID3Field,
-    &IID3Field_ServerInfo,
+    &IID_IID3ComField,
+    &IID3ComField_ServerInfo,
     15,
-    &IID3Field_table[-3],
+    &IID3ComField_table[-3],
     CStdStubBuffer_DELEGATING_METHODS
 };
 
 
-/* Object interface: IID3Frame, ver. 0.0,
+/* Object interface: IID3ComFrame, ver. 0.0,
    GUID={0xAEBA98BE,0xC36C,0x11D3,{0x84,0x1B,0x00,0x08,0xC7,0x82,0xA2,0x57}} */
 
 
 extern const MIDL_STUB_DESC Object_StubDesc;
 
 
-extern const MIDL_SERVER_INFO IID3Frame_ServerInfo;
+extern const MIDL_SERVER_INFO IID3ComFrame_ServerInfo;
 
 #pragma code_seg(".orpc")
-static const unsigned short IID3Frame_FormatStringOffsetTable[] = 
+static const unsigned short IID3ComFrame_FormatStringOffsetTable[] = 
     {
     (unsigned short) -1,
     (unsigned short) -1,
@@ -178,32 +178,32 @@ static const unsigned short IID3Frame_FormatStringOffsetTable[] =
     342
     };
 
-static const MIDL_SERVER_INFO IID3Frame_ServerInfo = 
+static const MIDL_SERVER_INFO IID3ComFrame_ServerInfo = 
     {
     &Object_StubDesc,
     0,
     __MIDL_ProcFormatString.Format,
-    &IID3Frame_FormatStringOffsetTable[-3],
+    &IID3ComFrame_FormatStringOffsetTable[-3],
     0,
     0,
     0,
     0
     };
 
-static const MIDL_STUBLESS_PROXY_INFO IID3Frame_ProxyInfo =
+static const MIDL_STUBLESS_PROXY_INFO IID3ComFrame_ProxyInfo =
     {
     &Object_StubDesc,
     __MIDL_ProcFormatString.Format,
-    &IID3Frame_FormatStringOffsetTable[-3],
+    &IID3ComFrame_FormatStringOffsetTable[-3],
     0,
     0,
     0
     };
 
-CINTERFACE_PROXY_VTABLE(12) _IID3FrameProxyVtbl = 
+CINTERFACE_PROXY_VTABLE(12) _IID3ComFrameProxyVtbl = 
 {
-    &IID3Frame_ProxyInfo,
-    &IID_IID3Frame,
+    &IID3ComFrame_ProxyInfo,
+    &IID_IID3ComFrame,
     IUnknown_QueryInterface_Proxy,
     IUnknown_AddRef_Proxy,
     IUnknown_Release_Proxy ,
@@ -211,15 +211,15 @@ CINTERFACE_PROXY_VTABLE(12) _IID3FrameProxyVtbl =
     0 /* (void *)-1 /* IDispatch::GetTypeInfo */ ,
     0 /* (void *)-1 /* IDispatch::GetIDsOfNames */ ,
     0 /* IDispatch_Invoke_Proxy */ ,
-    (void *)-1 /* IID3Frame::get_Field */ ,
-    (void *)-1 /* IID3Frame::Clear */ ,
-    (void *)-1 /* IID3Frame::get_ID */ ,
-    (void *)-1 /* IID3Frame::put_ID */ ,
-    (void *)-1 /* IID3Frame::get_FrameName */
+    (void *)-1 /* IID3ComFrame::get_Field */ ,
+    (void *)-1 /* IID3ComFrame::Clear */ ,
+    (void *)-1 /* IID3ComFrame::get_ID */ ,
+    (void *)-1 /* IID3ComFrame::put_ID */ ,
+    (void *)-1 /* IID3ComFrame::get_FrameName */
 };
 
 
-static const PRPC_STUB_FUNCTION IID3Frame_table[] =
+static const PRPC_STUB_FUNCTION IID3ComFrame_table[] =
 {
     STUB_FORWARDING_FUNCTION,
     STUB_FORWARDING_FUNCTION,
@@ -232,28 +232,28 @@ static const PRPC_STUB_FUNCTION IID3Frame_table[] =
     NdrStubCall2
 };
 
-CInterfaceStubVtbl _IID3FrameStubVtbl =
+CInterfaceStubVtbl _IID3ComFrameStubVtbl =
 {
-    &IID_IID3Frame,
-    &IID3Frame_ServerInfo,
+    &IID_IID3ComFrame,
+    &IID3ComFrame_ServerInfo,
     12,
-    &IID3Frame_table[-3],
+    &IID3ComFrame_table[-3],
     CStdStubBuffer_DELEGATING_METHODS
 };
 
 
-/* Object interface: IID3Tag, ver. 0.0,
+/* Object interface: IID3ComTag, ver. 0.0,
    GUID={0xAEBA98BC,0xC36C,0x11D3,{0x84,0x1B,0x00,0x08,0xC7,0x82,0xA2,0x57}} */
 
 
 extern const MIDL_STUB_DESC Object_StubDesc;
 
 
-extern const MIDL_SERVER_INFO IID3Tag_ServerInfo;
+extern const MIDL_SERVER_INFO IID3ComTag_ServerInfo;
 
 #pragma code_seg(".orpc")
-/* [helpstring][id][propput] */ HRESULT STDMETHODCALLTYPE IID3Tag_put_LastPlayed_Proxy( 
-    IID3Tag __RPC_FAR * This,
+/* [helpstring][id][propput] */ HRESULT STDMETHODCALLTYPE IID3ComTag_put_LastPlayed_Proxy( 
+    IID3ComTag __RPC_FAR * This,
     /* [in] */ DATE newVal)
 {
 CLIENT_CALL_RETURN _RetVal;
@@ -286,8 +286,8 @@ CLIENT_CALL_RETURN _RetVal;
     
 }
 
-/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IID3Tag_get_HasV1Tag_Proxy( 
-    IID3Tag __RPC_FAR * This,
+/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IID3ComTag_get_HasV1Tag_Proxy( 
+    IID3ComTag __RPC_FAR * This,
     /* [retval][out] */ VARIANT_BOOL __RPC_FAR *pVal)
 {
 CLIENT_CALL_RETURN _RetVal;
@@ -320,8 +320,8 @@ CLIENT_CALL_RETURN _RetVal;
     
 }
 
-/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IID3Tag_get_HasV2Tag_Proxy( 
-    IID3Tag __RPC_FAR * This,
+/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IID3ComTag_get_HasV2Tag_Proxy( 
+    IID3ComTag __RPC_FAR * This,
     /* [retval][out] */ VARIANT_BOOL __RPC_FAR *pVal)
 {
 CLIENT_CALL_RETURN _RetVal;
@@ -354,8 +354,8 @@ CLIENT_CALL_RETURN _RetVal;
     
 }
 
-/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IID3Tag_get_HasLyrics_Proxy( 
-    IID3Tag __RPC_FAR * This,
+/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IID3ComTag_get_HasLyrics_Proxy( 
+    IID3ComTag __RPC_FAR * This,
     /* [retval][out] */ VARIANT_BOOL __RPC_FAR *pVal)
 {
 CLIENT_CALL_RETURN _RetVal;
@@ -388,13 +388,13 @@ CLIENT_CALL_RETURN _RetVal;
     
 }
 
-/* [helpstring][id] */ HRESULT STDMETHODCALLTYPE IID3Tag_FindFrameString_Proxy( 
-    IID3Tag __RPC_FAR * This,
+/* [helpstring][id] */ HRESULT STDMETHODCALLTYPE IID3ComTag_FindFrameString_Proxy( 
+    IID3ComTag __RPC_FAR * This,
     /* [in] */ eID3FrameTypes FrameID,
     /* [in] */ eID3FieldTypes FieldType,
     /* [in] */ BSTR FindString,
     /* [defaultvalue][in] */ VARIANT_BOOL CreateNewIfNotFound,
-    /* [retval][out] */ IID3Frame __RPC_FAR *__RPC_FAR *pVal)
+    /* [retval][out] */ IID3ComFrame __RPC_FAR *__RPC_FAR *pVal)
 {
 CLIENT_CALL_RETURN _RetVal;
 
@@ -430,8 +430,8 @@ CLIENT_CALL_RETURN _RetVal;
     
 }
 
-/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IID3Tag_get_PlayCount_Proxy( 
-    IID3Tag __RPC_FAR * This,
+/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IID3ComTag_get_PlayCount_Proxy( 
+    IID3ComTag __RPC_FAR * This,
     /* [in] */ BSTR EMailAddress,
     /* [retval][out] */ long __RPC_FAR *pVal)
 {
@@ -466,8 +466,8 @@ CLIENT_CALL_RETURN _RetVal;
     
 }
 
-/* [helpstring][id][propput] */ HRESULT STDMETHODCALLTYPE IID3Tag_put_PlayCount_Proxy( 
-    IID3Tag __RPC_FAR * This,
+/* [helpstring][id][propput] */ HRESULT STDMETHODCALLTYPE IID3ComTag_put_PlayCount_Proxy( 
+    IID3ComTag __RPC_FAR * This,
     /* [in] */ BSTR EMailAddress,
     /* [in] */ long newVal)
 {
@@ -502,8 +502,8 @@ CLIENT_CALL_RETURN _RetVal;
     
 }
 
-/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IID3Tag_get_Popularity_Proxy( 
-    IID3Tag __RPC_FAR * This,
+/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IID3ComTag_get_Popularity_Proxy( 
+    IID3ComTag __RPC_FAR * This,
     /* [in] */ BSTR EMailAddress,
     /* [retval][out] */ short __RPC_FAR *pVal)
 {
@@ -538,8 +538,8 @@ CLIENT_CALL_RETURN _RetVal;
     
 }
 
-/* [helpstring][id][propput] */ HRESULT STDMETHODCALLTYPE IID3Tag_put_Popularity_Proxy( 
-    IID3Tag __RPC_FAR * This,
+/* [helpstring][id][propput] */ HRESULT STDMETHODCALLTYPE IID3ComTag_put_Popularity_Proxy( 
+    IID3ComTag __RPC_FAR * This,
     /* [in] */ BSTR EMailAddress,
     /* [in] */ short newVal)
 {
@@ -574,8 +574,8 @@ CLIENT_CALL_RETURN _RetVal;
     
 }
 
-/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IID3Tag_get_TagCreated_Proxy( 
-    IID3Tag __RPC_FAR * This,
+/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IID3ComTag_get_TagCreated_Proxy( 
+    IID3ComTag __RPC_FAR * This,
     /* [retval][out] */ DATE __RPC_FAR *pVal)
 {
 CLIENT_CALL_RETURN _RetVal;
@@ -608,8 +608,8 @@ CLIENT_CALL_RETURN _RetVal;
     
 }
 
-/* [helpstring][id][propput] */ HRESULT STDMETHODCALLTYPE IID3Tag_put_TagCreated_Proxy( 
-    IID3Tag __RPC_FAR * This,
+/* [helpstring][id][propput] */ HRESULT STDMETHODCALLTYPE IID3ComTag_put_TagCreated_Proxy( 
+    IID3ComTag __RPC_FAR * This,
     /* [in] */ DATE newVal)
 {
 CLIENT_CALL_RETURN _RetVal;
@@ -642,8 +642,8 @@ CLIENT_CALL_RETURN _RetVal;
     
 }
 
-/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IID3Tag_get_PercentVolumeAdjust_Proxy( 
-    IID3Tag __RPC_FAR * This,
+/* [helpstring][id][propget] */ HRESULT STDMETHODCALLTYPE IID3ComTag_get_PercentVolumeAdjust_Proxy( 
+    IID3ComTag __RPC_FAR * This,
     /* [retval][out] */ double __RPC_FAR *pVal)
 {
 CLIENT_CALL_RETURN _RetVal;
@@ -676,8 +676,8 @@ CLIENT_CALL_RETURN _RetVal;
     
 }
 
-/* [helpstring][id][propput] */ HRESULT STDMETHODCALLTYPE IID3Tag_put_PercentVolumeAdjust_Proxy( 
-    IID3Tag __RPC_FAR * This,
+/* [helpstring][id][propput] */ HRESULT STDMETHODCALLTYPE IID3ComTag_put_PercentVolumeAdjust_Proxy( 
+    IID3ComTag __RPC_FAR * This,
     /* [in] */ double newVal)
 {
 CLIENT_CALL_RETURN _RetVal;
@@ -710,8 +710,8 @@ CLIENT_CALL_RETURN _RetVal;
     
 }
 
-/* [restricted][id][propget] */ HRESULT STDMETHODCALLTYPE IID3Tag_get__NewEnum_Proxy( 
-    IID3Tag __RPC_FAR * This,
+/* [restricted][id][propget] */ HRESULT STDMETHODCALLTYPE IID3ComTag_get__NewEnum_Proxy( 
+    IID3ComTag __RPC_FAR * This,
     /* [retval][out] */ IUnknown __RPC_FAR *__RPC_FAR *pRetVal)
 {
 CLIENT_CALL_RETURN _RetVal;
@@ -770,7 +770,7 @@ static const MIDL_STUB_DESC Object_StubDesc =
     0   /* Reserved5 */
     };
 
-static const unsigned short IID3Tag_FormatStringOffsetTable[] = 
+static const unsigned short IID3ComTag_FormatStringOffsetTable[] = 
     {
     (unsigned short) -1,
     (unsigned short) -1,
@@ -817,32 +817,32 @@ static const unsigned short IID3Tag_FormatStringOffsetTable[] =
     1448
     };
 
-static const MIDL_SERVER_INFO IID3Tag_ServerInfo = 
+static const MIDL_SERVER_INFO IID3ComTag_ServerInfo = 
     {
     &Object_StubDesc,
     0,
     __MIDL_ProcFormatString.Format,
-    &IID3Tag_FormatStringOffsetTable[-3],
+    &IID3ComTag_FormatStringOffsetTable[-3],
     0,
     0,
     0,
     0
     };
 
-static const MIDL_STUBLESS_PROXY_INFO IID3Tag_ProxyInfo =
+static const MIDL_STUBLESS_PROXY_INFO IID3ComTag_ProxyInfo =
     {
     &Object_StubDesc,
     __MIDL_ProcFormatString.Format,
-    &IID3Tag_FormatStringOffsetTable[-3],
+    &IID3ComTag_FormatStringOffsetTable[-3],
     0,
     0,
     0
     };
 
-CINTERFACE_PROXY_VTABLE(46) _IID3TagProxyVtbl = 
+CINTERFACE_PROXY_VTABLE(46) _IID3ComTagProxyVtbl = 
 {
-    &IID3Tag_ProxyInfo,
-    &IID_IID3Tag,
+    &IID3ComTag_ProxyInfo,
+    &IID_IID3ComTag,
     IUnknown_QueryInterface_Proxy,
     IUnknown_AddRef_Proxy,
     IUnknown_Release_Proxy ,
@@ -850,49 +850,49 @@ CINTERFACE_PROXY_VTABLE(46) _IID3TagProxyVtbl =
     0 /* (void *)-1 /* IDispatch::GetTypeInfo */ ,
     0 /* (void *)-1 /* IDispatch::GetIDsOfNames */ ,
     0 /* IDispatch_Invoke_Proxy */ ,
-    (void *)-1 /* IID3Tag::Link */ ,
-    (void *)-1 /* IID3Tag::Clear */ ,
-    (void *)-1 /* IID3Tag::get_HasChanged */ ,
-    (void *)-1 /* IID3Tag::FindFrame */ ,
-    (void *)-1 /* IID3Tag::get_NumFrames */ ,
-    (void *)-1 /* IID3Tag::get_FrameByNum */ ,
-    (void *)-1 /* IID3Tag::SaveV1Tag */ ,
-    (void *)-1 /* IID3Tag::StripV1Tag */ ,
-    (void *)-1 /* IID3Tag::SaveV2Tag */ ,
-    (void *)-1 /* IID3Tag::StripV2Tag */ ,
-    (void *)-1 /* IID3Tag::get_Artist */ ,
-    (void *)-1 /* IID3Tag::put_Artist */ ,
-    (void *)-1 /* IID3Tag::get_Album */ ,
-    (void *)-1 /* IID3Tag::put_Album */ ,
-    (void *)-1 /* IID3Tag::get_Title */ ,
-    (void *)-1 /* IID3Tag::put_Title */ ,
-    (void *)-1 /* IID3Tag::get_Comment */ ,
-    (void *)-1 /* IID3Tag::put_Comment */ ,
-    (void *)-1 /* IID3Tag::get_Genre */ ,
-    (void *)-1 /* IID3Tag::put_Genre */ ,
-    (void *)-1 /* IID3Tag::get_Year */ ,
-    (void *)-1 /* IID3Tag::put_Year */ ,
-    (void *)-1 /* IID3Tag::get_Track */ ,
-    (void *)-1 /* IID3Tag::put_Track */ ,
-    (void *)-1 /* IID3Tag::get_LastPlayed */ ,
-    IID3Tag_put_LastPlayed_Proxy ,
-    IID3Tag_get_HasV1Tag_Proxy ,
-    IID3Tag_get_HasV2Tag_Proxy ,
-    IID3Tag_get_HasLyrics_Proxy ,
-    IID3Tag_FindFrameString_Proxy ,
-    IID3Tag_get_PlayCount_Proxy ,
-    IID3Tag_put_PlayCount_Proxy ,
-    IID3Tag_get_Popularity_Proxy ,
-    IID3Tag_put_Popularity_Proxy ,
-    IID3Tag_get_TagCreated_Proxy ,
-    IID3Tag_put_TagCreated_Proxy ,
-    IID3Tag_get_PercentVolumeAdjust_Proxy ,
-    IID3Tag_put_PercentVolumeAdjust_Proxy ,
-    IID3Tag_get__NewEnum_Proxy
+    (void *)-1 /* IID3ComTag::Link */ ,
+    (void *)-1 /* IID3ComTag::Clear */ ,
+    (void *)-1 /* IID3ComTag::get_HasChanged */ ,
+    (void *)-1 /* IID3ComTag::FindFrame */ ,
+    (void *)-1 /* IID3ComTag::get_NumFrames */ ,
+    (void *)-1 /* IID3ComTag::get_FrameByNum */ ,
+    (void *)-1 /* IID3ComTag::SaveV1Tag */ ,
+    (void *)-1 /* IID3ComTag::StripV1Tag */ ,
+    (void *)-1 /* IID3ComTag::SaveV2Tag */ ,
+    (void *)-1 /* IID3ComTag::StripV2Tag */ ,
+    (void *)-1 /* IID3ComTag::get_Artist */ ,
+    (void *)-1 /* IID3ComTag::put_Artist */ ,
+    (void *)-1 /* IID3ComTag::get_Album */ ,
+    (void *)-1 /* IID3ComTag::put_Album */ ,
+    (void *)-1 /* IID3ComTag::get_Title */ ,
+    (void *)-1 /* IID3ComTag::put_Title */ ,
+    (void *)-1 /* IID3ComTag::get_Comment */ ,
+    (void *)-1 /* IID3ComTag::put_Comment */ ,
+    (void *)-1 /* IID3ComTag::get_Genre */ ,
+    (void *)-1 /* IID3ComTag::put_Genre */ ,
+    (void *)-1 /* IID3ComTag::get_Year */ ,
+    (void *)-1 /* IID3ComTag::put_Year */ ,
+    (void *)-1 /* IID3ComTag::get_Track */ ,
+    (void *)-1 /* IID3ComTag::put_Track */ ,
+    (void *)-1 /* IID3ComTag::get_LastPlayed */ ,
+    IID3ComTag_put_LastPlayed_Proxy ,
+    IID3ComTag_get_HasV1Tag_Proxy ,
+    IID3ComTag_get_HasV2Tag_Proxy ,
+    IID3ComTag_get_HasLyrics_Proxy ,
+    IID3ComTag_FindFrameString_Proxy ,
+    IID3ComTag_get_PlayCount_Proxy ,
+    IID3ComTag_put_PlayCount_Proxy ,
+    IID3ComTag_get_Popularity_Proxy ,
+    IID3ComTag_put_Popularity_Proxy ,
+    IID3ComTag_get_TagCreated_Proxy ,
+    IID3ComTag_put_TagCreated_Proxy ,
+    IID3ComTag_get_PercentVolumeAdjust_Proxy ,
+    IID3ComTag_put_PercentVolumeAdjust_Proxy ,
+    IID3ComTag_get__NewEnum_Proxy
 };
 
 
-static const PRPC_STUB_FUNCTION IID3Tag_table[] =
+static const PRPC_STUB_FUNCTION IID3ComTag_table[] =
 {
     STUB_FORWARDING_FUNCTION,
     STUB_FORWARDING_FUNCTION,
@@ -939,12 +939,12 @@ static const PRPC_STUB_FUNCTION IID3Tag_table[] =
     NdrStubCall2
 };
 
-CInterfaceStubVtbl _IID3TagStubVtbl =
+CInterfaceStubVtbl _IID3ComTagStubVtbl =
 {
-    &IID_IID3Tag,
-    &IID3Tag_ServerInfo,
+    &IID_IID3ComTag,
+    &IID3ComTag_ServerInfo,
     46,
-    &IID3Tag_table[-3],
+    &IID3ComTag_table[-3],
     CStdStubBuffer_DELEGATING_METHODS
 };
 
@@ -3146,25 +3146,25 @@ static const MIDL_TYPE_FORMAT_STRING __MIDL_TypeFormatString =
 
 const CInterfaceProxyVtbl * _id3com_ProxyVtblList[] = 
 {
-    ( CInterfaceProxyVtbl *) &_IID3FieldProxyVtbl,
-    ( CInterfaceProxyVtbl *) &_IID3TagProxyVtbl,
-    ( CInterfaceProxyVtbl *) &_IID3FrameProxyVtbl,
+    ( CInterfaceProxyVtbl *) &_IID3ComFieldProxyVtbl,
+    ( CInterfaceProxyVtbl *) &_IID3ComTagProxyVtbl,
+    ( CInterfaceProxyVtbl *) &_IID3ComFrameProxyVtbl,
     0
 };
 
 const CInterfaceStubVtbl * _id3com_StubVtblList[] = 
 {
-    ( CInterfaceStubVtbl *) &_IID3FieldStubVtbl,
-    ( CInterfaceStubVtbl *) &_IID3TagStubVtbl,
-    ( CInterfaceStubVtbl *) &_IID3FrameStubVtbl,
+    ( CInterfaceStubVtbl *) &_IID3ComFieldStubVtbl,
+    ( CInterfaceStubVtbl *) &_IID3ComTagStubVtbl,
+    ( CInterfaceStubVtbl *) &_IID3ComFrameStubVtbl,
     0
 };
 
 PCInterfaceName const _id3com_InterfaceNamesList[] = 
 {
-    "IID3Field",
-    "IID3Tag",
-    "IID3Frame",
+    "IID3ComField",
+    "IID3ComTag",
+    "IID3ComFrame",
     0
 };
 

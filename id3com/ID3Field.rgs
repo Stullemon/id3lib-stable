@@ -1,20 +1,20 @@
 HKCR
 {
-	ID3COM.ID3Field.1 = s 'ID3Field Class'
+	ID3COM.ID3ComField.1 = s 'ID3ComField Class'
 	{
 		CLSID = s '{A513A24F-C749-11D3-841C-0008C782A257}'
 	}
-	ID3COM.ID3Field = s 'ID3Field Class'
+	ID3COM.ID3ComField = s 'ID3ComField Class'
 	{
 		CLSID = s '{A513A24F-C749-11D3-841C-0008C782A257}'
-		CurVer = s 'ID3COM.ID3Field.1'
+		CurVer = s 'ID3COM.ID3ComField.1'
 	}
 	NoRemove CLSID
 	{
-		ForceRemove {A513A24F-C749-11D3-841C-0008C782A257} = s 'ID3Field Class'
+		ForceRemove {A513A24F-C749-11D3-841C-0008C782A257} = s 'ID3ComField Class'
 		{
-			ProgID = s 'ID3COM.ID3Field.1'
-			VersionIndependentProgID = s 'ID3COM.ID3Field'
+			ProgID = s 'ID3COM.ID3ComField.1'
+			VersionIndependentProgID = s 'ID3COM.ID3ComField'
 			ForceRemove 'Programmable'
 			InprocServer32 = s '%MODULE%'
 			{

@@ -1,20 +1,20 @@
 HKCR
 {
-	ID3COM.ID3Frame.1 = s 'ID3Frame Class'
+	ID3COM.ID3ComFrame.1 = s 'ID3ComFrame Class'
 	{
 		CLSID = s '{AEBA98BF-C36C-11D3-841B-0008C782A257}'
 	}
-	ID3COM.ID3Frame = s 'ID3Frame Class'
+	ID3COM.ID3ComFrame = s 'ID3ComFrame Class'
 	{
 		CLSID = s '{AEBA98BF-C36C-11D3-841B-0008C782A257}'
-		CurVer = s 'ID3COM.ID3Frame.1'
+		CurVer = s 'ID3COM.ID3ComFrame.1'
 	}
 	NoRemove CLSID
 	{
-		ForceRemove {AEBA98BF-C36C-11D3-841B-0008C782A257} = s 'ID3Frame Class'
+		ForceRemove {AEBA98BF-C36C-11D3-841B-0008C782A257} = s 'ID3ComFrame Class'
 		{
-			ProgID = s 'ID3COM.ID3Frame.1'
-			VersionIndependentProgID = s 'ID3COM.ID3Frame'
+			ProgID = s 'ID3COM.ID3ComFrame.1'
+			VersionIndependentProgID = s 'ID3COM.ID3ComFrame'
 			ForceRemove 'Programmable'
 			InprocServer32 = s '%MODULE%'
 			{

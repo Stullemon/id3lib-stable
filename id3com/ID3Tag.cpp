@@ -2,16 +2,26 @@
 // Copyright (c) 2000 John Adcock.  All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 //
-//	This file is subject to the terms of the GNU General Public License as
-//	published by the Free Software Foundation.  A copy of this license is
-//	included with this software distribution in the file COPYING.  If you
-//	do not have a copy, you may obtain a copy by writing to the Free
-//	Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+// This library is free software; you can redistribute it and/or modify it
+// under the terms of the GNU Library General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or (at your
+// option) any later version.
 //
-//	This software is distributed in the hope that it will be useful,
-//	but WITHOUT ANY WARRANTY; without even the implied warranty of
-//	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//	GNU General Public License for more details
+// This library is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// License for more details.
+//
+// You should have received a copy of the GNU Library General Public License
+// along with this library; if not, write to the Free Software Foundation,
+// Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+// The id3lib authors encourage improvements and optimisations to be sent to
+// the id3lib coordinator.  Please see the README file for details on where to
+// send such submissions.  See the AUTHORS file for a list of people who have
+// contributed to id3lib.  See the ChangeLog file for a list of changes to
+// id3lib.  These files are distributed with id3lib at
+// http://download.sourceforge.net/id3lib/
 //
 /////////////////////////////////////////////////////////////////////////////
 // ID3Tag.cpp : Implementation of CID3Tag
@@ -21,6 +31,7 @@
 // Date          Developer             Changes
 //
 // 05 Jan 2000   John Adcock           Original Release    
+// 26 Apr 2000   John Adcock           Got working with id3lib 3.7.3
 //
 /////////////////////////////////////////////////////////////////////////////
 
@@ -53,7 +64,7 @@ STDMETHODIMP CID3Tag::InterfaceSupportsErrorInfo(REFIID riid)
 {
 	static const IID* arr[] = 
 	{
-		&IID_IID3Tag
+		&IID_IID3ComTag
 	};
 	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
@@ -79,11 +90,11 @@ STDMETHODIMP CID3Tag::Link(BSTR *FileName)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 	return S_OK;
 }
@@ -96,11 +107,11 @@ STDMETHODIMP CID3Tag::Clear()
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 	return S_OK;
 }
@@ -122,15 +133,15 @@ STDMETHODIMP CID3Tag::get_HasChanged(VARIANT_BOOL *pVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
-STDMETHODIMP CID3Tag::FindFrame(eID3FrameTypes FrameID, VARIANT_BOOL CreateNewIfNotFound, IID3Frame** pVal)
+STDMETHODIMP CID3Tag::FindFrame(eID3FrameTypes FrameID, VARIANT_BOOL CreateNewIfNotFound, IID3ComFrame** pVal)
 {
 	try
 	{
@@ -150,11 +161,11 @@ STDMETHODIMP CID3Tag::FindFrame(eID3FrameTypes FrameID, VARIANT_BOOL CreateNewIf
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -175,16 +186,16 @@ STDMETHODIMP CID3Tag::get_NumFrames(long *pVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
 		*pVal = 0;
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
-STDMETHODIMP CID3Tag::get_FrameByNum(long FrameNum, IID3Frame** pVal)
+STDMETHODIMP CID3Tag::get_FrameByNum(long FrameNum, IID3ComFrame** pVal)
 {
 	try
 	{
@@ -196,11 +207,11 @@ STDMETHODIMP CID3Tag::get_FrameByNum(long FrameNum, IID3Frame** pVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -208,16 +219,16 @@ STDMETHODIMP CID3Tag::SaveV1Tag()
 {
 	try
 	{
-		m_ID3Tag->Update(V1_TAG);
+		m_ID3Tag->Update(ID3TT_ID3V1);
 		return S_OK;
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -225,16 +236,16 @@ STDMETHODIMP CID3Tag::StripV1Tag()
 {
 	try
 	{
-		m_ID3Tag->Strip(V1_TAG);
+		m_ID3Tag->Strip(ID3TT_ID3V1);
 		return S_OK;
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -242,16 +253,16 @@ STDMETHODIMP CID3Tag::SaveV2Tag()
 {
 	try
 	{
-		m_ID3Tag->Update(V2_TAG);
+		m_ID3Tag->Update(ID3TT_ID3V2);
 		return S_OK;
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -259,16 +270,16 @@ STDMETHODIMP CID3Tag::StripV2Tag()
 {
 	try
 	{
-		m_ID3Tag->Strip(V2_TAG);
+		m_ID3Tag->Strip(ID3TT_ID3V2);
 		return S_OK;
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -289,11 +300,11 @@ STDMETHODIMP CID3Tag::get_Artist(BSTR *pVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -321,11 +332,11 @@ STDMETHODIMP CID3Tag::put_Artist(BSTR newVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -346,11 +357,11 @@ STDMETHODIMP CID3Tag::get_Album(BSTR *pVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -364,11 +375,11 @@ STDMETHODIMP CID3Tag::put_Album(BSTR newVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -389,11 +400,11 @@ STDMETHODIMP CID3Tag::get_Title(BSTR *pVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -407,11 +418,11 @@ STDMETHODIMP CID3Tag::put_Title(BSTR newVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -432,11 +443,11 @@ STDMETHODIMP CID3Tag::get_Comment(BSTR *pVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -450,11 +461,11 @@ STDMETHODIMP CID3Tag::put_Comment(BSTR newVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -468,11 +479,11 @@ STDMETHODIMP CID3Tag::get_Genre(long *pVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -485,11 +496,11 @@ STDMETHODIMP CID3Tag::put_Genre(long newVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -510,11 +521,11 @@ STDMETHODIMP CID3Tag::get_Year(BSTR *pVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -527,11 +538,11 @@ STDMETHODIMP CID3Tag::put_Year(BSTR newVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 	return S_OK;
 }
@@ -546,11 +557,11 @@ STDMETHODIMP CID3Tag::get_Track(long *pVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -563,11 +574,11 @@ STDMETHODIMP CID3Tag::put_Track(long newVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -590,11 +601,11 @@ STDMETHODIMP CID3Tag::get_LastPlayed(DATE *pVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -622,11 +633,11 @@ STDMETHODIMP CID3Tag::put_LastPlayed(DATE newVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -647,11 +658,11 @@ STDMETHODIMP CID3Tag::get_HasV1Tag(VARIANT_BOOL *pVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -672,11 +683,11 @@ STDMETHODIMP CID3Tag::get_HasV2Tag(VARIANT_BOOL *pVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -698,15 +709,15 @@ STDMETHODIMP CID3Tag::get_HasLyrics(VARIANT_BOOL *pVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
-STDMETHODIMP CID3Tag::FindFrameString(eID3FrameTypes FrameID, eID3FieldTypes FieldType, BSTR FindString, VARIANT_BOOL CreateNewIfNotFound, IID3Frame** pVal)
+STDMETHODIMP CID3Tag::FindFrameString(eID3FrameTypes FrameID, eID3FieldTypes FieldType, BSTR FindString, VARIANT_BOOL CreateNewIfNotFound, IID3ComFrame** pVal)
 {
 	try
 	{
@@ -727,11 +738,11 @@ STDMETHODIMP CID3Tag::FindFrameString(eID3FrameTypes FrameID, eID3FieldTypes Fie
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -750,11 +761,11 @@ STDMETHODIMP CID3Tag::get_PlayCount(BSTR EMailAddress, long *pVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -779,11 +790,11 @@ STDMETHODIMP CID3Tag::put_PlayCount(BSTR EMailAddress, long newVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -801,11 +812,11 @@ STDMETHODIMP CID3Tag::get_Popularity(BSTR EMailAddress, short *pVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -830,11 +841,11 @@ STDMETHODIMP CID3Tag::put_Popularity(BSTR EMailAddress, short newVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -857,11 +868,11 @@ STDMETHODIMP CID3Tag::get_TagCreated(DATE *pVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -889,11 +900,11 @@ STDMETHODIMP CID3Tag::put_TagCreated(DATE newVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -916,11 +927,11 @@ STDMETHODIMP CID3Tag::get_PercentVolumeAdjust(double *pVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
 
@@ -948,10 +959,10 @@ STDMETHODIMP CID3Tag::put_PercentVolumeAdjust(double newVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Tag, err.GetErrorType(), IID_IID3Tag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Tag, "An unexpected error has occurred", IID_IID3Tag, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }

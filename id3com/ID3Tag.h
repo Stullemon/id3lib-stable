@@ -2,16 +2,26 @@
 // Copyright (c) 2000 John Adcock.  All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 //
-//	This file is subject to the terms of the GNU General Public License as
-//	published by the Free Software Foundation.  A copy of this license is
-//	included with this software distribution in the file COPYING.  If you
-//	do not have a copy, you may obtain a copy by writing to the Free
-//	Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+// This library is free software; you can redistribute it and/or modify it
+// under the terms of the GNU Library General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or (at your
+// option) any later version.
 //
-//	This software is distributed in the hope that it will be useful,
-//	but WITHOUT ANY WARRANTY; without even the implied warranty of
-//	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//	GNU General Public License for more details
+// This library is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// License for more details.
+//
+// You should have received a copy of the GNU Library General Public License
+// along with this library; if not, write to the Free Software Foundation,
+// Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+// The id3lib authors encourage improvements and optimisations to be sent to
+// the id3lib coordinator.  Please see the README file for details on where to
+// send such submissions.  See the AUTHORS file for a list of people who have
+// contributed to id3lib.  See the ChangeLog file for a list of changes to
+// id3lib.  These files are distributed with id3lib at
+// http://download.sourceforge.net/id3lib/
 //
 /////////////////////////////////////////////////////////////////////////////
 // ID3Tag.h : Declaration of the CID3Tag
@@ -21,6 +31,7 @@
 // Date          Developer             Changes
 //
 // 05 Jan 2000   John Adcock           Original Release    
+// 26 Apr 2000   John Adcock           Got working with id3lib 3.7.3
 //
 /////////////////////////////////////////////////////////////////////////////
 
@@ -34,9 +45,9 @@
 // CID3Tag
 class ATL_NO_VTABLE CID3Tag : 
 	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CID3Tag, &CLSID_ID3Tag>,
+	public CComCoClass<CID3Tag, &CLSID_ID3ComTag>,
 	public ISupportErrorInfo,
-	public IDispatchImpl<IID3Tag, &IID_IID3Tag, &LIBID_ID3COMLib>
+	public IDispatchImpl<IID3ComTag, &IID_IID3ComTag, &LIBID_ID3COM>
 {
 public:
 	CID3Tag();
@@ -47,7 +58,7 @@ DECLARE_REGISTRY_RESOURCEID(IDR_ID3TAG)
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CID3Tag)
-	COM_INTERFACE_ENTRY(IID3Tag)
+	COM_INTERFACE_ENTRY(IID3ComTag)
 	COM_INTERFACE_ENTRY(IDispatch)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
 END_COM_MAP()
@@ -55,7 +66,7 @@ END_COM_MAP()
 // ISupportsErrorInfo
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
 
-// IID3Tag
+// IID3ComTag
 public:
 	STDMETHOD(get_PercentVolumeAdjust)(/*[out, retval]*/ double *pVal);
 	STDMETHOD(put_PercentVolumeAdjust)(/*[in]*/ double newVal);
@@ -65,7 +76,7 @@ public:
 	STDMETHOD(put_Popularity)(/*[in]*/ BSTR EMailAddress, /*[in]*/ short newVal);
 	STDMETHOD(get_PlayCount)(/*[in]*/ BSTR EMailAddress, /*[out, retval]*/ long *pVal);
 	STDMETHOD(put_PlayCount)(/*[in]*/ BSTR EMailAddress, /*[in]*/ long newVal);
-	STDMETHOD(FindFrameString)(/*[in]*/ eID3FrameTypes FrameID, /*[in]*/ eID3FieldTypes FieldType, /*[in]*/ BSTR FindString, /*[in]*/ VARIANT_BOOL CreateNewIfNotFound, /*[out, retval]*/ IID3Frame** pVal);
+	STDMETHOD(FindFrameString)(/*[in]*/ eID3FrameTypes FrameID, /*[in]*/ eID3FieldTypes FieldType, /*[in]*/ BSTR FindString, /*[in]*/ VARIANT_BOOL CreateNewIfNotFound, /*[out, retval]*/ IID3ComFrame** pVal);
 	STDMETHOD(get_HasLyrics)(/*[out, retval]*/ VARIANT_BOOL *pVal);
 	STDMETHOD(get_HasV2Tag)(/*[out, retval]*/ VARIANT_BOOL *pVal);
 	STDMETHOD(get_HasV1Tag)(/*[out, retval]*/ VARIANT_BOOL *pVal);
@@ -89,9 +100,9 @@ public:
 	STDMETHOD(SaveV2Tag)();
 	STDMETHOD(StripV1Tag)();
 	STDMETHOD(SaveV1Tag)();
-	STDMETHOD(get_FrameByNum)(/*[in]*/ long FrameNum, /*[out, retval]*/ IID3Frame** pVal);
+	STDMETHOD(get_FrameByNum)(/*[in]*/ long FrameNum, /*[out, retval]*/ IID3ComFrame** pVal);
 	STDMETHOD(get_NumFrames)(/*[out, retval]*/ long *pVal);
-	STDMETHOD(FindFrame)(/*[in]*/ eID3FrameTypes FrameID, /*[in]*/ VARIANT_BOOL CreateNewIfNotFound, /*[out, retval]*/ IID3Frame** pVal);
+	STDMETHOD(FindFrame)(/*[in]*/ eID3FrameTypes FrameID, /*[in]*/ VARIANT_BOOL CreateNewIfNotFound, /*[out, retval]*/ IID3ComFrame** pVal);
 	STDMETHOD(get_HasChanged)(/*[out, retval]*/ VARIANT_BOOL *pVal);
 	STDMETHOD(Clear)();
 	STDMETHOD(Link)(BSTR* FileName);

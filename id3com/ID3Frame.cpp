@@ -2,16 +2,26 @@
 // Copyright (c) 2000 John Adcock.  All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 //
-//	This file is subject to the terms of the GNU General Public License as
-//	published by the Free Software Foundation.  A copy of this license is
-//	included with this software distribution in the file COPYING.  If you
-//	do not have a copy, you may obtain a copy by writing to the Free
-//	Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+// This library is free software; you can redistribute it and/or modify it
+// under the terms of the GNU Library General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or (at your
+// option) any later version.
 //
-//	This software is distributed in the hope that it will be useful,
-//	but WITHOUT ANY WARRANTY; without even the implied warranty of
-//	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//	GNU General Public License for more details
+// This library is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+// License for more details.
+//
+// You should have received a copy of the GNU Library General Public License
+// along with this library; if not, write to the Free Software Foundation,
+// Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+// The id3lib authors encourage improvements and optimisations to be sent to
+// the id3lib coordinator.  Please see the README file for details on where to
+// send such submissions.  See the AUTHORS file for a list of people who have
+// contributed to id3lib.  See the ChangeLog file for a list of changes to
+// id3lib.  These files are distributed with id3lib at
+// http://download.sourceforge.net/id3lib/
 //
 /////////////////////////////////////////////////////////////////////////////
 // ID3Frame.cpp : Implementation of CID3Frame
@@ -21,6 +31,7 @@
 // Date          Developer             Changes
 //
 // 05 Jan 2000   John Adcock           Original Release    
+// 26 Apr 2000   John Adcock           Got working with id3lib 3.7.3
 //
 /////////////////////////////////////////////////////////////////////////////
 
@@ -47,20 +58,20 @@ CID3Frame::~CID3Frame()
 	m_Frame = NULL;
 }
 
-IID3Frame* CID3Frame::CreateObject(IID3Tag* TagParent, ID3_Frame* Frame)
+IID3ComFrame* CID3Frame::CreateObject(IID3ComTag* TagParent, ID3_Frame* Frame)
 {
 	CComObject<CID3Frame>* pRetVal = new CComObject<CID3Frame>;
 	pRetVal->m_Frame = Frame;
 	pRetVal->m_TagParent = TagParent;
 	TagParent->AddRef();
-	return (IID3Frame*)pRetVal;
+	return (IID3ComFrame*)pRetVal;
 }
 
 STDMETHODIMP CID3Frame::InterfaceSupportsErrorInfo(REFIID riid)
 {
 	static const IID* arr[] = 
 	{
-		&IID_IID3Frame
+		&IID_IID3ComFrame
 	};
 	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
@@ -70,7 +81,7 @@ STDMETHODIMP CID3Frame::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CID3Frame::get_Field(eID3FieldTypes FieldType, IID3Field** pVal)
+STDMETHODIMP CID3Frame::get_Field(eID3FieldTypes FieldType, IID3ComField** pVal)
 {
 	try
 	{
@@ -88,12 +99,12 @@ STDMETHODIMP CID3Frame::get_Field(eID3FieldTypes FieldType, IID3Field** pVal)
 		}
 		else
 		{
-			return AtlReportError(CLSID_ID3Frame, err.GetErrorType(), IID_IID3Frame, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+			return AtlReportError(CLSID_ID3ComFrame, err.GetErrorType(), IID_IID3ComFrame, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 		}
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Frame, "An unexpected error has occurred", IID_IID3Frame, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComFrame, "An unexpected error has occurred", IID_IID3ComFrame, E_UNEXPECTED);
 	}
 }
 
@@ -106,11 +117,11 @@ STDMETHODIMP CID3Frame::Clear()
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Frame, err.GetErrorType(), IID_IID3Frame, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComFrame, err.GetErrorType(), IID_IID3ComFrame, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Frame, "An unexpected error has occurred", IID_IID3Frame, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComFrame, "An unexpected error has occurred", IID_IID3ComFrame, E_UNEXPECTED);
 	}
 }
 
@@ -124,11 +135,11 @@ STDMETHODIMP CID3Frame::get_ID(eID3FrameTypes *pVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Frame, err.GetErrorType(), IID_IID3Frame, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComFrame, err.GetErrorType(), IID_IID3ComFrame, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Frame, "An unexpected error has occurred", IID_IID3Frame, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComFrame, "An unexpected error has occurred", IID_IID3ComFrame, E_UNEXPECTED);
 	}
 }
 
@@ -141,11 +152,11 @@ STDMETHODIMP CID3Frame::put_ID(eID3FrameTypes newVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Frame, err.GetErrorType(), IID_IID3Frame, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComFrame, err.GetErrorType(), IID_IID3ComFrame, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Frame, "An unexpected error has occurred", IID_IID3Frame, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComFrame, "An unexpected error has occurred", IID_IID3ComFrame, E_UNEXPECTED);
 	}
 }
 
@@ -320,10 +331,10 @@ STDMETHODIMP CID3Frame::get_FrameName(BSTR *pVal)
 	}
 	catch (ID3_Error err)
 	{
-		return AtlReportError(CLSID_ID3Frame, err.GetErrorType(), IID_IID3Frame, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return AtlReportError(CLSID_ID3ComFrame, err.GetErrorType(), IID_IID3ComFrame, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3Frame, "An unexpected error has occurred", IID_IID3Frame, E_UNEXPECTED);
+		return AtlReportError(CLSID_ID3ComFrame, "An unexpected error has occurred", IID_IID3ComFrame, E_UNEXPECTED);
 	}
 }

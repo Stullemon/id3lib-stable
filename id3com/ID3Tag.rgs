@@ -1,20 +1,20 @@
 HKCR
 {
-	ID3libCOM.ID3Tag.1 = s 'ID3Tag Class'
+	ID3COM.ID3ComTag.1 = s 'ID3ComTag Class'
 	{
 		CLSID = s '{AEBA98BD-C36C-11D3-841B-0008C782A257}'
 	}
-	ID3libCOM.ID3Tag = s 'ID3Tag Class'
+	ID3COM.ID3ComTag = s 'ID3ComTag Class'
 	{
 		CLSID = s '{AEBA98BD-C36C-11D3-841B-0008C782A257}'
-		CurVer = s 'ID3libCOM.ID3Tag.1'
+		CurVer = s 'ID3libCOM.ID3ComTag.1'
 	}
 	NoRemove CLSID
 	{
-		ForceRemove {AEBA98BD-C36C-11D3-841B-0008C782A257} = s 'ID3Tag Class'
+		ForceRemove {AEBA98BD-C36C-11D3-841B-0008C782A257} = s 'ID3ComTag Class'
 		{
-			ProgID = s 'ID3libCOM.ID3Tag.1'
-			VersionIndependentProgID = s 'ID3libCOM.ID3Tag'
+			ProgID = s 'ID3COM.ID3ComTag.1'
+			VersionIndependentProgID = s 'ID3COM.ID3ComTag'
 			ForceRemove 'Programmable'
 			InprocServer32 = s '%MODULE%'
 			{
