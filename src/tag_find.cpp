@@ -1,4 +1,4 @@
-// $Id: tag_find.cpp,v 1.9 2000/05/08 03:06:12 eldamitri Exp $
+// $Id: tag_find.cpp,v 1.10 2000/05/08 04:07:39 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -95,7 +95,7 @@
    ** @return A pointer to the first frame found that has the given frame id,
    **         or NULL if no such frame.
    **/
-ID3_Elem *ID3_Tag::Find(ID3_Frame *frame) const
+ID3_Elem *ID3_Tag::Find(const ID3_Frame *frame) const
 {
   ID3_Elem *elem = NULL;
   
@@ -148,7 +148,7 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id) const
   return frame;
 }
 
-ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, char *data) const
+ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, const char *data) const
 {
   ID3_Frame *frame = NULL;
   unicode_t *temp;
@@ -166,7 +166,7 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, char *data) const
   return frame;
 }
 
-ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, unicode_t *data) const
+ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, const unicode_t *data) const
 {
   ID3_Frame *frame = NULL;
   

@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.13 2000/05/06 21:13:12 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.14 2000/05/08 04:07:39 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -216,7 +216,7 @@ void ID3_Tag::RenderExtHeader(uchar *buffer)
    **         tag (should always be 128)
    ** @param  buffer The buffer that will contain the id3v1.1 tag.
    **/
-luint ID3_Tag::RenderV1(char *buffer)
+luint ID3_Tag::RenderV1(uchar *buffer)
 {
   // Sanity check our buffer
   if (NULL == buffer)
@@ -227,24 +227,21 @@ luint ID3_Tag::RenderV1(char *buffer)
   // pCur is used to mark where to next write in the buffer
   // sTemp is used as a temporary string pointer for functions that return
   //  dynamically created strings
-  char *pCur = buffer, *sTemp = NULL;
+  uchar* pCur = buffer;
+  const char* sTemp = NULL;
 
   // The default char for a v1 tag is null
-  // Note: Using strncpy should make this unnecessary, as strncpy will pad
-  //  the destination string with nulls.  But unless it becomes a performance
-  //  issue (I doubt it, for 128 bit strings), its an extra layer of
-  //  protection.
   memset(buffer, '\0', ID3_V1_LEN);
 
   // Write the TAG identifier
-  strncpy(pCur, "TAG", ID3_V1_LEN_ID);
+  memcpy(pCur, "TAG", ID3_V1_LEN_ID);
   pCur = &pCur[ID3_V1_LEN_ID];
 
   // Write the TITLE
   sTemp = ID3_GetTitle(this);
   if (sTemp != NULL)
   {
-    strncpy(pCur, sTemp, ID3_V1_LEN_TITLE);
+    memcpy(pCur, sTemp, ID3_V1_LEN_TITLE);
     delete [] sTemp;
   }
   pCur = &pCur[ID3_V1_LEN_TITLE];
@@ -253,7 +250,7 @@ luint ID3_Tag::RenderV1(char *buffer)
   sTemp = ID3_GetArtist(this);
   if (sTemp != NULL)
   {
-    strncpy(pCur, sTemp, ID3_V1_LEN_ARTIST);
+    memcpy(pCur, sTemp, ID3_V1_LEN_ARTIST);
     delete [] sTemp;
   }
   pCur = &pCur[ID3_V1_LEN_ARTIST];
@@ -262,7 +259,7 @@ luint ID3_Tag::RenderV1(char *buffer)
   sTemp = ID3_GetAlbum(this);
   if (sTemp != NULL)
   {
-    strncpy(pCur, sTemp, ID3_V1_LEN_ALBUM);
+    memcpy(pCur, sTemp, ID3_V1_LEN_ALBUM);
     delete [] sTemp;
   }
   pCur = &pCur[ID3_V1_LEN_ALBUM];
@@ -271,7 +268,7 @@ luint ID3_Tag::RenderV1(char *buffer)
   sTemp = ID3_GetYear(this);
   if (sTemp != NULL)
   {
-    strncpy(pCur, sTemp, ID3_V1_LEN_YEAR);
+    memcpy(pCur, sTemp, ID3_V1_LEN_YEAR);
     delete [] sTemp;
   }
   pCur = &pCur[ID3_V1_LEN_YEAR];
@@ -280,7 +277,7 @@ luint ID3_Tag::RenderV1(char *buffer)
   sTemp = ID3_GetComment(this);
   if (sTemp != NULL)
   {
-    strncpy(pCur, sTemp, ID3_V1_LEN_COMMENT);
+    memcpy(pCur, sTemp, ID3_V1_LEN_COMMENT);
     delete [] sTemp;
   }
   pCur = &pCur[ID3_V1_LEN_COMMENT];
@@ -303,7 +300,7 @@ luint ID3_Tag::RenderV1(char *buffer)
 
 void ID3_Tag::RenderV1ToHandle()
 {
-  char sTag[ID3_V1_LEN];
+  uchar sTag[ID3_V1_LEN];
   char sID[ID3_V1_LEN_ID];
 
   RenderV1(sTag);

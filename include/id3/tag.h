@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.27 2000/05/08 03:11:47 eldamitri Exp $
+// $Id: tag.h,v 1.28 2000/05/08 04:07:25 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -63,15 +63,14 @@ public:
   void       AddFrame(const ID3_Frame&);
   void       AddFrame(const ID3_Frame*);
   void       AttachFrame(ID3_Frame*);
-  void       AddFrames(const ID3_Frame *frames, luint num_frames);
-  void       RemoveFrame(ID3_Frame *pOldFrame);
-  luint      Render(uchar *buffer);
-  luint      RenderV1(char *buffer);
+  void       RemoveFrame(const ID3_Frame *);
+  luint      Render(uchar*);
+  luint      RenderV1(uchar*);
   luint      Size() const;
-  size_t     Parse(uchar header[ID3_TAGHEADERSIZE], uchar *buffer);
-  luint      Link(const char *fileInfo, const luint tt = (luint) ID3TT_ALL);
-  luint      Update(const luint tt = (luint) ID3TT_ID3V2);
-  luint      Strip(const luint tt = (luint) ID3TT_ALL);
+  size_t     Parse(const uchar header[ID3_TAGHEADERSIZE], const uchar *buffer);
+  luint      Link(const char *fileInfo, luint tt = (luint) ID3TT_ALL);
+  luint      Update(luint tt = (luint) ID3TT_ID3V2);
+  luint      Strip(luint tt = (luint) ID3TT_ALL);
 
   //@{
   /// Finds frame with given frame id
@@ -81,10 +80,10 @@ public:
   ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, luint data) const;
 
   /// Finds frame with given frame id, fld id, and ascii data
-  ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, char *data) const;
+  ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, const char *) const;
 
   /// Finds frame with given frame id, fld id, and unicode data
-  ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, unicode_t *data) const;
+  ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, const unicode_t *) const;
   //@}
 
   luint      NumFrames() const;
@@ -98,7 +97,7 @@ public:
    **
    ** @return Whether or not a V1 tag is present.
    **/
-  bool HasV1Tag() {return __has_v1_tag;};
+  bool HasV1Tag() const {return __has_v1_tag;};
 
   /** Indicates whether the an V2 tag is present.
    **
@@ -106,7 +105,7 @@ public:
    **
    ** @return Whether or not a V2 tag is present.
    **/
-  bool HasV2Tag() {return (__orig_tag_size > 0);};
+  bool HasV2Tag() const {return (__orig_tag_size > 0);};
      
   /** Indicates whether there are Lyrics present.
    **
@@ -114,7 +113,7 @@ public:
    **
    ** @return Whether or not Lyrics are present.
    **/
-  bool HasLyrics() {return __has_v1_tag;};
+  bool HasLyrics() const {return __has_v1_tag;};
 
   static size_t IsV2Tag(const uchar*);
 
@@ -122,6 +121,7 @@ public:
   void       AddNewFrame(ID3_Frame* f) { this->AttachFrame(f); }
   luint      Link(const char *fileInfo, bool parseID3v1, bool parseLyrics3);
   void       SetCompression(bool) { ; }
+  void       AddFrames(const ID3_Frame *, luint);
 
 protected:
   void       AddFrame(ID3_Frame , bool);
@@ -131,11 +131,11 @@ protected:
   ID3_V2Spec GetSpec() const;
   void       ClearList(ID3_Elem *);
   void       DeleteElem(ID3_Elem *);
-  void       AddBinary(uchar *, luint);
-  void       ExpandBinaries(uchar *, luint);
+  void       AddBinary(const uchar *, luint);
+  void       ExpandBinaries(const uchar *, luint);
   void       ProcessBinaries(ID3_FrameID = ID3FID_NOFRAME, bool = true);
   void       RemoveFromList(ID3_Elem *, ID3_Elem **);
-  ID3_Elem*  Find(ID3_Frame *) const;
+  ID3_Elem*  Find(const ID3_Frame *) const;
   luint      PaddingSize(luint) const;
   void       RenderExtHeader(uchar *);
   ID3_Err    OpenFileForWriting();

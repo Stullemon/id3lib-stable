@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.14 2000/05/06 21:18:49 eldamitri Exp $
+// $Id: tag.cpp,v 1.15 2000/05/08 04:07:39 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -88,7 +88,7 @@
  ** 'CDM' frames from the unreleased ID3v2 2.01 draft specification.
  **
  ** \author Dirk Mahoney
- ** \version $Id: tag.cpp,v 1.14 2000/05/06 21:18:49 eldamitri Exp $
+ ** \version $Id: tag.cpp,v 1.15 2000/05/08 04:07:39 eldamitri Exp $
  ** \sa ID3_Frame
  ** \sa ID3_Field
  ** \sa ID3_Err
@@ -432,7 +432,7 @@ void ID3_Tag::AddFrames(const ID3_Frame *frames, luint numFrames)
  ** \param pOldFrame A pointer to the frame that is to be removed from the
  **                  tag
  **/
-void ID3_Tag::RemoveFrame(ID3_Frame *frame)
+void ID3_Tag::RemoveFrame(const ID3_Frame *frame)
 {
   ID3_Elem *elem = Find(frame);
   if (NULL != elem)

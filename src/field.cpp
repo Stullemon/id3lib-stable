@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.14 2000/05/04 20:51:53 eldamitri Exp $
+// $Id: field.cpp,v 1.15 2000/05/08 04:07:39 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -869,13 +869,13 @@ ID3_Field::HasChanged(void)
 }
 
 luint
-ID3_Field::Size(void)
+ID3_Field::Size(void) const
 {
   return BinSize(false);
 }
 
 luint
-ID3_Field::BinSize(const bool withExtras)
+ID3_Field::BinSize(const bool withExtras) const
 {
   luint bytes   = 0;
 
