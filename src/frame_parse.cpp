@@ -1,4 +1,4 @@
-// $Id: frame_parse.cpp,v 1.4 2000/05/01 13:05:07 eldamitri Exp $
+// $Id: frame_parse.cpp,v 1.5 2000/05/02 21:58:07 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,7 +24,6 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#include <iostream.h>
 #include <zlib.h>
 #include "frame.h"
 
