@@ -1,4 +1,4 @@
-// $Id: utils.cpp,v 1.1 2000/05/02 16:53:24 eldamitri Exp $
+// $Id: utils.cpp,v 1.2 2000/05/06 21:10:16 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -30,26 +30,32 @@
 #include <config.h>
 #endif
 
+#if defined ID3_UNDEFINED
 namespace id3
 {
+#endif /* ID3_UNDEFINED */
 
   // Extract a 32-bit number from a 4-byte character array
   uint32 ParseNumber(const uchar *buffer, size_t size)
   {
-    size_t nSize = 0;
+    size_t num = 0;
     for (size_t nIndex = 0; nIndex < size; nIndex++)
     {
-      nSize |= buffer[nIndex] << ((size - nIndex - 1) * 8);
+      num <<= 8;
+      num |= buffer[nIndex];
     }
-    return nSize;
+    return num;
   }
 
-  void RenderNumber(uchar *buffer, size_t val, size_t size)
+  size_t RenderNumber(uchar *buffer, uint32 val, size_t size)
   {
-    for (size_t nIndex = 0; nIndex < size; nIndex++)
+    uint32 num = val;
+    for (size_t i = 0; i < size; i++)
     {
-      buffer[nIndex] = (uchar)((val >> ((size - nIndex - 1) * 8)) & MASK8);
+      buffer[size - i - 1] = (uchar)(num & MASK8);
+      num >>= 8;
     }
+    return size;
   }
 
   // converts an ASCII string into a Unicode one
@@ -97,12 +103,12 @@ namespace id3
   {
     if (NULL != dest && NULL != src)
     {
-      size_t nIndex;
-      for (nIndex = 0; NULL_UNICODE != src[nIndex]; nIndex++)
+      size_t i;
+      for (i = 0; NULL_UNICODE != src[i]; i++)
       {
-        dest[nIndex] = src[nIndex];
+        dest[i] = src[i];
       }
-      dest[nIndex] = NULL_UNICODE;
+      dest[i] = NULL_UNICODE;
     }
   }
 
@@ -110,14 +116,14 @@ namespace id3
   {
     if (NULL != dest && NULL != src)
     {
-      size_t nIndex;
-      for (nIndex = 0; nIndex < len && NULL_UNICODE != src[nIndex]; nIndex++)
+      size_t i;
+      for (i = 0; i < len && NULL_UNICODE != src[i]; i++)
       {
-        dest[nIndex] = src[nIndex];
+        dest[i] = src[i];
       }
-      for (; nIndex < len; nIndex++)
+      for (; i < len; i++)
       {
-        dest[nIndex] = NULL_UNICODE;
+        dest[i] = NULL_UNICODE;
       }
     }
   }
@@ -141,16 +147,17 @@ namespace id3
     {
       return -1;
     }
-    for (size_t nIndex = 0; true; nIndex++)
+    for (size_t i = 0; true; i++)
     {
-      if ((NULL_UNICODE == s1[nIndex]) ||
-          (NULL_UNICODE == s2[nIndex]) ||
-          (s1[nIndex]   != s2[nIndex]) ||
-          (nIndex + 1   == len))
+      if ((NULL_UNICODE == s1[i]) || (NULL_UNICODE == s2[i]) ||
+          (s1[i] != s2[i]) || (i + 1 == len))
       {
-        return s2[nIndex] - s1[nIndex];
+        return s2[i] - s1[i];
       }
     }
   }
 
+#if defined ID3_UNDEFINED
 }
+#endif /* ID3_UNDEFINED */
+
