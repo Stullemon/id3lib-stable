@@ -1,3 +1,62 @@
+2000-07-04  Scott Haug  <scott@id3.org>
+
+	* src/tag_render.cpp 
+	(RenderV2): Added
+	(Render): Now calls either RenderV1 or RenderV2 based on second
+	parameter 
+	(RenderV1ToHandle): Moved to tag_file.cpp
+	(RenderV2ToHandle): Moved to tag_file.cpp
+
+	* src/tag_parse_v1.cpp 
+	(ParseID3v1): New interface: now a stand-alone function, accepts
+	a ref to a tag object
+
+	* src/tag_parse_musicmatch.cpp 
+	(ParseMusicMatch): New interface: now a stand-alone function, accepts
+	a ref to a tag object
+
+	* src/tag_parse_lyrics3.cpp 
+	(ParseLyrics3):  New interface: now a stand-alone function, accepts
+	a ref to a tag object
+	(ParseLyrics3v2): New interface: now a stand-alone function, accepts
+	a ref to a tag object
+
+	* src/tag_parse.cpp 
+	(ParseID3v2): Now a standalone function
+	(ParseFile): Renamed from ParseFromHandle, update for new changes to
+	interface
+
+	* src/tag_file.cpp 
+	(Link): Updated for new changes to interface
+	(RenderV1ToHandle): Moved from tag_render.cpp, new interface
+	(RenderV2ToHandle): Moved from tag_render.cpp, new interface
+	(Update): Now updates __prepended_bytes, __appended_bytes appropriately
+	(Strip): Updated for new changes to interface
+
+	* src/tag.cpp 
+	(ID3_Tag): Initialize file-related members
+	(Clear): Don't clear file-related members
+	(ID3_GetDataSize): Added implementation
+
+	* include/id3/tag.h 
+	Added ID3_GetDataSize(const ID3_Tag&) function for calculating the size
+	of the non-tag data in a tag object
+	(class ID3_Tag): 
+	- RenderV1(uchar*) moved from public to protected
+	- Added GetPrependedBytes(), GetAppendedBytes(), GetFileSize(), and
+	  GetFileName()
+	- __prepended_bytes and __appended_bytes renamed from __starting_bytes
+	  and __ending_bytes, respectively
+	- Render() can now also accept an ID3_TagType as an optional
+	  second parameter
+	- ParseFromHandle(FILE*) repaced with ParseFile()
+	- RenderV1ToHandle, RenderV2ToHandle, ParseID3v2, ParseID3v1,
+	  ParseLyrics3*, and ParseMusicmatch methods removed
+	- RenderV2 protected method added
+
+	* include/id3/globals.h 
+	(ID3_V2Spec): Added ID3V2_4_0
+
 2000-07-03  Scott Haug  <scott@id3.org>
 
 	* prj/id3lib.dsp 
