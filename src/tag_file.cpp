@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.14 2000/05/23 15:20:47 eldamitri Exp $
+// $Id: tag_file.cpp,v 1.15 2000/05/28 03:47:14 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -237,7 +237,7 @@ size_t ID3_Tag::Link(const char *fileInfo, flags_t tag_types)
   if (__file_handle != NULL)
   {
     // Log this
-    return 0;
+    CloseFile();
     //ID3_THROW(ID3E_TagAlreadyAttached);
   }
   
@@ -310,15 +310,15 @@ flags_t ID3_Tag::Update(flags_t ulTagFlag)
  **/
 flags_t ID3_Tag::Strip(flags_t ulTagFlag)
 {
-  luint ulTags = ID3TT_NONE;
+  flags_t ulTags = ID3TT_NONE;
   
   if (!(ulTagFlag & ID3TT_ID3V1) && !(ulTagFlag & ID3TT_ID3V2))
   {
     return ulTags;
   }
-  
+
   // First remove the v2 tag, if requested
-  if (ulTagFlag & ID3TT_ID3V2)
+  if (ulTagFlag & ID3TT_ID3V2 && __starting_bytes > 0)
   {
     OpenFileForWriting();
     __file_size -= __starting_bytes;
@@ -394,7 +394,6 @@ flags_t ID3_Tag::Strip(flags_t ulTagFlag)
         break;
       }
     }
-    
     CloseFile();
   }
   
@@ -421,6 +420,7 @@ flags_t ID3_Tag::Strip(flags_t ulTagFlag)
     // tag
     nNewFileSize += __starting_bytes;
   }
+
   if (ulTags && (truncate(__file_name, nNewFileSize) == -1))
   {
     ID3_THROW(ID3E_NoFile);
