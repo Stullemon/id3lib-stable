@@ -1,3 +1,30 @@
+1999-11-16  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* tag_parse.cpp
+ 	(ProcessBinaries): Added try/catch block to catch any exceptions so
+	that the parser can carry on parsing the rest of the frames if any
+	particular frame is poorly encoded.  Need to add some sort of
+ 	mechanism to determine how many frames exist, how many have been 
+	parsed correctly and how many have been parsed incorrectly.
+
+	* field_string_unicode.cpp
+	(ParseUnicodeString): Put in sanity check for indices so that
+ 	memcpy doesn't go out of bounds. Made unicode code more specific
+ 	to the type of data storing unicode characters.  This fix doesn't
+ 	work if the type is different than two bytes in size.  Need to fix
+ 	so that the type is guaranteed to be two bytes.
+	(RenderUnicodeString): Made unicode code more specific to the type
+ 	of data storing unicode characters.
+	
+	* field_string_ascii.cpp (ParseASCIIString): Added sanity check
+ 	for indices so we don't call memcpy with out-of-bounds indices.
+
+	* field.cpp (Render): Minor reformatting.
+
+	* error.h (ID3_Err): Added new ID3_Err: ID3E_BadData.
+
+	* error.cpp (ID3_ErrorDescs): Added text entry for ID3E_BadData.
+
 1999-11-15  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* Makefile.am: Upped the version info to 3.0.6.
