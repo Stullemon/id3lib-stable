@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.32 2000/05/12 21:12:48 eldamitri Exp $
+// $Id: tag.h,v 1.33 2000/05/28 22:08:06 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -100,6 +100,8 @@ public:
   ID3_Frame* GetFrameNum(index_t) const;
   ID3_Frame* operator[](index_t) const;
   ID3_Tag&   operator=( const ID3_Tag & );
+
+  bool       GetUnsync() const { return __hdr.GetUnsync(); }
 
   bool       HasTagType(uint16 tt) const { return __file_tags.test(tt); }
   ID3_V2Spec GetSpec() const;
