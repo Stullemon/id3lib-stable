@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.32 2000/09/27 08:20:02 eldamitri Exp $
+// $Id: field.cpp,v 1.33 2000/09/30 22:11:01 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -27,6 +27,8 @@
 #if defined HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include "debug.h"
 
 #include <string.h>
 
@@ -878,7 +880,7 @@ static  ID3_FrameDef ID3_FrameDefs[] =
  ** if you only plan to generate 3.0 tags.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: field.cpp,v 1.32 2000/09/27 08:20:02 eldamitri Exp $
+ ** @version $Id: field.cpp,v 1.33 2000/09/30 22:11:01 eldamitri Exp $
  ** \sa ID3_Tag
  ** \sa ID3_Frame
  ** \sa ID3_Err 
@@ -1121,19 +1123,20 @@ size_t ID3_FieldImpl::Parse(const uchar *buffer, size_t buffSize)
   return mr.getCur() - beg;
 }
 
-void ID3_FieldImpl::Parse(ID3_Reader& reader)
+bool ID3_FieldImpl::Parse(ID3_Reader& reader)
 {
+  bool success = false;
   switch (this->GetType())
   {
     case ID3FTY_INTEGER:
     {
-      this->ParseInteger(reader);
+      success = this->ParseInteger(reader);
       break;
     }
         
     case ID3FTY_BINARY:
     {
-      this->ParseBinary(reader);
+      success = this->ParseBinary(reader);
       break;
     }
         
@@ -1141,21 +1144,22 @@ void ID3_FieldImpl::Parse(ID3_Reader& reader)
     {
       if (this->GetEncoding() == ID3TE_UNICODE)
       {
-        this->ParseUnicodeString(reader);
+        success = this->ParseUnicodeString(reader);
       }
       else
       {
-        this->ParseASCIIString(reader);
+        success = this->ParseASCIIString(reader);
       }
       break;
     }
 
     default:
     {
-      ID3_THROW(ID3E_UnknownFieldType);
+      ID3D_WARNING( "ID3_FieldImpl::Parse(): unknown field type" );
       break;
     }
   }
+  return success;
 }
 
 ID3_FrameDef* ID3_FindFrameDef(ID3_FrameID id)
@@ -1213,7 +1217,7 @@ size_t ID3_FieldImpl::Render(uchar *buffer) const
       break;
         
     default:
-      ID3_THROW (ID3E_UnknownFieldType);
+      ID3D_WARNING ( "ID3D_FieldImpl::Render(): unknown field type" );
       break;
   }
     
