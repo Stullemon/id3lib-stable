@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.14 2000/10/14 21:23:37 eldamitri Exp $
+# $Id: Makefile.am,v 1.15 2000/10/15 05:43:59 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -15,10 +15,10 @@ the_headers =                   \
   frame.h                       \
   globals.h                     \
   misc_support.h                \
-  sized_types.h                 \
-  spec.h                        \
   reader.h                      \
   readers.h                     \
+  sized_types.h                 \
+  spec.h                        \
   tag.h                         \
   writer.h                      \
   writers.h                     
@@ -36,8 +36,10 @@ noinst_HEADERS =                \
   header.h                      \
   header_frame.h                \
   header_tag.h                  \
+  helpers.h                     \
   io_decorators.h               \
   io_helpers.h                  \
   io_strings.h                  \
   strings.h                     \
+  tag_impl.h                    \
   utils.h                       
