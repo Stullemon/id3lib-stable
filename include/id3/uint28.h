@@ -1,5 +1,5 @@
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
-// $Id: uint28.h,v 1.5 2000/06/22 19:31:30 adcockj Exp $
+// $Id: uint28.h,v 1.6 2000/08/28 13:41:33 eldamitri Exp $
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -108,12 +108,23 @@ public:
     return *this; 
   }
   
-  /** Character string assignment operator
+  /** Unsigned Character string assignment operator
    ** \param data The character string from which to extract a 28-bit integer
    **             (must be at least 4 characters long)
    ** \return The newly-assigned uint28 object (*this)
    **/
   uint28&    operator=(const uchar* data)
+  {
+    this->Parse(data);
+    return *this;
+  }
+  
+  /** Character string assignment operator
+   ** \param data The character string from which to extract a 28-bit integer
+   **             (must be at least 4 characters long)
+   ** \return The newly-assigned uint28 object (*this)
+   **/
+  uint28&    operator=(const char* data)
   {
     this->Parse(data);
     return *this;
@@ -133,6 +144,7 @@ public:
    ** \return The number of characters parsed (should always be 4)
    **/
   size_t    Parse(const uchar* data);
+  size_t    Parse(const char* data);
   
   /** Renders a 28-bit integer to a character string
    ** \param data The character string to render to (should be at least 4 
@@ -140,6 +152,7 @@ public:
    ** \return The number of characters render (should always be 4)
    **/
   size_t    Render(uchar*) const;
+  size_t    Render(char*) const;
 
 };
 

@@ -1,4 +1,4 @@
-// $Id: tag_parse_musicmatch.cpp,v 1.4 2000/07/11 04:26:20 eldamitri Exp $
+// $Id: tag_parse_musicmatch.cpp,v 1.5 2000/08/28 13:41:41 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -190,7 +190,7 @@ size_t ParseMusicMatch(ID3_Tag& tag, fstream& file)
             strcat(mimetype, img_ext);
             frame->Field(ID3FN_MIMETYPE).Set(mimetype);
             frame->Field(ID3FN_IMAGEFORMAT).Set("");
-            frame->Field(ID3FN_PICTURETYPE).Set(static_cast<size_t>(0));
+            frame->Field(ID3FN_PICTURETYPE).Set(static_cast<unsigned int>(0));
             frame->Field(ID3FN_DESCRIPTION).Set("");
             frame->Field(ID3FN_DATA).Set(img_data, img_size);
             tag.AttachFrame(frame);

@@ -1,5 +1,5 @@
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
-// $Id: uint28.cpp,v 1.5 2000/06/22 19:31:04 adcockj Exp $
+// $Id: uint28.cpp,v 1.6 2000/08/28 13:41:41 eldamitri Exp $
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -35,6 +35,11 @@ const unsigned short uint28::BITSUSED = 7;
 const uint32 uint28::MINVAL = 0;
 const uint32 uint28::MAXVAL = MASK(BITSUSED*sizeof(uint32));
 
+size_t uint28::Parse(const char* data)
+{
+  return this->Parse(reinterpret_cast<const uchar *>(data));
+}
+
 size_t uint28::Parse(const uchar* data)
 {
   uint32 val = 0;
@@ -48,6 +53,11 @@ size_t uint28::Parse(const uchar* data)
   *this = val;
   // We should always parse 4 characters
   return sizeof(uint32);
+}
+
+size_t uint28::Render(char* data) const
+{
+  return this->Render(reinterpret_cast<uchar*>(data));
 }
 
 size_t uint28::Render(uchar* data) const
@@ -75,7 +85,7 @@ ostream& operator<<(ostream& os, const uint28& val)
 {
   // The easiest way to write a 28-bit integer to a char stream is to render
   // it to a char buffer and then write the char buffer to the stream
-  uchar data[sizeof(uint32)];
+  char data[sizeof(uint32)];
   val.Render(data);
   os.write(data, sizeof(uint32));
   return os;
@@ -86,7 +96,7 @@ istream& operator>>(istream& in, uint28& val)
   // The easiest way to extract a 28-bit integer from a char stream is to 
   // read 4 bytes into a char buffer and then extract the 28-bit integer from
   // the buffer
-  uchar data[sizeof(uint32)];
+  char data[sizeof(uint32)];
   in.read(data, sizeof(uint32));
   val = data;
   return in;
