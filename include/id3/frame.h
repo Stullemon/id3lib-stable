@@ -1,4 +1,4 @@
-// $Id: frame.h,v 1.32 2000/10/01 00:03:16 eldamitri Exp $
+// $Id: frame.h,v 1.33 2000/10/09 01:53:37 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -32,6 +32,7 @@
 class ID3_Field;
 class ID3_FrameImpl;
 class ID3_Reader;
+class ID3_Writer;
 
 class ID3_Frame : public ID3_Speccable
 {
@@ -50,8 +51,8 @@ public:
   
   ID3_Field*  GetField(ID3_FieldID name) const;
 
-  size_t      GetNumFields() const;
-  ID3_Field*  GetFieldAt(index_t) const;
+  size_t      NumFields() const;
+  ID3_Field*  GetFieldNum(index_t) const;
   
   const char* GetDescription() const;
   static const char* GetDescription(ID3_FrameID);
@@ -61,8 +62,8 @@ public:
   ID3_Frame&  operator=(const ID3_Frame &);
   bool        HasChanged() const;
   bool        Parse(ID3_Reader&);
+  void        Render(ID3_Writer&) const;
   size_t      Size();
-  size_t      Render(uchar *buffer) const;
   bool        Contains(ID3_FieldID fld) const;
   bool        SetSpec(ID3_V2Spec);
   ID3_V2Spec  GetSpec() const;
