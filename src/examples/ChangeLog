@@ -1,3 +1,8 @@
+1999-11-30  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* demo_info.cpp, demo_convert.cpp: 
+	Updated to reflect changes from version macros to version functions.
+
 1999-11-25  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* Makefile.am: Removed demo_strip from the make rules.

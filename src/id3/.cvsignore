@@ -26,3 +26,4 @@ tag_parse_lyrics3.lo
 tag_parse_v1.lo
 tag_render.lo
 tag_sync.lo
+version.lo

@@ -1,3 +1,25 @@
+1999-11-30  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* configure.in: 
+	Minor modifications.  Removed call to SH_SIZE_SPECIFIC_TYPES---these
+	types are now defined in src/id3/sized_types.h.  Removed ID3LIB_NAME
+	macro (same as PACKAGE).  Removed ID3LIB_RELEASE macro (same as 
+	VERSION).  Renamed ID3LIB_IDSTRING to ID3LIB_FULLNAME and removed
+	the date part of it.
+
+	* Makefile.am
+ 	(EXTRA_DIST): Removed ChangeLog, configure, HISTORY, and TODO.  
+	These are included in the distribution automatically.
+
+	* configure.in: 
+	Generalized versioning mechanism so it only has to be changed in this
+ 	file to be propagated throughout rest of source code.  Used a hack to
+	make libtool version coincide with release versioning.  This is
+	expressly warned against in the libtool docs, so it might be changed.
+	However, it also seems to be a common practice amongst other library
+	writers, so I'm torn.  Added versioning macro definitions normally
+	found in version.h.  Probably not the best place for this...
+
 1999-11-29  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* configure.in:

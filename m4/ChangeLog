@@ -1,3 +1,9 @@
+1999-11-30  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* sh_types.m4:
+	Removed.  Content now in src/id3/sized_types.h (a more appropriate
+	file).
+
 1999-11-29  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* sh_types.m4: 
