@@ -1,18 +1,16 @@
-// $Id: field.cpp,v 1.7 1999/11/19 17:18:49 scott Exp $
-
-//  The authors have released ID3Lib as Public Domain (PD) and claim no
-//  copyright, patent or other intellectual property protection in this work.
-//  This means that it may be modified, redistributed and used in commercial
-//  and non-commercial software and hardware without restrictions.  ID3Lib is
-//  distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either
-//  express or implied.
-//
-//  The ID3Lib authors encourage improvements and optimisations to be sent to
-//  the ID3Lib coordinator, currently Dirk Mahoney (dirk@id3.org).  Approved
-//  submissions may be altered, and will be included and released under these
-//  terms.
-//
-//  Mon Nov 23 18:34:01 1998
+// $Id: field.cpp,v 1.8 1999/11/29 17:21:06 scott Exp $
+// 
+// The authors have released ID3Lib as Public Domain (PD) and claim no
+// copyright, patent or other intellectual property protection in this work.
+// This means that it may be modified, redistributed and used in commercial
+// and non-commercial software and hardware without restrictions.  ID3Lib is
+// distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either
+// express or implied.
+// 
+// The ID3Lib authors encourage improvements and optimisations to be sent to
+// the ID3Lib coordinator, currently Dirk Mahoney (dirk@id3.org).  Approved
+// submissions may be altered, and will be included and released under these
+// terms.
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
@@ -554,22 +552,22 @@ ID3_Field::BinSize(bool withExtras)
     {
       if (NULL == __sData && __ulSize > 0)
       {
-        bytes = (__ulFlags & ID3FF_NULL) ? sizeof(wchar_t) : 0;
+        bytes = (__ulFlags & ID3FF_NULL) ? sizeof(unicode_t) : 0;
       }
       
       // if we are a Unicode string, add 2 bytes for the BOM (but only if there
       // is a string to render - regardless of NULL)
       if (__eType == ID3FTY_UNICODESTRING && __sData != NULL && __ulSize > 0)
       {
-        bytes += sizeof(wchar_t);
+        bytes += sizeof(unicode_t);
       }
         
-      // if we are an ASCII string, divide by sizeof(wchar_t) because
+      // if we are an ASCII string, divide by sizeof(unicode_t) because
       // internally we store the string as Unicode, so the ASCII version will
       // only be half as long
       if (__eType == ID3FTY_ASCIISTRING)
       {
-        bytes /= sizeof(wchar_t);
+        bytes /= sizeof(unicode_t);
       }
     }
     else if (__eType == ID3FTY_UNICODESTRING || __eType == ID3FTY_ASCIISTRING)
@@ -579,7 +577,7 @@ ID3_Field::BinSize(bool withExtras)
       // store every string internally as unicode, we will divide the 'bytes'
       // variable by the size of a unicode character (should be two bytes)
       // because Unicode strings have twice as many bytes as they do characters
-      bytes /= sizeof(wchar_t);
+      bytes /= sizeof(unicode_t);
     }
   }
   
@@ -694,6 +692,11 @@ ID3_Field::Render(uchar *buffer)
 }
 
 // $Log: field.cpp,v $
+// Revision 1.8  1999/11/29 17:21:06  scott
+// Updated methods to use unicode_t instead of wchar_t.  unicode_t is
+// defined in globals.h.  The type unicode_t is more likely to be two
+// bytes on every platform.
+//
 // Revision 1.7  1999/11/19 17:18:49  scott
 // * field.cpp
 // (BinSize): Added check for an ascii string when called by Size, since
