@@ -1,9 +1,19 @@
-id3lib -- History of visible changes.
-Please the ChangeLog files in each directory for specific changes to the files
-in that directory.
-Please see the HISTORY file for changes to the library before version 3.6.0.
+$Id: NEWS,v 1.6 2000/04/17 05:10:08 eldamitri Exp $
 
-Please send id3lib bug reports to sth2@cs.wustl.edu.
+2000-04-15 Version 3.7.0
+
+* New project management: MusicMatch handed reigns over to Scott Haug
+* New project licensing: LGPL (http://www.gnu.org/copyleft/lesser.html)
+* New versioning: 3.7.x is unstable series leading up to 3.8.x stable
+* Many bug fixes
+* Better windows compatibility, with new windows project files
+* Improved documentation, using the Doxygen documentation system 
+  (http://www.stack.nl/~dimitri/doxygen/)
+* Extended API, improved implementation
+* More supported frames
+* Now parses and rerenders unrecognized frame types
+* Better version handling in configuration files, similar to the glib library
+  (http://www.gtk.org) 
 
 1999-12-02 Version 3.6.2
 
@@ -20,12 +30,6 @@ Please send id3lib bug reports to sth2@cs.wustl.edu.
   etc.
 
 1999-11-30 Version 3.6.0
-
-Over a year since the last release!  This version represents a major overhaul
-in the project since the previous release (see the README and HISTORY file for
-details).  Most of the changes are at the implementation and documentation
-level---the library's interface and overall functionality remain (mostly)
-unchanged.  Below is an overview of the improvements made since version 3.05a.
 
 * Code overhaul: more descriptive variable naming, streamlined implementation
   logic, cleaner interface specification, generalization of magic numbers and
@@ -54,9 +58,6 @@ unchanged.  Below is an overview of the improvements made since version 3.05a.
   Additionally, an "id3info" app has been added for displaying id3v1/v2 tag
   information about a file.
 * Bug fixing: Fixes, fixes, and more fixes.  A continual process.
-
-There are other changes that may not be so welcome, so I ask for any comments,
-suggestions, or changes that others might feel would be better.
 * The zlib library files were removed from the project.  The need for zlib
   was instead made a requirement through the configuration process via autoconf
   and automake.

@@ -1,3 +1,5 @@
+$Id: THANKS,v 1.5 2000/04/17 05:10:53 eldamitri Exp $
+
 id3lib THANKS file
 
 See the AUTHORS file for a list of past and current project maintainers.
@@ -11,14 +13,16 @@ current project maintainer if anyone has been missed.
   id3lib.
 * Alexander Voronin (av@oskarsb.ru) has submitted several patches to fix a 
   variety of bugs.
-* John Adcock (johnadcock@hotmail.com) has written a COM wrapper for id3lib
-  as well as several bugfixes.
+* John Adcock (johnadcock@hotmail.com) provided the COM wrapper and lib 
+  projects for id3lib as well as several bugfixes.
 * Myers W. Carpenter (myers@fil.org) has submitted a patch for improving the
   interface and functionality of the library.
 * Justin Rogers (justin@mlstoday.com) has provided much valuable conversation
   as to the design and implementation of id3lib.
 * Mark B. Elrod (elrod@liquidmetal.com) has provided several patches for better
   win32 functionality.
+* Scott Moser (smoser@brickies.net) provided the php translation of the 
+  original ID3Lib manual
 
 Dirk Mahoney included the following at the end of his documentation on ID3Lib
 3.05a.  It is included in verbatim here.

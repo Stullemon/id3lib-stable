@@ -1,50 +1,28 @@
-Version 3.0.6 of id3lib requires the following work:
+$Id: TODO,v 1.4 2000/04/17 05:11:09 eldamitri Exp $
 
-* There are several functions created to allow easier use of the library under
-  common situations.  All of those functions are defined in misc_support.h.
-  Their utility at this point is questionable.  They made the implementation
-  of the library itself easier, but whether or not they are actually useful for
-  others using the library needs determining.  They should be looked at closer
-  so as to determine which functions are currently useful, which need updating,
-  and what new ones are required.
+id3lib still requires the following work:
 
-* Need to clarify the interface for files.  When given a file name, which 
-  methods should create one if it doesn't exist, which should be able to write,
-  which can go on if the file isn't writable, etc.  Its pretty muddled right
-  now.  Should the file interface for the tags be broken off from the Tag 
-  class completely?  Needs better design.
-
-* The C interface hasn't been touched (or tested), and probably needs to be 
-  updated to reflect changes made since 3.05a.  The C interface currently is
-  guised as a DLL interface for Windows, but this can probably be generalized
-  as a C interface for any platform.  I don't develop under Windows, though, so
-  I could probably use some help with this.
-
-* The codebase was originally written for Windows.  It didn't work correctly
-  under linux, so I made changes so that it would.  However, I no longer know
-  if it works under Windows.  Therefore, the package probably needs to be
-  ported so that it can be compiled easily using Windows tools (Cygwin? Visual
-  Studio?).  A good place to look for inspiration is the freeamp project, as
-  the freeamp player's codebase is cross-platform and is set up to compile
-  easily under windows and unix machines.  The original id3lib distribution
-  (downloadable from http://www.id3lib.org) had the original dll and "the 
-  export file and static link library (MSVC) for using the dll."
-
-* Most of the limitations listed for 3.05a still exist.  See below.
+* testing testing testing
+* The interface for file access is muddled.  It has been separated out from the
+  next unstable release (3.9.x), but perhaps it can be cleaned up for 3.7.x
+* id3lib needs a C interface.  Badly.
+* Some of the limitations present in 3.05a have been fixed, but many still
+  exist.  See below for the original list and what has been updated.
 
 Version 3.05a of ID3Lib has some known limitations...
 
 * Firstly, contrary to good programming ideas and contrary to the 'ID3v2
   Programming Guidelines', ID3Lib will explode in a ball of brilliant blue
   flame if asked to parse an invalid ID3v2 tag.  This will change.
-  + Update for 3.0.6: this has been improved, but still requires more testing.
+  + Update for 3.7.0: this has been improved, but still requires more testing.
 
 * Incorrect handling of unknown frames.  This means that when ID3Lib encounters
   an unknown frame, it is currently ignored.  It is neither re-written to the
   tag when re-rendered nor are the file or tag alter frame flags observed.
-  + 3.0.6 adds nominal support for all remaining known frames (as defined in
+  + 3.7.0 adds nominal support for all remaining known frames (as defined in
     the spec for id3v2.2.0 and id3v2.3.0 at www.id3.org).  Unknown frames are
-    still not handled correctly.
+    now parsed and re-rendered, but the file and tag alter frame flags are not
+    yet observed
 
 * No support for the read-only frame flag.  It is currently ignored---such 
   frames can be altered at will.
