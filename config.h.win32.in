@@ -100,6 +100,9 @@
 /* Define if you have the <libcw/sys.h> header file.  */
 /* #undef HAVE_LIBCW_SYS_H */
 
+/* Define if you have the <bitset> header file. */
+#define HAVE_BITSET 1
+
 /* Define if you have the <string> header file.  */
 #define HAVE_STRING 1
 

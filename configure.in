@@ -1,4 +1,4 @@
-# $Id: configure.in,v 1.56 2002/06/28 08:26:48 t1mpy Exp $
+# $Id: configure.in,v 1.57 2002/06/29 19:57:40 t1mpy Exp $
 
 # Copyright 1999, 2000 Scott Thomas Haug <eldamitri@users.sourceforge.net>
 #  
@@ -136,9 +136,9 @@ dnl Check for c++ features
 AC_LANG_SAVE
 AC_LANG_CPLUSPLUS
 AC_CHECK_HEADERS(libcw/sys.h)
-AC_CHECK_HEADERS(cctype climits cstdio cstdlib cstring)
-AC_CHECK_HEADERS(fstream iostream iomanip bitset vector \
-	,,AC_MSG_ERROR([Missing a vital header file for id3lib - download them here: http://gcc.gnu.org/libstdc++/])
+AC_CHECK_HEADERS(cctype climits cstdio cstdlib cstring bitset)
+AC_CHECK_HEADERS(fstream iostream iomanip vector \
+	,,AC_MSG_ERROR([Missing a vital header file for id3lib - download them here: http://gcc.gnu.org/libstdc++/ or better - compile a newer compiler like gcc3.x])
 )
 AC_CHECK_HEADERS(               \
   string                        \
