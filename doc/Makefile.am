@@ -38,4 +38,5 @@ docs: Doxyfile index.html id3lib.css
 
 dist-hook: docs
 	@mkdir $(distdir)/html
-	@cp -R $(srcdir)/html/*.{html,gif,css} $(distdir)/html
+	@cp    $(srcdir)/html/*.{html,gif,css} $(distdir)/html
+	@cp -R $(srcdir)/latex                 $(distdir)
