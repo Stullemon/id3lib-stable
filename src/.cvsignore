@@ -3,6 +3,7 @@
 Makefile
 Makefile.in
 bak
+c_wrapper.lo
 dll_wrapper.lo
 error.lo
 field.lo
@@ -13,6 +14,7 @@ field_string_unicode.lo
 frame.lo
 frame_parse.lo
 frame_render.lo
+globals.lo
 header.lo
 header_frame.lo
 header_tag.lo
