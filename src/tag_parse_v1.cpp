@@ -1,7 +1,8 @@
-// $Id: tag_parse_v1.cpp,v 1.26 2002/07/28 21:13:42 t1mpy Exp $
+// $Id: tag_parse_v1.cpp,v 1.27 2002/07/31 13:45:18 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
+// Copyright 2002 Thijmen Klok (thijmen@id3lib.org)
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -136,7 +137,7 @@ bool id3::v1::parse(ID3_TagImpl& tag, ID3_Reader& reader)
       comment.append(padding, paddingsize);
       comment.append((const char *)trackno.data(), 1);
     }
-	else if (trackno[1] != '\0' && trackno[1] != 0x20 &&  trackno[0] != 0x20)
+    else if (trackno[1] != '\0' && trackno[1] != 0x20 &&  trackno[0] != 0x20)
     {
       // if there used to be spaces they are gone now, we need to rebuild them
       comment.append(padding, paddingsize);

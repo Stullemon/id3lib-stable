@@ -1,7 +1,8 @@
-// $Id: tag_file.cpp,v 1.39 2002/07/03 20:36:12 t1mpy Exp $
+// $Id: tag_file.cpp,v 1.40 2002/07/31 13:45:18 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
+// Copyright 2002 Thijmen Klok (thijmen@id3lib.org)
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -24,6 +25,7 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
+#include <stdio.h>  //for BUFSIZ and functions remove & rename
 #include "writers.h"
 #include "io_strings.h"
 #include "tag_impl.h" //has <stdio.h> "tag.h" "header_tag.h" "frame.h" "field.h" "spec.h" "id3lib_strings.h" "utils.h"
@@ -103,13 +105,13 @@ static int truncate(const char *path, size_t length)
 }
 
 #elif defined(macintosh)
-	
+
 static int truncate(const char *path, size_t length)
 {
    /* not implemented on the Mac */
    return -1;
 }
-	
+
 #endif
 
 size_t ID3_TagImpl::Link(const char *fileInfo, bool parseID3v1, bool parseLyrics3)
@@ -229,8 +231,8 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
 
 #if ((defined(__GNUC__) && __GNUC__ >= 3  ) || !defined(HAVE_MKSTEMP))
     // This section is for Windows folk && gcc 3.x folk
-	fstream tmpOut;
-	createFile(sTempFile, tmpOut);
+    fstream tmpOut;
+    createFile(sTempFile, tmpOut);
 
     tmpOut.write(tagData, tagSize);
     file.seekg(tag.GetPrependedBytes(), ios::beg);
@@ -285,7 +287,7 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
 #if defined(HAVE_SYS_STAT_H)
     struct stat fileStat;
     if(stat(filename.c_str(), &fileStat) == 0)
-	{
+    {
 #endif //defined(HAVE_SYS_STAT_H)
       remove(filename.c_str());
       rename(sTempFile, filename.c_str());
@@ -294,7 +296,7 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
     }
 #endif //defined(HAVE_SYS_STAT_H)
 
-//	file = tmpOut;
+//    file = tmpOut;
     openWritableFile(filename, file);
   }
 

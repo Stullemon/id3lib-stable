@@ -1,7 +1,8 @@
-// $Id: field.cpp,v 1.45 2002/07/02 22:11:53 t1mpy Exp $
+// $Id: field.cpp,v 1.46 2002/07/31 13:45:18 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
+// Copyright 2002 Thijmen Klok (thijmen@id3lib.org)
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -766,7 +767,7 @@ static  ID3_FrameDef ID3_FrameDefs[] =
   {ID3FID_BUFFERSIZE,        "BUF", "RBUF", false, false, ID3FD_Unimplemented, "Recommended buffer size"},
   {ID3FID_VOLUMEADJ,         "RVA", "RVAD", false, true,  ID3FD_Unimplemented, "Relative volume adjustment"},
   {ID3FID_REVERB,            "REV", "RVRB", false, false, ID3FD_Unimplemented, "Reverb"},
-  {ID3FID_SYNCEDLYRICS,      "SLT", "SYLT", false, false, ID3FD_SyncLyrics,	"Synchronized lyric/text"},
+  {ID3FID_SYNCEDLYRICS,      "SLT", "SYLT", false, false, ID3FD_SyncLyrics,    "Synchronized lyric/text"},
   {ID3FID_SYNCEDTEMPO,       "STC", "SYTC", false, true,  ID3FD_Unimplemented, "Synchronized tempo codes"},
   {ID3FID_ALBUM,             "TAL", "TALB", false, false, ID3FD_Text,          "Album/Movie/Show title"},
   {ID3FID_BPM,               "TBP", "TBPM", false, false, ID3FD_Text,          "BPM (beats per minute)"},
@@ -875,7 +876,7 @@ static  ID3_FrameDef ID3_FrameDefs[] =
  ** if you only plan to generate 3.0 tags.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: field.cpp,v 1.45 2002/07/02 22:11:53 t1mpy Exp $
+ ** @version $Id: field.cpp,v 1.46 2002/07/31 13:45:18 t1mpy Exp $
  ** \sa ID3_Tag
  ** \sa ID3_Frame
  ** \sa ID3_Err 
@@ -1199,8 +1200,8 @@ bool ID3_FieldImpl::SetEncoding(ID3_TextEnc enc)
  **   for (int cur = ID3FID_NOFRAME+1; cur <= myFrameInfo.MaxFrameID(); cur ++)
  **   { 
  **     cout << "Short ID: " << myFrameInfo.ShortName(ID3_FrameID(cur)) <<
- ** 	" Long ID: " << myFrameInfo.LongName(ID3_FrameID(cur)) <<
- ** 	" Desription: " << myFrameInfo.Description(ID3_FrameID(cur)) << endl;
+ **     " Long ID: " << myFrameInfo.LongName(ID3_FrameID(cur)) <<
+ **     " Desription: " << myFrameInfo.Description(ID3_FrameID(cur)) << endl;
  **   }
  ** } 
  ** \endcode 
@@ -1215,74 +1216,79 @@ bool ID3_FieldImpl::SetEncoding(ID3_TextEnc enc)
  ** \code
  **  for (int cur = ID3FID_NOFRAME+1; cur <= fi.MaxFrameID(); cur ++)
  **  {
- **	int numfields = fi.NumFields(ID3_FrameID(cur));
+ **    int numfields = fi.NumFields(ID3_FrameID(cur));
  **
- **        cout << "ID: " << fi.LongName(ID3_FrameID(cur)) <<
- **	" FIELDS: " << numfields << endl;
- **	for(int i=0;i<numfields;i++) {
- **		cout << "TYPE: " << fi.FieldType(ID3_FrameID(cur),i) <<
- **		" SIZE: " << fi.FieldSize(ID3_FrameID(cur),i) <<
- **		" FLAGS: " << fi.FieldFlags(ID3_FrameID(cur),i) << endl;
+ **    cout << "ID: " << fi.LongName(ID3_FrameID(cur)) <<
+ **    " FIELDS: " << numfields << endl;
+ **    for(int i=0;i<numfields;i++) {
+ **      cout << "TYPE: " << fi.FieldType(ID3_FrameID(cur),i) <<
+ **      " SIZE: " << fi.FieldSize(ID3_FrameID(cur),i) <<
+ **      " FLAGS: " << fi.FieldFlags(ID3_FrameID(cur),i) << endl;
  **
- **	}
+ **    }
  **
- **	cout << endl;
+ **    cout << endl;
  **
  **  }
  ** \endcode
  **
  ** @author Cedric Tefft
- ** @version $Id: field.cpp,v 1.45 2002/07/02 22:11:53 t1mpy Exp $
+ ** @version $Id: field.cpp,v 1.46 2002/07/31 13:45:18 t1mpy Exp $
  **/
 
 
-char *ID3_FrameInfo::ShortName(ID3_FrameID frameid) {
-	if(frameid < ID3FID_LASTFRAMEID) {
-		return ID3_FrameDefs[frameid-1].sShortTextID;
-	} else {
-		return NULL;
-	}
+char *ID3_FrameInfo::ShortName(ID3_FrameID frameid)
+{
+  if(frameid < ID3FID_LASTFRAMEID)
+    return ID3_FrameDefs[frameid-1].sShortTextID;
+  else
+    return NULL;
 }
 
-char *ID3_FrameInfo::LongName(ID3_FrameID frameid) {
-	if(frameid < ID3FID_LASTFRAMEID) {
-		return ID3_FrameDefs[frameid-1].sLongTextID;
-	} else {
-		return NULL;
-	}
+char *ID3_FrameInfo::LongName(ID3_FrameID frameid)
+{
+  if(frameid < ID3FID_LASTFRAMEID)
+    return ID3_FrameDefs[frameid-1].sLongTextID;
+  else
+    return NULL;
 }
 
-const char *ID3_FrameInfo::Description(ID3_FrameID frameid) {
-	if(frameid < ID3FID_LASTFRAMEID) {
-		return ID3_FrameDefs[frameid-1].sDescription;
-	} else {
-		return NULL;
-	}
+const char *ID3_FrameInfo::Description(ID3_FrameID frameid)
+{
+  if(frameid < ID3FID_LASTFRAMEID)
+    return ID3_FrameDefs[frameid-1].sDescription;
+  else
+    return NULL;
 }
 
-int ID3_FrameInfo::MaxFrameID() {
-	return ID3FID_LASTFRAMEID-1;
+int ID3_FrameInfo::MaxFrameID()
+{
+  return ID3FID_LASTFRAMEID-1;
 }
 
-int ID3_FrameInfo::NumFields(ID3_FrameID frameid) {
-	int fieldnum=0;
+int ID3_FrameInfo::NumFields(ID3_FrameID frameid)
+{
+  int fieldnum=0;
 
-	while (ID3_FrameDefs[frameid-1].aeFieldDefs[fieldnum]._id !=
-	       ID3FN_NOFIELD) {
-		fieldnum++;
-	}
-	return fieldnum;
+  while (ID3_FrameDefs[frameid-1].aeFieldDefs[fieldnum]._id != ID3FN_NOFIELD)
+  {
+    fieldnum++;
+  }
+  return fieldnum;
 }
 
-ID3_FieldType ID3_FrameInfo::FieldType(ID3_FrameID frameid, int fieldnum) {
-	return (ID3_FrameDefs[frameid-1].aeFieldDefs[fieldnum]._type);
+ID3_FieldType ID3_FrameInfo::FieldType(ID3_FrameID frameid, int fieldnum)
+{
+  return (ID3_FrameDefs[frameid-1].aeFieldDefs[fieldnum]._type);
 }
 
-size_t ID3_FrameInfo::FieldSize(ID3_FrameID frameid, int fieldnum) {
-	return (ID3_FrameDefs[frameid-1].aeFieldDefs[fieldnum]._fixed_size);
+size_t ID3_FrameInfo::FieldSize(ID3_FrameID frameid, int fieldnum)
+{
+  return (ID3_FrameDefs[frameid-1].aeFieldDefs[fieldnum]._fixed_size);
 }
 
-flags_t ID3_FrameInfo::FieldFlags(ID3_FrameID frameid, int fieldnum) {
-	return (ID3_FrameDefs[frameid-1].aeFieldDefs[fieldnum]._flags);
+flags_t ID3_FrameInfo::FieldFlags(ID3_FrameID frameid, int fieldnum)
+{
+  return (ID3_FrameDefs[frameid-1].aeFieldDefs[fieldnum]._flags);
 }
 

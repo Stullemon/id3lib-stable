@@ -1,7 +1,8 @@
-// $Id: frame_render.cpp,v 1.26 2002/07/06 13:52:56 t1mpy Exp $
+// $Id: frame_render.cpp,v 1.27 2002/07/31 13:45:18 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
+// Copyright 2002 Thijmen Klok (thijmen@id3lib.org)
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -116,12 +117,12 @@ void ID3_FrameImpl::Render(ID3_Writer& writer) const
   ID3_FrameID fid = this->GetID();
   if (fid == ID3FID_NOFRAME)
   {
-		const char *tid = this->GetTextID();
-		hdr.SetUnknownFrame(tid);
+    const char *tid = this->GetTextID();
+    hdr.SetUnknownFrame(tid);
   }
   else
   {
-		hdr.SetFrameID(fid);
+    hdr.SetFrameID(fid);
   }
   hdr.SetEncryption(eID > 0);
   hdr.SetGrouping(gID > 0);
