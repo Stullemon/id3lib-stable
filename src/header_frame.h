@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: header_frame.h,v 1.1 2000/10/24 16:14:16 eldamitri Exp $
+// $Id: header_frame.h,v 1.2 2002/07/05 12:31:15 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -68,6 +68,7 @@ public:
   bool GetEncryption() const  { return _flags.test(ENCRYPTION); }
   bool GetGrouping() const    { return _flags.test(GROUPING); }
   bool GetReadOnly() const    { return _flags.test(READONLY); }
+  void                SetUnknownFrame(const char*);
 
 protected:
   bool                SetFlags(uint16 f, bool b)
@@ -76,7 +77,8 @@ protected:
     _changed = _changed || changed;
     return changed;
   }
-  void                SetUnknownFrame(const char*);
+// following is moved to public due to bug unknownframes corrupting a tag
+//  void                SetUnknownFrame(const char*);
 
 private:
   ID3_FrameDef*       _frame_def;
