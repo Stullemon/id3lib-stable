@@ -1,4 +1,4 @@
-// $Id: utils.cpp,v 1.24 2002/07/01 14:03:09 t1mpy Exp $
+// $Id: utils.cpp,v 1.25 2002/07/02 12:22:58 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -190,7 +190,7 @@ String dami::convert(String data, ID3_TextEnc sourceEnc, ID3_TextEnc targetEnc)
     target = ucstombs(data);
   }
 #else
-  if (sourceEnc != targetEnc)
+  if ((sourceEnc != targetEnc) && (data.size() > 0 ))
   {
     const char* targetFormat = getFormat(targetEnc);
     const char* sourceFormat = getFormat(sourceEnc);
