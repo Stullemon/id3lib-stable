@@ -1,11 +1,11 @@
-# $Id: makefile.win32,v 1.2 2001/12/16 11:11:52 shadrack Exp $
+# $Id: makefile.win32,v 1.3 2002/08/10 11:49:08 t1mpy Exp $
 #
 # Win32 makefile for id3lib
 #
 # First off, copy config.h.win32 to config.h
 #
 # You should run this using 'name -f makefile.win32' from the
-# id3lib root directory (for instance, c:\projects\id3lib-3.8.0pre2\).
+# id3lib root directory (for instance, c:\projects\id3lib-3.8.0\).
 #
 # If you want a debug version of the lib, add DEBUG=1 to 
 # the nmake command line.
@@ -24,7 +24,7 @@
 
 CFLAGS=-nologo -I. -Iinclude -Iinclude\id3 -Izlib\include \
 	-W3 -WX -GX \
-	-DHAVE_CONFIG_H -DID3LIB_COMPILATION
+	-DHAVE_CONFIG_H -DID3LIB_LINKOPTION=1
 
 !ifdef DEBUG
 SUFFIX=d
@@ -58,6 +58,7 @@ SRCS=\
 	$(SRCDIR)\io_decorators.cpp \
 	$(SRCDIR)\io_helpers.cpp \
 	$(SRCDIR)\misc_support.cpp \
+	$(SRCDIR)\mp3_parse.cpp \
 	$(SRCDIR)\readers.cpp \
 	$(SRCDIR)\spec.cpp \
 	$(SRCDIR)\tag.cpp \
@@ -106,6 +107,7 @@ OBJS=\
 	$(OBJDIR)\io_decorators.obj \
 	$(OBJDIR)\io_helpers.obj \
 	$(OBJDIR)\misc_support.obj \
+	$(OBJDIR)\mp3_parse.obj \
 	$(OBJDIR)\readers.obj \
 	$(OBJDIR)\spec.obj \
 	$(OBJDIR)\tag.obj \
