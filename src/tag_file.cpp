@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.16 2000/05/29 06:54:36 eldamitri Exp $
+// $Id: tag_file.cpp,v 1.17 2000/06/23 03:55:40 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -243,12 +243,10 @@ size_t ID3_Tag::Link(const char *fileInfo, flags_t tag_types)
   }
   
   strcpy(__file_name, fileInfo);
-    
-  if (ID3E_NoError != OpenFileForReading())
-  {
-    __starting_bytes = 0;
-  }
-  else
+  __changed = true;
+  __starting_bytes = 0;
+  __ending_bytes = 0;
+  if (ID3E_NoError == OpenFileForReading())
   {
     __starting_bytes = ParseFromHandle();
     
