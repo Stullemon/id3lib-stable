@@ -185,3 +185,45 @@ STDMETHODIMP CID3Frame::get_FrameName(BSTR *pVal)
 		return AtlReportError(CLSID_ID3ComFrame, "An unexpected error has occurred", IID_IID3ComFrame, E_UNEXPECTED);
 	}
 }
+
+STDMETHODIMP CID3Frame::put_Compressed(VARIANT_BOOL newVal)
+{
+	try
+	{
+		m_Frame->SetCompression(newVal == VARIANT_TRUE);
+		return S_OK;
+	}
+	catch (ID3_Error err)
+	{
+		return AtlReportError(CLSID_ID3ComFrame, err.GetErrorType(), IID_IID3ComFrame, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+	}
+	catch (...)
+	{
+		return AtlReportError(CLSID_ID3ComFrame, "An unexpected error has occurred", IID_IID3ComFrame, E_UNEXPECTED);
+	}
+}
+
+STDMETHODIMP CID3Frame::get_Compressed(VARIANT_BOOL *pVal)
+{
+	USES_CONVERSION;
+	try
+	{
+		if(m_Frame->GetCompression())
+		{
+			*pVal = VARIANT_TRUE;
+		}
+		else
+		{
+			*pVal = VARIANT_FALSE;
+		}
+		return S_OK;
+	}
+	catch (ID3_Error err)
+	{
+		return AtlReportError(CLSID_ID3ComFrame, err.GetErrorType(), IID_IID3ComFrame, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+	}
+	catch (...)
+	{
+		return AtlReportError(CLSID_ID3ComFrame, "An unexpected error has occurred", IID_IID3ComFrame, E_UNEXPECTED);
+	}
+}

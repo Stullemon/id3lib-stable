@@ -70,6 +70,8 @@ END_COM_MAP()
 
 // IID3ComFrame
 public:
+	STDMETHOD(get_Compressed)(/*[out, retval]*/ VARIANT_BOOL *pVal);
+	STDMETHOD(put_Compressed)(/*[in]*/ VARIANT_BOOL newVal);
 	STDMETHOD(get_FrameName)(/*[out, retval]*/ BSTR *pVal);
 	STDMETHOD(get_ID)(/*[out, retval]*/ eID3FrameTypes *pVal);
 	STDMETHOD(put_ID)(/*[in]*/ eID3FrameTypes newVal);

@@ -204,6 +204,8 @@ import "ocidl.idl";
 		[propget, id(3), helpstring("property ID")] HRESULT ID([out, retval] eID3FrameTypes *pVal);
 		[propput, id(3), helpstring("property ID")] HRESULT ID([in] eID3FrameTypes newVal);
 		[propget, id(4), helpstring("property FrameName")] HRESULT FrameName([out, retval] BSTR *pVal);
+ 		[propget, id(5), helpstring("property Compressed")] HRESULT Compressed([out, retval] VARIANT_BOOL *pVal);
+ 		[propput, id(5), helpstring("property Compressed")] HRESULT Compressed([in] VARIANT_BOOL newVal);
 	};
 
 	[
@@ -254,8 +256,7 @@ import "ocidl.idl";
 		[propget, id(26), helpstring("property PercentVolumeAdjust")] HRESULT PercentVolumeAdjust([out, retval] double *pVal);
 		[propput, id(26), helpstring("property PercentVolumeAdjust")] HRESULT PercentVolumeAdjust([in] double newVal);
  		[propput, id(27), helpstring("property Padding")] HRESULT Padding([in] VARIANT_BOOL newVal);
- 		[propput, id(28), helpstring("property Compression")] HRESULT Compression([in] VARIANT_BOOL newVal);
- 		[propput, id(29), helpstring("property UnSync")] HRESULT UnSync([in] VARIANT_BOOL newVal);
+ 		[propput, id(28), helpstring("property UnSync")] HRESULT UnSync([in] VARIANT_BOOL newVal);
 		[propget, id(DISPID_NEWENUM), restricted] HRESULT _NewEnum([out, retval] IUnknown** pRetVal);
 	};
 [
