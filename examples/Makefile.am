@@ -91,9 +91,6 @@ EXTRA_DIST =            \
 
 PROGNAME = gengetopt
 
-%.ggo: $(srcdir)/%.ggo.in $(top_builddir)/config.status
-	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
-
 %.c: $(srcdir)/%.ggo
 	$(PROGNAME) --file-name=$* --unamed-opts --input=$<
 
