@@ -1,4 +1,4 @@
-/* $Id: globals.h,v 1.23 2000/05/12 21:16:11 eldamitri Exp $
+/* $Id: globals.h,v 1.24 2000/05/23 15:30:40 eldamitri Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags Copyright
  * 1999, 2000 Scott Thomas Haug
@@ -32,9 +32,11 @@
 #ifndef __ID3LIB_GLOBALS_H__
 #define __ID3LIB_GLOBALS_H__
 
+#if defined __cplusplus
+#include <iostream.h>
+#endif
 #include <stdlib.h>
 #include "sized_types.h"
-#include <iostream.h>
 
 /* id3lib version.
  * we prefix variable declarations so they can
@@ -274,7 +276,7 @@ ID3_ENUM(ID3_V1Lengths)
  **
  ** @author Dirk Mahoney (dirk@id3.org)
  ** @author Scott Thomas Haug (sth2@cs.wustl.edu)
- ** @version $Id: globals.h,v 1.23 2000/05/12 21:16:11 eldamitri Exp $
+ ** @version $Id: globals.h,v 1.24 2000/05/23 15:30:40 eldamitri Exp $
  ** @see ID3_Tag
  **/
 ID3_STRUCT(ID3V1_Tag)
