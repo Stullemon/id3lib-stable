@@ -1,5 +1,9 @@
 2000-07-01  Scott Haug  <scott@id3.org>
 
+	* src/misc_support.cpp 
+	(ID3_AddTrack): Fixed bug that wasn't returning the frame added (thanks
+	Benedikt Roth)
+
 	* src/tag_parse_v1.cpp 
 	(ParseID3v1): Now returns number of bytes parsed.
 
