@@ -8,7 +8,7 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-LTVERSION = 3:3:3
+LTVERSION = 3:5:0
 
 INCLUDES = -I$(srcdir)/..
 
@@ -55,6 +55,7 @@ the_headers =                   \
 lib_LTLIBRARIES   = libid3.la 
 
 libid3_la_SOURCES = $(the_sources)
+CXXFLAGS = -Wall -g
 libid3_la_LIBADD  = -lz
 libid3_la_LDFLAGS = -version-info $(LTVERSION)
 
