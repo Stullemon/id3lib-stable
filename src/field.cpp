@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.39 2000/10/29 01:37:28 eldamitri Exp $
+// $Id: field.cpp,v 1.40 2000/10/29 08:15:13 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -882,7 +882,7 @@ static  ID3_FrameDef ID3_FrameDefs[] =
  ** if you only plan to generate 3.0 tags.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: field.cpp,v 1.39 2000/10/29 01:37:28 eldamitri Exp $
+ ** @version $Id: field.cpp,v 1.40 2000/10/29 08:15:13 eldamitri Exp $
  ** \sa ID3_Tag
  ** \sa ID3_Frame
  ** \sa ID3_Err 
@@ -1182,14 +1182,7 @@ bool ID3_FieldImpl::SetEncoding(ID3_TextEnc enc)
     (ID3TE_NONE < enc && enc < ID3TE_NUMENCODINGS);
   if (changed)
   {
-    if (_enc == ID3TE_UNICODE && enc == ID3TE_ASCII)
-    {
-      _text = ucstombs(_text);
-    }
-    else if (_enc == ID3TE_ASCII && enc == ID3TE_UNICODE)
-    {
-      _text = mbstoucs(_text);
-    }
+    _text = convert(_text, _enc, enc);
     _enc = enc;
     _changed = true;
   }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: globals.h,v 1.41 2000/10/23 08:20:54 eldamitri Exp $
+/* $Id: globals.h,v 1.42 2000/10/29 08:15:12 eldamitri Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags Copyright
  * 1999, 2000 Scott Thomas Haug
@@ -115,9 +115,13 @@ typedef uint16                flags_t;
 ID3_ENUM(ID3_TextEnc)
 {
   ID3TE_NONE = -1,
-  ID3TE_ASCII = 0,
-  ID3TE_UNICODE,
-  ID3TE_NUMENCODINGS  
+  ID3TE_ISO8859_1,
+  ID3TE_UTF16,
+  ID3TE_UTF16BE,
+  ID3TE_UTF8,
+  ID3TE_NUMENCODINGS,
+  ID3TE_ASCII = ID3TE_ISO8859_1,
+  ID3TE_UNICODE = ID3TE_UTF16
 };
 
 /** Enumeration of the various id3 specifications

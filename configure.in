@@ -1,4 +1,4 @@
-# $Id: configure.in,v 1.49 2000/10/29 01:37:28 eldamitri Exp $
+# $Id: configure.in,v 1.50 2000/10/29 08:15:12 eldamitri Exp $
 
 # Copyright 1999, 2000 Scott Thomas Haug <eldamitri@users.sourceforge.net>
 #  
@@ -127,10 +127,7 @@ AM_CONDITIONAL(ID3_NEEDDEBUG, test x$enable_debug = xyes)
 
 dnl Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS(zlib.h wchar.h sys/param.h)
-AC_CHECK_HEADERS(unistd.h \
-  ,,AC_MSG_ERROR([Missing a vital header file for id3lib])
-)
+AC_CHECK_HEADERS(zlib.h wchar.h sys/param.h unistd.h iconv.h)
 
 dnl Check for c++ features
 AC_LANG_SAVE
@@ -155,6 +152,7 @@ ID3_CXX_WARNINGS
 AC_LANG_RESTORE
 
 ID3_DEBUG
+ID3_UNICODE
 
 dnl Check for functions.
 

@@ -1,4 +1,4 @@
-// $Id: utils.cpp,v 1.14 2000/10/29 01:37:29 eldamitri Exp $
+// $Id: utils.cpp,v 1.15 2000/10/29 08:15:13 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,11 +28,14 @@
 #include <config.h>
 #endif
 
+#if defined HAVE_ICONV_H
+# include <iconv.h>
+# include <errno.h>
+#endif
 
-
-#include <ctype.h>
 #include "utils.h"
 
+using namespace std;
 using namespace dami;
 
 size_t dami::renderNumber(uchar *buffer, uint32 val, size_t size)
@@ -58,30 +61,127 @@ String dami::renderNumber(uint32 val, size_t size)
   return str;
 }
 
-// converts an ASCII string into a Unicode one
 
-String dami::mbstoucs(String data)
+namespace 
 {
-  size_t size = data.size();
-  String unicode(size * 2, '\0');
-  for (index_t i = 0; i < size; i++)
+#if !defined(HAVE_ICONV_H)
+  // converts an ASCII string into a Unicode one
+  String mbstoucs(String data)
   {
-    unicode[i*2+1] = toascii(data[i]);
+    size_t size = data.size();
+    String unicode(size * 2, '\0');
+    for (index_t i = 0; i < size; i++)
+    {
+      unicode[i*2+1] = toascii(data[i]);
+    }
+    return unicode;
   }
-  return unicode;
+
+  // converts a Unicode string into ASCII
+  
+  String dami::ucstombs(String data)
+  {
+    size_t size = data.size() / 2;
+    String ascii(size, '\0');
+    for (index_t i = 0; i < size; i++)
+    {
+      ascii[i] = toascii(data[i*2+1]);
+    }
+    return ascii;
+  }
+#else
+
+  String convert_i(iconv_t cd, String source)
+  {
+    String target;
+    size_t source_size = source.size();
+    const char* source_str = source.data();
+#define BUFSIZ 1024
+    char buf[BUFSIZ];
+    char* target_str = buf;
+    size_t target_size = BUFSIZ;
+    
+    do
+    {
+      size_t nconv = iconv(cd, 
+                           &source_str, &source_size, 
+                           &target_str, &target_size);
+      if (nconv == (size_t) -1 && errno != EINVAL && errno != E2BIG)
+      {
+        return target;
+      }
+      target.append(buf, BUFSIZ - target_size);
+      target_str = buf;
+      target_size = BUFSIZ;
+    }
+    while (source_size > 0);
+    return target;
+  }
+
+  const char* getFormat(ID3_TextEnc enc)
+  {
+    const char* format = NULL;
+    switch (enc)
+    {
+      case ID3TE_ASCII:
+        format = ID3_ICONV_FORMAT_ASCII;
+        break;
+
+      case ID3TE_UTF16:
+        format = ID3_ICONV_FORMAT_UTF16;
+        break;
+        
+      case ID3TE_UTF16BE:
+        format = ID3_ICONV_FORMAT_UTF16BE;
+        break;
+        
+      case ID3TE_UTF8:
+        format = ID3_ICONV_FORMAT_UTF8;
+        break;
+        
+      default:
+        break;
+    }
+    return format;
+  }
+#endif
 }
 
-// converts a Unicode string into ASCII
-
-String dami::ucstombs(String data)
+String dami::convert(String data, ID3_TextEnc sourceEnc, ID3_TextEnc targetEnc)
 {
-  size_t size = data.size() / 2;
-  String ascii(size, '\0');
-  for (index_t i = 0; i < size; i++)
+  String target;
+#if !defined HAVE_ICONV_H
+#define ID3_IS_ASCII(enc)      \
+  ((enc) == ID3TE_ASCII     || \
+   (enc) == ID3TE_ISO8859_1 || \
+   (enc) == ID3TE_UTF8)
+#define ID3_IS_UNICODE(enc)    \
+  ((enc) == ID3TE_UNICODE   || \
+   (enc) == ID3TE_UTF16     || \
+   (enc) == ID3TE_UTF16BE)
+  if (ID3_IS_ASCII(sourceEnc) && ID3_IS_UNICODE(targetEnc))
   {
-    ascii[i] = toascii(data[i*2+1]);
+    target = mbstoucs(data);
   }
-  return ascii;
+  else if (ID3_IS_UNICODE(sourceEnc) && ID3_IS_ASCII(targetEnc))
+  {
+    target = ucstombs(data);
+  }
+#else
+  if (sourceEnc != targetEnc)
+  {
+    const char* targetFormat = getFormat(targetEnc);
+    const char* sourceFormat = getFormat(sourceEnc);
+    
+    iconv_t cd = iconv_open (targetFormat, sourceFormat);
+    if (cd != (iconv_t) -1)
+    {
+      target = convert_i(cd, data);
+    }
+    iconv_close (cd);
+  }
+#endif
+  return target;
 }
 
 size_t dami::ucslen(const unicode_t *unicode)
