@@ -1,4 +1,4 @@
-// $Id: header_tag.cpp,v 1.7 2000/05/03 23:24:03 eldamitri Exp $
+// $Id: header_tag.cpp,v 1.8 2000/05/06 21:20:55 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -83,8 +83,7 @@ size_t ID3_TagHeader::Render(uchar *buffer) const
   // now we render the extended header
   if (__flags.test(EXTENDED))
   {
-    id3::RenderNumber(&buffer[size], __info->extended_bytes);
-    size += sizeof(uint32);
+    size += RenderNumber(&buffer[size], __info->extended_bytes);
   }
   
   return size;
@@ -108,7 +107,7 @@ size_t ID3_TagHeader::Parse(const uchar* data, size_t data_size)
   __flags.set(static_cast<ID3_Flags::TYPE>(data[FLAGS_OFFSET]));
 
   // set the data size
-  this->SetDataSize(id3::ParseNumber(&data[SIZE_OFFSET], sizeof(uint32)));
+  this->SetDataSize(ParseNumber(&data[SIZE_OFFSET], sizeof(uint32)));
   
   if (__flags.test(EXTENDED))
   {
