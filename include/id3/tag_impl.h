@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: tag_impl.h,v 1.6 2000/10/21 07:07:34 eldamitri Exp $
+// $Id: tag_impl.h,v 1.7 2000/10/24 05:55:08 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -111,25 +111,11 @@ public:
   size_t     GetFileSize() const { return _file_size; }
   dami::String GetFileName() const { return _file_name; }
   
-  /// Finds frame with given frame id
   ID3_Frame* Find(ID3_FrameID id) const;
-  
-  /// Finds frame with given frame id, fld id, and integer data
   ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, uint32 data) const;
-  
-  /// Finds frame with given frame id, fld id, and ascii data
   ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, dami::String) const;
-  
-  /// Finds frame with given frame id, fld id, and unicode data
   ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, dami::WString) const;
   
-  /** Returns the number of frames present in the tag object.
-   ** 
-   ** This includes only those frames that id3lib recognises.  This is used as
-   ** the upper bound on calls to the GetFrame() and operator[]() methods.
-   ** 
-   ** \return The number of frames present in the tag object.
-   **/
   size_t     NumFrames() const { return _frames.size(); }
   ID3_Frame* GetFrameNum(index_t) const;
   ID3_Frame* operator[](index_t) const;
@@ -140,6 +126,11 @@ public:
   bool       SetSpec(ID3_V2Spec);
   
   static size_t IsV2Tag(ID3_Reader&);
+
+  iterator         begin()       { return _frames.begin(); }
+  iterator         end()         { return _frames.end(); }
+  const_iterator   begin() const { return _frames.begin(); }
+  const_iterator   end()   const { return _frames.end(); }
   
   /* Deprecated! */
   void       AddNewFrame(ID3_Frame* f) { this->AttachFrame(f); }

@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.29 2000/10/21 22:18:15 eldamitri Exp $
+// $Id: misc_support.cpp,v 1.30 2000/10/24 05:55:08 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -383,9 +383,10 @@ ID3_Frame* ID3_AddComment(ID3_Tag *tag, const char *text,
     else
     {
       // See if there is already a comment with this description
-      for (size_t nCount = 0; nCount < tag->NumFrames(); nCount++)
+      ID3_Tag::Iterator* iter = tag->CreateIterator();
+      ID3_Frame* frame = NULL;
+      while ((frame = iter->GetNext()) != NULL)
       {
-        frame = tag->GetFrameNum(nCount);
         if (frame->GetID() == ID3FID_COMMENT)
         {
           char *tmp_desc = ID3_GetString(frame, ID3FN_DESCRIPTION);
@@ -400,6 +401,7 @@ ID3_Frame* ID3_AddComment(ID3_Tag *tag, const char *text,
           }
         }
       }
+      delete iter;
     }
     if (bAdd)
     {
@@ -427,9 +429,10 @@ size_t ID3_RemoveComments(ID3_Tag *tag, const char *desc)
     return num_removed;
   }
 
-  for (size_t nCount = 0; nCount < tag->NumFrames(); nCount++)
+  ID3_Tag::Iterator* iter = tag->CreateIterator();
+  ID3_Frame* frame = NULL;
+  while ((frame = iter->GetNext()) != NULL)
   {
-    ID3_Frame *frame = tag->GetFrameNum(nCount);
     if (frame->GetID() == ID3FID_COMMENT)
     {
       bool remove = false;
@@ -454,6 +457,7 @@ size_t ID3_RemoveComments(ID3_Tag *tag, const char *desc)
       }
     }
   }
+  delete iter;
 
   return num_removed;
 }

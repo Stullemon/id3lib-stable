@@ -1,4 +1,4 @@
-/* $Id: demo_simple.c,v 1.2 2000/10/13 18:29:11 eldamitri Exp $
+/* $Id: demo_simple.c,v 1.3 2000/10/24 05:55:08 eldamitri Exp $
 
  * Copyright 2000 Scott Thomas Haug <scott@id3.org>
  *  
@@ -24,7 +24,7 @@ int
 main( int argc, char *argv[] )
 {
   char *filename = NULL;
-  ID3Tag *my_tag;
+  ID3Tag *tag;
   
   if (argc != 2)
   {
@@ -34,18 +34,18 @@ main( int argc, char *argv[] )
   filename = argv[1];
   printf("*** Reading %s\n", filename);
   
-  if ((my_tag = ID3Tag_New()) != NULL)
+  if ((tag = ID3Tag_New()) != NULL)
   {
-    ID3Frame *my_frame;
+    ID3Frame *frame;
 
-    (void) ID3Tag_Link(my_tag, filename);
-    if ((my_frame = ID3Tag_FindFrameWithID(my_tag, ID3FID_TITLE)) != NULL)
+    (void) ID3Tag_Link(tag, filename);
+    if ((frame = ID3Tag_FindFrameWithID(tag, ID3FID_TITLE)) != NULL)
     {
-      ID3Field *my_field;
-      if ((my_field = ID3Frame_GetField(my_frame, ID3FN_TEXT)) != NULL)
+      ID3Field *field;
+      if ((field = ID3Frame_GetField(frame, ID3FN_TEXT)) != NULL)
       {
         char title[1024];
-        (void) ID3Field_GetASCII(my_field, title, 1024, 1);
+        (void) ID3Field_GetASCII(field, title, 1024);
         printf("Title: %s\n", title);
       }
       else

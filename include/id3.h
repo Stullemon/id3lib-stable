@@ -1,4 +1,4 @@
-/* $Id: id3.h,v 1.13 2000/10/23 08:20:54 eldamitri Exp $
+/* $Id: id3.h,v 1.14 2000/10/24 05:55:08 eldamitri Exp $
  * 
  * id3lib: a software library for creating and manipulating id3v1/v2 tags
  * Copyright 1999, 2000  Scott Thomas Haug
@@ -36,6 +36,8 @@ extern "C"
 #endif /* __cplusplus */
 
   typedef struct { char _dummy; } ID3Tag;
+  typedef struct { char _dummy; } ID3TagIterator;
+  typedef struct { char _dummy; } ID3TagConstIterator;
   typedef struct { char _dummy; } ID3Frame;
   typedef struct { char _dummy; } ID3Field;
 
@@ -63,6 +65,13 @@ extern "C"
   ID3_C_EXPORT ID3Frame   *ID3Tag_GetFrameNum          (const ID3Tag *tag, index_t num);
   ID3_C_EXPORT size_t      ID3Tag_NumFrames            (const ID3Tag *tag);
   ID3_C_EXPORT bool        ID3Tag_HasTagType           (const ID3Tag *tag, ID3_TagType);
+  ID3_C_EXPORT ID3TagIterator* ID3Tag_CreateIterator   (ID3Tag *tag);
+  ID3_C_EXPORT ID3TagConstIterator* ID3Tag_CreateConstIterator(const ID3Tag *tag);
+
+  ID3_C_EXPORT void        ID3TagIterator_Delete       (ID3TagIterator*);
+  ID3_C_EXPORT ID3Frame   *ID3TagIterator_GetNext      (ID3TagIterator*);
+  ID3_C_EXPORT void        ID3TagConstIterator_Delete  (ID3TagConstIterator*);
+  ID3_C_EXPORT const ID3Frame *ID3TagConstIterator_GetNext(ID3TagConstIterator*);
 
   /* frame wrappers */
   ID3_C_EXPORT ID3Frame   *ID3Frame_New                (void);
@@ -82,10 +91,12 @@ extern "C"
   ID3_C_EXPORT void        ID3Field_SetINT             (ID3Field *field, uint32 data);
   ID3_C_EXPORT uint32      ID3Field_GetINT             (const ID3Field *field);
   ID3_C_EXPORT void        ID3Field_SetUNICODE         (ID3Field *field, const unicode_t *string);
-  ID3_C_EXPORT size_t      ID3Field_GetUNICODE         (const ID3Field *field, unicode_t *buffer, size_t maxChars, index_t itemNum);
+  ID3_C_EXPORT size_t      ID3Field_GetUNICODE         (const ID3Field *field, unicode_t *buffer, size_t maxChars);
+  ID3_C_EXPORT size_t      ID3Field_GetUNICODEItem     (const ID3Field *field, unicode_t *buffer, size_t maxChars, index_t itemNum);
   ID3_C_EXPORT void        ID3Field_AddUNICODE         (ID3Field *field, const unicode_t *string);
   ID3_C_EXPORT void        ID3Field_SetASCII           (ID3Field *field, const char *string);
-  ID3_C_EXPORT size_t      ID3Field_GetASCII           (const ID3Field *field, char *buffer, size_t maxChars, index_t itemNum);
+  ID3_C_EXPORT size_t      ID3Field_GetASCII           (const ID3Field *field, char *buffer, size_t maxChars);
+  ID3_C_EXPORT size_t      ID3Field_GetASCIIItem       (const ID3Field *field, char *buffer, size_t maxChars, index_t itemNum);
   ID3_C_EXPORT void        ID3Field_AddASCII           (ID3Field *field, const char *string);
   ID3_C_EXPORT void        ID3Field_SetBINARY          (ID3Field *field, const uchar *data, size_t size);
   ID3_C_EXPORT void        ID3Field_GetBINARY          (const ID3Field *field, uchar *buffer, size_t buffLength);

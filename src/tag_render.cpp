@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.36 2000/10/16 08:59:19 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.37 2000/10/24 05:55:08 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -75,13 +75,10 @@ namespace
 {
   void renderFrames(ID3_Writer& writer, const ID3_TagImpl& tag)
   {
-    for (size_t i = 0; i < tag.NumFrames(); ++i)
+    for (ID3_TagImpl::const_iterator iter = tag.begin(); iter != tag.end(); ++iter)
     {
-      ID3_Frame* frm = tag.GetFrameNum(i);
-      if (frm)
-      {
-        frm->Render(writer);
-      }
+      const ID3_Frame* frame = *iter;
+      if (frame) frame->Render(writer);
     }
   }
 }
@@ -148,7 +145,7 @@ void id3::v2::render(ID3_Writer& writer, const ID3_TagImpl& tag)
 
 size_t ID3_TagImpl::Size() const
 {
-  if (!this->NumFrames())
+  if (this->NumFrames() == 0)
   {
     return 0;
   }

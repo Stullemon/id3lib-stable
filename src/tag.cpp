@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.33 2000/10/23 07:42:13 eldamitri Exp $
+// $Id: tag.cpp,v 1.34 2000/10/24 05:55:08 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -82,7 +82,7 @@ using namespace dami;
  ** formatted 'CDM' frames from the unreleased ID3v2 2.01 draft specification.
  **
  ** \author Dirk Mahoney
- ** \version $Id: tag.cpp,v 1.33 2000/10/23 07:42:13 eldamitri Exp $
+ ** \version $Id: tag.cpp,v 1.34 2000/10/24 05:55:08 eldamitri Exp $
  ** \sa ID3_Frame
  ** \sa ID3_Field
  ** \sa ID3_Err
@@ -827,3 +827,61 @@ int32 ID3_IsTagHeader(const uchar data[ID3_TAGHEADERSIZE])
 }
 
 
+namespace
+{
+  class IteratorImpl : public ID3_Tag::Iterator
+  {
+    ID3_TagImpl::iterator _cur;
+    ID3_TagImpl::iterator _end;
+  public:
+    IteratorImpl(ID3_TagImpl& tag)
+      : _cur(tag.begin()), _end(tag.end())
+    {
+    }
+
+    ID3_Frame* GetNext() 
+    { 
+      ID3_Frame* next = NULL;
+      while (next == NULL && _cur != _end)
+      {
+        next = *_cur;
+        ++_cur;
+      }
+      return next;
+    }
+  };
+
+  
+  class ConstIteratorImpl : public ID3_Tag::ConstIterator
+  {
+    ID3_TagImpl::const_iterator _cur;
+    ID3_TagImpl::const_iterator _end;
+  public:
+    ConstIteratorImpl(ID3_TagImpl& tag)
+      : _cur(tag.begin()), _end(tag.end())
+    {
+    }
+    const ID3_Frame* GetNext() 
+    { 
+      ID3_Frame* next = NULL;
+      while (next == NULL && _cur != _end)
+      {
+        next = *_cur;
+        ++_cur;
+      }
+      return next;
+    }
+  };
+}
+
+ID3_Tag::Iterator* 
+ID3_Tag::CreateIterator()
+{
+  return new IteratorImpl(*_impl);
+}
+
+ID3_Tag::ConstIterator* 
+ID3_Tag::CreateIterator() const
+{
+  return new ConstIteratorImpl(*_impl);
+}

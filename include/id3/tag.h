@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: tag.h,v 1.50 2000/10/23 08:20:54 eldamitri Exp $
+// $Id: tag.h,v 1.51 2000/10/24 05:55:08 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -34,11 +34,27 @@
 class ID3_Reader;
 class ID3_Writer;
 class ID3_TagImpl;
+class ID3_Tag;
 
 class ID3_Tag
 {
   ID3_TagImpl* _impl;
 public:
+
+  class Iterator
+  {
+  public:
+    virtual ID3_Frame*       GetNext()       = 0;
+  };
+
+  class ConstIterator
+  {
+  public:
+    virtual const ID3_Frame* GetNext()       = 0;
+  };
+
+public:
+
   ID3_Tag(const char *name = NULL);
   ID3_Tag(const ID3_Tag &tag);
   virtual ~ID3_Tag();
@@ -63,7 +79,6 @@ public:
   ID3_Frame* RemoveFrame(const ID3_Frame *);
   
   size_t     Parse(const uchar*, size_t);
-  size_t     Parse(const uchar header[ID3_TAGHEADERSIZE], const uchar *buffer);
   bool       Parse(ID3_Reader& reader);
   size_t     Render(uchar*, ID3_TagType = ID3TT_ID3V2) const;
   size_t     Render(ID3_Writer&, ID3_TagType = ID3TT_ID3V2) const;
@@ -77,13 +92,16 @@ public:
   size_t     GetFileSize() const;
   const char* GetFileName() const;
   
-  ID3_Frame* Find(ID3_FrameID id) const;
-  ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, uint32 data) const;
-  ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, const char*) const;
-  ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, const unicode_t*) const;
+  ID3_Frame* Find(ID3_FrameID) const;
+  ID3_Frame* Find(ID3_FrameID, ID3_FieldID, uint32) const;
+  ID3_Frame* Find(ID3_FrameID, ID3_FieldID, const char*) const;
+  ID3_Frame* Find(ID3_FrameID, ID3_FieldID, const unicode_t*) const;
   
   size_t     NumFrames() const;
   ID3_Frame* GetFrameNum(index_t) const;
+
+  Iterator*  CreateIterator();
+  ConstIterator* CreateIterator() const;
 
   ID3_Frame* operator[](index_t) const;
   ID3_Tag&   operator=( const ID3_Tag & );
@@ -103,6 +121,7 @@ public:
   bool       HasLyrics() const;
   bool       HasV2Tag()  const;
   bool       HasV1Tag()  const;
+  size_t     Parse(const uchar header[ID3_TAGHEADERSIZE], const uchar *buffer);
 
   ID3_Tag&   operator<<(const ID3_Frame &);
   ID3_Tag&   operator<<(const ID3_Frame *);
