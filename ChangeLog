@@ -1,4 +1,26 @@
+2000-06-22  Scott Haug  <scott@id3.org>
+
+	* src/tag_parse_lyrics3.cpp 
+	(ID3_IsCRLF): Added
+	(ID3_IsTimeStamp): Added
+	(ID3_CRLFtoLF): Now uses ID3_IsCRLF
+	(ID3_StripTimeStamps): Now uses ID3_IsTimeStamp
+	(ID3_Lyrics3ToSylt): New implementation using ID3_IsTimeStamp
+	(ParseLyrics3): Massive clean-up of implementation
+
+	* src/misc_support.cpp 
+	(ID3_AddSyncLyrics): Added initialization of time stamp format.
+
+	* src/frame.cpp 
+	(ID3_Frame): Initialize spec in construcotr.
+
+	* include/id3/header.h 
+	(class ID3_Header): Initialized spec in constructor.
+
 2000-06-20  Scott Haug  <scott@id3.org>
+
+	* examples/test_remove.cpp: 
+	Initial revision.
 
 	* src/tag.cpp 
 	(RemoveFrame): Now marks tag as being changed when a frame is removed,
