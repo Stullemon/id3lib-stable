@@ -1,4 +1,4 @@
-// $Id: int28.h,v 1.3 1999/12/17 16:05:02 scott Exp $
+// $Id: int28.h,v 1.4 1999/12/26 16:40:23 scott Exp $
 //  
 // This program is free software; you can distribute it and/or modify it under 
 // the terms discussed in the COPYING file, which should have been included  
@@ -20,28 +20,31 @@
 
 class int28
 {
-public:
-  int28(luint val = 0);
-  int28(uchar *val);
-  
-  uchar operator[](luint posn);
   friend ostream &operator<<(ostream& out, int28& val);
-  luint get(void);
+  friend istream &operator>>(istream& in, int28& val);
+public:
+  int28(uint32 val = 0);
+  int28(uchar val[sizeof(uint32)]);
   
-  // *** PRIVATE INTERNAL DATA - DO NOT USE *** PRIVATE INTERNAL DATA - DO NOT USE ***
+  uchar operator[](size_t posn);
+  uint32 get(void);
   
 protected:
-  void set(luint val);
-  uchar value[sizeof(luint)]; // the integer stored as a uchar array
+  void set(uint32 val);
+  void set(uchar val[sizeof(uint32)]);
+
+private:
+  uchar __acValue[sizeof(uint32)]; // the integer stored as a uchar array
+  uint32 __nValue;
 }
 ;
-
-ostream & operator<<(ostream& out, int28& val);
-istream & operator>>(istream& in, int28& val);
 
 #endif
 
 // $Log: int28.h,v $
+// Revision 1.4  1999/12/26 16:40:23  scott
+// (class int28): Restructured.
+//
 // Revision 1.3  1999/12/17 16:05:02  scott
 // Updated opening comment block.
 //
