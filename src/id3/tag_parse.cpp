@@ -1,4 +1,4 @@
-// $Id: tag_parse.cpp,v 1.18 2000/04/09 22:46:04 eldamitri Exp $
+// $Id: tag_parse.cpp,v 1.19 2000/04/10 16:58:13 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -179,7 +179,7 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
       posn++, extras++;
     }
 
-    bReadOnly = frHeader.GetFlags() & ID3FL_READONLY;
+    bReadOnly = ((frHeader.GetFlags() & ID3FL_READONLY) != 0);
 
     id = frHeader.GetFrameID();
     
@@ -425,6 +425,9 @@ luint ID3_Tag::ParseFromHandle(void)
 }
 
 // $Log: tag_parse.cpp,v $
+// Revision 1.19  2000/04/10 16:58:13  eldamitri
+// (ProcessBinaries): Minor change to prevent warning in windows.
+//
 // Revision 1.18  2000/04/09 22:46:04  eldamitri
 // Minor structure change.
 //
