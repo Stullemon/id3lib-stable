@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.19 2000/07/04 22:05:43 eldamitri Exp $
+// $Id: tag_file.cpp,v 1.20 2000/07/07 23:14:13 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -358,14 +358,11 @@ size_t RenderV2ToHandle(const ID3_Tag& tag, FILE*& handle)
   }
   
 
-  cerr << "*** tag.GetPrependedBytes() = " << tag.GetPrependedBytes() << endl;
-  cerr << "*** ID3_GetDataSize(tag) = " << ID3_GetDataSize(tag) << endl;
   // if the new tag fits perfectly within the old and the old one
   // actually existed (ie this isn't the first tag this file has had)
   if ((!tag.GetPrependedBytes() && !ID3_GetDataSize(tag)) ||
       (tag_size == tag.GetPrependedBytes()))
   {
-    cerr << "*** fits exactly" << endl;
     fseek(handle, 0, SEEK_SET);
     if (buffer)
     {
