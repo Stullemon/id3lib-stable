@@ -1,4 +1,4 @@
-// $Id: utils.cpp,v 1.12 2000/10/16 08:46:56 eldamitri Exp $
+// $Id: utils.cpp,v 1.13 2000/10/21 22:33:42 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -27,6 +27,8 @@
 #if defined HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include "debug.h"
 
 #include <ctype.h>
 #include "utils.h"
@@ -58,28 +60,28 @@ String dami::renderNumber(uint32 val, size_t size)
 
 // converts an ASCII string into a Unicode one
 
-void dami::mbstoucs(unicode_t *unicode, const char *ascii, size_t len)
+String dami::mbstoucs(String data)
 {
-  if (NULL != ascii && NULL != unicode)
+  size_t size = data.size();
+  String unicode(size * 2, '\0');
+  for (index_t i = 0; i < size; i++)
   {
-    for (index_t i = 0; i < len; i++)
-    {
-      unicode[i] = ascii[i] & 0xFF;
-    }
+    unicode[i*2+1] = toascii(data[i]);
   }
+  return unicode;
 }
 
 // converts a Unicode string into ASCII
 
-void dami::ucstombs(char *ascii, const unicode_t *unicode, size_t len)
+String dami::ucstombs(String data)
 {
-  if (NULL != unicode && NULL != ascii)
+  size_t size = data.size() / 2;
+  String ascii(size, '\0');
+  for (index_t i = 0; i < size; i++)
   {
-    for (index_t i = 0; i < len; i++)
-    {
-      ascii[i] = unicode[i] & 0x00FF;
-    }
+    ascii[i] = toascii(data[i*2+1]);
   }
+  return ascii;
 }
 
 size_t dami::ucslen(const unicode_t *unicode)
@@ -97,81 +99,23 @@ size_t dami::ucslen(const unicode_t *unicode)
   return 0;
 }
 
-void dami::ucscpy(unicode_t *dest, const unicode_t *src)
-{
-  if (NULL != dest && NULL != src)
-  {
-    size_t i;
-    for (i = 0; NULL_UNICODE != src[i]; i++)
-    {
-      dest[i] = src[i];
-    }
-    dest[i] = NULL_UNICODE;
-  }
-}
-
-void dami::ucsncpy(unicode_t *dest, const unicode_t *src, size_t len)
-{
-  if (NULL != dest && NULL != src)
-  {
-    size_t i;
-    for (i = 0; i < len && NULL_UNICODE != src[i]; i++)
-    {
-      dest[i] = src[i];
-    }
-    for (; i < len; i++)
-    {
-      dest[i] = NULL_UNICODE;
-    }
-  }
-}
-
-int dami::ucscmp(const unicode_t *s1, const unicode_t *s2)
-{
-  return ucsncmp(s1, s2, (size_t) -1);
-}
-
-int dami::ucsncmp(const unicode_t *s1, const unicode_t *s2, size_t len)
-{
-  if (NULL == s1 && NULL == s2)
-  {
-    return  0;
-  }
-  if (NULL == s1)
-  {
-    return  1;
-  }
-  if (NULL == s2)
-  {
-    return -1;
-  }
-  for (size_t i = 0; true; i++)
-  {
-    if ((NULL_UNICODE == s1[i]) || (NULL_UNICODE == s2[i]) ||
-        (s1[i] != s2[i]) || (i + 1 == len))
-    {
-      return s2[i] - s1[i];
-    }
-  }
-}
-
 namespace
 {
-  bool exists(const char *name)
+  bool exists(String name)
   {
-    ifstream file(name, ios::nocreate);
+    ifstream file(name.c_str(), ios::nocreate);
     return file.is_open() != 0;
   }
 };
 
-ID3_Err dami::createFile(const char* name, fstream& file)
+ID3_Err dami::createFile(String name, fstream& file)
 {
   if (file.is_open())
   {
     file.close();
   }
     
-  file.open(name, ios::out | ios::binary | ios::trunc);
+  file.open(name.c_str(), ios::out | ios::binary | ios::trunc);
   if (!file)
   {
     return ID3E_ReadOnly;
@@ -219,7 +163,7 @@ size_t dami::getFileSize(ofstream& file)
   return size;
 }
 
-ID3_Err dami::openWritableFile(const char* name, fstream& file)
+ID3_Err dami::openWritableFile(String name, fstream& file)
 {
   if (!exists(name))
   {
@@ -230,7 +174,7 @@ ID3_Err dami::openWritableFile(const char* name, fstream& file)
   {
     file.close();
   }
-  file.open(name, ios::in | ios::out | ios::binary | ios::nocreate);
+  file.open(name.c_str(), ios::in | ios::out | ios::binary | ios::nocreate);
   if (!file)
   {
     return ID3E_ReadOnly;
@@ -239,7 +183,7 @@ ID3_Err dami::openWritableFile(const char* name, fstream& file)
   return ID3E_NoError;
 }
 
-ID3_Err dami::openWritableFile(const char* name, ofstream& file)
+ID3_Err dami::openWritableFile(String name, ofstream& file)
 {
   if (!exists(name))
   {
@@ -250,7 +194,7 @@ ID3_Err dami::openWritableFile(const char* name, ofstream& file)
   {
     file.close();
   }
-  file.open(name, ios::in | ios::out | ios::binary | ios::nocreate);
+  file.open(name.c_str(), ios::in | ios::out | ios::binary | ios::nocreate);
   if (!file)
   {
     return ID3E_ReadOnly;
@@ -259,13 +203,13 @@ ID3_Err dami::openWritableFile(const char* name, ofstream& file)
   return ID3E_NoError;
 }
 
-ID3_Err dami::openReadableFile(const char* name, fstream& file)
+ID3_Err dami::openReadableFile(String name, fstream& file)
 {
   if (file.is_open())
   {
     file.close();
   }
-  file.open(name, ios::in | ios::binary | ios::nocreate);
+  file.open(name.c_str(), ios::in | ios::binary | ios::nocreate);
   if (!file)
   {
     return ID3E_NoFile;
@@ -274,13 +218,13 @@ ID3_Err dami::openReadableFile(const char* name, fstream& file)
   return ID3E_NoError;
 }
 
-ID3_Err dami::openReadableFile(const char* name, ifstream& file)
+ID3_Err dami::openReadableFile(String name, ifstream& file)
 {
   if (file.is_open())
   {
     file.close();
   }
-  file.open(name, ios::in | ios::binary | ios::nocreate);
+  file.open(name.c_str(), ios::in | ios::binary | ios::nocreate);
   if (!file)
   {
     return ID3E_NoFile;
