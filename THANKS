@@ -1,0 +1,8 @@
+id3lib THANKS file
+
+id3lib was originally written by Dirk Mahoney.
+id3lib was branched at version 3.05a by Scott Thomas Haug, who intended to 
+implement better linux functionality.
+Many people have further contributed to id3lib by reporting problems, 
+suggesting various improvements, or submitting actual code. Here is
+a list of these people. Help me keep it complete and exempt of errors.
