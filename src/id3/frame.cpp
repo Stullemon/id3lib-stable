@@ -1,4 +1,4 @@
-// $Id: frame.cpp,v 1.7 1999/12/01 18:00:59 scott Exp $
+// $Id: frame.cpp,v 1.8 1999/12/09 03:32:17 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -34,14 +34,20 @@ ID3_Frame::ID3_Frame(ID3_FrameID id)
   lwordsForFields =(((luint) ID3FN_LASTFIELDID) - 1) / (sizeof(luint) * 8);
   
   if ((((luint) ID3FN_LASTFIELDID) - 1) %(sizeof(luint) * 8) != 0)
+  {
     lwordsForFields++;
+  }
     
   __auiFieldBits = new luint[lwordsForFields];
   if (NULL == __auiFieldBits)
+  {
     ID3_THROW(ID3E_NoMemory);
+  }
 
   for (luint i = 0; i < lwordsForFields; i++)
+  {
     __auiFieldBits[i] = 0;
+  }
     
   SetID(id);
 }
@@ -52,7 +58,9 @@ ID3_Frame::~ID3_Frame(void)
   Clear();
   
   if (__auiFieldBits != NULL)
+  {
     delete [] __auiFieldBits;
+  }
 }
 
 
@@ -61,7 +69,9 @@ void ID3_Frame::Clear(void)
   if (__ulNumFields && __apFields)
   {
     for (luint i = 0; i < __ulNumFields; i++)
+    {
       delete __apFields[i];
+    }
       
     delete [] __apFields;
     
@@ -84,24 +94,32 @@ void ID3_Frame::SetID(ID3_FrameID id)
   {
     info = ID3_FindFrameDef(id);
     if (NULL == info)
+    {
       ID3_THROW(ID3E_InvalidFrameID);
+    }
 
     __FrameID = id;
       
     __ulNumFields = 0;
       
-    while(info->aeFieldDefs[__ulNumFields].eID != ID3FN_NOFIELD)
+    while (info->aeFieldDefs[__ulNumFields].eID != ID3FN_NOFIELD)
+    {
       __ulNumFields++;
+    }
       
     __apFields = new ID3_Field * [__ulNumFields];
     if (NULL == __apFields)
+    {
       ID3_THROW(ID3E_NoMemory);
+    }
 
     for (luint i = 0; i < __ulNumFields; i++)
     {
       __apFields[i] = new ID3_Field;
       if (NULL == __apFields[i])
+      {
         ID3_THROW(ID3E_NoMemory);
+      }
 
       __apFields[i]->__eName        = info->aeFieldDefs[i].eID;
       __apFields[i]->__eType        = info->aeFieldDefs[i].eType;
@@ -131,7 +149,9 @@ ID3_FrameID ID3_Frame::GetID(void) const
 void ID3_Frame::SetVersion(uchar ver, uchar rev)
 {
   if (__ucVersion != ver || __ucRevision != rev)
+  {
     __bHasChanged = true;
+  }
     
   __ucVersion  = ver;
   __ucRevision = rev;
@@ -145,8 +165,12 @@ lsint ID3_Frame::FindField(ID3_FieldID fieldName) const
   if (BS_ISSET(__auiFieldBits, fieldName))
   {
     for (lsint num = 0; num < (lsint) __ulNumFields; num++)
+    {
       if (__apFields[num]->__eName == fieldName)
+      {
         return num;
+      }
+    }
   }
 
   return -1;
@@ -157,7 +181,9 @@ ID3_Field& ID3_Frame::Field(ID3_FieldID fieldName) const
   lsint fieldNum = FindField(fieldName);
   
   if (fieldNum < 0)
+  {
     ID3_THROW(ID3E_FieldNotFound);
+  }
     
   return *__apFields[fieldNum];
 }
@@ -234,10 +260,14 @@ luint ID3_Frame::Size(void)
   bytesUsed += header.Size();
   
   if (strlen(__sEncryptionID))
+  {
     bytesUsed++;
+  }
     
   if (strlen(__sGroupingID))
+  {
     bytesUsed++;
+  }
     
   // this call is to tell the string fields what they should be rendered/parsed
   // as (ASCII or Unicode)
@@ -268,7 +298,27 @@ bool ID3_Frame::HasChanged(void) const
   return changed;
 }
 
+ID3_Frame &
+ID3_Frame::operator=( const ID3_Frame &rFrame )
+{
+  if (this != &rFrame)
+  {
+    ID3_FrameID eID = rFrame.GetID();
+    SetID(eID);
+    for (size_t nIndex = 0; nIndex < __ulNumFields; nIndex++)
+    {
+      if (rFrame.__apFields[nIndex] != NULL)
+      {
+        *(__apFields[nIndex]) = *(rFrame.__apFields[nIndex]);
+      }
+    }
+  }
+}
+
 // $Log: frame.cpp,v $
+// Revision 1.8  1999/12/09 03:32:17  scott
+// (operator=): Added implementation.
+//
 // Revision 1.7  1999/12/01 18:00:59  scott
 // Changed all of the #include <id3/*> to #include "*" to help ensure that
 // the sources are searched for in the right places (and to make compiling under
