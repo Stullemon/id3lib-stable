@@ -1,4 +1,4 @@
-// $Id: demo_convert.cpp,v 1.5 1999/11/25 17:15:03 scott Exp $
+// $Id: demo_convert.cpp,v 1.6 1999/11/25 18:01:14 scott Exp $
 //
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -16,7 +16,7 @@
 #include <id3/tag.h>
 #include <getopt.h>
 
-#define VERSION_NUMBER "$Revision: 1.5 $"
+#define VERSION_NUMBER "$Revision: 1.6 $"
 
 void PrintUsage(char *sName)
 {
@@ -25,6 +25,7 @@ void PrintUsage(char *sName)
   cout << endl;
   cout << "  -1, --v1tag     Render only the id3v1 tag" << endl;
   cout << "  -2, --v2tag     Render only the id3v2 tag" << endl;
+  cout << "  -s, --strip     Strip, rather than render, the tags" << endl;
   cout << "  -h, --help      Display this help and exit" << endl;
   cout << "  -v, --version   Display version information and exit" << endl;
   cout << endl;
@@ -37,11 +38,20 @@ void PrintUsage(char *sName)
 
 void PrintVersion(char *sName)
 {
-  cout << sName << ", " << VERSION_NUMBER << endl;
-  cout << "ID3v2 Tag Converter - No copyright 1998 Dirk Mahoney" << endl;
+  size_t nIndex;
+  cout << sName << " ";
+  for (nIndex = 0; nIndex < strlen(VERSION_NUMBER); nIndex++)
+    if (VERSION_NUMBER[nIndex] == ' ') break;
+  nIndex++;
+  for (; nIndex < strlen (VERSION_NUMBER); nIndex++)
+  {
+    if (VERSION_NUMBER[nIndex] == ' ') break;
+    cout << VERSION_NUMBER[nIndex];
+  }
+  cout << endl;
   cout << "Uses " << ID3LIB_NAME << " " << ID3LIB_VERSION << endl << endl;
 
-  cout << "This program converts ID3v1/1.1 and Lyrics3 v2.0" << endl;
+  cout << "This program converts and strips ID3v1/1.1 and Lyrics3 v2.0" << endl;
   cout << "tags to ID3v2 tags." << endl << endl;
 }
 
@@ -62,6 +72,7 @@ int main( int argc, char *argv[])
   int ulFlag = BOTH_ID3_TAGS;
   int iOpt;
   bool bError = false;
+  bool bStrip = false;
   while (true)
   {
     int option_index = 0;
@@ -72,9 +83,10 @@ int main( int argc, char *argv[])
       { "v2tag",   no_argument, &iLongOpt, '2' },
       { "version", no_argument, &iLongOpt, 'v' },
       { "help",    no_argument, &iLongOpt, 'h' },
+      { "strip",   no_argument, &iLongOpt, 's' },
       { 0, 0, 0, 0 }
     };
-    iOpt = getopt_long (argc, argv, "12vh", long_options, &option_index);
+    iOpt = getopt_long (argc, argv, "12svh", long_options, &option_index);
 
     if (iOpt == -1)
       break;
@@ -83,29 +95,12 @@ int main( int argc, char *argv[])
 
     switch (iOpt)
     {
-      case '1':
-        ulFlag = V1_TAG;
-        break;
-        
-      case '2':
-        ulFlag = V2_TAG;
-        break;
-
-      case 'v':
-        PrintVersion(argv[0]);
-        exit (0);
-        break;
-        
-
-      case 'h':
-        PrintUsage(argv[0]);
-        exit (0);
-        break;
-
-      case '?':
-        bError = true;
-        break;
-
+      case '1': ulFlag = V1_TAG;        break;
+      case '2': ulFlag = V2_TAG;        break;
+      case 's': bStrip = true;          break;
+      case 'v': PrintVersion(argv[0]);  exit (0);
+      case 'h': PrintUsage(argv[0]);    exit (0);
+      case '?': bError = true;          break;
       default:
         cout << "?? getopt returned character code " << iOpt << " ??" << endl;
     }
@@ -121,7 +116,11 @@ int main( int argc, char *argv[])
       {
         ID3_Tag myTag;
 
-        cout << "Converting " << argv[nIndex] << ": ";
+        if (bStrip)
+          cout << "Stripping ";
+        else
+          cout << "Converting ";
+        cout << argv[nIndex] << ": ";
 
         myTag.Link(argv[nIndex]);
 
@@ -130,15 +129,17 @@ int main( int argc, char *argv[])
 
         luint nTags;
 
-        if (ulFlag & V2_TAG)
+        if (bStrip)
         {
-          nTags = myTag.Strip(V2_TAG);
+          nTags = myTag.Strip(ulFlag);
           cout << ", stripped ";
-          DisplayTags(cout, nTags);
         }
-        nTags = myTag.Update(ulFlag);
+        else
+        {
+          nTags = myTag.Update(ulFlag);
+          cout << ", converted ";
+        }
 
-        cout << ", converted ";
         DisplayTags(cout, nTags);
 
         cout << endl;
