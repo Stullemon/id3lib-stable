@@ -359,6 +359,10 @@ SOURCE=.\ID3Tag.rgs
 # PROP Default_Filter "cpp"
 # Begin Source File
 
+SOURCE=..\src\c_wrapper.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\error.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
@@ -401,6 +405,10 @@ SOURCE=..\src\frame_parse.cpp
 
 SOURCE=..\src\frame_render.cpp
 # SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\globals.cpp
 # End Source File
 # Begin Source File
 
@@ -466,7 +474,6 @@ SOURCE=..\src\tag_render.cpp
 
 SOURCE=..\src\tag_sync.cpp
 # SUBTRACT CPP /YX /Yc /Yu
-# End Source File
 # End Source File
 # End Group
 # Begin Source File
