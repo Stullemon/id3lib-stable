@@ -1,5 +1,5 @@
 // -*- C++ -*- 
-// $Id: field_impl.h,v 1.5 2000/10/03 00:45:26 eldamitri Exp $
+// $Id: field_impl.h,v 1.6 2000/10/08 21:36:23 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -100,8 +100,7 @@ public:
   bool          IsEncodable() const { return (_flags & ID3FF_ENCODABLE) > 0; }
   
 
-  size_t        Render(uchar *buffer) const;
-  size_t        Parse(const uchar *buffer, size_t buffSize);
+  void          Render(ID3_Writer&) const;
   bool          Parse(ID3_Reader&);
   bool          HasChanged() const;
 
@@ -139,9 +138,9 @@ private:
   size_t              _num_items;   // the number of items in the text string
   ID3_TextEnc         _enc;         // encoding for text fields
 protected:
-  size_t RenderInteger(uchar *buffer) const;
-  size_t RenderString(uchar *buffer) const;
-  size_t RenderBinary(uchar *buffer) const;
+  void RenderInteger(ID3_Writer&) const;
+  void RenderString(ID3_Writer&) const;
+  void RenderBinary(ID3_Writer&) const;
   
   bool ParseInteger(ID3_Reader&);
   bool ParseASCIIString(ID3_Reader&);
