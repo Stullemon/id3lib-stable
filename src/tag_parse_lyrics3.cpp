@@ -1,4 +1,4 @@
-// $Id: tag_parse_lyrics3.cpp,v 1.24 2000/10/09 04:30:29 eldamitri Exp $
+// $Id: tag_parse_lyrics3.cpp,v 1.25 2000/10/12 22:35:49 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -89,7 +89,7 @@ namespace dami
           {
             index++;
           }
-          else if (ch = text[0])
+          else if (ch == text[0])
           {
             index = 1;
           }
