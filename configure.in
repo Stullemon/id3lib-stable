@@ -1,4 +1,4 @@
-# $Id: configure.in,v 1.45 2000/09/27 06:56:47 eldamitri Exp $
+# $Id: configure.in,v 1.46 2000/10/10 03:57:24 eldamitri Exp $
 
 # Copyright 1999, 2000 Scott Thomas Haug <eldamitri@users.sourceforge.net>
 #  
@@ -72,14 +72,14 @@ VERSION=$ID3LIB_VERSION
 PACKAGE=$ID3LIB_NAME
 
 dnl This is a hack to get the release date using cvs checkin macros
-ID3LIB_DATE="$Date: 2000/09/27 06:56:47 $ID3LIB_UNDEFINED"
+ID3LIB_DATE="$Date: 2000/10/10 03:57:24 $ID3LIB_UNDEFINED"
 ID3LIB_FULLNAME=$ID3LIB_NAME-$ID3LIB_VERSION
 
 AC_SUBST(ID3LIB_DATE)
 AC_SUBST(ID3LIB_FULLNAME)
 
-AM_INIT_AUTOMAKE($PACKAGE,$VERSION)
 AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE($PACKAGE,$VERSION)
 
 dnl Initialize libtool
 AM_PROG_LIBTOOL
@@ -117,23 +117,25 @@ dnl
 AC_SUBST(ID3LIB_DEBUG_FLAGS)
 
 dnl Checks for programs
+AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_CXXCPP
 AC_PROG_RANLIB
 AC_PROG_INSTALL
 
+dnl for executable extensions
+AC_EXEEXT
+
 dnl Checks for libraries.
 AC_CHECK_LIB(z,uncompress,AC_DEFINE_UNQUOTED(HAVE_ZLIB))#,,
-AC_CHECK_LIB(popt,poptGetContext,AC_DEFINE_UNQUOTED(HAVE_POPTLIB))#,,
 #  AC_MSG_ERROR([id3lib requires zlib to process compressed frames]))
 
 AM_CONDITIONAL(ID3_NEEDZLIB, test x$ac_cv_lib_z_uncompress = xno)
-AM_CONDITIONAL(ID3_NEEDPOPT, test x$ac_cv_lib_popt_poptGetContext = xno)
 AM_CONDITIONAL(ID3_NEEDDEBUG, test x$enable_debug = xyes)
 
 dnl Checks for header files.
 AC_HEADER_STDC
-AC_HAVE_HEADERS(zlib.h wchar.h sys/param.h popt.h)
+AC_HAVE_HEADERS(zlib.h wchar.h sys/param.h)
 AC_HAVE_HEADERS(                \
   ctype.h                       \
   limits.h                      \
@@ -158,7 +160,10 @@ AC_HAVE_HEADERS(                \
 )
 
 dnl Check for functions.
-AC_FUNC_MEMCMP
+# AC_FUNC_MEMCMP
+AC_CHECK_FUNCS(getopt_long , , AC_DEFINE_UNQUOTED(HAVE_GETOPT_LONG))#
+AM_CONDITIONAL(ID3_NEEDGETOPT_LONG, test x$ac_cv_func_getopt_long = xno)
+
 AC_CHECK_FUNCS(mkstemp)
 AC_CHECK_FUNCS(
   truncate                      \
@@ -192,7 +197,7 @@ dnl  * macros will be made available in the library via constants, functions,
 dnl  * or static methods.
 dnl  */
 dnl #undef HAVE_ZLIB
-dnl #undef HAVE_POPTLIB
+dnl #undef HAVE_GETOPT_LONG
 dnl #undef ID3LIB_DEBUG
 dnl #undef _ID3LIB_NAME
 dnl #undef _ID3LIB_DATE
@@ -219,13 +224,10 @@ AC_DEFINE_UNQUOTED(_ID3LIB_BINARY_AGE,            $ID3LIB_BINARY_AGE)
 AC_DEFINE_UNQUOTED(_ID3_COMPILED_WITH_DEBUGGING, "${enable_debug}")
 
 CONDITIONAL_SUBDIRS=
-if test "x$ac_cv_lib_popt_poptGetContext" = "xno"; then
-  CONDITIONAL_SUBDIRS="$CONDITIONAL_SUBDIRS popt"
-fi
 if test "x$ac_cv_lib_z_uncompress" = "xno"; then
   CONDITIONAL_SUBDIRS="$CONDITIONAL_SUBDIRS zlib"
 fi
-AC_CONFIG_SUBDIRS(zlib popt)
+AC_CONFIG_SUBDIRS(zlib)
 
 AC_OUTPUT(                      \
   Makefile                      \
