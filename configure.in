@@ -1,4 +1,4 @@
-# $Id: configure.in,v 1.54 2001/12/17 17:20:41 shadrack Exp $
+# $Id: configure.in,v 1.55 2002/06/27 12:46:38 t1mpy Exp $
 
 # Copyright 1999, 2000 Scott Thomas Haug <eldamitri@users.sourceforge.net>
 #  
@@ -38,7 +38,7 @@ ifdef([AC_DIVERSION_NOTICE], [AC_DIVERT_PUSH(AC_DIVERSION_NOTICE)],
 ID3LIB_MAJOR_VERSION=3
 ID3LIB_MINOR_VERSION=8
 ID3LIB_PATCH_VERSION=0
-ID3LIB_ADDED_VERSION=pre2.1
+ID3LIB_ADDED_VERSION=pre3.0
 ID3LIB_VERSION=$ID3LIB_MAJOR_VERSION.$ID3LIB_MINOR_VERSION.$ID3LIB_PATCH_VERSION$ID3LIB_ADDED_VERSION
 
 ID3LIB_INTERFACE_AGE=0
@@ -137,11 +137,11 @@ AC_LANG_SAVE
 AC_LANG_CPLUSPLUS
 AC_CHECK_HEADERS(libcw/sys.h)
 AC_CHECK_HEADERS(cctype climits cstdio cstdlib cstring)
-AC_CHECK_HEADERS(fstream iostream iomanip)
+AC_CHECK_HEADERS(fstream iostream iomanip bitset vector \
+	,,AC_MSG_ERROR([Missing a vital header file for id3lib])
+)
 AC_CHECK_HEADERS(               \
   string                        \
-  fstream.h                     \
-  iostream.h                    \
   iomanip.h                     \
   ,,AC_MSG_ERROR([Missing a vital header file for id3lib])
 )

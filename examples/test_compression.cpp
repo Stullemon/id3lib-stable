@@ -1,11 +1,11 @@
-// $Id: test_compression.cpp,v 1.7 2000/10/29 01:37:28 eldamitri Exp $
+// $Id: test_compression.cpp,v 1.8 2002/06/27 12:47:39 t1mpy Exp $
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
 
-#include <iostream.h>
-#include <id3/tag.h>
+#include "id3/id3lib_streams.h"
+#include "id3/tag.h"
 
 int main( int argc, char *argv[])
 {

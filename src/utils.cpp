@@ -1,4 +1,4 @@
-// $Id: utils.cpp,v 1.19 2001/08/26 23:33:32 dmazzoni Exp $
+// $Id: utils.cpp,v 1.20 2002/06/27 12:46:05 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -34,13 +34,14 @@
 #endif
 
 #include <ctype.h>
-#include <iostream.h>
 
-#ifdef macintosh
-#define NOCREATE ((std::ios_base::openmode)0)
-#define toascii(X) (X)
-#else
+#if (defined(__GNUC__) && __GNUC__ == 2)
 #define NOCREATE ios::nocreate
+#else
+#if defined(macintosh)  //not sure if this is still needed
+#define toascii(X) (X)  //not sure if this is still needed
+#endif                  //not sure if this is still needed
+#define NOCREATE ((std::ios_base::openmode)0)
 #endif
 
 #include "utils.h"
@@ -106,13 +107,13 @@ namespace
     size_t source_size = source.size();
 //    const char* source_str = source.data();
     char * source_str = new char[source.length()+1]; 
-    source.copy(source_str, string::npos); 
+    source.copy(source_str, std::string::npos); 
     source_str[source.length()] = 0; 
 
-#define BUFSIZ 1024
-    char buf[BUFSIZ];
+#define ID3LIB_BUFSIZ 1024
+    char buf[ID3LIB_BUFSIZ];
     char* target_str = buf;
-    size_t target_size = BUFSIZ;
+    size_t target_size = ID3LIB_BUFSIZ;
     
     do
     {
@@ -123,9 +124,9 @@ namespace
       {
         return target;
       }
-      target.append(buf, BUFSIZ - target_size);
+      target.append(buf, ID3LIB_BUFSIZ - target_size);
       target_str = buf;
-      target_size = BUFSIZ;
+      target_size = ID3LIB_BUFSIZ;
     }
     while (source_size > 0);
     return target;
@@ -228,7 +229,7 @@ ID3_Err dami::createFile(String name, fstream& file)
     file.close();
   }
     
-  file.open(name.c_str(), ios::out | ios::binary | ios::trunc);
+  file.open(name.c_str(), ios::in | ios::out | ios::binary | ios::trunc);
   if (!file)
   {
     return ID3E_ReadOnly;

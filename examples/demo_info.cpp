@@ -14,14 +14,13 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.28 2000/10/29 01:37:28 eldamitri Exp $
+// $Id: demo_info.cpp,v 1.29 2002/06/27 12:46:18 t1mpy Exp $
 
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
 
-#include <iostream.h>
 #include <id3/tag.h>
 #include <id3/utils.h>
 #include <id3/misc_support.h>
@@ -31,8 +30,10 @@
 #include "demo_info_options.h"
 
 using namespace dami;
+using std::cout;
+using std::endl;
 
-static String VERSION_NUMBER = "$Revision: 1.28 $";
+static String VERSION_NUMBER = "$Revision: 1.29 $";
 
 void PrintUsage(const char *sName)
 {
@@ -192,7 +193,7 @@ void PrintInformation(const ID3_Tag &myTag)
       case ID3FID_GENERALOBJECT:
       {
         char 
-        *sMimeType = ID3_GetString(frame, ID3FN_TEXT), 
+        *sMimeType = ID3_GetString(frame, ID3FN_MIMETYPE), 
         *sDesc = ID3_GetString(frame, ID3FN_DESCRIPTION), 
         *sFileName = ID3_GetString(frame, ID3FN_FILENAME);
         size_t 
@@ -207,7 +208,7 @@ void PrintInformation(const ID3_Tag &myTag)
       }
       case ID3FID_UNIQUEFILEID:
       {
-        char *sOwner = ID3_GetString(frame, ID3FN_TEXT);
+        char *sOwner = ID3_GetString(frame, ID3FN_OWNER);
         size_t nDataSize = frame->GetField(ID3FN_DATA)->Size();
         cout << sOwner << ", " << nDataSize
              << " bytes" << endl;

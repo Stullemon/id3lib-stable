@@ -1,13 +1,13 @@
-// $Id: test_remove.cpp,v 1.10 2000/10/29 01:37:28 eldamitri Exp $
+// $Id: test_remove.cpp,v 1.11 2002/06/27 12:48:04 t1mpy Exp $
 
 #if defined(HAVE_CONFIG_H)
 # include "config.h"
 #endif
 
-#include <iostream.h>
-#include <id3/tag.h>
-#include <id3/misc_support.h>
-#include <id3/strings.h>
+#include "id3/id3lib_streams.h"
+#include "id3/tag.h"
+#include "id3/misc_support.h"
+#include "id3/id3lib_strings.h"
 
 using namespace dami;
 

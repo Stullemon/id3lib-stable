@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: tag_impl.h,v 1.1 2000/10/24 16:15:35 eldamitri Exp $
+// $Id: tag_impl.h,v 1.2 2002/06/27 12:48:46 t1mpy Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -35,7 +35,7 @@
 #include "frame.h"
 #include "field.h"
 #include "spec.h"
-#include "strings.h"
+#include "id3/id3lib_strings.h"
 
 class ID3_Reader;
 class ID3_Writer;

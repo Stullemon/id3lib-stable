@@ -16,8 +16,8 @@
 #ifndef __DLL
 
 
-#include <iostream.h>
-#include <id3/tag.h>
+#include "id3/id3lib_streams.h"
+#include "id3/tag.h"
 
 
 void MakeDummyTag(void)

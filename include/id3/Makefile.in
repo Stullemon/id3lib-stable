@@ -131,7 +131,8 @@ noinst_HEADERS = \
   io_decorators.h               \
   io_helpers.h                  \
   io_strings.h                  \
-  strings.h                     
+  id3lib_strings.h              \
+  id3lib_streams.h 
 
 subdir = include/id3
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs

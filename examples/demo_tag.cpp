@@ -1,10 +1,10 @@
-// $Id: demo_tag.cpp,v 1.13 2000/10/29 01:37:28 eldamitri Exp $
+// $Id: demo_tag.cpp,v 1.14 2002/06/27 12:47:27 t1mpy Exp $
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
 
-#include <iostream.h>
+#include "id3/id3lib_streams.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -13,7 +13,10 @@
 
 #include "demo_tag_options.h"
 
-static const char* VERSION_NUMBER = "$Revision: 1.13 $";
+using std::cout;
+using std::endl;
+
+static const char* VERSION_NUMBER = "$Revision: 1.14 $";
 
 void PrintUsage(const char *sName)
 {

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: utils.h,v 1.19 2001/07/30 18:22:53 abscess Exp $
+// $Id: utils.h,v 1.20 2002/06/27 12:48:16 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -32,9 +32,9 @@
 #include <config.h>
 #endif
 
-#include <fstream.h>
+#include "id3/id3lib_streams.h"
 #include "globals.h"
-#include "strings.h"
+#include "id3/id3lib_strings.h"
 
 namespace dami
 {

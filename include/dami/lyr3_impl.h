@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lyr3_impl.h,v 1.1 2000/10/23 06:16:00 eldamitri Exp $
+// $Id: lyr3_impl.h,v 1.2 2002/06/27 12:49:04 t1mpy Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,7 +28,7 @@
 #ifndef _ID3LIB_LYR3_IMPL_H_
 #define _ID3LIB_LYR3_IMPL_H_
 
-#include "strings.h"
+#include "id3/id3lib_strings.h"
 #include <list>
 
 namespace dami

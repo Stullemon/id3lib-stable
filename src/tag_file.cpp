@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.35 2002/03/03 20:04:15 slackorama Exp $
+// $Id: tag_file.cpp,v 1.36 2002/06/27 12:46:12 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -31,9 +31,7 @@
 
 
 #include <string.h>
-#include <fstream.h>
 #include <stdlib.h>
-#include "utils.h"
 #include "writers.h"
 #include "io_strings.h"
 #include "tag_impl.h"
@@ -228,8 +226,8 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
   else
   {
     String filename = tag.GetFileName();
-#if !defined HAVE_MKSTEMP
-    // This section is for Windows folk
+#if ((defined(__GNUC__) && __GNUC__ >= 3  ) || !defined(HAVE_MKSTEMP))
+    // This section is for Windows folk && gcc 3.x folk
 
     FILE *tempOut = tmpfile();
     if (NULL == tempOut)
@@ -252,7 +250,7 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
     }
     
     rewind(tempOut);
-    openWritableFile(filename, file);
+    createFile(filename, file);
     
     while (!feof(tempOut))
     {
@@ -420,7 +418,11 @@ flags_t ID3_TagImpl::Strip(flags_t ulTagFlag)
       nBytesCopied = 0;
     while (!file.eof())
     {
-      size_t nBytesToRead = dami::min<size_t>(nBytesRemaining - nBytesCopied, BUFSIZ);
+#if (defined(__GNUC__) && __GNUC__ == 2)
+      size_t nBytesToRead = (size_t)dami::min((unsigned int)(nBytesRemaining - nBytesCopied), (unsigned int)BUFSIZ);
+#else
+      size_t nBytesToRead = min((unsigned int)(nBytesRemaining - nBytesCopied), (unsigned int)BUFSIZ);
+#endif
       file.read((char *)aucBuffer, nBytesToRead);
       size_t nBytesRead = file.gcount();
 

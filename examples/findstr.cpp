@@ -2,9 +2,12 @@
 #  include <config.h>
 #endif
 
-#include <iostream.h>
-#include <id3/tag.h>
-#include <id3/misc_support.h>
+#include "id3/id3lib_streams.h"
+#include "id3/tag.h"
+#include "id3/misc_support.h"
+
+using std::cout;
+using std::endl;
 
 int main(unsigned argc, char* argv[])
 {

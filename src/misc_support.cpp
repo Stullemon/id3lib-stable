@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.34 2002/03/20 10:32:27 slackorama Exp $
+// $Id: misc_support.cpp,v 1.35 2002/06/27 12:45:52 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -44,9 +44,11 @@ using namespace dami;
 char *ID3_GetString(const ID3_Frame *frame, ID3_FieldID fldName)
 {
   char *text = NULL;
-  if (NULL != frame)
+//  if (NULL != frame)
+  ID3_Field* fld;
+  if (NULL != frame && NULL != (fld = frame->GetField(fldName)))
   {
-    ID3_Field* fld = frame->GetField(fldName);
+//    ID3_Field* fld = frame->GetField(fldName);
     ID3_TextEnc enc = fld->GetEncoding();
     fld->SetEncoding(ID3TE_ASCII);
     size_t nText = fld->Size();

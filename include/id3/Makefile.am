@@ -29,4 +29,5 @@ noinst_HEADERS =                \
   io_decorators.h               \
   io_helpers.h                  \
   io_strings.h                  \
-  strings.h                     
+  id3lib_streams.h		\
+  id3lib_strings.h                     

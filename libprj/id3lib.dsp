@@ -265,6 +265,10 @@ SOURCE=..\include\id3\header.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\include\id3\id3lib_streams.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\include\id3\header_frame.h
 # End Source File
 # Begin Source File
@@ -286,6 +290,7 @@ SOURCE=..\include\id3\io_decorators.h
 # Begin Source File
 
 SOURCE=..\include\id3\io_helpers.h
+
 # End Source File
 # Begin Source File
 
@@ -313,7 +318,7 @@ SOURCE=..\include\id3\spec.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\id3\strings.h
+SOURCE=..\include\id3\id3lib_strings.h
 # End Source File
 # Begin Source File
 

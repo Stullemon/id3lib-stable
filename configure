@@ -9565,7 +9565,8 @@ done
 
 
 
-for ac_header in fstream iostream iomanip
+for ac_header in fstream iostream iomanip \
+
 do
 as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
 if eval "test \"\${$as_ac_Header+set}\" = set"; then
@@ -9674,18 +9675,19 @@ if test `eval echo '${'$as_ac_Header'}'` = yes; then
 #define `echo "HAVE_$ac_header" | $as_tr_cpp` 1
 _ACEOF
 
+else
+  { { echo "$as_me:$LINENO: error: Missing a vital header file for id3lib" >&5
+echo "$as_me: error: Missing a vital header file for id3lib" >&2;}
+   { (exit 1); exit 1; }; }
+
 fi
 
 done
 
 
 
-
-
 for ac_header in \
   string                        \
-  fstream.h                     \
-  iostream.h                    \
   iomanip.h                     \
 
 do
