@@ -8,3 +8,17 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+INCLUDES = -I$(top_srcdir)/src
+LDADD = $(top_builddir)/src/id3/libid3.la
+
+check_PROGRAMS = id3info id3convert
+id3info_SOURCES = demo_info.cpp
+id3convert_SOURCES = demo_convert.cpp
+
+EXTRA_DIST =            \
+  ChangeLog             \
+  demo_main.cpp         \
+  jules.mp3             \
+  jules-badtag.mp3      \
+  jules-goodtag.mp3     \
+  readme.txt
