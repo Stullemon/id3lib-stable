@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.18 2000/09/11 07:46:32 eldamitri Exp $
+// $Id: field_string_unicode.cpp,v 1.19 2000/09/14 22:11:08 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -49,237 +49,24 @@
  ** \param string The unicode string to set this field to.
  ** \sa Add(const unicode_t*)
  **/
-void ID3_Field::Set(const unicode_t *string)
+size_t ID3_Field::Set_i(const unicode_t *string, size_t size)
 {
-  size_t nBytes = (0 == _length) ? ucslen(string) : _length;
-  
-  // we can simply increment the nBytes count here because we just pilfer
-  // the NULL which is present in the string which was passed to us
-  if (_flags & ID3FF_CSTR)
-  {
-    nBytes++;
-  }
-    
-  // doubling the nBytes because Unicode is twice the size of ASCII
-  nBytes *= sizeof(unicode_t);
-  
-  Set((uchar *) string, nBytes);
-  
+  this->Clear();
   this->SetEncoding(ID3TE_UNICODE);
-  _type = ID3FTY_TEXTSTRING;
-  _changed = true;
-  
-  return ;
-}
-
-
-/** For fields which support this feature, adds a string to the list of
- ** strings currently in the field.
- ** 
- ** Performs similarly as the ASCII Add(const char*) method, taking a unicode_t
- ** string as a parameter rather than an ascii string.
- **/
-void ID3_Field::Add(const unicode_t *string)
-{
-  if (NULL == _data)
+  if (_chars == 0 && size > 0)
   {
-    Set(string);
+    _chars = size;
+    _unicode = new unicode_t[_chars];
   }
-  else
+  if (_chars > 0)
   {
-    unicode_t *uBuffer = (unicode_t *) _data;
-
-    // +1 is for the NULL at the end and the other +1 is for the list divider
-    size_t newLen = ucslen(string) + ucslen(uBuffer) + 1 + 1;
-    
-    unicode_t *temp = new unicode_t[newLen];
-    if (NULL == temp)
-    {
-      ID3_THROW(ID3E_NoMemory);
-    }
-
-    ucscpy(temp, uBuffer);
-
-    // I use the value 1 as a divider because then I can change it to either a
-    // '/' or a NULL at render time.  This allows easy use of these functions
-    // for text lists or in the IPLS frame
-    temp[ucslen(uBuffer)] = L'\001';
-    ucscpy(&temp[ucslen(uBuffer) + 1], string);
-    temp[newLen - 1] = NULL_UNICODE;
-      
-    Set(temp);
-      
-    delete [] temp;
-  }
-  
-  return ;
-}
-
-
-/** Copies the contents of the field into the supplied buffer, up to the
- ** number of characters specified; for fields with multiple entries, the
- ** optional third parameter indicates which of the fields to retrieve.
- ** 
- ** Performs similarly as the ASCII Get(char *, size_t, index_t) method, taking
- ** a unicode_t string as a parameter rather than an ascii string.  The
- ** maxChars parameter still represents the maximum number of characters, not
- ** bytes.
- **   
- ** \code
- **   unicode_t myBuffer[1024];
- **   size_t charsUsed = myFrame.Field(ID3FN_TEXT).Get(buffer, 1024);
- ** \endcode 
- **   
- ** \param buffer   Where the field's data is copied to
- ** \param maxChars The maximum number of characters to copy to the buffer.
- ** \param itemNum  For fields with multiple items (such as the involved
- **                 people frame, the item number to retrieve.
- ** \sa Get(char *, size_t, index_t)
- **/
-size_t ID3_Field::Get(unicode_t *buffer, size_t maxChars, index_t itemNum) const
-{
-  size_t charsUsed = 0;
-  
-  // check to see if there is a string in the frame to copy before we even try
-  if (NULL != _data)
-  {
-    lsint nullOffset = 0;
-    
-    if (_flags & ID3FF_CSTR)
-    {
-      nullOffset = -1;
-    }
-      
-    // first we must find which element is being sought to make sure it exists
-    // before we try to get it
-    if (itemNum <= GetNumTextItems() && itemNum > 0)
-    {
-      unicode_t *source = (unicode_t *) _data;
-      size_t posn = 0;
-      size_t sourceLen = 0;
-      index_t curItemNum = 1;
-      
-      // now we find that element and set the souvre pointer
-      while (curItemNum < itemNum)
-      {
-        while (*source != L'\001' && *source != L'\0' && posn <
-               ((_size / sizeof(unicode_t)) + nullOffset))
-        {
-          source++, posn++;
-        }
-          
-        source++;
-        curItemNum++;
-      }
-      
-      // now that we are positioned at the first character of the string we
-      // want, find the end of it
-      while (source[sourceLen] != L'\001' && source[sourceLen] != L'\0' &&
-             posn <((_size / sizeof(unicode_t) + nullOffset)))
-      {
-        sourceLen++, posn++;
-      }
-        
-      if (NULL == buffer)
-      {
-        ID3_THROW(ID3E_NoBuffer);
-      }
-
-      size_t actualChars = MIN(maxChars, sourceLen);
-        
-      ucsncpy(buffer, source, actualChars);
-      if (actualChars < maxChars)
-      {
-        buffer[actualChars] = L'\0';
-      }
-      charsUsed = actualChars;
-    }
-  }
-  
-  return charsUsed;
-}
-
-
-/** Returns the number of items in a text list.
- ** 
- ** \code
- **   size_t numItems = myFrame.Field(ID3FN_TEXT).GetNumItems();
- ** \endcode
- ** 
- ** \return The number of items in a text list.
- **/
-size_t ID3_Field::GetNumTextItems() const
-{
-  size_t numItems = 0;
-  
-  if (NULL != _data)
-  {
-    index_t posn = 0;
-    
-    numItems++;
-    
-    while (posn < _size)
-    {
-      if (_data[posn++] == L'\001')
-      {
-        numItems++;
-      }
-    }
-  }
-  
-  return numItems;
-}
-
-
-size_t 
-ID3_Field::ParseUnicodeString(const uchar *buffer, size_t nSize)
-{
-  size_t nBytes = 0;
-  unicode_t *temp = NULL;
-  if (_length > 0)
-  {
-    nBytes = _length;
-  }
-  else
-  {
-    if (_flags & ID3FF_CSTR)
-    {
-      while (nBytes < nSize &&
-             !(buffer[nBytes] == 0 && buffer[nBytes + 1] == 0))
-      {
-        nBytes += sizeof(unicode_t);
-      }
-    }
-    else
-    {
-      nBytes = nSize;
-    }
-  }
-  
-  if (nBytes > 0)
-  {
-    // Sanity check our indices and sizes before we start copying memory
-    if (nBytes > nSize)
-    {
-      ID3_THROW_DESC(ID3E_BadData, "field information invalid");
-    }
-
-    temp = new unicode_t[(nBytes / sizeof(unicode_t)) + 1];
-    if (NULL == temp)
-    {
-      ID3_THROW(ID3E_NoMemory);
-    }
-
     size_t loc = 0;
-
-    memcpy(temp, buffer, nBytes);
-    temp[nBytes / sizeof(unicode_t)] = NULL_UNICODE;
-      
     // if there is a BOM, skip past it and check to see if we need to swap
     // the byte order around
-    if (temp[0] == 0xFEFF || temp[0] == 0xFFFE)
+    if (string[0] == 0xFEFF || string[0] == 0xFFFE)
     {
       loc++;
+      _chars--;
         
       // The following is taken from the following URL:
       // http://community.roxen.com/developers/idocs/rfc/rfc2781.html
@@ -298,83 +85,296 @@ ID3_Field::ParseUnicodeString(const uchar *buffer, size_t nSize)
          are 0xFF followed by 0xFE, the order is little-endian. Note that
          0xFFFE is not a Unicode character, precisely to preserve the
          usefulness of 0xFEFF as a byte-order mark. */
-
-      if (0xFFFE == temp[0])
-      {
-        // we need to swap the byte order...
-        for (index_t i = loc; i < ucslen(temp); i++)
-        {
-          uchar
-            u1 = ((uchar *)(&temp[i]))[0],
-            u2 = ((uchar *)(&temp[i]))[1];
-          temp[i] = (u1 << 8) | u2;
-        }
-      }
     }
       
-    Set(&temp[loc]);
-      
-    delete [] temp;
+    _unicode = new unicode_t[_chars];
+    memcpy((void *)_unicode, (void *)&string[loc], _chars * 2);
+    if (0xFFFE == string[0])
+    {
+      // we need to swap the byte order...
+      for (index_t i = loc; i < _chars; i++)
+      {
+        uchar
+          u1 = ((uchar *)(&_unicode[i]))[0],
+          u2 = ((uchar *)(&_unicode[i]))[1];
+        _unicode[i] = (u1 << 8) | u2;
+      }
+    }
   }
-  
-  if (_flags & ID3FF_CSTR)
+  _changed = true;
+  if (string == NULL || size == 0)
   {
-    nBytes += sizeof(unicode_t);
+    _num_items = 0;
   }
+  else
+  {
+    _num_items = 1;
+  }
+
+  return MIN(_chars, size);
+}
+
+size_t ID3_Field::Set(const unicode_t *string)
+{
+  size_t len = 0;
+  if (this->GetType() == ID3FTY_TEXTSTRING)
+  {
+    if (string == NULL)
+    {
+      len = this->Set_i(string, 0);
+    }
+    else
+    {
+      len = this->Set_i(string, ucslen(string));
+    }
+  }
+  return len;
+}
+ 
+ 
+/** For fields which support this feature, adds a string to the list of
+ ** strings currently in the field.
+ ** 
+ ** Performs similarly as the ASCII Add(const char*) method, taking a unicode_t
+ ** string as a parameter rather than an ascii string.
+ **/
+size_t ID3_Field::Add_i(const unicode_t* str, size_t strLen)
+{
+  size_t len = 0;
+  if (this->GetNumTextItems() == 0)
+  {
+    // there aren't any text items in the field so just assign the string to
+    // the field
+    len = this->Set_i(str, strLen);
+  }
+  else
+  {
+    this->SetEncoding(ID3TE_UNICODE);
     
-  _changed = false;
-  
-  return nBytes;
+    unicode_t *oldStr = _unicode;
+    size_t oldLen = this->Size();
+    //ASSERT(oldLen > 0);
+    if (_fixed_length > 0)
+    {
+      _chars = _fixed_length;
+    }
+    else
+    {
+      _chars = oldLen + 1 + strLen;
+    }
+    
+    if (oldLen + 1 >= _chars)
+    {
+      // our new length isn't any bigger than our old length, so there's 
+      // nothing to copy.  set the null pointer, if possible, and set the
+      // length of what we copied to 0
+      _chars = oldLen;
+      len = 0;
+    }
+    else
+    {
+      // our new length is bigger than our old, so we can copy some (possibly
+      // all) of the bytes from str into this field
+      len = _chars - oldLen - 1;
+      // ASSERT(len > 0);
+      _unicode = new unicode_t[_chars];
+      ::memcpy((void *)_unicode, (void *)oldStr, oldLen * 2);
+      delete [] oldStr;
+      _unicode[oldLen] = NULL_UNICODE;
+      ::memcpy((void *) &_unicode[oldLen + 1], (void *) str, len);
+      _num_items++;
+    }
+  }
+  return len;
+}
+
+size_t ID3_Field::Add(const unicode_t *str)
+{
+  size_t len = 0;
+  if (this->GetType() == ID3FTY_TEXTSTRING)
+  {
+    if (NULL == str)
+    {
+      len = this->Set_i(str, 0);
+    }
+    else
+    {
+      len = this->Add_i(str, ucslen(str));
+    }
+  }
+  return len;
 }
 
 
-size_t ID3_Field::RenderUnicodeString(uchar *buffer) const
+/** Copies the contents of the field into the supplied buffer, up to the
+ ** number of characters specified; for fields with multiple entries, the
+ ** optional third parameter indicates which of the fields to retrieve.
+ ** 
+ ** Performs similarly as the ASCII Get(char *, size_t, index_t) method, taking
+ ** a unicode_t string as a parameter rather than an ascii string.  The
+ ** maxChars parameter still represents the maximum number of characters, not
+ ** bytes.
+ **   
+ ** \code
+ **   unicode_t myBuffer[1024];
+ **   size_t charsUsed = myFrame.Field(ID3FN_UNICODE).Get(buffer, 1024);
+ ** \endcode 
+ **   
+ ** \param buffer   Where the field's data is copied to
+ ** \param maxChars The maximum number of characters to copy to the buffer.
+ ** \param itemNum  For fields with multiple items (such as the involved
+ **                 people frame, the item number to retrieve.
+ ** \sa Get(char *, size_t, index_t)
+ **/
+size_t ID3_Field::Get(unicode_t *buffer, size_t maxLength) const
 {
-  size_t nBytes = 0;
-  
-  nBytes = BinSize();
-  
-  if (NULL != _data && _size && nBytes)
+  size_t length = 0;
+  if (this->GetType() == ID3FTY_TEXTSTRING && 
+      this->GetEncoding() == ID3TE_UNICODE &&
+      buffer != NULL && maxLength > 0)
   {
-    // we render at sizeof(unicode_t) bytes into the buffer because we make
-    // room for the Unicode BOM
-    memcpy(&buffer[sizeof(unicode_t)], (uchar *) _data, 
-           nBytes - sizeof(unicode_t));
-    
-    unicode_t *ourString = (unicode_t *) &buffer[sizeof(unicode_t)];
-    // now we convert the internal dividers to what they are supposed to be
-    for (index_t i = sizeof(unicode_t); i < this->Size(); i++)
+    size_t size = this->Size();
+    length = MIN(maxLength, size);
+    memcpy((void *)buffer, (void *)_unicode, length * 2);
+    if (length < maxLength)
     {
-      if (ourString[i] == 0x01)
+      buffer[length] = NULL_UNICODE;
+    }
+  }
+  return length;
+}
+
+size_t ID3_Field::Get(unicode_t *buffer, size_t maxLength, index_t itemNum) const
+{
+  size_t length = 0;
+  size_t total_items = this->GetNumTextItems();
+  if (this->GetType() == ID3FTY_TEXTSTRING && 
+      this->GetEncoding() == ID3TE_UNICODE &&
+      buffer != NULL && maxLength > 0 && itemNum < total_items)
+  {
+    unicode_t* cur = _unicode;
+    unicode_t* end = _unicode + _chars;
+    size_t num = 0;
+    while (cur < end && num < itemNum)
+    {
+      // the last item in the list probably doesn't have a null terminator, so
+      // we must anticipate so that we don't determine its length with ucslen
+      if (num == total_items - 1)
       {
-        unicode_t sub = L'/';
-        
-        if (_flags & ID3FF_LIST)
-        {
-          sub = L'\0';
-        }
-        
-        ourString[i] = sub;
+        break;
+      }
+      cur += ucslen(cur) + 1;
+      num++;
+    }
+    if (cur < end)
+    {
+      // the last item in the list probably doesn't have a null terminator, so
+      // we must anticipate so that we don't determine its length with ucslen
+      if (itemNum == total_items - 1)
+      {
+        length = end - cur;
+      }
+      else
+      {
+        length = ucslen(cur);
+      }
+      ::memcpy((void *)buffer, (void *)cur, length * 2);
+      if (length < maxLength)
+      {
+        buffer[length] = NULL_UNICODE;
       }
     }
   }
-  
-  if (nBytes)
+
+  return length;
+}
+
+
+/** Returns the number of items in a text list.
+ ** 
+ ** \code
+ **   size_t numItems = myFrame.Field(ID3FN_UNICODE).GetNumItems();
+ ** \endcode
+ ** 
+ ** \return The number of items in a text list.
+ **/
+size_t ID3_Field::GetNumTextItems() const
+{
+  return _num_items;
+}
+
+
+size_t 
+ID3_Field::ParseUnicodeString(const uchar *buffer, size_t nSize)
+{
+  size_t nChars = 0;
+  const unicode_t* unicode = (const unicode_t*) buffer;
+
+  if (_fixed_length > 0)
   {
-    // render the BOM
-    unicode_t *BOM = (unicode_t *) buffer;
-    BOM[0] = 0xFEFF;
+    nChars = _fixed_length;
+  }
+  else if (!(_flags & ID3FF_CSTR) || (_flags & ID3FF_LIST))
+  {
+    // If the string isn't null-terminated or if it is null divided, we're
+    // assured this is the last field of of the frame, and we can claim the
+    // remaining bytes for ourselves
+    nChars = nSize / 2;
+  }
+  else
+  {
+    // it would be nice to use ucslen to find nBytes, but the buffer might be
+    // invalid, so there might not be a null character to mark the end of the
+    // string
+    while (nChars < (nSize / 2) && unicode[nChars] != NULL_UNICODE)
+    {
+      nChars++;
+    }
+  }
+
+  if (nChars == 0)
+  {
+    this->Set_i(static_cast<const char *>(NULL), 0);
+  }
+  // This check needs to come before the check for ID3FF_CSTR
+  else if (_flags & ID3FF_LIST)
+  {
+    const unicode_t* cur = unicode;
+    const unicode_t* end = unicode + nChars;
+    while (cur < end)
+    {
+      size_t length = ucslen(cur);
+      // sanity check!
+      if (length + cur > end)
+      {
+        length = end - cur;
+      }
+      this->Add_i(cur, length);
+      cur += length + 1;
+    }
+  }
+  // This check needs to come after the check for ID3FF_LIST
+  else if (_flags & ID3FF_CSTR)
+  {
+    this->Set_i(unicode, nChars);
+  }
+  else
+  {
+    // Sanity check our indices and sizes before we start copying memory
+    if (nChars * 2 > nSize)
+    {
+      nChars = nSize / 2;
+    }
+
+    this->Set_i(unicode, nChars);
   }
   
-  if (nBytes == sizeof(unicode_t) && (_flags & ID3FF_CSTR))
+  if (_flags & ID3FF_CSTR && !(_flags & ID3FF_LIST))
   {
-    for (size_t i = 0; i < sizeof(unicode_t); i++)
-    {
-      buffer[i] = 0;
-    }
+    nChars++;
   }
     
   _changed = false;
   
-  return nBytes;
+  return nChars * 2;
 }

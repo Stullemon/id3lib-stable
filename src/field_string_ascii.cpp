@@ -1,4 +1,4 @@
-// $Id: field_string_ascii.cpp,v 1.14 2000/09/11 07:46:32 eldamitri Exp $
+// $Id: field_string_ascii.cpp,v 1.15 2000/09/14 22:11:08 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -45,30 +45,132 @@
  **   myFrame.Field(ID3FN_TEXT).Set("ID3Lib is very cool!");
  ** \endcode
  **/
-void ID3_Field::Set(const char *sString)
+size_t ID3_Field::Set_i(const char* string, size_t size)
 {
-  if (sString != NULL)
+  this->Clear();
+  this->SetEncoding(ID3TE_ASCII);
+  if (_chars == 0 && size > 0)
   {
-    Clear();
-    size_t nStrLen = (0 == _length) ? strlen(sString) : _length;
-    unicode_t *temp = new unicode_t[nStrLen + 1];
-    if (NULL == temp)
-    {
-      ID3_THROW(ID3E_NoMemory);
-    }
-
-    mbstoucs(temp, sString, nStrLen + 1);
-
-    Set(temp);
-    delete [] temp;
-      
-    this->SetEncoding(ID3TE_ASCII);
-    _type = ID3FTY_TEXTSTRING;
+    _chars = size;
+    _ascii = new char[_chars];
   }
-  
-  return ;
+  ::memcpy(_ascii, string, MIN(_chars, size));
+  if (size < _chars)
+  {
+    ::memset(_ascii + size, '\0', _chars - size);
+  }
+  _changed = true;
+
+  if (string == NULL || size == 0)
+  {
+    _num_items = 0;
+  }
+  else
+  {
+    _num_items = 1;
+  }
+
+  return MIN(_chars, size);
 }
 
+size_t ID3_Field::Set(const char *string)
+{
+  size_t len = 0;
+  if (this->GetType() == ID3FTY_TEXTSTRING)
+  {
+    if (string == NULL)
+    {
+      len = this->Set_i(string, 0);
+    }
+    else
+    {
+      len = this->Set_i(string, strlen(string));
+    }
+  }
+  return len;
+}
+
+
+/** For fields which support this feature, adds a string to the list of
+ ** strings currently in the field.
+ ** 
+ ** This is useful for using id3v2 frames such as the involved people list,
+ ** composer, and part of set.  You can use the GetNumTextItems() method to
+ ** find out how many such items are in a list.
+ ** 
+ ** \code
+ **   myFrame.Field(ID3FN_TEXT).Add("this is a test");
+ ** \endcode
+ ** 
+ ** \param string The string to add to the field
+ **/
+size_t ID3_Field::Add_i(const char *str, size_t strLen)
+{
+  size_t len = 0;  // how much of str we copied into this field (max is strLen)
+  if (this->GetNumTextItems() == 0)
+  {
+    // there aren't any text items in the field so just assign the string to
+    // the field
+    len = this->Set_i(str, strLen);
+  }
+  else
+  {
+    this->SetEncoding(ID3TE_ASCII);
+    
+    char* oldStr = _ascii;
+    size_t oldLen = this->Size();
+    //ASSERT(oldLen > 0);
+    if (_fixed_length > 0)
+    {
+      _chars = _fixed_length;
+    }
+    else
+    {
+      _chars = oldLen + 1 + strLen;
+    }
+    
+    if (oldLen + 1 >= _chars)
+    {
+      // our new length isn't any bigger than our old length, so there's 
+      // nothing to copy.  set the null pointer, if possible, and set the
+      // length of what we copied to 0
+      _chars = oldLen;
+      len = 0;
+    }
+    else
+    {
+      // our new length is bigger than our old, so we can copy some (possibly
+      // all) of the bytes from str into this field
+      len = _chars - oldLen - 1;
+      // ASSERT(len > 0);
+      _ascii = new char[_chars];
+      ::memcpy(_ascii, oldStr, oldLen);
+      delete [] oldStr;
+      _ascii[oldLen] = '\0';
+      ::memcpy(&_ascii[oldLen + 1], str, len);
+      _num_items++;
+    }
+  }
+
+  return len;
+}
+
+size_t ID3_Field::Add(const char *str)
+{
+  size_t len = 0;
+  if (this->GetType() == ID3FTY_TEXTSTRING)
+  {
+    if (NULL == str)
+    {
+      len = this->Set_i(str, 0);
+    }
+    else
+    {
+      len = this->Add_i(str, ::strlen(str));
+    }
+  }
+  return len;
+}
 
 // the ::Get() function for ASCII
 
@@ -101,182 +203,181 @@ void ID3_Field::Set(const char *sString)
  ** 
  ** \sa Add(const char*)
  **/
+size_t ID3_Field::Get(char* buffer, size_t maxLength) const
+{
+  size_t length = 0;
+  if (this->GetType() == ID3FTY_TEXTSTRING && 
+      this->GetEncoding() == ID3TE_ASCII &&
+      buffer != NULL && maxLength > 0)
+  {
+    size_t size = this->Size();
+    length = MIN(maxLength, size);
+    ::memcpy(buffer, _ascii, length);
+    if (length < maxLength)
+    {
+      buffer[length] = '\0';
+    }
+  }
+
+  return length;
+}
+
 size_t ID3_Field::Get(char* buffer,     ///< Where to copy the data
                       size_t maxLength, ///< Max number of characters to copy
                       index_t itemNum   ///< The item number to retrieve
                       ) const
 {
-  unicode_t* unicode_buffer = new unicode_t[maxLength];
-  if (NULL == unicode_buffer)
+  size_t length = 0;
+  size_t total_items = this->GetNumTextItems();
+  if (this->GetType() == ID3FTY_TEXTSTRING && 
+      this->GetEncoding() == ID3TE_ASCII &&
+      buffer != NULL && maxLength > 0 && itemNum < total_items)
   {
-    ID3_THROW(ID3E_NoMemory);
+    char* cur = _ascii;
+    char* end = _ascii + _chars;
+    size_t num = 0;
+    while (cur < end && num < itemNum)
+    {
+      // the last item in the list probably doesn't have a null terminator, so
+      // we must anticipate so that we don't determine its length with strlen
+      if (num == total_items - 1)
+      {
+        break;
+      }
+      cur += strlen(cur) + 1;
+      num++;
+    }
+    if (cur < end)
+    {
+      // the last item in the list probably doesn't have a null terminator, so
+      // we must anticipate so that we don't determine its length with strlen
+      if (itemNum == total_items - 1)
+      {
+        length = end - cur;
+      }
+      else
+      {
+        length = strlen(cur);
+      }
+      ::memcpy(buffer, cur, length);
+      if (length < maxLength)
+      {
+        buffer[length] = '\0';
+      }
+    }
   }
 
-  size_t len = Get(unicode_buffer, maxLength, itemNum);
-
-  char* ascii_buffer = new char[len + 1];
-  if (NULL == ascii_buffer)
-  {
-    ID3_THROW(ID3E_NoMemory);
-  }
-
-  ucstombs(ascii_buffer, unicode_buffer, len + 1);
-
-  size_t ascii_len = strlen(ascii_buffer);
-  size_t length = MIN(ascii_len, maxLength);
-        
-  strncpy(buffer, ascii_buffer, length);
-  buffer[length] = '\0';
-        
-  delete [] ascii_buffer;
-    
-  delete [] unicode_buffer;
-    
   return length;
 }
 
-
-/** For fields which support this feature, adds a string to the list of
- ** strings currently in the field.
- ** 
- ** This is useful for using id3v2 frames such as the involved people list,
- ** composer, and part of set.  You can use the GetNumTextItems() method to
- ** find out how many such items are in a list.
- ** 
- ** \code
- **   myFrame.Field(ID3FN_TEXT).Add("this is a test");
- ** \endcode
- ** 
- ** \param string The string to add to the field
- **/
-void ID3_Field::Add(const char *str)
-{
-  if (str)
-  {
-    unicode_t *unicode_buffer;
-    
-    unicode_buffer = new unicode_t[strlen(str) + 1];
-    if (NULL == unicode_buffer)
-    {
-      ID3_THROW(ID3E_NoMemory);
-    }
-
-    mbstoucs(unicode_buffer, str, strlen(str) + 1);
-    Add(unicode_buffer);
-    delete [] unicode_buffer;
-    
-    this->SetEncoding(ID3TE_ASCII);
-    _type = ID3FTY_TEXTSTRING;
-  }
-}
 
 
 size_t 
 ID3_Field::ParseASCIIString(const uchar *buffer, size_t nSize)
 {
-  size_t bytesUsed = 0;
-  char *temp = NULL;
+  size_t nChars = 0;
+  const char* ascii = (const char*) buffer;
+  this->Clear();
   
-  if (_length > 0)
+  if (this->Size() > 0)
   {
     // The string is of fixed length
-    bytesUsed = _length;
+    nChars = this->Size();
   }
   else if (!(_flags & ID3FF_CSTR) || (_flags & ID3FF_LIST))
   {
     // If the string isn't null-terminated or if it is null divided, we're
     // assured this is the last field of of the frame, and we can claim the
     // remaining bytes for ourselves
-    bytesUsed = nSize;
+    nChars = nSize;
   }
   else
   {
-    while (bytesUsed < nSize && buffer[bytesUsed] != '\0')
+    // it would be nice to use strlen to find nChars, but the buffer might
+    // be invalid, so there might not be a null byte to mark the end of the
+    // string
+    while (nChars < nSize && ascii[nChars] != '\0')
     {
-      bytesUsed++;
+      nChars++;
     }
   }
 
-  if (0 == bytesUsed)
+  if (0 == nChars)
   {
-    Set("");
+    nChars = this->Set_i(static_cast<const char *>(NULL), 0);
   }
   // This check needs to come before the check for ID3FF_CSTR
   else if (_flags & ID3FF_LIST)
   {
-    const char *sBuffer = (const char *) buffer;
-    for (size_t i = 0; i < bytesUsed; i += strlen(&sBuffer[i]) + 1)
+    const char* cur = ascii;
+    const char* end = cur + nChars;
+    while (cur < end)
     {
-      Add(&sBuffer[i]);
+      size_t length = strlen(cur);
+      // sanity check!
+      if (length + cur > end)
+      {
+        length = end - cur;
+      }
+      cur += this->Add_i(cur, length) + 1;
     }
-  }
-  // This check needs to come after the check for ID3FF_LIST
-  else if (_flags & ID3FF_CSTR)
-  {
-    Set((const char *)buffer);
+    nChars = cur - ascii;
   }
   else
   {
     // Sanity check our indices and sizes before we start copying memory
-    if (bytesUsed > nSize)
+    if (nChars > nSize)
     {
-      ID3_THROW_DESC(ID3E_BadData, "field information invalid");
+      nChars = nSize;
     }
 
-    temp = new char[bytesUsed + 1];
-    if (NULL == temp)
-    {
-      ID3_THROW(ID3E_NoMemory);
-    }
-    
-    memcpy(temp, buffer, bytesUsed);
-    temp[bytesUsed] = '\0';
-    Set(temp);
-      
-    delete [] temp;
+    nChars = this->Set_i(ascii, nChars);
   }
   
-  if (_flags & ID3FF_CSTR && !(_flags & ID3FF_LIST))
+  if (_flags & ID3FF_CSTR)
   {
-    bytesUsed++;
+    nChars++;
   }
     
   _changed = false;
   
-  return bytesUsed;
+  return MIN(nChars, nSize);
 }
 
-
-size_t ID3_Field::RenderASCIIString(uchar *buffer) const
+size_t ID3_Field::RenderString(uchar *buffer) const
 {
-  size_t nChars = BinSize();
-
-  if ((NULL != _data) && (nChars > 0))
+  size_t nBytes = 0;
+  if (this->GetEncoding() == ID3TE_ASCII)
   {
-    ucstombs((char *) buffer, (unicode_t *) _data, nChars);
-      
-    // now we convert the internal dividers to what they are supposed to be
-    for (index_t i = 0; i < nChars; i++)
+    nBytes = this->Size();
+    if (nBytes > 0)
     {
-      if ('\1' == buffer[i])
-      {
-        char sub = '/';
-          
-        if (_flags & ID3FF_LIST)
-        {
-          sub = '\0';
-        }
-        buffer[i] = sub;
-      }
+      ::memcpy(buffer, _ascii, nBytes);
+    }
+    if (_flags & ID3FF_CSTR)
+    {
+      buffer[nBytes] = '\0';
+      nBytes++;
     }
   }
-  
-  if ((1 == nChars) && (_flags & ID3FF_CSTR))
+  else if (this->GetEncoding() == ID3TE_UNICODE)
   {
-    buffer[0] = '\0';
+    size_t nChars = this->Size();
+    unicode_t* unicode = (unicode_t *) buffer;
+    if (nChars > 0)
+    {
+      // BOM
+      *unicode = 0xFEFF;
+      unicode++;
+      ::memcpy((void *) unicode, (void *) _unicode, nChars * 2);
+      nChars++;
+    }
+    if (_flags & ID3FF_CSTR)
+    {
+      unicode[nChars++] = NULL_UNICODE;
+    }
+    nBytes = nChars * 2;
   }
-    
   _changed = false;
-  
-  return nChars;
+  return nBytes;
 }
