@@ -1,4 +1,4 @@
-$Id: NEWS,v 1.17 2000/06/23 04:22:41 eldamitri Exp $
+$Id: NEWS,v 1.18 2000/06/23 16:58:22 eldamitri Exp $
 
 2000-06-23 Version 3.7.10
 
@@ -9,6 +9,8 @@ $Id: NEWS,v 1.17 2000/06/23 04:22:41 eldamitri Exp $
   bug reports)
 * Fixed bugs/memory leaks with removing frames and updating tag (thanks to Luca
   Leonardo Scorcia for the bug reports)
+* Fixed finding of frames with empty text fields (thanks to Luca Leonardo 
+  Scorcia for the bug reports)
 * Improved documentation/implementation for uint28
 * Added GetTextID() method for ID3_Frame objects
 * Tag doesn't render if there aren't any frames; frame doesn't render if there
