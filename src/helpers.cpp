@@ -1,4 +1,4 @@
-// $Id: helpers.cpp,v 1.4 2000/10/14 19:24:38 eldamitri Exp $
+// $Id: helpers.cpp,v 1.5 2000/10/16 08:50:22 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -421,8 +421,8 @@ ID3_Frame* id3::v2::setSyncLyrics(ID3_TagImpl& tag, BString data,
   ID3_Frame* frame = NULL;
 
   // check if a SYLT frame of this language or descriptor already exists
-  (frame = tag.Find(ID3FID_SYNCEDLYRICS, ID3FN_LANGUAGE, lang.c_str())) ||
-  (frame = tag.Find(ID3FID_SYNCEDLYRICS, ID3FN_DESCRIPTION, desc.c_str()));
+  (frame = tag.Find(ID3FID_SYNCEDLYRICS, ID3FN_LANGUAGE, lang)) ||
+  (frame = tag.Find(ID3FID_SYNCEDLYRICS, ID3FN_DESCRIPTION, desc));
 
   if (!frame)
   {
@@ -442,8 +442,8 @@ BString getSyncLyrics(const ID3_TagImpl& tag, String lang, String desc)
 {
   // check if a SYLT frame of this language or descriptor exists
   ID3_Frame* frame = NULL;
-  (frame = tag.Find(ID3FID_SYNCEDLYRICS, ID3FN_LANGUAGE, lang.c_str())) ||
-  (frame = tag.Find(ID3FID_SYNCEDLYRICS, ID3FN_DESCRIPTION, desc.c_str())) ||
+  (frame = tag.Find(ID3FID_SYNCEDLYRICS, ID3FN_LANGUAGE, lang)) ||
+  (frame = tag.Find(ID3FID_SYNCEDLYRICS, ID3FN_DESCRIPTION, desc)) ||
   (frame = tag.Find(ID3FID_SYNCEDLYRICS));
   
   // get the lyrics size

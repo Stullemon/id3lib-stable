@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.30 2000/10/16 07:00:59 eldamitri Exp $
+// $Id: tag.cpp,v 1.31 2000/10/16 08:50:22 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -33,6 +33,7 @@
 #include "readers.h"
 #include "writers.h"
 #include "strings.h"
+#include "utils.h"
 
 using namespace dami;
 
@@ -81,7 +82,7 @@ using namespace dami;
  ** formatted 'CDM' frames from the unreleased ID3v2 2.01 draft specification.
  **
  ** \author Dirk Mahoney
- ** \version $Id: tag.cpp,v 1.30 2000/10/16 07:00:59 eldamitri Exp $
+ ** \version $Id: tag.cpp,v 1.31 2000/10/16 08:50:22 eldamitri Exp $
  ** \sa ID3_Frame
  ** \sa ID3_Field
  ** \sa ID3_Err
@@ -631,13 +632,15 @@ ID3_Frame* ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, uint32 data) const
 /// Finds frame with given frame id, fld id, and ascii data
 ID3_Frame* ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, const char* data) const
 {
-  return _impl->Find(id, fld, data);
+  String str(data);
+  return _impl->Find(id, fld, str);
 }
 
 /// Finds frame with given frame id, fld id, and unicode data
 ID3_Frame* ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, const unicode_t* data) const
 {
-  return _impl->Find(id, fld, data);
+  WString str = toWString(data, ucslen(data));
+  return _impl->Find(id, fld, str);
 }
 
 size_t ID3_Tag::NumFrames() const

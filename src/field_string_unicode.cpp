@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.27 2000/10/15 06:39:26 eldamitri Exp $
+// $Id: field_string_unicode.cpp,v 1.28 2000/10/16 08:50:22 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -116,7 +116,7 @@ size_t ID3_FieldImpl::Set_i(const unicode_t *string, size_t size)
     _num_items = 1;
   }
 
-  return min(_chars, size);
+  return dami::min(_chars, size);
 }
 
 size_t ID3_FieldImpl::Set(const unicode_t *string)
@@ -239,7 +239,7 @@ size_t ID3_FieldImpl::Get(unicode_t *buffer, size_t maxLength) const
       buffer != NULL && maxLength > 0)
   {
     size_t size = this->Size();
-    length = min(maxLength, size);
+    length = dami::min(maxLength, size);
     memcpy((void *)buffer, (void *)_unicode, length * 2);
     if (length < maxLength)
     {
