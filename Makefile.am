@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.12 2000/04/18 05:16:55 eldamitri Exp $
+# $Id: Makefile.am,v 1.13 2000/04/19 02:03:31 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -20,7 +20,7 @@ EXTRA_DIST =                    \
 	id3lib.spec             \
         id3lib.spec.in          \
         reconf
-SUBDIRS = . m4 doc src include prj zlib id3com libprj
+SUBDIRS = . m4 doc src include prj zlib id3com libprj examples
 
 INCLUDES = @ID3LIB_DEBUG_FLAGS@
 
@@ -51,6 +51,9 @@ snapshot: config.h.win32
 	rm -rf $$ss_distdir
 
 # $Log: Makefile.am,v $
+# Revision 1.13  2000/04/19 02:03:31  eldamitri
+# (SUBDIRS): Added 'examples'
+#
 # Revision 1.12  2000/04/18 05:16:55  eldamitri
 # (EXTRA_DIST): Added HISTORY and id3lib.spec[.in]
 # (id3lib.spec): Added rule for generating from id3lib.spec.in
