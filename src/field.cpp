@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.28 2000/09/14 16:26:21 eldamitri Exp $
+// $Id: field.cpp,v 1.29 2000/09/14 21:50:53 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -874,7 +874,7 @@ static  ID3_FrameDef ID3_FrameDefs[] =
  ** if you only plan to generate 3.0 tags.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: field.cpp,v 1.28 2000/09/14 16:26:21 eldamitri Exp $
+ ** @version $Id: field.cpp,v 1.29 2000/09/14 21:50:53 eldamitri Exp $
  ** \sa ID3_Tag
  ** \sa ID3_Frame
  ** \sa ID3_Err 
@@ -906,8 +906,67 @@ ID3_Field::ID3_Field(const ID3_FieldDef& def)
     _fixed_length(def._fixed_length),
     _bytes(_fixed_length),
     _num_items(0),
-    _enc(ID3TE_NONE)
+    _enc((_type == ID3FTY_TEXTSTRING) ? ID3TE_ASCII : ID3TE_NONE)
 {
+  if (_type == ID3FTY_TEXTSTRING)
+  {
+    _ascii = NULL;
+    _chars = _fixed_length;
+  }
+  else if (_type == ID3FTY_BINARY)
+  {
+    _binary = NULL;
+  }
+  this->Clear();
+}
+
+ID3_Field::~ID3_Field()
+{
+  if (_type == ID3FTY_INTEGER)
+  {
+    _integer = 0;
+  }
+  else if (_type == ID3FTY_BINARY)
+  {
+    if (_binary != NULL)
+    {
+      delete [] _binary;
+    }
+  }
+  else if (_type == ID3FTY_TEXTSTRING)
+  {
+    if (this->GetEncoding() == ID3TE_UNICODE)
+    {
+      if (_unicode != NULL)
+      {
+        delete [] _unicode;
+      }
+    }
+    else if (this->GetEncoding() == ID3TE_ASCII)
+    {
+      if (_ascii != NULL)
+      {
+        delete [] _ascii;
+      }
+    }
+  }
+}
+
+/** Clears any data and frees any memory associated with the field
+ ** 
+ ** \sa ID3_Tag::Clear()
+ ** \sa ID3_Frame::Clear()
+ **/
+void ID3_Field::Clear()
+{
+  if (_type == ID3FTY_TEXTSTRING)
+  {
+    _chars = _fixed_length;
+  }
+  else
+  {
+    _bytes = _fixed_length;
+  }
   switch (_type)
   {
     case ID3FTY_INTEGER:
@@ -921,6 +980,10 @@ ID3_Field::ID3_Field(const ID3_FieldDef& def)
     }
     case ID3FTY_BINARY:
     {
+      if (_binary != NULL)
+      {
+        delete [] _binary;
+      }
       if (_bytes == 0)
       {
         _binary = NULL;
@@ -928,70 +991,44 @@ ID3_Field::ID3_Field(const ID3_FieldDef& def)
       else
       {
         _binary = new uchar[_bytes];
-        memset(_binary, _bytes, '\0');
+        ::memset(_binary, '\0', _bytes);
       }
-      break;
-    }
-    case ID3FTY_TEXTSTRING:
-    {
-      _chars = _fixed_length;
-      if (_chars == 0)
-      {
-        _ascii = NULL;
-      }
-      else
-      {
-        _ascii = new char[_chars];
-        memset(_ascii, _chars, '\0');
-      }
-      _enc = ID3TE_ASCII;
-    }
-    default:
-    {
-      break;
-    }
-  }
-}
-
-ID3_Field::~ID3_Field()
-{
-  this->Clear();
-}
-
-/** Clears any data and frees any memory associated with the field
- ** 
- ** \sa ID3_Tag::Clear()
- ** \sa ID3_Frame::Clear()
- **/
-void ID3_Field::Clear()
-{
-  switch (_type)
-  {
-    case ID3FTY_INTEGER:
-    {
-      _integer = 0;
-      break;
-    }
-    case ID3FTY_BINARY:
-    {
-      delete [] _binary;
-      _binary = NULL;
-      _bytes = 0;
       break;
     }
     case ID3FTY_TEXTSTRING:
     {
       if (this->GetEncoding() == ID3TE_UNICODE)
       {
-        delete [] _unicode;
-        _unicode = NULL;
+        if (_unicode != NULL)
+        {
+          delete [] _unicode;
+        }
+        if (_chars == 0)
+        {
+          _unicode = NULL;
+        }
+        else
+        {
+          _unicode = new unicode_t[_chars];
+          ::memset((void *)_unicode, '\0', _chars * 2);
+        }
       }
-      else
+      else if (this->GetEncoding() == ID3TE_ASCII)
       {
-        delete [] _ascii;
-        _ascii = NULL;
+        if (_ascii != NULL)
+        {
+          delete [] _ascii;
+        }
+        if (_chars == 0)
+        {
+          _ascii = NULL;
+        }
+        else
+        {
+          _ascii = new char[_chars];
+          ::memset(_ascii, '\0', _chars);
+        }
       }
-      _chars = 0;
       break;
     }
     default:
