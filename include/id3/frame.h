@@ -1,4 +1,4 @@
-// $Id: frame.h,v 1.30 2000/09/27 07:54:23 eldamitri Exp $
+// $Id: frame.h,v 1.31 2000/09/30 22:07:35 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -48,17 +48,20 @@ public:
   bool        SetID(ID3_FrameID id);
   ID3_FrameID GetID() const { return _hdr.GetFrameID(); }
   
-  ID3_Field  &Field(ID3_FieldID name) const;
+  ID3_Field*  GetField(ID3_FieldID name) const;
+
+  size_t      GetNumFields() const;
+  ID3_Field*  GetFieldAt(index_t) const;
   
   const char* GetDescription() const;
   static const char* GetDescription(ID3_FrameID);
 
   const char* GetTextID() const { return _hdr.GetTextID(); }
 
-  ID3_Frame  &operator=(const ID3_Frame &);
+  ID3_Frame&  operator=(const ID3_Frame &);
   bool        HasChanged() const;
   size_t      Parse(const uchar *buffer, size_t size);
-  void        Parse(ID3_Reader&);
+  bool        Parse(ID3_Reader&);
   size_t      Size();
   size_t      Render(uchar *buffer) const;
   bool        Contains(ID3_FieldID fld) const
@@ -81,9 +84,10 @@ public:
    ** "uncompressed" data.
    **/
   bool        GetCompression() const  { return _hdr.GetCompression(); }
-  bool        BadParse() const { return _bad_parse; }
   size_t      GetDataSize() const { return _hdr.GetDataSize(); }
 
+  // Deprecated
+  ID3_Field&  Field(ID3_FieldID name) const;
 protected:
   bool        _SetID(ID3_FrameID);
   bool        _ClearFields();
@@ -118,7 +122,6 @@ private:
   ID3_FrameHeader _hdr;            // 
   uchar       _encryption_id;      // encryption id
   uchar       _grouping_id;        // grouping id
-  bool        _bad_parse;          //
 }
 ;
 
