@@ -1,3 +1,114 @@
+2000-04-19  Scott Haug  <scott@id3.org>
+
+	* id3lib.spec.in: 
+	- Removed zlib-devel requirement from devel
+	- Added doc package to distribute documentation
+	- Added examples package to distribute binary examples
+	- Moved doc/ and examples/ source files from devel to doc package
+
+	* configure.in: 
+	- Added ID3LIB_NAME definition
+	- Prepended '__' onto all macros that will be defined in config.h to 
+	  alleviate namespace clashes
+
+	* src/tag_render.cpp 
+	(RenderV2ToHandle): Now uses ID3_PATH_LENGTH instead of MAXPATHLEN
+
+	* src/globals.cpp: 
+	Initial release
+
+	* src/version.cpp:
+	Removed; version constants now defined in globals.cpp
+	
+	* src/header.cpp 
+	(ID3_LookupHeaderInfo): Minor update
+
+	* src/Makefile.am 
+	(the_sources): Added globals.cpp, removed version.cpp
+
+	* include/Makefile.am: 
+	Added id3.h to included directories
+
+	* include/id3/tag.h: 
+	- Abstracted MAXPATHLEN into ID3_PATH_LENGTH macro for platform 
+	  differences (inspired by glib.h from http://www.gtk.org)
+	- Removed log comments to reduce file size
+
+	* include/id3/sized_types.h: 
+	Made compilable with C (changed comments, etc.).  
+
+	* include/id3/misc_support.h: 
+	- Moved MASK macros to globals.h
+	- Removed log comments to reduce file size
+
+	* include/id3/globals.h: 
+	- Made compilable with C (changed comments, etc.).  
+	- Merged in contents of	types.h.  
+	- Added bool typedef and true/false defines for C compilation.
+	- Added version constants (replacements for functions in version.h)
+	- Added ID3_SpecVersion enum
+	- Added new macros to abstract differences between latforms
+	- Removed log comments to reduce file size
+
+	* include/id3/error.h: 
+	* include/id3/field.h: 
+	* include/id3/frame.h: 
+	* include/id3/header.h: 
+	* include/id3/header_frame.h: 
+	* include/id3/header_tag.h: 
+	* include/id3/int28.h: 
+	Minor updates; removed log comments to reduce file size
+
+	* include/id3/externals.h: 
+	Removed; nothing in it.
+	
+	* include/id3/dll.h: 
+	Removed; replaced by include/id3.h
+
+	* include/id3/version.h: 
+	Removed; replaced with constants in globals.h
+
+	* include/id3/types.h: 
+	Removed; merged in with globals.h.
+	
+	* include/id3/Makefile.am 
+	(the_headers): Removed dll.h, externals.h, version.h, and types.h.
+
+	* examples/demo_tag.cpp (PrintVersion)
+	* examples/demo_info.cpp (PrintVersion)
+	* examples/demo_convert.cpp (PrintVersion): 
+	Replaced call to ID3_FullName with ID3LIB_FULL_NAME constant
+
+	* include/id3.h:
+	Added; replaces include/id3/dll.h
+
+	* doc/Makefile.am 
+	(dist-hook): Made copying of the html more selective
+
+	* doc/Doxyfile.in 
+	(INPUT): Updated for new src code path.
+	(EXAMPLE_PATH): Updated for new example code path
+
+	* examples/Makefile.am 
+	(bin_PROGRAMS): Changed from check_PROGRAMS so that they build w/o
+	make check
+	(EXTRA_DIST): Removed readme.txt
+
+2000-04-18  Scott Haug  <scott@id3.org>
+
+	* configure.in 
+	(AC_OUTPUT): Added examples/Makefile, removed src/id3/Makefile and 
+	src/examples/Makefile
+
+	* Makefile.am 
+	(SUBDIRS): Added 'examples'
+
+	* id3com/id3com.dsp
+	* libprj/id3lib.dsp
+	* prj/id3lib.dsp
+	* prj/id3lib.mak: 
+	Updated for new file paths.
+
 2000-04-18  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* Makefile.am 
