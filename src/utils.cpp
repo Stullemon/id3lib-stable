@@ -1,4 +1,4 @@
-// $Id: utils.cpp,v 1.15 2000/10/29 08:15:13 eldamitri Exp $
+// $Id: utils.cpp,v 1.16 2000/11/07 09:19:02 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -35,7 +35,6 @@
 
 #include "utils.h"
 
-using namespace std;
 using namespace dami;
 
 size_t dami::renderNumber(uchar *buffer, uint32 val, size_t size)
