@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.2 2000/04/18 22:14:00 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.3 2000/04/20 03:50:26 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -363,11 +363,11 @@ void ID3_Tag::RenderV2ToHandle(void)
     // this new file to the old file's name and update the __fFileHandle
 
     const char sTmpSuffix[] = ".XXXXXX";
-    if (strlen(__sFileName) + strlen(sTmpSuffix) > MAXPATHLEN)
+    if (strlen(__sFileName) + strlen(sTmpSuffix) > ID3_PATH_LENGTH)
     {
       ID3_THROW_DESC(ID3E_NoFile, "filename too long");
     }
-    char sTempFile[MAXPATHLEN + 1];
+    char sTempFile[ID3_PATH_LENGTH];
     strcpy(sTempFile, __sFileName);
     strcat(sTempFile, sTmpSuffix);
     
@@ -450,6 +450,9 @@ luint ID3_Tag::PaddingSize(luint curSize) const
 
 
 // $Log: tag_render.cpp,v $
+// Revision 1.3  2000/04/20 03:50:26  eldamitri
+// (RenderV2ToHandle): Now uses ID3_PATH_LENGTH instead of MAXPATHLEN
+//
 // Revision 1.2  2000/04/18 22:14:00  eldamitri
 // Moved tag_render.cpp from src/id3/ to src/
 //
