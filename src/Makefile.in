@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.40 2000/10/10 03:51:44 eldamitri Exp $
+# $Id: Makefile.in,v 1.41 2000/10/12 08:12:58 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -103,6 +103,7 @@ OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
+cxxflags_set = @cxxflags_set@
 
 LT_VERSION = $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 @ID3_NEEDZLIB_TRUE@zlib_include = -I$(top_srcdir)/zlib/include

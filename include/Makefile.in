@@ -101,6 +101,7 @@ OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
+cxxflags_set = @cxxflags_set@
 
 SUBDIRS = id3
 

@@ -33,7 +33,7 @@
 #if defined VERSION
 #  undef VERSION
 #endif
-#define VERSION "3.7.13"
+#define VERSION "3.8.0pre1"
 
 
 void

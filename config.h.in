@@ -15,6 +15,9 @@
 /* This is the top section */
 
 
+/* Define if you need to in order for stat and other things to work.  */
+#undef _POSIX_SOURCE
+
 /* Define to `unsigned' if <sys/types.h> doesn't define.  */
 #undef size_t
 
@@ -69,9 +72,6 @@
 /* Define if you have the <cstring> header file.  */
 #undef HAVE_CSTRING
 
-/* Define if you have the <ctype.h> header file.  */
-#undef HAVE_CTYPE_H
-
 /* Define if you have the <fstream> header file.  */
 #undef HAVE_FSTREAM
 
@@ -93,23 +93,8 @@
 /* Define if you have the <libcw/sys.h> header file.  */
 #undef HAVE_LIBCW_SYS_H
 
-/* Define if you have the <limits.h> header file.  */
-#undef HAVE_LIMITS_H
-
-/* Define if you have the <memory.h> header file.  */
-#undef HAVE_MEMORY_H
-
-/* Define if you have the <stdio.h> header file.  */
-#undef HAVE_STDIO_H
-
-/* Define if you have the <stdlib.h> header file.  */
-#undef HAVE_STDLIB_H
-
 /* Define if you have the <string> header file.  */
 #undef HAVE_STRING
-
-/* Define if you have the <string.h> header file.  */
-#undef HAVE_STRING_H
 
 /* Define if you have the <sys/param.h> header file.  */
 #undef HAVE_SYS_PARAM_H

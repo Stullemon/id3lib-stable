@@ -101,6 +101,7 @@ OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
+cxxflags_set = @cxxflags_set@
 
 EXTRA_DIST =    Doxyfile                Doxyfile.in             3d-logo.gif             attilas_id3logo.jpg     fillpx.gif              id3guide.html           id3lib-manual.php       id3lib.css              id3v2.3.0.html          id3v2.3.0.txt           id3v2.gif               id3v2.ico               id3v2.png               index.html              index.html.in           musicmatch.txt
 

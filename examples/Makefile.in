@@ -101,6 +101,7 @@ OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
+cxxflags_set = @cxxflags_set@
 @ID3_NEEDDEBUG_TRUE@ID3_DEBUG_LIBS = -lcwd -lbfd -liberty
 @ID3_NEEDDEBUG_FALSE@ID3_DEBUG_LIBS = 
 @ID3_NEEDZLIB_TRUE@zlib_lib = $(top_builddir)/zlib/src/libz.la
