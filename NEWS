@@ -5,6 +5,11 @@ Please see the HISTORY file for changes to the library before version 3.6.0.
 
 Please send id3lib bug reports to sth2@cs.wustl.edu.
 
+1999-12-02 Version 3.6.2
+
+* Improved portability: another minor portability fixes, along with the
+  inclusion of zlib sources and project files for windows compilation.
+
 1999-12-01 Version 3.6.1
 
 * Code movement: moved the header files from src/id3 to include/id3 to allow
