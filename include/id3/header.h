@@ -1,4 +1,4 @@
-// $Id: header.h,v 1.6 2000/04/05 05:20:52 eldamitri Exp $
+// $Id: header.h,v 1.7 2000/04/10 16:56:48 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -67,8 +67,6 @@ public:
   ID3_Header &operator=( const ID3_Header & );
 
 protected:
-  virtual void   Copy(const ID3_Header &);
-
   uchar  __ucVersion;        // which version?
   uchar  __ucRevision;       // which revision?
   size_t __ulDataSize;       // how big is the data?
@@ -82,6 +80,9 @@ ID3_HeaderInfo *ID3_LookupHeaderInfo(uchar ver, uchar rev);
 #endif
 
 // $Log: header.h,v $
+// Revision 1.7  2000/04/10 16:56:48  eldamitri
+// (class ID3_Header): Removed decl of Copy.
+//
 // Revision 1.6  2000/04/05 05:20:52  eldamitri
 // Updated initial comment information to reflect license, copyright
 // change.
