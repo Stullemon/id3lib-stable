@@ -1,4 +1,4 @@
-// $Id: header_frame.cpp,v 1.18 2000/10/14 19:24:38 eldamitri Exp $
+// $Id: header_frame.cpp,v 1.19 2000/10/14 20:46:38 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -33,7 +33,6 @@
 #include <string.h>
 #include <memory.h>
 #include "header_frame.h"
-#include "error.h"
 #include "utils.h"
 #include "frame_def.h"
 #include "field_def.h"

@@ -1,5 +1,5 @@
 // -*- C++ -*- 
-// $Id: field_impl.h,v 1.7 2000/10/12 22:28:06 eldamitri Exp $
+// $Id: field_impl.h,v 1.8 2000/10/14 20:46:38 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -30,7 +30,6 @@
 
 #include <stdlib.h>
 #include "field.h"
-#include "error.h"
 
 class ID3_FieldDef;
 class ID3_FrameDef;

@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.25 2000/10/14 19:24:38 eldamitri Exp $
+// $Id: misc_support.cpp,v 1.26 2000/10/14 20:46:38 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -37,31 +37,19 @@
 
 #include "misc_support.h"
 #include "field.h"
-#include "error.h"
 
 char *ID3_GetString(const ID3_Frame *frame, ID3_FieldID fldName)
 {
   char *text = NULL;
   if (NULL != frame)
   {
-    try 
-    {
-      ID3_Field* fld = frame->GetField(fldName);
-      ID3_TextEnc enc = fld->GetEncoding();
-      fld->SetEncoding(ID3TE_ASCII);
-      size_t nText = fld->Size();
-      text = new char[nText + 1];
-      fld->Get(text, nText + 1);
-      fld->SetEncoding(enc);
-    }
-    catch (ID3_Error &)
-    {
-      if (text != NULL)
-      {
-        delete [] text;
-      }
-      return NULL;
-    }
+    ID3_Field* fld = frame->GetField(fldName);
+    ID3_TextEnc enc = fld->GetEncoding();
+    fld->SetEncoding(ID3TE_ASCII);
+    size_t nText = fld->Size();
+    text = new char[nText + 1];
+    fld->Get(text, nText + 1);
+    fld->SetEncoding(enc);
   }
   return text;
 }
@@ -73,15 +61,7 @@ char *ID3_GetString(const ID3_Frame *frame, ID3_FieldID fldName, size_t nIndex)
   {
     size_t nText = frame->GetField(fldName)->Size();
     text = new char[nText + 1];
-    try 
-    {
-      frame->GetField(fldName)->Get(text, nText + 1, nIndex);
-    }
-    catch (ID3_Error &)
-    {
-      delete [] text;
-      return NULL;
-    }
+    frame->GetField(fldName)->Get(text, nText + 1, nIndex);
   }
   return text;
 }

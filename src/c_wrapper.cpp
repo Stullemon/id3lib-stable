@@ -1,4 +1,4 @@
-// $Id: c_wrapper.cpp,v 1.12 2000/10/09 04:25:05 eldamitri Exp $
+// $Id: c_wrapper.cpp,v 1.13 2000/10/14 20:46:38 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -29,7 +29,6 @@
 #include "tag.h"
 #include "frame.h"
 #include "field.h"
-#include "error.h"
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
@@ -225,18 +224,12 @@ extern "C"
 
   ID3_C_EXPORT
   ID3_Err ID3Tag_Parse(ID3Tag *tag, const uchar header[ ID3_TAGHEADERSIZE ],
-                       const uchar *buffer)
+                      const uchar *buffer)
   {
-    try
+    size_t size = 0;
+    if (tag)
     {
-      if (tag)
-      {
-        ((ID3_Tag *) tag)->Parse(header, buffer);
-      }
-    }
-    catch (ID3_Error &err)
-    {
-      return err.GetErrorID();
+      size = ((ID3_Tag *) tag)->Parse(header, buffer);
     }
     return ID3E_NoError;
   }
@@ -265,36 +258,22 @@ extern "C"
   ID3_C_EXPORT
   ID3_Err ID3Tag_Update(ID3Tag *tag)
   {
-    try
+    flags_t flags = 0;
+    if (tag)
     {
-      if (tag)
-      {
-        ((ID3_Tag *) tag)->Update();
-      }
+      flags = ((ID3_Tag *) tag)->Update();
     }
-    catch (ID3_Error &err)
-    {
-      return err.GetErrorID();
-    }
-
     return ID3E_NoError;
   }
 
   ID3_C_EXPORT
   ID3_Err ID3Tag_UpdateByTagType(ID3Tag *tag, flags_t tag_type)
   {
-    try
+    flags_t flags = 0;
+    if (tag)
     {
-      if (tag)
-      {
-        ((ID3_Tag *) tag)->Update(tag_type);
-      }
+      flags = ((ID3_Tag *) tag)->Update(tag_type);
     }
-    catch (ID3_Error &err)
-    {
-      return err.GetErrorID();
-    }
-
     return ID3E_NoError;
   }
 
@@ -302,18 +281,11 @@ extern "C"
   ID3_C_EXPORT
   ID3_Err ID3Tag_Strip(ID3Tag *tag, flags_t ulTagFlags)
   {
-    try
+    if (tag)
     {
-      if (tag)
-      {
-        ((ID3_Tag *) tag)->Strip(ulTagFlags);
-      }
+      ((ID3_Tag *) tag)->Strip(ulTagFlags);
     }
-    catch (ID3_Error &err)
-    {
-      return err.GetErrorID();
-    }
-
+    
     return ID3E_NoError;
   }
 

@@ -14,7 +14,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.22 2000/10/14 19:24:38 eldamitri Exp $
+// $Id: demo_info.cpp,v 1.23 2000/10/14 20:46:38 eldamitri Exp $
 
 
 #ifdef HAVE_CONFIG_H
@@ -29,13 +29,12 @@
 #include <id3/misc_support.h>
 #include <id3/readers.h>
 #include <id3/io_helpers.h>
-#include <id3/error.h>
 
 #include "demo_info_options.h"
 
 using namespace dami;
 
-static String VERSION_NUMBER = "$Revision: 1.22 $";
+static String VERSION_NUMBER = "$Revision: 1.23 $";
 
 void PrintUsage(const char *sName)
 {
@@ -341,29 +340,19 @@ int main( unsigned int argc, char * const argv[])
   for (size_t i = 0; i < args.inputs_num; ++i)
   {
     filename = args.inputs[i];
-    try
+    ID3_Tag myTag;
+    
+    myTag.Link(filename, ID3TT_ALL);
+    cout << endl << "*** Tag information for " << filename << endl;
+    if (!args.assign_given)
     {
-      ID3_Tag myTag;
-      
-      myTag.Link(filename, ID3TT_ALL);
-      cout << endl << "*** Tag information for " << filename << endl;
-      if (!args.assign_given)
-      {
-        PrintInformation(myTag);
-      }
-      else
-      {
-        cout << "*** Testing assignment operator" << endl;
-        ID3_Tag tmpTag(myTag);
-        PrintInformation(tmpTag);
-      }
+      PrintInformation(myTag);
     }
-    catch(ID3_Error &err)
+    else
     {
-      ID3D_WARNING( err.GetErrorFile() << " ("  << 
-                    err.GetErrorLine() << "): " << 
-                    err.GetErrorType() << ": "  << 
-                    err.GetErrorDesc() );
+      cout << "*** Testing assignment operator" << endl;
+      ID3_Tag tmpTag(myTag);
+      PrintInformation(tmpTag);
     }
   }
 

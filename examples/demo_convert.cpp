@@ -1,4 +1,4 @@
-// $Id: demo_convert.cpp,v 1.11 2000/10/13 18:25:53 eldamitri Exp $
+// $Id: demo_convert.cpp,v 1.12 2000/10/14 20:46:38 eldamitri Exp $
 //
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -20,10 +20,9 @@
 
 #include <iostream.h>
 #include <id3/tag.h>
-#include <id3/error.h>
 #include "demo_convert_options.h"
 
-static const char* VERSION_NUMBER = "$Revision: 1.11 $";
+static const char* VERSION_NUMBER = "$Revision: 1.12 $";
 
 void PrintUsage(const char *sName)
 {
@@ -121,52 +120,41 @@ int main( unsigned int argc, char * const argv[])
   for (size_t i = 0; i < args.inputs_num; ++i)
   {
     filename = args.inputs[i];
-    try
+    ID3_Tag myTag;
+    
+    if (args.strip_given)
     {
-      ID3_Tag myTag;
-      
-      if (args.strip_given)
-      {
-        cout << "Stripping ";
-      }
-      else
-      {
-        cout << "Converting ";
-      }
-      cout << filename << ": ";
-      
-      myTag.Clear();
-      myTag.Link(filename, ID3TT_ALL);
-      myTag.SetPadding(args.padding_flag);
-      
-      cout << "attempting ";
-      DisplayTags(cout, ulFlag);
-      luint nTags;
-      
-      if (args.strip_flag)
-      {
-        nTags = myTag.Strip(ulFlag);
-        cout << ", stripped ";
-      }
-      else
-      {
-        nTags = myTag.Update(ulFlag);
-        cout << ", converted ";
-      }
-      
-      DisplayTags(cout, nTags);
-      cout << endl;
+      cout << "Stripping ";
+    }
+    else
+    {
+      cout << "Converting ";
+    }
+    cout << filename << ": ";
+    
+    myTag.Clear();
+    myTag.Link(filename, ID3TT_ALL);
+    myTag.SetPadding(args.padding_flag);
+    
+    cout << "attempting ";
+    DisplayTags(cout, ulFlag);
+    luint nTags;
+    
+    if (args.strip_flag)
+    {
+      nTags = myTag.Strip(ulFlag);
+      cout << ", stripped ";
+    }
+    else
+    {
+      nTags = myTag.Update(ulFlag);
+      cout << ", converted ";
     }
     
-    catch(ID3_Error err)
-    {
-      ID3D_WARNING( err.GetErrorFile() << " ("  << 
-                    err.GetErrorLine() << "): " << 
-                    err.GetErrorType() << ": "  << 
-                    err.GetErrorDesc() );
-    }
+    DisplayTags(cout, nTags);
+    cout << endl;
   }
-
+  
   return 0;
 }
 
