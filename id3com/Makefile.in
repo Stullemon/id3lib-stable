@@ -14,8 +14,7 @@
 
 @SET_MAKE@
 
-# Copyright (C) 1999 Scott Thomas Haug <scott@id3.org>
-# Copyright (C) 2002 Thijmen Klok <thijmen@id3lib.org>
+# Copyright 2002 Thijmen Klok <thijmen@id3lib.org>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -117,30 +116,51 @@ am__quote = @am__quote@
 cxxflags_set = @cxxflags_set@
 install_sh = @install_sh@
 
-SUBDIRS = id3
+SUBDIRS = Sample
 
-id3includedir = $(includedir)
-id3include_HEADERS = id3.h
-subdir = include
+EXTRA_DIST = EnumFields.cpp \
+EnumFields.h   \
+ID3COM.def     \
+ID3COM.rc      \
+ID3COMps.def   \
+ID3COMps.mk    \
+ID3Field.cpp   \
+ID3Field.h     \
+ID3Field.rgs   \
+ID3Frame.cpp   \
+ID3Frame.h     \
+ID3Frame.rgs   \
+ID3Tag.cpp     \
+ID3Tag.h       \
+ID3Tag.rgs     \
+StdAfx.cpp     \
+StdAfx.h       \
+dlldata.c      \
+id3com.cpp     \
+id3com.dsp     \
+id3com.dsw     \
+id3com.idl     \
+resource.h     \
+win32.readme.first.txt
+
+subdir = id3com
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 DIST_SOURCES =
-HEADERS = $(id3include_HEADERS)
-
 
 RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
 	uninstall-info-recursive all-recursive install-data-recursive \
 	install-exec-recursive installdirs-recursive install-recursive \
 	uninstall-recursive check-recursive installcheck-recursive
-DIST_COMMON = $(id3include_HEADERS) Makefile.am Makefile.in
+DIST_COMMON = Makefile.am Makefile.in
 DIST_SUBDIRS = $(SUBDIRS)
 all: all-recursive
 
 .SUFFIXES:
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  include/Makefile
+	  $(AUTOMAKE) --gnu  id3com/Makefile
 Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
 
@@ -153,24 +173,6 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
-id3includeHEADERS_INSTALL = $(INSTALL_HEADER)
-install-id3includeHEADERS: $(id3include_HEADERS)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(id3includedir)
-	@list='$(id3include_HEADERS)'; for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " $(id3includeHEADERS_INSTALL) $$d$$p $(DESTDIR)$(id3includedir)/$$f"; \
-	  $(id3includeHEADERS_INSTALL) $$d$$p $(DESTDIR)$(id3includedir)/$$f; \
-	done
-
-uninstall-id3includeHEADERS:
-	@$(NORMAL_UNINSTALL)
-	@list='$(id3include_HEADERS)'; for p in $$list; do \
-	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " rm -f $(DESTDIR)$(id3includedir)/$$f"; \
-	  rm -f $(DESTDIR)$(id3includedir)/$$f; \
-	done
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run `make' without going through this Makefile.
@@ -308,10 +310,9 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-recursive
-all-am: Makefile $(HEADERS)
+all-am: Makefile
 installdirs: installdirs-recursive
 installdirs-am:
-	$(mkinstalldirs) $(DESTDIR)$(id3includedir)
 
 install: install-recursive
 install-exec: install-exec-recursive
@@ -354,7 +355,7 @@ info: info-recursive
 
 info-am:
 
-install-data-am: install-id3includeHEADERS
+install-data-am:
 
 install-exec-am:
 
@@ -372,7 +373,7 @@ mostlyclean: mostlyclean-recursive
 
 mostlyclean-am: mostlyclean-generic mostlyclean-libtool
 
-uninstall-am: uninstall-id3includeHEADERS uninstall-info-am
+uninstall-am: uninstall-info-am
 
 uninstall-info: uninstall-info-recursive
 
@@ -382,15 +383,14 @@ uninstall-info: uninstall-info-recursive
 	distclean-tags distdir dvi dvi-am dvi-recursive info info-am \
 	info-recursive install install-am install-data install-data-am \
 	install-data-recursive install-exec install-exec-am \
-	install-exec-recursive install-id3includeHEADERS install-info \
-	install-info-am install-info-recursive install-man \
-	install-recursive install-strip installcheck installcheck-am \
-	installdirs installdirs-am installdirs-recursive \
-	maintainer-clean maintainer-clean-generic \
-	maintainer-clean-recursive mostlyclean mostlyclean-generic \
-	mostlyclean-libtool mostlyclean-recursive tags tags-recursive \
-	uninstall uninstall-am uninstall-id3includeHEADERS \
-	uninstall-info-am uninstall-info-recursive uninstall-recursive
+	install-exec-recursive install-info install-info-am \
+	install-info-recursive install-man install-recursive \
+	install-strip installcheck installcheck-am installdirs \
+	installdirs-am installdirs-recursive maintainer-clean \
+	maintainer-clean-generic maintainer-clean-recursive mostlyclean \
+	mostlyclean-generic mostlyclean-libtool mostlyclean-recursive \
+	tags tags-recursive uninstall uninstall-am uninstall-info-am \
+	uninstall-info-recursive uninstall-recursive
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -1,6 +1,7 @@
-# $Id: configure.in,v 1.60 2002/07/17 15:42:32 t1mpy Exp $
+# $Id: configure.in,v 1.61 2002/07/17 16:35:48 t1mpy Exp $
 
 # Copyright 1999, 2000 Scott Thomas Haug <eldamitri@users.sourceforge.net>
+# Copyright (C) 2002 Thijmen Klok <thijmen@id3lib.org>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 

@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# Copyright (C) 1999 Scott Thomas Haug <scott@id3.org>
+# Copyright 2002 Thijmen Klok <thijmen@id3lib.org>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -46,7 +46,7 @@ oldincludedir = /usr/include
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
-top_builddir = ..
+top_builddir = ../..
 
 ACLOCAL = @ACLOCAL@
 AUTOCONF = @AUTOCONF@
@@ -116,27 +116,11 @@ am__quote = @am__quote@
 cxxflags_set = @cxxflags_set@
 install_sh = @install_sh@
 
-EXTRA_DIST = \
-  Doxyfile              \
-  Doxyfile.in           \
-  3d-logo.gif           \
-  attilas_id3logo.jpg   \
-  fillpx.gif            \
-  id3guide.html         \
-  id3lib-manual.php     \
-  id3lib.css            \
-  id3v2.3.0.html        \
-  id3v2.3.0.txt         \
-  id3v2.gif             \
-  id3v2.ico             \
-  id3v2.png             \
-  index.html            \
-  index.html.in         \
-  musicmatch.txt
+EXTRA_DIST = ID3Test.vbp \
+ID3Test.vbw \
+frmID3Test.frm
 
-
-docsdistdir = $(PACKAGE)-doc-$(VERSION)
-subdir = doc
+subdir = id3com/Sample
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
@@ -147,7 +131,7 @@ all: all-am
 .SUFFIXES:
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu  doc/Makefile
+	  $(AUTOMAKE) --gnu  id3com/Sample/Makefile
 Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
 
@@ -165,7 +149,7 @@ TAGS:
 
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 
-top_distdir = ..
+top_distdir = ../..
 distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
 
 distdir: $(DISTFILES)
@@ -264,27 +248,6 @@ uninstall-am: uninstall-info-am
 	maintainer-clean-generic mostlyclean mostlyclean-generic \
 	mostlyclean-libtool uninstall uninstall-am uninstall-info-am
 
-
-Doxyfile: $(srcdir)/Doxyfile.in  $(top_builddir)/config.status
-	cd $(top_builddir) \
-	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
-
-index.html: $(srcdir)/index.html.in  $(top_builddir)/config.status
-	cd $(top_builddir) \
-	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
-
-dox: Doxyfile
-	-rm -rf @DOX_DIR_HTML@ @DOX_DIR_LATEX@
-	cd $(srcdir) && doxygen Doxyfile
-
-docs: dox index.html id3lib.css
-	-rm -rf $(docsdistdir).*
-	cd $(srcdir)/@DOX_DIR_LATEX@ && \
-	make pdf && \
-	(cp *.pdf ../$(docsdistdir).pdf || true) && \
-	cp *.ps ../$(docsdistdir).ps && \
-	gzip -9 ../$(docsdistdir).ps
-	-rm -rf $(srcdir)/@DOX_DIR_LATEX@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
