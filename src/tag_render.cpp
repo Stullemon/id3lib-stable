@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.25 2000/07/07 23:16:15 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.26 2000/07/08 21:26:10 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -104,8 +104,19 @@ size_t RenderV1(const ID3_Tag& tag, uchar *buffer)
   pCur = &pCur[ID3_V1_LEN_YEAR];
 
   // Write the COMMENT
+  // Find the comment with the description STR_V1_COMMENT_DESC
   sTemp = ID3_GetComment(&tag, STR_V1_COMMENT_DESC);
-  if (sTemp != NULL)
+  // If no such comment, find the comment with the description ""
+  if (!sTemp)
+  {
+    sTemp = ID3_GetComment(&tag, "");
+  }
+  // If no such comment, find the first comment in the tag
+  if (!sTemp)
+  {
+    sTemp = ID3_GetComment(&tag);
+  }
+  if (sTemp)
   {
     strncpy(pCur, sTemp, ID3_V1_LEN_COMMENT);
     delete [] sTemp;
