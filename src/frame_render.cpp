@@ -1,4 +1,4 @@
-// $Id: frame_render.cpp,v 1.6 2000/05/03 03:02:56 eldamitri Exp $
+// $Id: frame_render.cpp,v 1.7 2000/05/06 21:22:48 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,7 +28,7 @@
 #include <memory.h>
 #include <zlib.h>
 #include "tag.h"
-#include "misc_support.h"
+#include "utils.h"
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
@@ -104,9 +104,7 @@ luint ID3_Frame::Render(uchar *buffer)
             
       memcpy(&buffer[posn + sizeof(uint32)], newTemp, newFrameSize);
         
-      RenderNumber(&buffer[posn], bytesUsed);
-              
-      bytesUsed = newFrameSize + sizeof(uint32);
+      bytesUsed += newFrameSize + RenderNumber(&buffer[posn], bytesUsed);
       didCompress = true;
     }
           
