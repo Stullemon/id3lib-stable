@@ -1,4 +1,4 @@
-// $Id: misc_support.h,v 1.4 1999/12/05 05:34:41 scott Exp $
+// $Id: misc_support.h,v 1.5 1999/12/09 02:45:52 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -67,13 +67,18 @@ void   ucsncpy(unicode_t *dest, const unicode_t *src, size_t len);
 int    ucscmp(const unicode_t *s1, const unicode_t *s2);
 int    ucsncmp(const unicode_t *s1, const unicode_t *s2, size_t len);
 
-char *ID3_GetString(const ID3_Frame *frame, const ID3_FieldID fldName);
+char *ID3_GetString(const ID3_Frame *frame, const ID3_FieldID fldName,
+                    const size_t nItems = 1);
 // in 'id3_tag_parse_v1.cpp'
 void ID3_RemoveTrailingSpaces(char *buffer, luint length);
 
 #endif
 
 // $Log: misc_support.h,v $
+// Revision 1.5  1999/12/09 02:45:52  scott
+// (ID3_GetString): Added nItems parameter for retrieving a string from a
+// list (for example, the involved people list).
+//
 // Revision 1.4  1999/12/05 05:34:41  scott
 // Updated the Add functions so that they accept an option boolean
 // parameter which indicates if the function should replace the current
