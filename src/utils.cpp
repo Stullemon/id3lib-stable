@@ -1,4 +1,4 @@
-// $Id: utils.cpp,v 1.26 2002/07/02 22:04:36 t1mpy Exp $
+// $Id: utils.cpp,v 1.27 2003/03/21 15:07:01 slackorama Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -122,7 +122,8 @@ namespace
     String target;
     size_t source_size = source.size();
 #if defined(ID3LIB_ICONV_OLDSTYLE)
-    const char* source_str = source.data();
+    char* source_str = new char[source.size() + 1];
+    strcpy(source.data(), source_str);
 #else
     char *source_str = new char[source.size()+1];
     source.copy(source_str, String::npos);
@@ -150,6 +151,7 @@ namespace
       target_size = ID3LIB_BUFSIZ;
     }
     while (source_size > 0);
+    delete [] source_str;
     return target;
   }
 
