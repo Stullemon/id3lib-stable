@@ -15,14 +15,23 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 # The following rules are for m4 files
-m4datadir = $(datadir)/aclocal
+# m4datadir = $(datadir)/aclocal
 
 # List your m4 macros here
-m4macros = lf_cc.m4 lf_cxx.m4 lf_nm.m4 lf_fortran.m4 lf_lisp.m4 lf_local.m4 \
-lf_txtc.m4 lf_host_type.m4 lf_x11.m4 lf_texidoc.m4 lf_warnings.m4 lf_bash.m4 
+m4macros =              \
+  lf_cc.m4              \
+  lf_cxx.m4             \
+  lf_nm.m4              \
+  lf_fortran.m4         \
+  lf_lisp.m4            \
+  lf_local.m4           \
+  lf_txtc.m4            \
+  lf_host_type.m4       \
+  lf_x11.m4             \
+  lf_texidoc.m4         \
+  lf_warnings.m4        \
+  lf_bash.m4 
 
 # The following is boilerplate
-m4data_DATA = $(m4macros) 
-EXTRA_DIST = $(m4data_DATA) 
-
-
+# m4data_DATA = $(m4macros) 
+EXTRA_DIST = $(m4macros) 

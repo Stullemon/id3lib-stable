@@ -27,6 +27,9 @@
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 # The following rules are for m4 files
+# m4datadir = $(datadir)/aclocal
+
+# List your m4 macros here
 
 
 SHELL = @SHELL@
@@ -95,21 +98,16 @@ RANLIB = @RANLIB@
 VERSION = @VERSION@
 canonical_host_type = @canonical_host_type@
 
-m4datadir = $(datadir)/aclocal
-
-# List your m4 macros here
-m4macros = lf_cc.m4 lf_cxx.m4 lf_nm.m4 lf_fortran.m4 lf_lisp.m4 lf_local.m4 lf_txtc.m4 lf_host_type.m4 lf_x11.m4 lf_texidoc.m4 lf_warnings.m4 lf_bash.m4 
+m4macros =    lf_cc.m4                lf_cxx.m4               lf_nm.m4                lf_fortran.m4           lf_lisp.m4              lf_local.m4             lf_txtc.m4              lf_host_type.m4         lf_x11.m4               lf_texidoc.m4           lf_warnings.m4          lf_bash.m4 
 
 
 # The following is boilerplate
-m4data_DATA = $(m4macros) 
-EXTRA_DIST = $(m4data_DATA) 
+# m4data_DATA = $(m4macros) 
+EXTRA_DIST = $(m4macros) 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-DATA =  $(m4data_DATA)
-
-DIST_COMMON =  Makefile.am Makefile.in
+DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -125,25 +123,6 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-
-install-m4dataDATA: $(m4data_DATA)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(m4datadir)
-	@list='$(m4data_DATA)'; for p in $$list; do \
-	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(m4datadir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(m4datadir)/$$p; \
-	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(m4datadir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(m4datadir)/$$p; \
-	  fi; fi; \
-	done
-
-uninstall-m4dataDATA:
-	@$(NORMAL_UNINSTALL)
-	list='$(m4data_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(m4datadir)/$$p; \
-	done
 tags: TAGS
 TAGS:
 
@@ -179,20 +158,19 @@ installcheck: installcheck-am
 install-exec-am:
 install-exec: install-exec-am
 
-install-data-am: install-m4dataDATA
+install-data-am:
 install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-m4dataDATA
+uninstall-am:
 uninstall: uninstall-am
-all-am: Makefile $(DATA)
+all-am: Makefile
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_STRIP_FLAG=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(m4datadir)
 
 
 mostlyclean-generic:
@@ -223,12 +201,12 @@ maintainer-clean-am:  maintainer-clean-generic distclean-am
 
 maintainer-clean: maintainer-clean-am
 
-.PHONY: uninstall-m4dataDATA install-m4dataDATA tags distdir info-am \
-info dvi-am dvi check check-am installcheck-am installcheck \
-install-exec-am install-exec install-data-am install-data install-am \
-install uninstall-am uninstall all-redirect all-am all installdirs \
-mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+.PHONY: tags distdir info-am info dvi-am dvi check check-am \
+installcheck-am installcheck install-exec-am install-exec \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
