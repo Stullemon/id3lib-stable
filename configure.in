@@ -1,4 +1,4 @@
-# $Id: configure.in,v 1.24 2000/04/20 04:59:44 eldamitri Exp $
+# $Id: configure.in,v 1.25 2000/04/21 20:02:33 eldamitri Exp $
 
 # Copyright 1999, 2000 Scott Thomas Haug <eldamitri@users.sourceforge.net>
 #  
@@ -46,6 +46,17 @@ AC_SUBST(ID3LIB_VERSION)
 AC_SUBST(ID3LIB_INTERFACE_AGE)
 AC_SUBST(ID3LIB_BINARY_AGE)
 
+# for documentation purposes
+DOX_DIR_HTML=api
+DOX_DIR_LATEX=latex
+DOX_DIR_MAN=man
+DOX_DIR_RTF=rtf
+
+AC_SUBST(DOX_DIR_HTML)
+AC_SUBST(DOX_DIR_LATEX)
+AC_SUBST(DOX_DIR_MAN)
+AC_SUBST(DOX_DIR_RTF)
+
 # libtool versioning
 LT_RELEASE=$ID3LIB_MAJOR_VERSION.$ID3LIB_MINOR_VERSION
 LT_CURRENT=`expr $ID3LIB_PATCH_VERSION - $ID3LIB_INTERFACE_AGE`
@@ -60,7 +71,7 @@ VERSION=$ID3LIB_VERSION
 PACKAGE=$ID3LIB_NAME
 
 dnl This is a hack to get the release date using cvs checkin macros
-ID3LIB_DATE="$Date: 2000/04/20 04:59:44 $ID3LIB_UNDEFINED"
+ID3LIB_DATE="$Date: 2000/04/21 20:02:33 $ID3LIB_UNDEFINED"
 ID3LIB_FULLNAME=$ID3LIB_NAME-$ID3LIB_VERSION
 
 AC_SUBST(ID3LIB_DATE)
@@ -204,6 +215,10 @@ AC_OUTPUT(                      \
 )
 
 # $Log: configure.in,v $
+# Revision 1.25  2000/04/21 20:02:33  eldamitri
+# Added DOX_DIR_{HTML,LATEX,MAN,RTF} so that doxygen's output directories
+# need only be adjusted in one file
+#
 # Revision 1.24  2000/04/20 04:59:44  eldamitri
 # Updated for 3.7.1 release
 #
