@@ -87,12 +87,12 @@ RANLIB = @RANLIB@
 VERSION = @VERSION@
 canonical_host_type = @canonical_host_type@
 
-SUBDIRS = id3
-EXTRA_SUBDIRS = examples
+SUBDIRS = id3 examples
+EXTRA_DIST = ChangeLog
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-DIST_COMMON =  Makefile.am Makefile.in
+DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
