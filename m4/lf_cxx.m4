@@ -32,7 +32,7 @@ dnl distribution terms that you use for the rest of that program.
 AC_DEFUN(LF_CONFIGURE_CXX,[
  AC_PROG_CXX 
  AC_PROG_CXXCPP
- LF_CPP_PORTABILITY
+ LF_CXX_PORTABILITY
 ])
 
 # -----------------------------------------------------------------------
@@ -41,7 +41,6 @@ AC_DEFUN(LF_CONFIGURE_CXX,[
 #    data type
 # 2. Defines CXX_HAS_BUGGY_FOR_LOOPS if the compiler has buggy
 #    scoping for the for-loop
-# 3. Defines USE_ASSERT if the user wants to use assertions
 # Seperately we provide some config.h.bot code to be added to acconfig.h
 # that implements work-arounds for these problems.
 # -----------------------------------------------------------------------
@@ -49,10 +48,11 @@ AC_DEFUN(LF_CONFIGURE_CXX,[
 dnl ACCONFIG TEMPLATE
 dnl #undef CXX_HAS_BUGGY_FOR_LOOPS
 dnl #undef CXX_HAS_NO_BOOL
-dnl #undef NDEBUG
 dnl END ACCONFIG
 
-AC_DEFUN(LF_CPP_PORTABILITY,[
+AC_DEFUN(LF_CXX_PORTABILITY,[
+
+  AC_PROVIDE([$0])
 
   dnl
   dnl Check for common C++ portability problems
@@ -71,22 +71,13 @@ AC_DEFUN(LF_CPP_PORTABILITY,[
             )
 
   dnl Test whether C++ has buggy for-loops
-  AC_MSG_CHECKING(whether C++ has buggy scoping in for-loops)
+  AC_MSG_CHECKING(whether C++ has correct scoping in for-loops)
   AC_TRY_COMPILE([#include <iostream.h>], [
    for (int i=0;i<10;i++) { }
    for (int i=0;i<10;i++) { }
-], [ AC_MSG_RESULT(no) ],
-   [ AC_MSG_RESULT(yes)
+], [ AC_MSG_RESULT(yes) ],
+   [ AC_MSG_RESULT(no)
      AC_DEFINE(CXX_HAS_BUGGY_FOR_LOOPS) ])
-
-  dnl Test whether the user wants to enable assertions
-  AC_MSG_CHECKING(whether user wants assertions)
-  AC_ARG_ENABLE(assert,
-                [  --disable-assert        don't use cpp.h assert],
-                [ AC_DEFINE(NDEBUG)
-                  AC_MSG_RESULT(no)  ],
-                [ AC_MSG_RESULT(yes) ],
-               )
 
   dnl Done with the portability checks
   AC_LANG_RESTORE
@@ -109,36 +100,6 @@ dnl #define for if(1) for
 dnl #endif
 dnl 
 dnl //
-dnl // Fortran-like integer looping macros
-dnl // these critters depend on the scoping work-around above
-dnl //
-dnl 
-dnl #define loop(COUNTER,BEGIN,END)  \
-dnl for (int COUNTER = BEGIN ; COUNTER <= END ; COUNTER ## ++)
-dnl 
-dnl #define inverse_loop(COUNTER,END,BEGIN) \
-dnl for (int COUNTER = END; COUNTER >= BEGIN; COUNTER ## --)
-dnl 
-dnl #define integer_loop(COUNTER,BEGIN,END,STEP) \
-dnl for (int COUNTER = BEGIN; COUNTER <= END; COUNTER += STEP)
-dnl 
-dnl //
-dnl // Class protection levels
-dnl // addictive syntactic sugar to make coding nicer
-dnl //
-dnl 
-dnl #define pub public:
-dnl #define pro protected:
-dnl #define pri private:
-dnl 
-dnl //
-dnl // Every mathematician would like to know pi
-dnl // so this is as good a place as any to throw it in.
-dnl //
-dnl 
-dnl #define pi 3.14159265358979324
-dnl 
-dnl //
 dnl // If the C++ compiler we use doesn't have bool, then
 dnl // the following is a near-perfect work-around. 
 dnl // You must make sure your code does not depend on "int" and "bool"
@@ -151,7 +112,5 @@ dnl #define true 1
 dnl #define false 0
 dnl #endif
 dnl    
-dnl #include <assert.h>
-dnl 
 dnl END ACCONFIG
 
