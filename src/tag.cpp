@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.15 2000/05/08 04:07:39 eldamitri Exp $
+// $Id: tag.cpp,v 1.16 2000/05/12 04:17:49 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -88,17 +88,16 @@
  ** 'CDM' frames from the unreleased ID3v2 2.01 draft specification.
  **
  ** \author Dirk Mahoney
- ** \version $Id: tag.cpp,v 1.15 2000/05/08 04:07:39 eldamitri Exp $
+ ** \version $Id: tag.cpp,v 1.16 2000/05/12 04:17:49 eldamitri Exp $
  ** \sa ID3_Frame
  ** \sa ID3_Field
  ** \sa ID3_Err
  **/
 
-luint ID3_Tag::__instances = 0;
-
-// Analyses a buffer to determine if we have a valid ID3v2 tag header.
-// If so, return the total number of bytes (including the header) to
-// read so we get all of the tag
+/** Analyses a buffer to determine if we have a valid ID3v2 tag header.
+ ** If so, return the total number of bytes (including the header) to
+ ** read so we get all of the tag
+ **/
 size_t ID3_Tag::IsV2Tag(const uchar* const data)
 {
   lsint tagSize = 0;
@@ -128,6 +127,46 @@ lsint ID3_IsTagHeader(const uchar data[ID3_TAGHEADERSIZE])
   }
   
   return size - ID3_TagHeader::SIZE;
+}
+
+void ID3_RemoveFromList(ID3_Elem *which, ID3_Elem **list)
+{
+  ID3_Elem *cur = *list;
+
+  if (cur == which)
+  {
+    *list = which->pNext;
+    delete which;
+    which = NULL;
+  }
+  else
+  {
+    while (cur)
+    {
+      if (cur->pNext == which)
+      {
+        cur->pNext = which->pNext;
+        delete which;
+        which = NULL;
+        break;
+      }
+      else
+      {
+        cur = cur->pNext;
+      }
+    }
+  }
+}
+
+
+void ID3_ClearList(ID3_Elem *list)
+{
+  ID3_Elem *next = NULL;
+  for (ID3_Elem *cur = list; cur; cur = next)
+  {
+    next = cur->pNext;
+    delete cur;
+  }
 }
 
 /** Copies a frame to the tag.  The frame parameter can thus safely be deleted
@@ -174,138 +213,70 @@ ID3_Tag& operator<<(ID3_Tag& tag, const ID3_Frame *frame)
  **
  ** \param name The filename of the mp3 file to link to
  **/
-ID3_Tag::ID3_Tag(char *name)
+ID3_Tag::ID3_Tag(const char *name)
+  : __file_name(new char[ID3_PATH_LENGTH]),
+    __file_handle(NULL),
+    __frames(NULL)
 {
-  SetupTag(name);
-  
-  __instances++;
+  this->Clear();
+  if (name)
+  {
+    this->Link(name);
+  }
 }
 
-  /** Standard copy constructor.
-   **
-   ** \param tag What is copied into this tag
-   **/
+/** Standard copy constructor.
+ **
+ ** \param tag What is copied into this tag
+ **/
 ID3_Tag::ID3_Tag(const ID3_Tag &tag)
+  : __file_name(new char[ID3_PATH_LENGTH]),
+    __file_handle(NULL),
+    __frames(NULL)
 {
-  SetupTag(NULL);
   *this = tag;
-
-  __instances++;
 }
 
-void ID3_Tag::SetupTag(char *fileInfo)
+ID3_Tag::~ID3_Tag()
 {
-  __file_name        = new char[ID3_PATH_LENGTH];
-  __spec             = ID3V2_LATEST;
-  __frames           = NULL;
-  __binaries         = NULL;
-  __cursor           = NULL;
-  __file_handle      = NULL;
-  __is_unsync        = false;
-  __is_padded        = true;
-  __is_extended      = true;
-  __is_file_writable = false;
-  __file_size        = 0;
-  __orig_tag_size    = 0;
-  __extra_bytes      = 0;
-  __has_v1_tag       = false;
-
-  __file_name[0]     = '\0';
+  this->Clear();
   
-  Clear();
-  
-  if (NULL != fileInfo)
-  {
-    Link(fileInfo);
-  }
-    
-  return ;
-}
-
-ID3_Tag::~ID3_Tag(void)
-{
-  CloseFile();
-    
-  Clear();
-  
-  __instances--;
-  
-  if (__instances == 0)
-  {
-    // Do something here!
-  }
-
   delete [] __file_name;
-  
 }
 
-  /** Clears the object and disassociates it from any files.
-   **
-   ** It frees any resources for which the object is responsible, and the
-   ** object is now free to be used again for any new or existing tag.
-   **/
-void ID3_Tag::Clear(void)
+/** Clears the object and disassociates it from any files.
+ **
+ ** It frees any resources for which the object is responsible, and the
+ ** object is now free to be used again for any new or existing tag.
+ **/
+void ID3_Tag::Clear()
 {
-  if (NULL != __frames)
+  this->CloseFile();
+  
+  if (__frames)
   {
-    ClearList(__frames);
+    ID3_ClearList(__frames);
     __frames = NULL;
   }
-  
-  if (NULL != __binaries)
-  {
-    ClearList(__binaries);
-    __binaries = NULL;
-  }
-
+  __num_frames = 0;
   __cursor = NULL;
+  __is_padded = true;
+  
+  __hdr.Clear();
+  
+  strcpy(__file_name, "");
+  __file_handle = NULL;
+  __file_size = 0;
+  __starting_bytes = 0;
+  __ending_bytes = 0;
+  __is_file_writable = false;
+
+  __tags_to_parse.clear();
+  __file_tags.clear();
+
   __changed = true;
-  
-  return ;
 }
 
-
-void ID3_Tag::DeleteElem(ID3_Elem *cur)
-{
-  if (NULL != cur && cur->bTagOwns)
-  {
-    if (cur->pFrame)
-    {
-      delete cur->pFrame;
-      cur->pFrame = NULL;
-    }
-      
-    if (cur->acBinary)
-    {
-      delete [] cur->acBinary;
-      cur->acBinary = NULL;
-    }
-    
-    __cursor = NULL;
-    __changed = true;
-    
-    delete cur;
-  }
-  
-  return ;
-}
-
-
-void ID3_Tag::ClearList(ID3_Elem *list)
-{
-  ID3_Elem *cur = list;
-  
-  while (cur)
-  {
-    ID3_Elem *pNext;
-    
-    pNext = cur->pNext;
-    DeleteElem(cur);
-    cur = pNext;
-  }
-  
-  return ;
-}
 
 void ID3_Tag::AddFrame(const ID3_Frame& frame)
 {
@@ -371,15 +342,12 @@ void ID3_Tag::AttachFrame(ID3_Frame *frame)
 
   elem->pNext = __frames;
   elem->pFrame = frame;
-  elem->acBinary = NULL;
-  elem->bTagOwns = true;
   
   __frames = elem;
+  __num_frames++;
   __cursor = NULL;
   
   __changed = true;
-  
-  return ;
 }
 
 
@@ -399,16 +367,12 @@ void ID3_Tag::AttachFrame(ID3_Frame *frame)
  ** \param pNewFrames A pointer to an array of frames to be added to the tag.
  ** \param nFrames The number of frames in the array pNewFrames.
  **/
-void ID3_Tag::AddFrames(const ID3_Frame *frames, luint numFrames)
+void ID3_Tag::AddFrames(const ID3_Frame *frames, size_t numFrames)
 {
-  lsint i;
-  
-  for (i = numFrames - 1; i >= 0; i--)
+  for (index_t i = numFrames - 1; i >= 0; i--)
   {
     AddFrame(frames[i]);
   }
-    
-  return ;
 }
 
 
@@ -432,72 +396,47 @@ void ID3_Tag::AddFrames(const ID3_Frame *frames, luint numFrames)
  ** \param pOldFrame A pointer to the frame that is to be removed from the
  **                  tag
  **/
-void ID3_Tag::RemoveFrame(const ID3_Frame *frame)
+ID3_Frame* ID3_Tag::RemoveFrame(const ID3_Frame *frame)
 {
+  ID3_Frame *the_frame = NULL;
   ID3_Elem *elem = Find(frame);
   if (NULL != elem)
   {
-    RemoveFromList(elem, &__frames);
+    the_frame = elem->pFrame;
+    //assert(the_frame == frame);
+    elem->pFrame = NULL;
+    ID3_RemoveFromList(elem, &__frames);
+    --__num_frames;
   }
     
-  return ;
+  return the_frame;
 }
 
 
-void ID3_Tag::RemoveFromList(ID3_Elem *which, ID3_Elem **list)
-{
-  ID3_Elem *cur = *list;
-  
-  if (cur == which)
-  {
-    *list = which->pNext;
-    DeleteElem(which);
-  }
-  else
-  {
-    while (cur)
-    {
-      if (cur->pNext == which)
-      {
-        cur->pNext = which->pNext;
-        DeleteElem(which);
-        break;
-      }
-      else
-      {
-        cur = cur->pNext;
-      }
-    }
-  }
-  
-  return ;
-}
-
-
-  /** Indicates whether the tag has been altered since the last parse, render,
-   ** or update.
-   **
-   ** If you have a tag linked to a file, you do not need this method since the
-   ** Update() method will check for changes before writing the tag.
-   ** 
-   ** This method is primarily intended as a status indicator for applications
-   ** and for applications that use the Parse() and Render() methods.
-   **
-   ** Setting a field, changed the ID of an attached frame, setting or grouping
-   ** or encryption IDs, and clearing a frame or field all constitute a change
-   ** to the tag, as do calls to the SetUnsync(), SetExtendedHeader(), and
-   ** SetPadding() methods.
-   
-   ** \code
-   **   if (myTag.HasChanged())
-   **   {
-   **     // render and output the tag
-   **   }
-   ** \endcode
-   
-   ** \return Whether or not the tag has been altered.
-   **/
-bool ID3_Tag::HasChanged(void) const
+/** Indicates whether the tag has been altered since the last parse, render,
+ ** or update.
+ **
+ ** If you have a tag linked to a file, you do not need this method since the
+ ** Update() method will check for changes before writing the tag.
+ ** 
+ ** This method is primarily intended as a status indicator for applications
+ ** and for applications that use the Parse() and Render() methods.
+ **
+ ** Setting a field, changed the ID of an attached frame, setting or grouping
+ ** or encryption IDs, and clearing a frame or field all constitute a change
+ ** to the tag, as do calls to the SetUnsync(), SetExtendedHeader(), and
+ ** SetPadding() methods.
+ ** 
+ ** \code
+ **   if (myTag.HasChanged())
+ **   {
+ **     // render and output the tag
+ **   }
+ ** \endcode
+ ** 
+ ** \return Whether or not the tag has been altered.
+ **/
+bool ID3_Tag::HasChanged() const
 {
   bool changed = __changed;
   
@@ -528,75 +467,63 @@ bool ID3_Tag::HasChanged(void) const
 
 bool ID3_Tag::SetSpec(ID3_V2Spec spec)
 {
-  bool changed = (spec != __spec);
+  bool changed = __hdr.SetSpec(spec);
   __changed = __changed || changed;
-  __spec = spec;
   return changed;
 }
 
 ID3_V2Spec ID3_Tag::GetSpec() const
 {
-  return __spec;
+  return __hdr.GetSpec();
 }
 
-  /** Turns unsynchronization on or off, dependant on the value of the boolean
-   ** parameter.
-   ** 
-   ** If you call this method with 'false' as the parameter, the
-   ** binary tag will not be unsync'ed, regardless of whether the tag should
-   ** be.  This option is useful when the file is only going to be used by
-   ** ID3v2-compliant software.  See the id3v2 standard document for futher
-   ** details on unsync.
-   **
-   ** Be default, tags are created without unsync.
-   ** 
-   ** \code
-   **   myTag.SetUnsync(false);
-   ** \endcode
-   ** 
-   ** \param bSync Whether the tag should be unsynchronized
-   **/
-void ID3_Tag::SetUnsync(bool newSync)
+/** Turns unsynchronization on or off, dependant on the value of the boolean
+ ** parameter.
+ ** 
+ ** If you call this method with 'false' as the parameter, the
+ ** binary tag will not be unsync'ed, regardless of whether the tag should
+ ** be.  This option is useful when the file is only going to be used by
+ ** ID3v2-compliant software.  See the id3v2 standard document for futher
+ ** details on unsync.
+ **
+ ** Be default, tags are created without unsync.
+ ** 
+ ** \code
+ **   myTag.SetUnsync(false);
+ ** \endcode
+ ** 
+ ** \param bSync Whether the tag should be unsynchronized
+ **/
+bool ID3_Tag::SetUnsync(bool b)
 {
-  if (__is_unsync != newSync)
-  {
-    __changed = true;
-  }
-    
-  __is_unsync = newSync;
-  
-  return ;
+  bool changed = __hdr.SetUnsync(b);
+  __changed = changed || __changed;
+  return changed;
 }
 
 
-  /** Turns extended header rendering on or off, dependant on the value of the
-   ** boolean parameter.
-   ** 
-   ** This option is currently ignored as id3lib doesn't yet create extended
-   ** headers.  This option only applies when rendering tags for id3v2 versions
-   ** that support extended headers.
-   **
-   ** By default, id3lib will generate extended headers for all tags in which
-   ** extended headers are supported.
-   ** 
-   ** \code
-   **   myTag.SetExtendedHeader(true);
-   ** \endcode
-   ** 
-   ** \param bExt Whether to render an extended header
-   **/
-void ID3_Tag::SetExtendedHeader(bool ext)
+/** Turns extended header rendering on or off, dependant on the value of the
+ ** boolean parameter.
+ ** 
+ ** This option is currently ignored as id3lib doesn't yet create extended
+ ** headers.  This option only applies when rendering tags for id3v2 versions
+ ** that support extended headers.
+ **
+ ** By default, id3lib will generate extended headers for all tags in which
+ ** extended headers are supported.
+ ** 
+ ** \code
+ **   myTag.SetExtendedHeader(true);
+ ** \endcode
+ ** 
+ ** \param bExt Whether to render an extended header
+ **/
+bool ID3_Tag::SetExtendedHeader(bool ext)
 {
-  if (__is_extended != ext)
-  {
-    __changed = true;
-  }
-    
-  __is_extended = ext;
-  
-  return ;
+  bool changed = __hdr.SetExtended(ext);
+  __changed = changed || __changed;
+  return changed;
 }
-
 
 /** Turns padding on or off, dependant on the value of the boolean
  ** parameter.
@@ -627,33 +554,18 @@ void ID3_Tag::SetExtendedHeader(bool ext)
  ** 
  ** \param bPad Whether or not render the tag with padding.
  **/
-void ID3_Tag::SetPadding(bool pad)
+bool ID3_Tag::SetPadding(bool pad)
 {
-  __changed = __changed || (__is_padded != pad);
-    
-  __is_padded = pad;
-  
-  return ;
-}
-
-
-  /** Returns the number of frames present in the tag object.
-   ** 
-   ** This includes only those frames that id3lib recognises.  This is used as
-   ** the upper bound on calls to the GetFrame() and operator[]() methods.
-   ** 
-   ** \return The number of frames present in the tag object.
-   **/
-luint ID3_Tag::NumFrames(void) const
-{
-  luint numFrames = 0;
-  for (ID3_Elem *cur = __frames; NULL != cur; cur = cur->pNext)
+  bool changed = (__is_padded != pad);
+  __changed = changed || __changed;
+  if (changed)
   {
-    numFrames++;
+    __is_padded = pad;
   }
   
-  return numFrames;
+  return changed;
 }
+
 
 ID3_Tag &
 ID3_Tag::operator=( const ID3_Tag &rTag )
