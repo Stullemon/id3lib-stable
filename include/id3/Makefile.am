@@ -20,7 +20,10 @@ the_headers =                   \
   tag.h                         \
   writer.h                      \
   writers.h                     \
-  utils.h                       
+  utils.h                       \
+  id3lib_streams.h              \
+  id3lib_strings.h
+
 
 id3includedir      = $(includedir)/id3
 id3include_HEADERS = $(the_headers)
@@ -30,6 +33,4 @@ noinst_HEADERS =                \
   io_decorators.h               \
   io_helpers.h                  \
   io_strings.h                  \
-  id3lib_bitset                 \
-  id3lib_streams.h		\
-  id3lib_strings.h                     
+  id3lib_bitset                 
