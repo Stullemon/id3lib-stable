@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.10 1999/12/01 18:00:59 scott Exp $
+// $Id: field.cpp,v 1.11 1999/12/09 03:31:58 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -25,7 +25,7 @@ static ID3_FieldDef ID3FD_URL[] =
     ID3FN_URL,                          // FIELD NAME
     ID3FTY_ASCIISTRING,                 // FIELD TYPE
     -1, 2, 0,                           // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NONE,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -38,7 +38,7 @@ static ID3_FieldDef ID3FD_UserURL[] =
     ID3FN_TEXTENC,                      // FIELD NAME        
     ID3FTY_INTEGER,                     // FIELD TYPE
     1, 2, 0,                            // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NONE,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -46,7 +46,7 @@ static ID3_FieldDef ID3FD_UserURL[] =
     ID3FN_DESCRIPTION,                  // FIELD NAME
     ID3FTY_ASCIISTRING,                 // FIELD TYPE
     -1, 2, 0,                           // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NULL | ID3FF_ADJUSTENC,       // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -54,7 +54,7 @@ static ID3_FieldDef ID3FD_UserURL[] =
     ID3FN_URL,                          // FIELD NAME
     ID3FTY_ASCIISTRING,                 // FIELD TYPE
     -1, 2, 0,                           // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NONE,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -67,7 +67,7 @@ static ID3_FieldDef ID3FD_Text[] =
     ID3FN_TEXTENC,                      // FIELD NAME
     ID3FTY_INTEGER,                     // FIELD TYPE
     1, 2, 0,                            // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NONE,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -75,7 +75,7 @@ static ID3_FieldDef ID3FD_Text[] =
     ID3FN_TEXT,                         // FIELD NAME
     ID3FTY_ASCIISTRING,                 // FIELD TYPE
     -1, 2, 0,                           // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_ADJUSTENC,                    // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -89,7 +89,7 @@ static ID3_FieldDef ID3FD_UserText[] =
     ID3FN_TEXTENC,                      // FIELD NAME
     ID3FTY_INTEGER,                     // FIELD TYPE
     1, 2, 0,                            // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NONE,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -97,7 +97,7 @@ static ID3_FieldDef ID3FD_UserText[] =
     ID3FN_DESCRIPTION,                  // FIELD NAME
     ID3FTY_ASCIISTRING,                 // FIELD TYPE
     -1, 2, 0,                           // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NULL | ID3FF_ADJUSTENC,       // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -105,7 +105,7 @@ static ID3_FieldDef ID3FD_UserText[] =
     ID3FN_TEXT,                         // FIELD NAME
     ID3FTY_ASCIISTRING,                 // FIELD TYPE
     -1, 2, 0,                           // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_ADJUSTENC,                    // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -119,7 +119,7 @@ static ID3_FieldDef ID3FD_GeneralText[] =
     ID3FN_TEXTENC,                      // FIELD NAME
     ID3FTY_INTEGER,                     // FIELD TYPE
     1, 2, 0,                            // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NONE,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -127,7 +127,7 @@ static ID3_FieldDef ID3FD_GeneralText[] =
     ID3FN_LANGUAGE,                     // FIELD NAME
     ID3FTY_ASCIISTRING,                 // FIELD TYPE
     3, 2, 0,                            // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NONE,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -135,7 +135,7 @@ static ID3_FieldDef ID3FD_GeneralText[] =
     ID3FN_DESCRIPTION,                  // FIELD NAME
     ID3FTY_ASCIISTRING,                 // FIELD TYPE
     -1, 2, 0,                           // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NULL | ID3FF_ADJUSTENC,       // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -143,7 +143,7 @@ static ID3_FieldDef ID3FD_GeneralText[] =
     ID3FN_TEXT,                         // FIELD NAME
     ID3FTY_ASCIISTRING,                 // FIELD TYPE
     -1, 2, 0,                           // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_ADJUSTENC,                    // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -156,7 +156,7 @@ static ID3_FieldDef ID3FD_Picture[] =
     ID3FN_TEXTENC,                      // FIELD NAME
     ID3FTY_INTEGER,                     // FIELD TYPE
     1, 2, 0,                            // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NONE,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -164,7 +164,7 @@ static ID3_FieldDef ID3FD_Picture[] =
     ID3FN_IMAGEFORMAT,                  // FIELD NAME
     ID3FTY_ASCIISTRING,                 // FIELD TYPE
     3, 2, 0,                            // FIXED LEN, VERSION, REVISION
-    ID3VC_LOWER,                        // WHAT?
+    ID3VC_LOWER,                        // VERSION CONTROL SCOPE
     ID3FF_NONE,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -172,7 +172,7 @@ static ID3_FieldDef ID3FD_Picture[] =
     ID3FN_MIMETYPE,                     // FIELD NAME
     ID3FTY_ASCIISTRING,                 // FIELD TYPE
     -1, 3, 0,                           // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NULL,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -180,7 +180,7 @@ static ID3_FieldDef ID3FD_Picture[] =
     ID3FN_PICTURETYPE,                  // FIELD NAME
     ID3FTY_INTEGER,                     // FIELD TYPE
     1, 2, 0,                            // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NONE,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -188,7 +188,7 @@ static ID3_FieldDef ID3FD_Picture[] =
     ID3FN_DESCRIPTION,                  // FIELD NAME
     ID3FTY_ASCIISTRING,                 // FIELD TYPE
     -1, 2, 0,                           // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NULL | ID3FF_ADJUSTENC,       // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -196,7 +196,7 @@ static ID3_FieldDef ID3FD_Picture[] =
     ID3FN_DATA,                         // FIELD NAME
     ID3FTY_BINARY,                      // FIELD TYPE
     -1, 2, 0,                           // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NONE,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -209,7 +209,7 @@ static ID3_FieldDef ID3FD_GEO[] =
     ID3FN_TEXTENC,                      // FIELD NAME
     ID3FTY_INTEGER,                     // FIELD TYPE
     1, 2, 0,                            // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NONE,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -217,7 +217,7 @@ static ID3_FieldDef ID3FD_GEO[] =
     ID3FN_MIMETYPE,                     // FIELD NAME
     ID3FTY_ASCIISTRING,                 // FIELD TYPE
     -1, 2, 0,                           // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NULL,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -225,7 +225,7 @@ static ID3_FieldDef ID3FD_GEO[] =
     ID3FN_FILENAME,                     // FIELD NAME
     ID3FTY_ASCIISTRING,                 // FIELD TYPE
     -1, 2, 0,                           // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NULL | ID3FF_ADJUSTENC,       // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -233,7 +233,7 @@ static ID3_FieldDef ID3FD_GEO[] =
     ID3FN_DESCRIPTION,                  // FIELD NAME
     ID3FTY_ASCIISTRING,                 // FIELD TYPE
     -1, 2, 0,                           // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NULL | ID3FF_ADJUSTENC,       // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -241,7 +241,7 @@ static ID3_FieldDef ID3FD_GEO[] =
     ID3FN_DATA,                         // FIELD NAME
     ID3FTY_BINARY,                      // FIELD TYPE
     -1, 2, 0,                           // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NONE,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -254,7 +254,7 @@ static ID3_FieldDef ID3FD_UFI[] =
     ID3FN_OWNER,                        // FIELD NAME
     ID3FTY_ASCIISTRING,                 // FIELD TYPE
     -1, 2, 0,                           // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NULL,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -262,7 +262,7 @@ static ID3_FieldDef ID3FD_UFI[] =
     ID3FN_DATA,                         // FIELD NAME
     ID3FTY_BINARY,                      // FIELD TYPE
     -1, 2, 0,                           // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NONE,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -275,7 +275,7 @@ static ID3_FieldDef ID3FD_PlayCounter[] =
     ID3FN_COUNTER,                      // FIELD NAME
     ID3FTY_INTEGER,                     // FIELD TYPE
     4, 2, 0,                            // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NONE,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -288,7 +288,7 @@ static ID3_FieldDef ID3FD_Popularimeter[] =
     ID3FN_EMAIL,                        // FIELD NAME
     ID3FTY_ASCIISTRING,                 // FIELD TYPE
     -1, 2, 0,                           // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NULL,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -296,7 +296,7 @@ static ID3_FieldDef ID3FD_Popularimeter[] =
     ID3FN_RATING,                       // FIELD NAME
     ID3FTY_INTEGER,                     // FIELD TYPE
     1, 2, 0,                            // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NONE,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -304,7 +304,7 @@ static ID3_FieldDef ID3FD_Popularimeter[] =
     ID3FN_COUNTER,                      // FIELD NAME
     ID3FTY_INTEGER,                     // FIELD TYPE
     4, 2, 0,                            // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NONE,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -317,7 +317,7 @@ static ID3_FieldDef ID3FD_Registration[] =
     ID3FN_OWNER,                        // FIELD NAME
     ID3FTY_ASCIISTRING,                 // FIELD TYPE
     -1, 3, 0,                           // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NULL,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -325,7 +325,7 @@ static ID3_FieldDef ID3FD_Registration[] =
     ID3FN_SYMBOL,                       // FIELD NAME
     ID3FTY_INTEGER,                     // FIELD TYPE
     1, 3, 0,                            // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NONE,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -333,7 +333,7 @@ static ID3_FieldDef ID3FD_Registration[] =
     ID3FN_DATA,                         // FIELD NAME
     ID3FTY_BINARY,                      // FIELD TYPE
     -1, 3, 0,                           // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NONE,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -346,7 +346,7 @@ static ID3_FieldDef ID3FD_InvolvedPeople[] =
     ID3FN_TEXTENC,                      // FIELD NAME
     ID3FTY_INTEGER,                     // FIELD TYPE
     1, 2, 0,                            // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NONE,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -354,7 +354,7 @@ static ID3_FieldDef ID3FD_InvolvedPeople[] =
     ID3FN_TEXT,                         // FIELD NAME
     ID3FTY_ASCIISTRING,                 // FIELD TYPE
     -1, 2, 0,                           // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NULL | ID3FF_NULLDIVIDE | ID3FF_ADJUSTENC, // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -370,7 +370,7 @@ static ID3_FieldDef ID3FD_Volume[] =
     ID3FN_VOLUMEADJ,                    // FIELD NAME
     ID3FTY_INTEGER,                     // FIELD TYPE
     1, 2, 0,                            // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NONE,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -378,7 +378,7 @@ static ID3_FieldDef ID3FD_Volume[] =
     ID3FN_NUMBITS,                      // FIELD NAME
     ID3FTY_INTEGER,                     // FIELD TYPE
     1, 2, 0,                            // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_NONE,                         // FLAGS
     ID3FN_NOFIELD                       // LINKED FIELD
   },
@@ -386,7 +386,7 @@ static ID3_FieldDef ID3FD_Volume[] =
     ID3FN_VOLCHGRIGHT,                  // FIELD NAME
     ID3FTY_BITFIELD,                    // FIELD TYPE
     -1, 2, 0,                           // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_ADJUSTEDBY,                   // FLAGS
     ID3FN_NUMBITS                       // LINKED FIELD
   },
@@ -394,7 +394,7 @@ static ID3_FieldDef ID3FD_Volume[] =
     ID3FN_VOLCHGLEFT,                   // FIELD NAME
     ID3FTY_BITFIELD,                    // FIELD TYPE
     -1, 2, 0,                           // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_ADJUSTEDBY,                   // FLAGS
     ID3FN_NUMBITS                       // LINKED FIELD
   },
@@ -402,7 +402,7 @@ static ID3_FieldDef ID3FD_Volume[] =
     ID3FN_PEAKVOLRIGHT,                 // FIELD NAME
     ID3FTY_BITFIELD,                    // FIELD TYPE
     -1, 2, 0,                           // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_ADJUSTEDBY,                   // FLAGS
     ID3FN_NUMBITS                       // LINKED FIELD
   },
@@ -410,7 +410,7 @@ static ID3_FieldDef ID3FD_Volume[] =
     ID3FN_PEAKVOLLEFT,                  // FIELD NAME
     ID3FTY_BITFIELD,                    // FIELD TYPE
     -1, 2, 0,                           // FIXED LEN, VERSION, REVISION
-    ID3VC_HIGHER,                       // WHAT?
+    ID3VC_HIGHER,                       // VERSION CONTROL SCOPE
     ID3FF_ADJUSTEDBY,                   // FLAGS
     ID3FN_NUMBITS                       // LINKED FIELD
   },
@@ -497,7 +497,9 @@ void
 ID3_Field::Clear(void)
 {
   if (__sData != NULL && __ulSize > 0 && __eType != ID3FTY_INTEGER)
+  {
     delete[] __sData;
+  }
     
   __eType       = ID3FTY_INTEGER;
   __sData       = NULL;
@@ -665,6 +667,7 @@ ID3_Field::Render(uchar *buffer)
   if ((__eControl == ID3VC_HIGHER &&
        __ucVersion >= __ucIOVersion && __ucRevision >= __ucIORevision) ||
       (__ucVersion <= __ucIOVersion && __ucRevision <= __ucIORevision))
+  {
     switch (__eType) 
     {
       case ID3FTY_INTEGER:
@@ -687,11 +690,42 @@ ID3_Field::Render(uchar *buffer)
         ID3_THROW (ID3E_UnknownFieldType);
         break;
     }
+  }
     
   return bytesUsed;
 }
 
+ID3_Field &
+ID3_Field::operator=( const ID3_Field &rField )
+{
+  if (this != &rField)
+  {
+    if ((__eControl == ID3VC_HIGHER &&
+         __ucVersion >= __ucIOVersion && __ucRevision >= __ucIORevision) ||
+        (__ucVersion <= __ucIOVersion && __ucRevision <= __ucIORevision))
+    {
+      switch (__eType)
+      {
+        case ID3FTY_INTEGER:
+          *this = rField.Get();
+          break;
+        case ID3FTY_BITFIELD:
+        case ID3FTY_ASCIISTRING:
+        case ID3FTY_UNICODESTRING:
+        case ID3FTY_BINARY:
+          Set(rField.__sData, rField.__ulSize);
+          break;
+      }
+    }
+  }
+}
+
 // $Log: field.cpp,v $
+// Revision 1.11  1999/12/09 03:31:58  scott
+// (): Better comments of the ID3VC_HIGHER/ID3VC_LOWER section in the
+// field defs.
+// (operator=): Added implementation.
+//
 // Revision 1.10  1999/12/01 18:00:59  scott
 // Changed all of the #include <id3/*> to #include "*" to help ensure that
 // the sources are searched for in the right places (and to make compiling under
