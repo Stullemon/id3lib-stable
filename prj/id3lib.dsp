@@ -178,6 +178,10 @@ SOURCE=..\src\tag_parse_lyrics3.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\tag_parse_musicmatch.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\tag_parse_v1.cpp
 # End Source File
 # Begin Source File
