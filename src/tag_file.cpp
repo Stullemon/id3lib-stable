@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.24 2000/09/27 07:47:09 eldamitri Exp $
+// $Id: tag_file.cpp,v 1.25 2000/10/03 04:51:27 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -71,9 +71,11 @@ static int truncate(const char *path, size_t length)
 #  include <config.h>
 #endif
 
-#include "tag.h"
+#include "tag_impl.h"
 
-size_t ID3_Tag::Link(const char *fileInfo, bool parseID3v1, bool parseLyrics3)
+using namespace dami;
+
+size_t ID3_TagImpl::Link(const char *fileInfo, bool parseID3v1, bool parseLyrics3)
 {
   flags_t tt = ID3TT_NONE;
   if (parseID3v1)
@@ -87,49 +89,7 @@ size_t ID3_Tag::Link(const char *fileInfo, bool parseID3v1, bool parseLyrics3)
   return this->Link(fileInfo, tt);
 }
 
-/** Attaches a file to the tag, parses the file, and adds any tag information
- ** found in the file to the tag.
- ** 
- ** Use this method if you created your ID3_Tag object without supplying a
- ** parameter to the constructor (maybe you created an array of ID3_Tag
- ** pointers).  This is the preferred method of interacting with files, since
- ** id3lib can automatically do things like parse foreign tag formats and
- ** handle padding when linked to a file.  When a tag is linked to a file,
- ** you do not need to use the <a href="#Size">Size</a>, <a
- ** href="#Render">Render</a>, or <a href="#Parse">Parse</a> methods or the
- ** <code>ID3_IsTagHeader</code> function---id3lib will take care of those
- ** details for you.  The single parameter is a pointer to a file name.
- ** 
- ** Link returns a 'luint' which is the byte position within the file that
- ** the audio starts (i.e., where the id3v2 tag ends).
- ** 
- ** \code
- **   ID3_Tag *myTag;
- **   if (myTag = new ID3_Tag)
- **   {
- **     myTag->Link("mysong.mp3");
- **     
- **     // do whatever we want with the tag
- **     // ...
- **   
- **     // setup all our rendering parameters
- **     myTag->SetUnsync(false);
- **     myTag->SetExtendedHeader(true);
- **     myTag->SetCompression(true);
- **     myTag->SetPadding(true);
- **     
- **     // write any changes to the file
- **     myTag->Update()
- **     
- **     // free the tag
- **     delete myTag;
- **   }
- ** \endcode
- ** 
- ** @see ID3_IsTagHeader
- ** @param fileInfo The filename of the file to link to.
- **/
-size_t ID3_Tag::Link(const char *fileInfo, flags_t tag_types)
+size_t ID3_TagImpl::Link(const char *fileInfo, flags_t tag_types)
 {
   _tags_to_parse.set(tag_types);
   
@@ -146,7 +106,7 @@ size_t ID3_Tag::Link(const char *fileInfo, flags_t tag_types)
   return this->GetPrependedBytes();
 }
 
-size_t RenderV1ToFile(ID3_Tag& tag, fstream& file)
+size_t RenderV1ToFile(ID3_TagImpl& tag, fstream& file)
 {
   if (!file)
   {
@@ -189,7 +149,7 @@ size_t RenderV1ToFile(ID3_Tag& tag, fstream& file)
   return tag_size;
 }
 
-size_t RenderV2ToFile(const ID3_Tag& tag, fstream& file)
+size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
 {
   uchar *buffer = NULL;
   
@@ -232,7 +192,9 @@ size_t RenderV2ToFile(const ID3_Tag& tag, fstream& file)
     FILE *tempOut = tmpfile();
     if (NULL == tempOut)
     {
-      ID3_THROW(ID3E_ReadOnly);
+      // log this
+      return 0;
+      //ID3_THROW(ID3E_ReadOnly);
     }
     
     if (buffer)
@@ -251,7 +213,7 @@ size_t RenderV2ToFile(const ID3_Tag& tag, fstream& file)
     }
     
     rewind(tempOut);
-    id3::openWritableFile(tag.GetFileName(), file);
+    ::openWritableFile(tag.GetFileName(), file);
     
     while (!feof(tempOut))
     {
@@ -270,7 +232,9 @@ size_t RenderV2ToFile(const ID3_Tag& tag, fstream& file)
     const char sTmpSuffix[] = ".XXXXXX";
     if (strlen(tag.GetFileName()) + strlen(sTmpSuffix) > ID3_PATH_LENGTH)
     {
-      ID3_THROW_DESC(ID3E_NoFile, "filename too long");
+      // log this
+      return 0;
+      //ID3_THROW_DESC(ID3E_NoFile, "filename too long");
     }
     char sTempFile[ID3_PATH_LENGTH];
     strcpy(sTempFile, tag.GetFileName());
@@ -288,7 +252,9 @@ size_t RenderV2ToFile(const ID3_Tag& tag, fstream& file)
     {
       tmpOut.close();
       remove(sTempFile);
-      ID3_THROW(ID3E_ReadOnly);
+      return 0;
+      // log this
+      //ID3_THROW(ID3E_ReadOnly);
     }
     if (buffer)
     {
@@ -310,7 +276,7 @@ size_t RenderV2ToFile(const ID3_Tag& tag, fstream& file)
     remove(tag.GetFileName());
     rename(sTempFile, tag.GetFileName());
 
-    id3::openWritableFile(tag.GetFileName(), file);
+    ::openWritableFile(tag.GetFileName(), file);
 #endif
   }
 
@@ -323,29 +289,17 @@ size_t RenderV2ToFile(const ID3_Tag& tag, fstream& file)
 }
 
 
-/** Renders the tag and writes it to the attached file; the type of tag
- ** rendered can be specified as a parameter.  The default is to update only
- ** the ID3v2 tag.  See the ID3_TagType enumeration for the constants that
- ** can be used.
- ** 
- ** Make sure the rendering parameters are set before calling the method.
- ** See the Link dcoumentation for an example of this method in use.
- ** 
- ** \sa ID3_TagType
- ** \sa Link
- ** \param tt The type of tag to update.
- **/
-flags_t ID3_Tag::Update(flags_t ulTagFlag)
+flags_t ID3_TagImpl::Update(flags_t ulTagFlag)
 {
   flags_t tags = ID3TT_NONE;
   
   fstream file;
-  ID3_Err err = id3::openWritableFile(this->GetFileName(), file);
-  _file_size = id3::getFileSize(file);
+  ID3_Err err = ::openWritableFile(this->GetFileName(), file);
+  _file_size = ::getFileSize(file);
   
   if (err == ID3E_NoFile)
   {
-    err = id3::createFile(this->GetFileName(), file);
+    err = ::createFile(this->GetFileName(), file);
   }
   if (err == ID3E_ReadOnly)
   {
@@ -377,18 +331,12 @@ flags_t ID3_Tag::Update(flags_t ulTagFlag)
   }
   _changed = false;
   _file_tags.add(tags);
-  _file_size = id3::getFileSize(file);
+  _file_size = ::getFileSize(file);
   file.close();
   return tags;
 }
 
-/** Strips the tag(s) from the attached file. The type of tag stripped
- ** can be specified as a parameter.  The default is to strip all tag types.
- ** 
- ** \param tt The type of tag to strip
- ** \sa ID3_TagType@see
- **/
-flags_t ID3_Tag::Strip(flags_t ulTagFlag)
+flags_t ID3_TagImpl::Strip(flags_t ulTagFlag)
 {
   flags_t ulTags = ID3TT_NONE;
   const size_t data_size = ID3_GetDataSize(*this);
@@ -397,11 +345,11 @@ flags_t ID3_Tag::Strip(flags_t ulTagFlag)
   if (ulTagFlag & ID3TT_PREPENDED & _file_tags.get())
   {
     fstream file;
-    if (ID3E_NoError != id3::openWritableFile(this->GetFileName(), file))
+    if (ID3E_NoError != ::openWritableFile(this->GetFileName(), file))
     {
       return ulTags;
     }
-    _file_size = id3::getFileSize(file);
+    _file_size = ::getFileSize(file);
 
     // We will remove the id3v2 tag in place: since it comes at the beginning
     // of the file, we'll effectively move all the data that comes after the
@@ -486,7 +434,9 @@ flags_t ID3_Tag::Strip(flags_t ulTagFlag)
 
   if (ulTags && (truncate(_file_name, nNewFileSize) == -1))
   {
-    ID3_THROW(ID3E_NoFile);
+    // log this
+    return 0;
+    //ID3_THROW(ID3E_NoFile);
   }
 
   _prepended_bytes = (ulTags & ID3TT_PREPENDED) ? 0 : _prepended_bytes;

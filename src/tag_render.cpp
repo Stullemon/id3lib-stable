@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.30 2000/09/27 07:47:09 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.31 2000/10/03 04:51:27 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -35,9 +35,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <memory.h>
-#include "tag.h"
-#include "misc_support.h"
+#include "tag_impl.h"
+#include "helpers.h"
 #include "utils.h"
+
+using namespace dami;
 
 /** Renders an id3v1.1 version of the tag into the supplied buffer.
  ** 
@@ -45,7 +47,7 @@
  **         tag (should always be 128)
  ** @param  buffer The buffer that will contain the id3v1.1 tag.
  **/
-size_t RenderV1(const ID3_Tag& tag, uchar *buffer)
+size_t RenderV1(const ID3_TagImpl& tag, uchar *buffer)
 {
   // Sanity check our buffer
   if (NULL == buffer)
@@ -58,73 +60,48 @@ size_t RenderV1(const ID3_Tag& tag, uchar *buffer)
   // sTemp is used as a temporary string pointer for functions that return
   //  dynamically created strings
   char* pCur = (char *) buffer;
-  char* sTemp = NULL;
+  String str;
 
   // The default char for a v1 tag is null
-  memset(buffer, '\0', ID3_V1_LEN);
+  ::memset(buffer, '\0', ID3_V1_LEN);
 
   // Write the TAG identifier
   strncpy(pCur, "TAG", ID3_V1_LEN_ID);
   pCur = &pCur[ID3_V1_LEN_ID];
 
   // Write the TITLE
-  sTemp = ID3_GetTitle(&tag);
-  if (sTemp != NULL)
-  {
-    strncpy(pCur, sTemp, ID3_V1_LEN_TITLE);
-    delete [] sTemp;
-  }
+  str = id3::v2::getTitle(tag);
+  ::strncpy(pCur, str.c_str(), ID3_V1_LEN_TITLE);
   pCur = &pCur[ID3_V1_LEN_TITLE];
 
   // Write the ARTIST
-  sTemp = ID3_GetArtist(&tag);
-  if (sTemp != NULL)
-  {
-    strncpy(pCur, sTemp, ID3_V1_LEN_ARTIST);
-    delete [] sTemp;
-  }
+  str = id3::v2::getArtist(tag);
+  ::strncpy(pCur, str.c_str(), ID3_V1_LEN_ARTIST);
   pCur = &pCur[ID3_V1_LEN_ARTIST];
 
   // Write the ALBUM
-  sTemp = ID3_GetAlbum(&tag);
-  if (sTemp != NULL)
-  {
-    strncpy(pCur, sTemp, ID3_V1_LEN_ALBUM);
-    delete [] sTemp;
-  }
+  str = id3::v2::getAlbum(tag);
+  ::strncpy(pCur, str.c_str(), ID3_V1_LEN_ALBUM);
   pCur = &pCur[ID3_V1_LEN_ALBUM];
 
   // Write the YEAR
-  sTemp = ID3_GetYear(&tag);
-  if (sTemp != NULL)
-  {
-    strncpy(pCur, sTemp, ID3_V1_LEN_YEAR);
-    delete [] sTemp;
-  }
+  str = id3::v2::getYear(tag);
+  ::strncpy(pCur, str.c_str(), ID3_V1_LEN_YEAR);
   pCur = &pCur[ID3_V1_LEN_YEAR];
 
   // Write the COMMENT
   // Find the comment with the description STR_V1_COMMENT_DESC
-  sTemp = ID3_GetComment(&tag, STR_V1_COMMENT_DESC);
-  // If no such comment, find the comment with the description ""
-  if (!sTemp)
-  {
-    sTemp = ID3_GetComment(&tag, "");
-  }
-  // If no such comment, find the first comment in the tag
-  if (!sTemp)
-  {
-    sTemp = ID3_GetComment(&tag);
-  }
-  if (sTemp)
-  {
-    strncpy(pCur, sTemp, ID3_V1_LEN_COMMENT);
-    delete [] sTemp;
-  }
+  ID3_Frame* frame;
+  str = "";
+  (frame = tag.Find(ID3FID_COMMENT, ID3FN_DESCRIPTION, STR_V1_COMMENT_DESC)) ||
+  (frame = tag.Find(ID3FID_COMMENT, ID3FN_DESCRIPTION, ""))                  ||
+  (frame = tag.Find(ID3FID_COMMENT));
+  str = id3::v2::getString(frame, ID3FN_TEXT);
+  ::strncpy(pCur, str.c_str(), ID3_V1_LEN_COMMENT);
   pCur = &pCur[ID3_V1_LEN_COMMENT];
 
   // Write the TRACK, if it isn't 0
-  luint nTrack = ID3_GetTrackNum(&tag);
+  luint nTrack = id3::v2::getTrackNum(tag);
   if (0 != nTrack)
   {
     pCur -= 2;
@@ -134,7 +111,7 @@ size_t RenderV1(const ID3_Tag& tag, uchar *buffer)
   }
 
   // Write the GENRE
-  pCur[0] = (uchar) ID3_GetGenreNum(&tag);
+  pCur[0] = (uchar) id3::v2::getGenreNum(tag);
 
   return ID3_V1_LEN;
 }
@@ -168,7 +145,7 @@ size_t RenderFrames(uchar* buffer, const ID3_Elem* cur)
  **         tag
  ** @param  buffer The buffer that will contain the rendered tag.
  **/
-size_t ID3_Tag::RenderV2(uchar *buffer) const
+size_t ID3_TagImpl::RenderV2(uchar *buffer) const
 {
   // There has to be at least one frame for there to be a tag...
   if (this->NumFrames() == 0)
@@ -201,8 +178,8 @@ size_t ID3_Tag::RenderV2(uchar *buffer) const
   
   if (this->GetUnsync())
   {
-    size_t newTagSize = id3::getUnSyncSize(&buffer[hdr_size], 
-                                         bytesUsed - hdr_size);
+    size_t newTagSize = ::getUnSyncSize(&buffer[hdr_size], 
+                                        bytesUsed - hdr_size);
     if (newTagSize > 0 && (newTagSize + hdr_size) > bytesUsed)
     {
       uchar* tempz = new uchar[newTagSize];
@@ -212,8 +189,8 @@ size_t ID3_Tag::RenderV2(uchar *buffer) const
         //ID3_THROW(ID3E_NoMemory);
       }
 
-      id3::unsync(tempz, newTagSize, &buffer[hdr_size],
-                  bytesUsed - hdr_size);
+      ::unsync(tempz, newTagSize, &buffer[hdr_size],
+               bytesUsed - hdr_size);
       hdr.SetUnsync(true);
 
       memcpy(&buffer[hdr_size], tempz, newTagSize);
@@ -234,7 +211,7 @@ size_t ID3_Tag::RenderV2(uchar *buffer) const
   return bytesUsed;
 }
 
-size_t ID3_Tag::Render(uchar* buffer, ID3_TagType tt) const
+size_t ID3_TagImpl::Render(uchar* buffer, ID3_TagType tt) const
 {
   size_t tag_bytes = 0;
   if (tt & ID3TT_ID3V2)
@@ -278,7 +255,7 @@ size_t ID3_Tag::Render(uchar* buffer, ID3_TagType tt) const
    ** @return The (overestimated) number of bytes required to store a binary
    **         version of a tag
    **/
-size_t ID3_Tag::Size() const
+size_t ID3_TagImpl::Size() const
 {
   if (!this->NumFrames())
   {
@@ -319,7 +296,7 @@ size_t ID3_Tag::Size() const
 }
 
 
-void ID3_Tag::RenderExtHeader(uchar *buffer)
+void ID3_TagImpl::RenderExtHeader(uchar *buffer)
 {
   if (this->GetSpec() == ID3V2_3_0)
   {
@@ -333,7 +310,7 @@ void ID3_Tag::RenderExtHeader(uchar *buffer)
 #define ID3_PADMAX  (4096)
 
 
-size_t ID3_Tag::PaddingSize(size_t curSize) const
+size_t ID3_TagImpl::PaddingSize(size_t curSize) const
 {
   luint newSize = 0;
   

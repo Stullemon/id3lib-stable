@@ -1,4 +1,4 @@
-// $Id: tag_find.cpp,v 1.18 2000/10/01 00:55:56 eldamitri Exp $
+// $Id: tag_find.cpp,v 1.19 2000/10/03 04:51:27 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -30,9 +30,11 @@
 
 #include <string.h>
 
-#include "tag.h"
+#include "tag_impl.h"
 #include "field.h"
 #include "utils.h"
+
+using namespace dami;
 
   /** Returns a pointer to the next ID3_Frame with the given ID3_FrameID;
    ** returns NULL if no such frame found.
@@ -97,7 +99,7 @@
    ** @return A pointer to the first frame found that has the given frame id,
    **         or NULL if no such frame.
    **/
-ID3_Elem *ID3_Tag::Find(const ID3_Frame *frame) const
+ID3_Elem *ID3_TagImpl::Find(const ID3_Frame *frame) const
 {
   ID3_Elem *elem = NULL;
   
@@ -113,7 +115,7 @@ ID3_Elem *ID3_Tag::Find(const ID3_Frame *frame) const
   return elem;
 }
 
-ID3_Frame *ID3_Tag::Find(ID3_FrameID id) const
+ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id) const
 {
   ID3_Frame *frame = NULL;
   
@@ -150,12 +152,12 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id) const
   return frame;
 }
 
-ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, const char *data) const
+ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fld, const char *data) const
 {
   size_t len = strlen(data) + 1;
   unicode_t *temp = new unicode_t[len];
 
-  id3::mbstoucs(temp, data, len);
+  ::mbstoucs(temp, data, len);
     
   ID3_Frame* frame = Find(id, fld, temp);
     
@@ -164,7 +166,7 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, const char *data) cons
   return frame;
 }
 
-ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, const unicode_t *data) const
+ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fld, const unicode_t *data) const
 {
   ID3_Frame *frame = NULL;
   
@@ -202,7 +204,7 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, const unicode_t *data)
         wsBuffer[ulSize] = NULL_UNICODE;
         cur->pFrame->Field(fld).Get(wsBuffer, ulSize);
           
-        bool bInFrame = (id3::ucscmp(wsBuffer, data) == 0);
+        bool bInFrame = (::ucscmp(wsBuffer, data) == 0);
           
         delete [] wsBuffer;
 
@@ -220,7 +222,7 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, const unicode_t *data)
   return frame;
 }
 
-ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, uint32 data) const
+ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fld, uint32 data) const
 {
   ID3_Frame *frame = NULL;
   
@@ -271,7 +273,7 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, uint32 data) const
    ** @param nIndex The index of the frame that is to be retrieved
    ** @return A pointer to the requested frame, or NULL if no such frame.
    **/
-ID3_Frame *ID3_Tag::GetFrameNum(index_t num) const
+ID3_Frame *ID3_TagImpl::GetFrameNum(index_t num) const
 {
   const size_t num_frames = this->NumFrames();
   if (num >= num_frames)
@@ -302,7 +304,7 @@ ID3_Frame *ID3_Tag::GetFrameNum(index_t num) const
  ** @return A pointer to the requested frame, or NULL if no such frame. 
  ** @see #GetFrameNum
  **/
-ID3_Frame *ID3_Tag::operator[](index_t num) const
+ID3_Frame *ID3_TagImpl::operator[](index_t num) const
 {
   return GetFrameNum(num);
 }
