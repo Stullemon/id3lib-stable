@@ -29,7 +29,12 @@
 
 /* Don't define PACKAGE and VERSION if we use automake.  */
 #define GGO_PACKAGE "id3cp"
-#define GGO_VERSION "3.8.0pre1"
+#ifndef VERSION
+#  define GGO_VERSION VERSION
+#else
+/* ******* WRITE THE VERSION OF YOUR PROGRAM HERE ******* */
+#  define GGO_VERSION ""
+#endif
 
 
 void
