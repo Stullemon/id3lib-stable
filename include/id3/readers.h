@@ -1,4 +1,4 @@
-// $Id: readers.h,v 1.1 2000/09/27 04:19:28 eldamitri Exp $
+// $Id: readers.h,v 1.2 2000/09/30 22:09:43 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -57,8 +57,17 @@ namespace id3
       _stream.read(buf, len);
       return _stream.gcount();
     }
-    
+
+    virtual pos_type getBeg() { return 0; }
     virtual pos_type getCur() { return _stream.tellg(); }
+    virtual pos_type getEnd() 
+    { 
+      pos_type cur = this->getCur();
+      _stream.seekg(0, ios::end);
+      pos_type end = this->getCur();
+      this->setCur(cur);
+      return end;
+    }
     
     /** Set the value of the internal position for reading.
      **/
@@ -102,7 +111,7 @@ namespace id3
     
     virtual int_type peekChar() 
     { 
-      if (_cur < _end)
+      if (!this->atEnd())
       {
         return *_cur; 
       }
@@ -127,7 +136,7 @@ namespace id3
     
     virtual pos_type getBeg()
     {
-      return 0;
+      return _beg - _beg;
     }
     
     virtual pos_type getEnd()
