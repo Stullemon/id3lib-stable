@@ -1,7 +1,6 @@
 .deps
 .libs
 Makefile
-Makefile.in
 bak
 c_wrapper.lo
 dll_wrapper.lo
