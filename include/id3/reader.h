@@ -1,4 +1,4 @@
-// $Id: reader.h,v 1.3 2000/09/30 22:09:16 eldamitri Exp $
+// $Id: reader.h,v 1.4 2000/10/03 00:53:04 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,6 +28,7 @@
 #define _ID3LIB_READER_H_
 
 #include "debug.h"
+#include "globals.h"
 
 class ID3_Reader
 {
@@ -84,7 +85,11 @@ class ID3_Reader
    ** the value returned may be less than the number of bytes that the internal
    ** position advances, due to multi-byte characters.
    **/
-  virtual streamsize readChars(char_type buf[], streamsize len) = 0;
+  virtual streamsize readChars(char* buf, streamsize len)
+  {
+    return this->readChars(reinterpret_cast<uchar *>(buf), len);
+  }
+  virtual streamsize readChars(uchar buf[], streamsize len) = 0;
   
   /** Skip up to \c len chars in the stream and advance the internal position
    ** accordingly.  Returns the number of characters actually skipped (may be 
