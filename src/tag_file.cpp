@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.33 2001/12/16 09:10:14 shadrack Exp $
+// $Id: tag_file.cpp,v 1.34 2001/12/16 09:40:56 shadrack Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -240,7 +240,7 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
     file.seekg(tag.GetPrependedBytes(), ios::beg);
     
     uchar tmpBuffer[BUFSIZ];
-    while (!file)
+    while (!file.eof())
     {
       file.read((char *)tmpBuffer, BUFSIZ);
       size_t nBytes = file.gcount();
