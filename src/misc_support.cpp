@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.38 2002/08/10 17:40:00 t1mpy Exp $
+// $Id: misc_support.cpp,v 1.39 2002/09/19 10:20:45 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -188,7 +188,7 @@ ID3_Frame* ID3_AddAlbum(ID3_Tag *tag, const char *text, bool replace)
       }
     }
   }
-  
+
   return frame;
 }
 
@@ -247,7 +247,7 @@ ID3_Frame* ID3_AddTitle(ID3_Tag *tag, const char *text, bool replace)
       }
     }
   }
-  
+
   return frame;
 }
 
@@ -306,7 +306,7 @@ ID3_Frame* ID3_AddYear(ID3_Tag *tag, const char *text, bool replace)
       }
     }
   }
-  
+
   return frame;
 }
 
@@ -372,7 +372,7 @@ ID3_Frame* ID3_AddComment(ID3_Tag *tag, const char *text,
   ID3_Frame* frame = NULL;
   if (NULL != tag  &&
       NULL != text &&
-      NULL != desc && 
+      NULL != desc &&
       strlen(text) > 0)
   {
     bool bAdd = true;
@@ -443,7 +443,7 @@ size_t ID3_RemoveComments(ID3_Tag *tag, const char *desc)
       }
       else
       {
-        // See if the description we have matches the description of the 
+        // See if the description we have matches the description of the
         // current comment.  If so, set the "remove the comment" flag to true.
         char *tmp_desc = ID3_GetString(frame, ID3FN_DESCRIPTION);
         remove = (strcmp(tmp_desc, desc) == 0);
@@ -515,7 +515,7 @@ ID3_Frame* ID3_AddTrack(ID3_Tag *tag, uchar trk, uchar ttl, bool replace)
           sTrack = new char[8];
           sprintf(sTrack, "%lu/%lu", (luint) trk, (luint) ttl);
         }
-        
+
         frame->GetField(ID3FN_TEXT)->Set(sTrack);
         tag->AttachFrame(frame);
 
@@ -523,7 +523,7 @@ ID3_Frame* ID3_AddTrack(ID3_Tag *tag, uchar trk, uchar ttl, bool replace)
       }
     }
   }
-  
+
   return frame;
 }
 
@@ -815,7 +815,7 @@ size_t ID3_GetGenreNum(const ID3_Tag *tag)
     return ulGenre;
   }
 
-  // If the genre string begins with "(ddd)", where "ddd" is a number, then 
+  // If the genre string begins with "(ddd)", where "ddd" is a number, then
   // "ddd" is the genre number---get it
   if (sGenre[0] == '(')
   {
@@ -855,19 +855,19 @@ ID3_Frame* ID3_AddGenre(ID3_Tag* tag, const char* genre, bool replace)
       }
     }
   }
-  
+
   return frame;
 }
 
 ID3_Frame* ID3_AddGenre(ID3_Tag *tag, size_t genreNum, bool replace)
 {
-  if(0xFF != genreNum) 
+  if(0xFF != genreNum)
   {
     char sGenre[6];
     sprintf(sGenre, "(%lu)", (luint) genreNum);
     return(ID3_AddGenre(tag, sGenre, replace));
   }
-  else 
+  else
   {
     return(NULL);
   }
@@ -914,7 +914,7 @@ ID3_Frame* ID3_AddLyrics(ID3_Tag *tag, const char *text, bool replace)
   return ID3_AddLyrics(tag, text, "", replace);
 }
 
-ID3_Frame* ID3_AddLyrics(ID3_Tag *tag, const char *text, const char* desc, 
+ID3_Frame* ID3_AddLyrics(ID3_Tag *tag, const char *text, const char* desc,
                          bool replace)
 {
   return ID3_AddLyrics(tag, text, desc, "XXX", replace);
@@ -942,7 +942,7 @@ ID3_Frame* ID3_AddLyrics(ID3_Tag *tag, const char *text, const char* desc,
       }
     }
   }
-  
+
   return frame;
 }
 
@@ -992,7 +992,7 @@ ID3_Frame* ID3_AddLyricist(ID3_Tag *tag, const char *text, bool replace)
       ID3_RemoveLyricist(tag);
     }
     if (replace || (tag->Find(ID3FID_LYRICIST) == NULL))
-    {    
+    {
       frame = new ID3_Frame(ID3FID_LYRICIST);
       if (frame)
       {
@@ -1032,23 +1032,23 @@ ID3_Frame* ID3_AddSyncLyrics(ID3_Tag *tag, const uchar *data, size_t datasize,
 }
 
 ID3_Frame* ID3_AddSyncLyrics(ID3_Tag *tag, const uchar *data, size_t datasize,
-                             ID3_TimeStampFormat format, const char *desc, 
+                             ID3_TimeStampFormat format, const char *desc,
                              bool replace)
 {
   return ID3_AddSyncLyrics(tag, data, datasize, format, desc, "XXX", replace);
 }
 
 ID3_Frame* ID3_AddSyncLyrics(ID3_Tag *tag, const uchar *data, size_t datasize,
-                             ID3_TimeStampFormat format, const char *desc, 
+                             ID3_TimeStampFormat format, const char *desc,
                              const char *lang, bool replace)
 {
-  return ID3_AddSyncLyrics(tag, data, datasize, format, desc, lang, 
+  return ID3_AddSyncLyrics(tag, data, datasize, format, desc, lang,
                            ID3CT_LYRICS, replace);
 }
 
 ID3_Frame* ID3_AddSyncLyrics(ID3_Tag *tag, const uchar *data, size_t datasize,
-                             ID3_TimeStampFormat format, const char *desc, 
-                             const char *lang, ID3_ContentType type, 
+                             ID3_TimeStampFormat format, const char *desc,
+                             const char *lang, ID3_ContentType type,
                              bool replace)
 {
   ID3_Frame* frame = NULL;
@@ -1093,9 +1093,9 @@ ID3_Frame* ID3_AddSyncLyrics(ID3_Tag *tag, const uchar *data, size_t datasize,
   return frame;
 }
 
-ID3_Frame *ID3_GetSyncLyricsInfo(const ID3_Tag *tag, const char *desc, 
+ID3_Frame *ID3_GetSyncLyricsInfo(const ID3_Tag *tag, const char *desc,
                                  const char *lang,
-                                 ID3_TimeStampFormat& format, 
+                                 ID3_TimeStampFormat& format,
                                  ID3_ContentType& type, size_t& size)
 {
   // check if a SYLT frame of this language or descriptor exists
@@ -1115,27 +1115,27 @@ ID3_Frame *ID3_GetSyncLyricsInfo(const ID3_Tag *tag, const char *desc,
     // both language and description not specified, search the first SYLT frame
     frmExist = tag->Find(ID3FID_SYNCEDLYRICS);
   }
-  
+
   if (!frmExist)
   {
     return NULL;
   }
-  
+
   // get the lyrics time stamp format
   format = static_cast<ID3_TimeStampFormat>(frmExist->GetField(ID3FN_TIMESTAMPFORMAT)->Get ());
-  
+
   // get the lyrics content type
   type = static_cast<ID3_ContentType>(frmExist->GetField(ID3FN_CONTENTTYPE)->Get ());
-  
+
   // get the lyrics size
   size = frmExist->GetField (ID3FN_DATA)->Size ();
-  
+
   // return the frame pointer for further uses
   return frmExist;
 }
 
-ID3_Frame *ID3_GetSyncLyrics(const ID3_Tag *tag, const char *lang, 
-                             const char *desc, const uchar *pData, size_t& size)
+ID3_Frame *ID3_GetSyncLyrics(const ID3_Tag* tag, const char* lang, 
+                             const char* desc, const uchar* &pData, size_t& size)
 {
   // check if a SYLT frame of this language or descriptor exists
   ID3_Frame* frmExist = NULL;
@@ -1159,7 +1159,7 @@ ID3_Frame *ID3_GetSyncLyrics(const ID3_Tag *tag, const char *lang,
   {
     return NULL;
   }
-  
+
   // get the lyrics size
   size = dami::min(size, frmExist->GetField(ID3FN_DATA)->Size());
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: misc_support.h,v 1.28 2002/08/10 17:40:00 t1mpy Exp $
+// $Id: misc_support.h,v 1.29 2002/09/19 10:21:57 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -37,7 +37,7 @@ ID3_C_EXPORT char*      ID3_GetString(const ID3_Frame *, ID3_FieldID, size_t nIt
 ID3_C_EXPORT void ID3_FreeString(char *str);
 
 // defined in 'id3_misc_support.cpp'
-// these are 'convenience functions,' to make using the library easier for the 
+// these are 'convenience functions,' to make using the library easier for the
 // most common of operations
 ID3_C_EXPORT char*      ID3_GetArtist(const ID3_Tag*);
 ID3_C_EXPORT ID3_Frame* ID3_AddArtist(ID3_Tag*, const char*, bool replace = false);
@@ -58,7 +58,7 @@ ID3_C_EXPORT size_t     ID3_RemoveYears(ID3_Tag*);
 ID3_C_EXPORT char*      ID3_GetComment(const ID3_Tag*, const char* desc = NULL);
 ID3_C_EXPORT ID3_Frame* ID3_AddComment(ID3_Tag*, const char*, bool = false);
 ID3_C_EXPORT ID3_Frame* ID3_AddComment(ID3_Tag*, const char*, const char*, bool = false);
-ID3_C_EXPORT ID3_Frame* ID3_AddComment(ID3_Tag*, const char*, const char*, const char*, 
+ID3_C_EXPORT ID3_Frame* ID3_AddComment(ID3_Tag*, const char*, const char*, const char*,
                                        bool = false);
 ID3_C_EXPORT size_t     ID3_RemoveComments(ID3_Tag*, const char * = NULL);
 
@@ -87,21 +87,21 @@ ID3_C_EXPORT char*      ID3_GetLyricist(const ID3_Tag*);
 ID3_C_EXPORT ID3_Frame* ID3_AddLyricist(ID3_Tag *, const char *, bool replace = false);
 ID3_C_EXPORT size_t     ID3_RemoveLyricist(ID3_Tag*);
 
-ID3_C_EXPORT ID3_Frame* ID3_AddSyncLyrics(ID3_Tag*, const uchar*, size_t, 
+ID3_C_EXPORT ID3_Frame* ID3_AddSyncLyrics(ID3_Tag*, const uchar*, size_t,
                                           ID3_TimeStampFormat, bool = false);
-ID3_C_EXPORT ID3_Frame* ID3_AddSyncLyrics(ID3_Tag*, const uchar*, size_t, 
+ID3_C_EXPORT ID3_Frame* ID3_AddSyncLyrics(ID3_Tag*, const uchar*, size_t,
                                           ID3_TimeStampFormat, const char *, bool = false);
-ID3_C_EXPORT ID3_Frame* ID3_AddSyncLyrics(ID3_Tag*, const uchar*, size_t, 
+ID3_C_EXPORT ID3_Frame* ID3_AddSyncLyrics(ID3_Tag*, const uchar*, size_t,
                                           ID3_TimeStampFormat, const char *, const char *,
                                           bool = false);
-ID3_C_EXPORT ID3_Frame* ID3_AddSyncLyrics(ID3_Tag*, const uchar*, size_t, 
+ID3_C_EXPORT ID3_Frame* ID3_AddSyncLyrics(ID3_Tag*, const uchar*, size_t,
                                           ID3_TimeStampFormat, const char *, const char *,
                                           ID3_ContentType, bool = false);
-ID3_C_EXPORT ID3_Frame* ID3_GetSyncLyricsInfo(const ID3_Tag *tag, const char *lang, 
-                                              const char *desc, char &stampformat, 
+ID3_C_EXPORT ID3_Frame* ID3_GetSyncLyricsInfo(const ID3_Tag *tag, const char *lang,
+                                              const char *desc, char &stampformat,
                                               char &type, size_t &size);
-ID3_C_EXPORT ID3_Frame* ID3_GetSyncLyrics(const ID3_Tag *tag, const char *lang, 
-                                          const char *desc, char *pData, size_t &size);
+ID3_C_EXPORT ID3_Frame* ID3_GetSyncLyrics(const ID3_Tag* tag, const char* lang,
+                                          const char* desc, const uchar* &pData, size_t& size);
 
 
 //following routine courtesy of John George
