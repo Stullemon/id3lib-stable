@@ -1,4 +1,4 @@
-// $Id: field_integer.cpp,v 1.15 2000/10/03 04:38:12 eldamitri Exp $
+// $Id: field_integer.cpp,v 1.16 2000/10/09 04:25:49 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -32,6 +32,7 @@
 #include "field_impl.h"
 #include "utils.h"
 #include "reader_decorators.h"
+#include "writer_decorators.h"
 
 using namespace dami;
 
@@ -39,7 +40,7 @@ using namespace dami;
  ** \brief A shortcut for the Set method.
  **
  ** \code
- **   myFrame.Field(ID3FN_PICTURETYPE) = 0x0B;
+ **   myFrame.GetField(ID3FN_PICTURETYPE)->= 0x0B;
  ** \endcode
  ** 
  ** \param val The data to assign to this field
@@ -64,7 +65,7 @@ void ID3_FieldImpl::Set(uint32 val)
  ** \brief Returns the value of the integer field.
  ** 
  ** \code
- **   uint32 picType = myFrame.Field(ID3FN_PICTURETYPE).Get();
+ **   uint32 picType = myFrame.GetField(ID3FN_PICTURETYPE)->Get();
  ** \endcode
  **
  ** \return The value of the integer field
@@ -74,7 +75,7 @@ void ID3_FieldImpl::Set(uint32 val)
  ** \brief Returns the value of the integer field.
  ** 
  ** \code
- **   uint32 picType = myFrame.Field(ID3FN_PICTURETYPE).Get();
+ **   uint32 picType = myFrame.GetField(ID3FN_PICTURETYPE)->Get();
  ** \endcode
  **
  ** \return The value of the integer field
@@ -91,7 +92,7 @@ bool ID3_FieldImpl::ParseInteger(ID3_Reader& reader)
     this->Clear();
     size_t fixed = this->Size();
     size_t nBytes = (fixed > 0) ? fixed : sizeof(uint32);
-    ::io::NumberReader nr(reader);
+    io::BinaryNumberReader nr(reader);
     this->Set(nr.readNumber(nBytes));
     _changed = false;
     success = true;
@@ -99,9 +100,8 @@ bool ID3_FieldImpl::ParseInteger(ID3_Reader& reader)
   return success;
 }
 
-size_t ID3_FieldImpl::RenderInteger(uchar *buffer) const
+void ID3_FieldImpl::RenderInteger(ID3_Writer& writer) const
 {
-  size_t bytesUsed = ::renderNumber(buffer, _integer, this->Size());
-  _changed = false;
-  return bytesUsed;
+  io::BinaryNumberWriter bnw(writer);
+  bnw.writeNumber(_integer, this->Size());
 }
