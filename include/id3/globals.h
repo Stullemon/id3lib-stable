@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: globals.h,v 1.51 2002/08/10 11:47:50 t1mpy Exp $
+/* $Id: globals.h,v 1.52 2002/08/10 17:40:00 t1mpy Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags
  * Copyright 1999, 2000 Scott Thomas Haug
@@ -142,9 +142,12 @@ ID3_ENUM(ID3_TextEnc)
   ID3TE_UTF16BE,
   ID3TE_UTF8,
   ID3TE_NUMENCODINGS,
-  ID3TE_ASCII = ID3TE_ISO8859_1,
-  ID3TE_UNICODE = ID3TE_UTF16
+  ID3TE_ASCII = ID3TE_ISO8859_1, // do not use this -> use ID3TE_IS_SINGLE_BYTE_ENC(enc) instead
+  ID3TE_UNICODE = ID3TE_UTF16    // do not use this -> use ID3TE_IS_DOUBLE_BYTE_ENC(enc) instead
 };
+
+#define ID3TE_IS_SINGLE_BYTE_ENC(enc)    ((enc) == ID3TE_ISO8859_1 || (enc) == ID3TE_UTF8)
+#define ID3TE_IS_DOUBLE_BYTE_ENC(enc)    ((enc) == ID3TE_UTF16 || (enc) == ID3TE_UTF16BE)
 
 /** Enumeration of the various id3 specifications
  **/
@@ -384,6 +387,31 @@ ID3_ENUM(ID3_ContentType)
   ID3CT_EVENTS,
   ID3CT_CHORD,
   ID3CT_TRIVIA
+};
+
+ID3_ENUM(ID3_PictureType)
+{
+  ID3PT_OTHER = 0,
+  ID3PT_PNG32ICON = 1,     //  32x32 pixels 'file icon' (PNG only)
+  ID3PT_OTHERICON = 2,     // Other file icon
+  ID3PT_COVERFRONT = 3,    // Cover (front)
+  ID3PT_COVERBACK = 4,     // Cover (back)
+  ID3PT_LEAFLETPAGE = 5,   // Leaflet page
+  ID3PT_MEDIA = 6,         // Media (e.g. lable side of CD)
+  ID3PT_LEADARTIST = 7,    // Lead artist/lead performer/soloist
+  ID3PT_ARTIST = 8,        // Artist/performer
+  ID3PT_CONDUCTOR = 9,     // Conductor
+  ID3PT_BAND = 10,         // Band/Orchestra
+  ID3PT_COMPOSER = 11,     // Composer
+  ID3PT_LYRICIST = 12,     // Lyricist/text writer
+  ID3PT_REC_LOCATION = 13, // Recording Location
+  ID3PT_RECORDING = 14,    // During recording
+  ID3PT_PERFORMANCE = 15,  // During performance
+  ID3PT_VIDEO = 16,        // Movie/video screen capture
+  ID3PT_FISH = 17,         // A bright coloured fish
+  ID3PT_ILLUSTRATION = 18, // Illustration
+  ID3PT_ARTISTLOGO = 19,   // Band/artist logotype
+  ID3PT_PUBLISHERLOGO = 20 // Publisher/Studio logotype
 };
 
 ID3_ENUM(ID3_TimeStampFormat)

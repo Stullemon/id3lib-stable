@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.37 2002/07/31 13:45:18 t1mpy Exp $
+// $Id: misc_support.cpp,v 1.38 2002/08/10 17:40:00 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -25,14 +25,14 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#include <ctype.h>
+//#include <ctype.h>
 #include <stdio.h>
 
 #include "misc_support.h"
-#include "field.h"
+//#include "field.h"
 #include "id3/utils.h" // has <config.h> "id3/id3lib_streams.h" "id3/globals.h" "id3/id3lib_strings.h"
 
-using namespace dami;
+//using namespace dami;
 
 char *ID3_GetString(const ID3_Frame *frame, ID3_FieldID fldName)
 {
@@ -43,7 +43,7 @@ char *ID3_GetString(const ID3_Frame *frame, ID3_FieldID fldName)
   {
 //    ID3_Field* fld = frame->GetField(fldName);
     ID3_TextEnc enc = fld->GetEncoding();
-    fld->SetEncoding(ID3TE_ASCII);
+    fld->SetEncoding(ID3TE_ISO8859_1);
     size_t nText = fld->Size();
     text = new char[nText + 1];
     fld->Get(text, nText + 1);
@@ -112,7 +112,6 @@ ID3_Frame* ID3_AddArtist(ID3_Tag *tag, const char *text, bool replace)
       }
     }
   }
-
   return frame;
 }
 
@@ -528,10 +527,252 @@ ID3_Frame* ID3_AddTrack(ID3_Tag *tag, uchar trk, uchar ttl, bool replace)
   return frame;
 }
 
-size_t ID3_RemoveTracks(ID3_Tag *tag)
+//following routine courtesy of John George
+int ID3_GetPictureData(const ID3_Tag *tag, const char *TempPicPath)
+{
+  if (NULL == tag)
+    return 0;
+  else
+  {
+    ID3_Frame* frame = NULL;
+    frame = tag->Find(ID3FID_PICTURE);
+    if (frame != NULL)
+    {
+      ID3_Field* myField = frame->GetField(ID3FN_DATA);
+      if (myField != NULL)
+      {
+        myField->ToFile(TempPicPath);
+        return (int)myField->Size();
+      }
+      else return 0;
+    }
+    else return 0;
+  }
+}
+
+//following routine courtesy of John George
+char* ID3_GetPictureMimeType(const ID3_Tag *tag)
+{
+  char* sPicMimetype = NULL;
+  if (NULL == tag)
+    return sPicMimetype;
+
+  ID3_Frame* frame = NULL;
+  frame = tag->Find(ID3FID_PICTURE);
+  if (frame != NULL)
+  {
+    sPicMimetype = ID3_GetString(frame, ID3FN_MIMETYPE);
+  }
+  return sPicMimetype;
+}
+
+//following routine courtesy of John George
+bool ID3_HasPicture(const ID3_Tag* tag)
+{
+  if (NULL == tag)
+    return false;
+  else
+  {
+    ID3_Frame* frame = tag->Find(ID3FID_PICTURE);
+    if (frame != NULL)
+    {
+      ID3_Field* myField = frame->GetField(ID3FN_DATA);
+      if (myField != NULL)
+        return true;
+      else
+        return false;
+    }
+    else return false;
+  }
+}
+
+//following routine courtesy of John George
+ID3_Frame* ID3_AddPicture(ID3_Tag* tag, const char* TempPicPath, const char* MimeType, bool replace)
+{
+  ID3_Frame* frame = NULL;
+  if (NULL != tag )
+  {
+    if (replace)
+      ID3_RemovePictures(tag);
+    if (replace || NULL == tag->Find(ID3FID_PICTURE))
+    {
+      frame = new ID3_Frame(ID3FID_PICTURE);
+      if (NULL != frame)
+      {
+        frame->GetField(ID3FN_DATA)->FromFile(TempPicPath);
+        frame->GetField(ID3FN_MIMETYPE)->Set(MimeType);
+        tag->AttachFrame(frame);
+      }
+    }
+  }
+  return frame;
+}
+
+//following routine courtesy of John George
+size_t ID3_RemovePictures(ID3_Tag* tag)
 {
   size_t num_removed = 0;
-  ID3_Frame *frame = NULL;
+  ID3_Frame* frame = NULL;
+
+  if (NULL == tag)
+    return num_removed;
+
+  while ((frame = tag->Find(ID3FID_PICTURE)))
+  {
+    frame = tag->RemoveFrame(frame);
+    delete frame;
+    num_removed++;
+  }
+  return num_removed;
+}
+
+//following routine courtesy of John George
+size_t ID3_RemovePictureType(ID3_Tag* tag, ID3_PictureType pictype)
+{
+  size_t bremoved = 0;
+  ID3_Frame* frame = NULL;
+
+  if (NULL == tag)
+    return bremoved;
+
+  ID3_Tag::Iterator* iter = tag->CreateIterator();
+
+  while (NULL != (frame = iter->GetNext()))
+  {
+    if (frame->GetID() == ID3FID_PICTURE)
+    {
+      if (frame->GetField(ID3FN_PICTURETYPE)->Get() == (uint32)pictype)
+        break;
+    }
+  }
+  delete iter;
+
+  if (NULL != frame)
+  {
+    frame = tag->RemoveFrame(frame);
+    delete frame;
+    bremoved = 1;
+  }
+  return bremoved;
+}
+
+//following routine courtesy of John George
+ID3_Frame* ID3_AddPicture(ID3_Tag *tag, const char *TempPicPath, const char *MimeType, ID3_PictureType pictype, const char* Description, bool replace)
+{
+  ID3_Frame* frame = NULL;
+  if (NULL != tag )
+  {
+    if (replace)
+      ID3_RemovePictureType(tag, pictype);
+    if (replace || NULL == tag->Find(ID3FID_PICTURE))
+    {
+      frame = new ID3_Frame(ID3FID_PICTURE);
+      if (NULL != frame)
+      {
+        frame->GetField(ID3FN_DATA)->FromFile(TempPicPath);
+        frame->GetField(ID3FN_MIMETYPE)->Set(MimeType);
+        frame->GetField(ID3FN_PICTURETYPE)->Set((uint32)pictype);
+        frame->GetField(ID3FN_DESCRIPTION)->Set(Description);
+        tag->AttachFrame(frame);
+      }
+    }
+  }
+  return frame;
+}
+
+//following routine courtesy of John George
+size_t ID3_GetPictureDataOfPicType(ID3_Tag* tag, const char* TempPicPath, ID3_PictureType pictype)
+{
+  if (NULL == tag)
+    return 0;
+  else
+  {
+    ID3_Frame* frame = NULL;
+    ID3_Tag::Iterator* iter = tag->CreateIterator();
+
+    while (NULL != (frame = iter->GetNext() ))
+    {
+      if(frame->GetID() == ID3FID_PICTURE)
+      {
+        if(frame->GetField(ID3FN_PICTURETYPE)->Get() == (uint32)pictype)
+          break;
+      }
+    }
+    delete iter;
+
+    if (frame != NULL)
+    {
+      ID3_Field* myField = frame->GetField(ID3FN_DATA);
+      if (myField != NULL)
+      {
+        myField->ToFile(TempPicPath);
+        return (size_t)myField->Size();
+      }
+      else return 0;
+    }
+    else return 0;
+  }
+}
+
+//following routine courtesy of John George
+char* ID3_GetMimeTypeOfPicType(ID3_Tag* tag, ID3_PictureType pictype)
+{
+  char* sPicMimetype = NULL;
+  if (NULL == tag)
+    return sPicMimetype;
+
+  ID3_Frame* frame = NULL;
+  ID3_Tag::Iterator* iter = tag->CreateIterator();
+
+  while (NULL != (frame = iter->GetNext()))
+  {
+    if(frame->GetID() == ID3FID_PICTURE)
+    {
+      if(frame->GetField(ID3FN_PICTURETYPE)->Get() == (uint32)pictype)
+        break;
+    }
+  }
+  delete iter;
+
+  if (frame != NULL)
+  {
+    sPicMimetype = ID3_GetString(frame, ID3FN_MIMETYPE);
+  }
+  return sPicMimetype;
+}
+
+//following routine courtesy of John George
+char* ID3_GetDescriptionOfPicType(ID3_Tag* tag, ID3_PictureType pictype)
+{
+  char* sPicDescription = NULL;
+  if (NULL == tag)
+    return sPicDescription;
+
+  ID3_Frame* frame = NULL;
+  ID3_Tag::Iterator* iter = tag->CreateIterator();
+
+  while (NULL != (frame = iter->GetNext()))
+  {
+    if(frame->GetID() == ID3FID_PICTURE)
+    {
+      if(frame->GetField(ID3FN_PICTURETYPE)->Get() == (uint32)pictype)
+        break;
+    }
+  }
+  delete iter;
+
+  if (frame != NULL)
+  {
+    sPicDescription = ID3_GetString(frame, ID3FN_DESCRIPTION);
+  }
+  return sPicDescription;
+}
+
+
+size_t ID3_RemoveTracks(ID3_Tag* tag)
+{
+  size_t num_removed = 0;
+  ID3_Frame* frame = NULL;
 
   if (NULL == tag)
   {
@@ -594,7 +835,8 @@ size_t ID3_GetGenreNum(const ID3_Tag *tag)
   return ulGenre;
 }
 
-ID3_Frame* ID3_AddGenre(ID3_Tag *tag, const char *genre, bool replace)
+//following routine courtesy of John George
+ID3_Frame* ID3_AddGenre(ID3_Tag* tag, const char* genre, bool replace)
 {
   ID3_Frame* frame = NULL;
   if (NULL != tag && NULL != genre && strlen(genre) > 0)
