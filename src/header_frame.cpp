@@ -1,4 +1,4 @@
-// $Id: header_frame.cpp,v 1.6 2000/05/09 13:13:39 eldamitri Exp $
+// $Id: header_frame.cpp,v 1.7 2000/05/12 21:09:26 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -44,7 +44,6 @@ void ID3_FrameHeader::SetUnknownFrame(const char* id)
   __frame_def->eID = ID3FID_NOFRAME;
   __frame_def->bTagDiscard = false;
   __frame_def->bFileDiscard = false;
-  __frame_def->parseHandler = NULL;
   __frame_def->aeFieldDefs = (ID3_FieldDef *) ID3_FieldDef::DEFAULT;
   if (strlen(id) <= 3)
   {
@@ -201,7 +200,6 @@ ID3_FrameHeader& ID3_FrameHeader::operator=(const ID3_FrameHeader& hdr)
       __frame_def->eID = hdr.__frame_def->eID;
       __frame_def->bTagDiscard = hdr.__frame_def->bTagDiscard;
       __frame_def->bFileDiscard = hdr.__frame_def->bFileDiscard;
-      __frame_def->parseHandler = hdr.__frame_def->parseHandler;
       __frame_def->aeFieldDefs = hdr.__frame_def->aeFieldDefs;
       strcpy(__frame_def->sShortTextID, hdr.__frame_def->sShortTextID);
       strcpy(__frame_def->sLongTextID, hdr.__frame_def->sLongTextID);
