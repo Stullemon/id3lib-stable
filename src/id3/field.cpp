@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.17 2000/04/08 04:35:48 eldamitri Exp $
+// $Id: field.cpp,v 1.18 2000/04/09 22:37:34 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -44,6 +44,8 @@ static ID3_FieldDef ID3FD_Unimplemented[] =
     ID3FN_NOFIELD                       // LINKED FIELD
   }
 };
+
+const ID3_FieldDef* ID3_FieldDef::DEFAULT = ID3FD_Unimplemented;
 
 static ID3_FieldDef ID3FD_URL[] =
 { 
@@ -924,6 +926,9 @@ ID3_Field::operator=( const ID3_Field &rField )
 }
 
 // $Log: field.cpp,v $
+// Revision 1.18  2000/04/09 22:37:34  eldamitri
+// Added implementation for DEFAULT.
+//
 // Revision 1.17  2000/04/08 04:35:48  eldamitri
 // Changed new ANSI-standard C++ include headers to old-style headers.
 // Fixed return bug in operator=.
