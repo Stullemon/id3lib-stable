@@ -1,4 +1,4 @@
-// $Id: header_tag.cpp,v 1.13 2000/04/08 04:40:26 eldamitri Exp $
+// $Id: header_tag.cpp,v 1.14 2000/04/10 16:57:38 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -110,7 +110,19 @@ size_t ID3_TagHeader::Render(uchar *buffer)
   return bytesUsed;
 }
 
+ID3_TagHeader& ID3_TagHeader::operator=(const ID3_TagHeader& hdr)
+{
+  if (this != &hdr)
+  {
+    this->ID3_Header::operator=(hdr);
+  }
+  return *this;
+}
+
 // $Log: header_tag.cpp,v $
+// Revision 1.14  2000/04/10 16:57:38  eldamitri
+// (operator=): Added implementation.
+//
 // Revision 1.13  2000/04/08 04:40:26  eldamitri
 // Changed new ANSI-standard C++ include headers to old-style headers.
 //
