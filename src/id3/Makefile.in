@@ -10,6 +10,8 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
+# $Id: Makefile.in,v 1.6 1999/11/30 20:08:16 scott Exp $
+# 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
 # This file is free software; as a special exception the author gives
@@ -84,12 +86,15 @@ OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
+lt_age = @lt_age@
+lt_rev = @lt_rev@
+lt_ver = @lt_ver@
 
-LTVERSION = 3:6
+LTVERSION = @lt_ver@:@lt_rev@:@lt_age@
 
 INCLUDES = -I$(srcdir)/..
 
-the_sources =    dll_wrapper.cpp                 error.cpp                       field.cpp                       field_binary.cpp                field_integer.cpp               field_string_ascii.cpp          field_string_unicode.cpp        frame.cpp                       frame_parse.cpp                 frame_render.cpp                header.cpp                      header_frame.cpp                header_tag.cpp                  int28.cpp                       misc_support.cpp                tag.cpp                         tag_file.cpp                    tag_find.cpp                    tag_parse.cpp                   tag_parse_lyrics3.cpp           tag_parse_v1.cpp                tag_render.cpp                  tag_sync.cpp
+the_sources =    dll_wrapper.cpp                 error.cpp                       field.cpp                       field_binary.cpp                field_integer.cpp               field_string_ascii.cpp          field_string_unicode.cpp        frame.cpp                       frame_parse.cpp                 frame_render.cpp                header.cpp                      header_frame.cpp                header_tag.cpp                  int28.cpp                       misc_support.cpp                tag.cpp                         tag_file.cpp                    tag_find.cpp                    tag_parse.cpp                   tag_parse_lyrics3.cpp           tag_parse_v1.cpp                tag_render.cpp                  tag_sync.cpp                    version.cpp                   
 
 
 the_headers =    dll.h                           error.h                         externals.h                     field.h                         frame.h                         globals.h                       header.h                        header_frame.h                  header_tag.h                    int28.h                         misc_support.h                  tag.h                           types.h                         version.h
@@ -121,7 +126,8 @@ libid3_la_OBJECTS =  dll_wrapper.lo error.lo field.lo field_binary.lo \
 field_integer.lo field_string_ascii.lo field_string_unicode.lo frame.lo \
 frame_parse.lo frame_render.lo header.lo header_frame.lo header_tag.lo \
 int28.lo misc_support.lo tag.lo tag_file.lo tag_find.lo tag_parse.lo \
-tag_parse_lyrics3.lo tag_parse_v1.lo tag_render.lo tag_sync.lo
+tag_parse_lyrics3.lo tag_parse_v1.lo tag_render.lo tag_sync.lo \
+version.lo
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -143,7 +149,7 @@ DEP_FILES =  .deps/dll_wrapper.P .deps/error.P .deps/field.P \
 .deps/header_tag.P .deps/int28.P .deps/misc_support.P .deps/tag.P \
 .deps/tag_file.P .deps/tag_find.P .deps/tag_parse.P \
 .deps/tag_parse_lyrics3.P .deps/tag_parse_v1.P .deps/tag_render.P \
-.deps/tag_sync.P
+.deps/tag_sync.P .deps/version.P
 SOURCES = $(libid3_la_SOURCES)
 OBJECTS = $(libid3_la_OBJECTS)
 
@@ -415,6 +421,13 @@ uninstall-am uninstall all-redirect all-am all installdirs \
 mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
+
+# $Log: Makefile.in,v $
+# Revision 1.6  1999/11/30 20:08:16  scott
+# (the_headers): Added sized_headers.h
+# (the_sources): Added version.cpp
+# (LTVERSION): Updated to make use of configure.in variables.
+#
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

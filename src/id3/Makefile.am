@@ -1,3 +1,5 @@
+# $Id: Makefile.am,v 1.6 1999/11/30 20:08:16 scott Exp $
+# 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
 # This file is free software; as a special exception the author gives
@@ -8,7 +10,7 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-LTVERSION = 3:6:0
+LTVERSION = @lt_ver@:@lt_rev@:@lt_age@
 
 INCLUDES = -I$(srcdir)/..
 
@@ -35,7 +37,8 @@ the_sources =                   \
   tag_parse_lyrics3.cpp         \
   tag_parse_v1.cpp              \
   tag_render.cpp                \
-  tag_sync.cpp
+  tag_sync.cpp                  \
+  version.cpp                   
 
 the_headers =                   \
   dll.h                         \
@@ -49,6 +52,7 @@ the_headers =                   \
   header_tag.h                  \
   int28.h                       \
   misc_support.h                \
+  sized_types.h                 \
   tag.h                         \
   types.h                       \
   version.h
@@ -64,3 +68,10 @@ id3includedir      = $(includedir)/id3
 id3include_HEADERS = $(the_headers)
 
 EXTRA_DIST = ChangeLog
+
+# $Log: Makefile.am,v $
+# Revision 1.6  1999/11/30 20:08:16  scott
+# (the_headers): Added sized_headers.h
+# (the_sources): Added version.cpp
+# (LTVERSION): Updated to make use of configure.in variables.
+#
