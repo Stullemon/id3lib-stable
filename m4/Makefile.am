@@ -1,5 +1,5 @@
 # Copyright 2000 Scott Thomas Haug <scott@id3.org>
-# Copyright 2002 Thijmen Klok <thijmen@id3lib.org>
+# Copyright (C) 2002 Thijmen Klok <thijmen@id3lib.org>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 

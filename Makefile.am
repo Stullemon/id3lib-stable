@@ -1,4 +1,5 @@
 # Copyright (C) 1999 Scott Thomas Haug <scott@id3.org>
+# Copyright (C) 2002 Thijmen Klok <thijmen@id3lib.org>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
@@ -26,8 +27,8 @@ else
 zlib_subdir = 
 endif
 
-SUBDIRS =  . m4 $(zlib_subdir) doc include src examples
-DIST_SUBDIRS = . m4 zlib doc include src examples prj libprj
+SUBDIRS =  . m4 $(zlib_subdir) doc include id3com src examples
+DIST_SUBDIRS = . m4 zlib doc include id3com src examples prj libprj
 
 INCLUDES = @ID3LIB_DEBUG_FLAGS@
 
