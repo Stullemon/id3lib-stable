@@ -1,4 +1,4 @@
-// $Id: field_string_ascii.cpp,v 1.19 2000/10/03 04:38:12 eldamitri Exp $
+// $Id: field_string_ascii.cpp,v 1.20 2000/10/09 04:26:09 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -35,6 +35,7 @@
 #include "field_impl.h"
 #include "utils.h"
 #include "reader_decorators.h"
+#include "writer_decorators.h"
 
 using namespace dami;
 
@@ -47,7 +48,7 @@ using namespace dami;
 /** \brief Copies the supplied string to the field.
  ** You may dispose of the source string after a call to this method.
  ** \code
- **   myFrame.Field(ID3FN_TEXT).Set("ID3Lib is very cool!");
+ **   myFrame.GetField(ID3FN_TEXT)->Set("ID3Lib is very cool!");
  ** \endcode
  **/
 size_t ID3_FieldImpl::Set_i(const char* string, size_t size)
@@ -104,7 +105,7 @@ size_t ID3_FieldImpl::Set(const char *string)
  ** find out how many such items are in a list.
  ** 
  ** \code
- **   myFrame.Field(ID3FN_TEXT).Add("this is a test");
+ **   myFrame.GetField(ID3FN_TEXT)->Add("this is a test");
  ** \endcode
  ** 
  ** \param string The string to add to the field
@@ -192,7 +193,7 @@ size_t ID3_FieldImpl::Add(const char *str)
  ** 
  ** \code
  **   char myBuffer[1024];
- **   size_t charsUsed = myFrame.Field(ID3FN_TEXT).Get(buffer, 1024);
+ **   size_t charsUsed = myFrame.GetField(ID3FN_TEXT)->Get(buffer, 1024);
  ** \endcode
  ** 
  ** It fills the buffer with as much data from the field as is present in the
@@ -200,7 +201,7 @@ size_t ID3_FieldImpl::Add(const char *str)
  ** 
  ** \code
  **   char myBuffer[1024];
- **   size_t charsUsed = myFrame.Field(ID3FN_TEXT).Get(buffer, 1024, 3);
+ **   size_t charsUsed = myFrame.GetField(ID3FN_TEXT)->Get(buffer, 1024, 3);
  ** \endcode
  ** 
  ** This fills the buffer with up to the first 1024 characters from the third
@@ -340,40 +341,31 @@ bool ID3_FieldImpl::ParseASCIIString(ID3_Reader& reader)
   return true;
 }
 
-size_t ID3_FieldImpl::RenderString(uchar *buffer) const
+void ID3_FieldImpl::RenderString(ID3_Writer& writer) const
 {
-  size_t nBytes = 0;
   if (this->GetEncoding() == ID3TE_ASCII)
   {
-    nBytes = this->Size();
-    if (nBytes > 0)
-    {
-      ::memcpy(buffer, _ascii, nBytes);
-    }
+    writer.writeChars(_ascii, this->Size());
     if (_flags & ID3FF_CSTR)
     {
-      buffer[nBytes] = '\0';
-      nBytes++;
+      writer.writeChar('\0');
     }
   }
   else if (this->GetEncoding() == ID3TE_UNICODE)
   {
     size_t nChars = this->Size();
-    unicode_t* unicode = (unicode_t *) buffer;
     if (nChars > 0)
     {
-      // BOM
-      *unicode = 0xFEFF;
-      unicode++;
-      ::memcpy((void *) unicode, (void *) _unicode, nChars * 2);
-      nChars++;
+      // Write the BOM: 0xFEFF
+      unicode_t bom = 0xFEFF;
+      writer.writeChars((const unsigned char*) &bom, 2);
+      writer.writeChars((const unsigned char*) _unicode, nChars * 2);
     }
     if (_flags & ID3FF_CSTR)
     {
-      unicode[nChars++] = NULL_UNICODE;
+      writer.writeChar('\0');
+      writer.writeChar('\0');
     }
-    nBytes = nChars * 2;
   }
   _changed = false;
-  return nBytes;
-}
+};
