@@ -44,3 +44,4 @@ utils.lo
 version.lo
 writer_decorators.lo
 writers.lo
+stamp-h1
