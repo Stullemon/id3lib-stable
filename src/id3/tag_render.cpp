@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.15 1999/12/26 00:33:32 scott Exp $
+// $Id: tag_render.cpp,v 1.16 1999/12/27 05:26:42 scott Exp $
 // 
 // This program is free software; you can distribute it and/or modify it under
 // the terms discussed in the COPYING file, which should have been included
@@ -35,7 +35,7 @@ luint ID3_Tag::Render(uchar *buffer)
   ID3_Elem *cur = __pFrameList;
   ID3_TagHeader header;
     
-  SetVersion(ID3_TAGVERSION, ID3_TAGREVISION);
+  SetVersion(ID3v2_VERSION, ID3v2_REVISION);
     
   header.SetVersion(__ucVersion, __ucRevision);
   bytesUsed += header.Size();
@@ -48,7 +48,10 @@ luint ID3_Tag::Render(uchar *buffer)
   {
     if (cur->pFrame != NULL)
     {
-      cur->pFrame->__bCompression = __bCompression;
+      if (__bCompression)
+      {
+        cur->pFrame->__FrmHdr.AddFlags(ID3FL_COMPRESSION);
+      }
       cur->pFrame->SetVersion(__ucVersion, __ucRevision);
       bytesUsed += cur->pFrame->Render(&buffer[bytesUsed]);
     }
@@ -400,6 +403,10 @@ luint ID3_Tag::PaddingSize(luint curSize) const
 
 
 // $Log: tag_render.cpp,v $
+// Revision 1.16  1999/12/27 05:26:42  scott
+// (Render): Updated for new version constants and inclusion of header in
+// each frame.
+//
 // Revision 1.15  1999/12/26 00:33:32  scott
 // Minor comment change.
 //
