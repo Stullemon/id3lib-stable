@@ -1,4 +1,4 @@
-// $Id: demo_convert.cpp,v 1.7 1999/11/30 20:05:30 scott Exp $
+// $Id: demo_convert.cpp,v 1.8 1999/12/13 04:44:38 scott Exp $
 //
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -16,7 +16,7 @@
 #include <id3/tag.h>
 #include <getopt.h>
 
-#define VERSION_NUMBER "$Revision: 1.7 $"
+#define VERSION_NUMBER "$Revision: 1.8 $"
 
 void PrintUsage(char *sName)
 {
@@ -117,16 +117,20 @@ int main( int argc, char *argv[])
         ID3_Tag myTag;
 
         if (bStrip)
+        {
           cout << "Stripping ";
+        }
         else
+        {
           cout << "Converting ";
+        }
         cout << argv[nIndex] << ": ";
 
+        myTag.Clear();
         myTag.Link(argv[nIndex]);
 
         cout << "attempting ";
         DisplayTags(cout, ulFlag);
-
         luint nTags;
 
         if (bStrip)
@@ -141,7 +145,6 @@ int main( int argc, char *argv[])
         }
 
         DisplayTags(cout, nTags);
-
         cout << endl;
       }
 
@@ -150,6 +153,7 @@ int main( int argc, char *argv[])
         cout << endl;
         cout << err.GetErrorFile() << " (" << err.GetErrorLine() << "): "
              << err.GetErrorType() << ": " << err.GetErrorDesc() << endl;
+        exit(1);
       }
     }
 
