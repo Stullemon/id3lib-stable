@@ -1,4 +1,4 @@
-// $Id: field_string_ascii.cpp,v 1.14 1999/12/17 16:13:04 scott Exp $
+// $Id: field_string_ascii.cpp,v 1.15 1999/12/23 15:56:50 scott Exp $
 // 
 // This program is free software; you can distribute it and/or modify it under
 // the terms discussed in the COPYING file, which should have been included
@@ -199,30 +199,14 @@ luint ID3_Field::ParseASCIIString(const uchar *buffer, const luint posn, const l
 
 luint ID3_Field::RenderASCIIString(uchar *buffer)
 {
-  luint bytesUsed = 0;
-  char *ascii;
-  
-  bytesUsed = BinSize();
+  luint nChars = BinSize();
 
-  if ((__sData > 0) && (__ulSize > 0))
+  if ((NULL != __sData) && (nChars > 0))
   {
-    ascii = new char[__ulSize];
-    if (NULL == ascii)
-    {
-      ID3_THROW(ID3E_NoMemory);
-    }
-
-    luint nIndex;
-      
-    // MOD 99Apr16 KG   size is the Unicode string length in bytes.
-    // passing this value to the conversion utility was causing random
-    // crashes depending on memory location.
-    // ucstombs(ascii, (unicode_t *) __sData, __ulSize);
-    ucstombs(ascii, (unicode_t *) __sData, bytesUsed);
-    memcpy(buffer, (uchar *) ascii, bytesUsed);
+    ucstombs((char *) buffer, (unicode_t *) __sData, nChars);
       
     // now we convert the internal dividers to what they are supposed to be
-    for (nIndex = 0; nIndex < bytesUsed; nIndex++)
+    for (luint nIndex = 0; nIndex < nChars; nIndex++)
     {
       if ('\1' == buffer[nIndex])
       {
@@ -232,31 +216,27 @@ luint ID3_Field::RenderASCIIString(uchar *buffer)
         {
           sub = '\0';
         }
-            
         buffer[nIndex] = sub;
       }
     }
-    
-    // pad the remainder of the string with spaces
-    for (nIndex = bytesUsed; nIndex < (__ulSize - 1); nIndex++)
-    {
-      buffer[nIndex] = 0x20;
-    }
-          
-    delete [] ascii;
   }
   
-  if ((1 == bytesUsed) && (__ulFlags & ID3FF_NULL))
+  if ((1 == nChars) && (__ulFlags & ID3FF_NULL))
   {
     buffer[0] = '\0';
   }
     
   __bHasChanged = false;
   
-  return bytesUsed;
+  return nChars;
 }
 
 // $Log: field_string_ascii.cpp,v $
+// Revision 1.15  1999/12/23 15:56:50  scott
+// (RenderASCIIString): Rewrote the function so that it doesn't create
+// temporary dynamic storage, and so that it copies the number of
+// characters, not the number of bytes, in the string.
+//
 // Revision 1.14  1999/12/17 16:13:04  scott
 // Updated opening comment block.
 //

@@ -1,3 +1,18 @@
+1999-12-23  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* src/id3/field_string_ascii.cpp 
+	(RenderASCIIString): Rewrote the function so that it doesn't create
+	temporary dynamic storage, and so that it copies the number of
+	characters, not the number of bytes, in the string.
+
+	* src/examples/demo_tag.cpp: 
+	Fixed a bug which prevented comment descriptions from being added.
+	
+	* src/examples/demo_convert.cpp: 
+	* src/examples/demo_info.cpp: 
+	* src/examples/demo_tag.cpp: 
+	Added check and include for config.h.
+
 1999-12-17  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* [all .cpp and .h files in src/id3 and include/id3]
