@@ -47,8 +47,8 @@
 /* #undef HAVE_ZLIB */
 /* #undef HAVE_GETOPT_LONG */
 #define _ID3LIB_NAME "id3lib"
-#define _ID3LIB_VERSION "3.8.0pre3.0"
-#define _ID3LIB_FULLNAME "id3lib-3.8.0pre3.0"
+#define _ID3LIB_VERSION "3.8.0pre3.1"
+#define _ID3LIB_FULLNAME "id3lib-3.8.0pre3.1"
 #define _ID3LIB_MAJOR_VERSION 3
 #define _ID3LIB_MINOR_VERSION 8
 #define _ID3LIB_PATCH_VERSION 0
@@ -127,7 +127,7 @@
 #define PACKAGE "id3lib"
 
 /* Version number of package */
-#define VERSION "3.8.0pre3.0"
+#define VERSION "3.8.0pre3.1"
 
 /* This is the bottom section */
 
