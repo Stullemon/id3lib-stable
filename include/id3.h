@@ -1,4 +1,4 @@
-/* $Id: id3.h,v 1.7 2000/04/27 02:37:42 eldamitri Exp $
+/* $Id: id3.h,v 1.8 2000/05/02 22:00:19 eldamitri Exp $
  * 
  * id3lib: a software library for creating and manipulating id3v1/v2 tags
  * Copyright 1999, 2000  Scott Thomas Haug
@@ -93,6 +93,6 @@ extern "C"
 
 #ifdef __cplusplus
 }
-#endif __cplusplus
+#endif /*__cplusplus*/
 
 #endif /* __ID3LIB_ID3H__ */
