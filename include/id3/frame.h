@@ -1,4 +1,4 @@
-// $Id: frame.h,v 1.27 2000/06/06 12:21:51 eldamitri Exp $
+// $Id: frame.h,v 1.28 2000/06/14 16:14:18 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -52,6 +52,8 @@ public:
   
   const char* GetDescription() const;
   static const char* GetDescription(ID3_FrameID);
+
+  const char* GetTextID() const { return __hdr.GetTextID(); }
 
   ID3_Frame  &operator=(const ID3_Frame &);
   bool        HasChanged() const;
