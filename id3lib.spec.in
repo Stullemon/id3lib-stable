@@ -1,4 +1,4 @@
-# $Id: id3lib.spec.in,v 1.3 2000/04/20 04:58:54 eldamitri Exp $
+# $Id: id3lib.spec.in,v 1.4 2000/04/20 15:11:03 eldamitri Exp $
 
 %define name    @PACKAGE@
 %define	version	@VERSION@
@@ -66,6 +66,13 @@ rm -rf $RPM_BUILD_ROOT
 
 make prefix=$RPM_BUILD_ROOT%{prefix} install
 
+make clean 
+ 
+cd doc/latex && make ps && cp *.ps ../id3lib.ps && gzip -9 ../id3lib.ps && cd ../..
+
+# strip down the doc and examples directories
+for i in doc/ examples/; do find $i -name 'Makefile*' -exec rm {} \; ; done
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -95,8 +102,7 @@ rm -rf $RPM_BUILD_ROOT
 %files doc
 %defattr(-, root, root)
 %doc AUTHORS COPYING ChangeLog HISTORY NEWS README THANKS TODO
-%doc doc/*.html doc/*.css doc/*.gif doc/*.jpg doc/*.php doc/*.ico doc/*.png 
-%doc doc/html examples
+%doc doc/*.* doc/html examples
 
 ##########################################################################
 %changelog
