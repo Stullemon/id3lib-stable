@@ -1,14 +1,21 @@
-// $Id: demo_tag.cpp,v 1.8 2000/10/02 17:01:45 eldamitri Exp $
+// $Id: demo_tag.cpp,v 1.9 2000/10/08 21:13:54 eldamitri Exp $
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include <id3/debug.h>
 
 #include <iostream.h>
 #include <popt.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <id3/tag.h>
 #include <id3/error.h>
 #include <id3/misc_support.h>
 
-static const char* VERSION_NUMBER = "$Revision: 1.8 $";
+static const char* VERSION_NUMBER = "$Revision: 1.9 $";
 
 void PrintUsage(const char *sName)
 {
@@ -28,6 +35,10 @@ void PrintUsage(const char *sName)
   cout << "  -y, --year    num        Set the year" << endl;
   cout << "  -t, --track   num        Set the track number" << endl;
   cout << "  -T, --total   num        Set the total number of tracks on the album" << endl;
+#if defined ID3_ENABLE_DEBUG
+  cout << "  -w, --warning            Turn on warnings" << endl;
+  cout << "  -n, --notice             Turn on debug notices" << endl;
+#endif
   cout << endl;
   cout << "Will render both types of tag by default.  Only the last" << endl
        << "tag type indicated in the option list will be used.  Non-" << endl
@@ -73,6 +84,11 @@ int main( unsigned int argc, const char *argv[])
   int ulFlag = ID3TT_ID3;
   bool 
     bVersion = false,
+#if defined ID3_ENABLE_DEBUG
+    bNotice = false,
+    bWarning = false,
+#endif
+    bNewFile = false,
     bHelp = false;
   const char
     *sArtist  = NULL,
@@ -80,11 +96,14 @@ int main( unsigned int argc, const char *argv[])
     *sSong    = NULL,
     *sYear    = NULL,
     *sComment = NULL,
+    *sTrack   = NULL,
     *sDesc    = "";
   int
-    nTrack    = 0,
     nTotal    = 0,
+    nTrack    = 0,
     nGenre    = 0xFF;
+  ID3D_INIT_DOUT();
+
   static struct poptOption options[] =
   {
     { "v1tag",   '1', POPT_ARG_NONE,   NULL,      1 },
@@ -100,6 +119,11 @@ int main( unsigned int argc, const char *argv[])
     { "total",   'T', POPT_ARG_STRING, &sComment, 0 },
     { "version", 'v', POPT_ARG_NONE,   &bVersion, 0 },
     { "help",    'h', POPT_ARG_NONE,   &bHelp,    0 },
+    { "newfile", 'N', POPT_ARG_NONE,   &bNewFile, 0 },
+#if defined ID3_ENABLE_DEBUG
+    { "notice",  'n', POPT_ARG_NONE,   &bNotice,  0 },
+    { "warning", 'w', POPT_ARG_NONE,   &bWarning, 0 },
+#endif
     { NULL,      0,   0,               NULL,      0 }
   };
   poptContext con = poptGetContext(NULL, argc, argv, options, 0);
@@ -128,6 +152,20 @@ int main( unsigned int argc, const char *argv[])
   }
   else
   {
+#if defined ID3_ENABLE_DEBUG
+    if (bWarning)
+    {
+      cout << "warnings turned on" << endl;
+      ID3D_INIT_WARNING();
+      ID3D_WARNING ( "warnings turned on" );
+    }
+    if (bNotice)
+    {
+      cout << "notices turned on" << endl;
+      ID3D_INIT_NOTICE();
+      ID3D_NOTICE ( "notices turned on" );
+    }
+#endif
     if (sArtist)
     {
       cout << "+++ Artist  = " << sArtist << endl;
@@ -154,9 +192,10 @@ int main( unsigned int argc, const char *argv[])
     {
       cout << "+++ Genre   = " << nGenre << endl;
     }
-    if (nTrack)
+    if (sTrack)
     {
-      cout << "+++ Track   = " << nTrack;
+      size_t nTrack = ::strtol(sTrack, NULL, 10);
+      cout << "+++ Track   = " << nTrack << endl;
     }
     if (nTotal)
     {
@@ -200,7 +239,7 @@ int main( unsigned int argc, const char *argv[])
         {
           ID3_AddGenre(&myTag, nGenre, true);
         }
-        if (nTrack > 0)
+        if (sTrack > 0)
         {
           ID3_AddTrack(&myTag, nTrack, nTotal, true);
         }
