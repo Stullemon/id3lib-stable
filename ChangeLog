@@ -1,5 +1,9 @@
 2000-06-25  Scott Haug  <scott@id3.org>
 
+	* examples/demo_info.cpp
+	* examples/demo_convert.cpp 
+	(main): Now links against all tags
+
 	* src/utils.cpp: 
 	Added ID3_IsCRLF, ID3_CRLFtoLF, ID3_TimeToSeconds, and 
 	RemoveTrailingSpaces to utils.cpp
