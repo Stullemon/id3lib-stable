@@ -1,4 +1,4 @@
-// $Id: tag_parse_v1.cpp,v 1.18 2001/11/05 09:55:33 shadrack Exp $
+// $Id: tag_parse_v1.cpp,v 1.19 2001/12/16 11:44:24 shadrack Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -118,7 +118,10 @@ bool id3::v1::parse(ID3_TagImpl& tag, ID3_Reader& reader)
     // This is an id3v1.1 tag.  The last byte of the comment is the track
     // number.  
     size_t track = comment[ID3_V1_LEN_COMMENT - 1];
-    id3::v2::setTrack(tag, track, 0);
+    if (track > 0 && !id3::v2::hasTrack(tag))
+    {
+      id3::v2::setTrack(tag, track, 0);
+    }
     ID3D_NOTICE( "id3::v1::parse: track = \"" << track << "\"" );
 
     ID3D_NOTICE( "id3::v1::parse: comment length = \"" << comment.length() << "\"" );

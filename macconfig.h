@@ -45,11 +45,11 @@
 /* #undef HAVE_ZLIB */
 /* #undef HAVE_GETOPT_LONG */
 #define _ID3LIB_NAME "id3lib"
-#define _ID3LIB_VERSION "0.0.0.20011216"
-#define _ID3LIB_FULLNAME "id3lib-0.0.0.20011216"
-#define _ID3LIB_MAJOR_VERSION 0
-#define _ID3LIB_MINOR_VERSION 0
-#define _ID3LIB_PATCH_VERSION 20011216
+#define _ID3LIB_VERSION "3.8.0pre2.1"
+#define _ID3LIB_FULLNAME "id3lib-3.8.0pre2.1"
+#define _ID3LIB_MAJOR_VERSION 3
+#define _ID3LIB_MINOR_VERSION 8
+#define _ID3LIB_PATCH_VERSION 0
 #define _ID3LIB_INTERFACE_AGE 0
 #define _ID3LIB_BINARY_AGE 0
 /* #undef ID3_COMPILED_WITH_DEBUGGING */
@@ -122,7 +122,7 @@
 #define PACKAGE "id3lib"
 
 /* Version number of package */
-#define VERSION "0.0.0.20011216"
+#define VERSION "3.8.0pre2.1"
 
 /* This is the bottom section */
 
