@@ -12,11 +12,12 @@ INCLUDES = -I$(top_srcdir)/include
 LDADD = $(top_builddir)/src/libid3.la
 
 bin_PROGRAMS       = id3info id3convert id3tag
-check_PROGRAMS     = id3simple
+check_PROGRAMS     = id3simple testpic
 id3info_SOURCES    = demo_info.cpp
 id3convert_SOURCES = demo_convert.cpp
 id3tag_SOURCES     = demo_tag.cpp
 id3simple_SOURCES  = demo_simple.c
+testpic_SOURCES    = test_pic.cpp
 
 
 EXTRA_DIST =            \
