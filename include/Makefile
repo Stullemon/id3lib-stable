@@ -83,13 +83,12 @@ NM = /usr/bin/nm -B
 OBJDUMP = @OBJDUMP@
 PACKAGE = id3lib
 RANLIB = ranlib
-VERSION = 3.6.0
+VERSION = 3.6.1
 lt_age = 6
-lt_rev = 0
+lt_rev = 1
 lt_ver = 9
 
 SUBDIRS = id3
-EXTRA_DIST = ChangeLog
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 

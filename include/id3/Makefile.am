@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.1 1999/12/01 18:09:37 scott Exp $
+# $Id: Makefile.am,v 1.2 1999/12/01 19:11:30 scott Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -30,9 +30,10 @@ the_headers =                   \
 id3includedir      = $(includedir)/id3
 id3include_HEADERS = $(the_headers)
 
-EXTRA_DIST = ChangeLog
-
 # $Log: Makefile.am,v $
+# Revision 1.2  1999/12/01 19:11:30  scott
+# (EXTRA_DIST): Removed.  No extra files to distribute
+#
 # Revision 1.1  1999/12/01 18:09:37  scott
 # Initial revision.
 #

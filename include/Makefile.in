@@ -89,7 +89,6 @@ lt_rev = @lt_rev@
 lt_ver = @lt_ver@
 
 SUBDIRS = id3
-EXTRA_DIST = ChangeLog
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
