@@ -1,4 +1,4 @@
-<!-- $Id: index.html.in,v 1.9 2000/09/21 23:45:03 eldamitri Exp $ -->
+<!-- $Id: index.html.in,v 1.10 2000/10/15 16:37:54 eldamitri Exp $ -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
@@ -392,8 +392,8 @@
         <td> 
           
           The id3lib project is currently coordinated by <a
-            href="mailto:scott@id3.org">Scott Haug</a>.  The original ID3Lib
-          library was written by <a href="mailto:dirk@id3.org">Dirk
+            href="mailto:scott@id3.org">Scott Thomas Haug</a>.  The original 
+          ID3Lib library was written by <a href="mailto:dirk@id3.org">Dirk
           Mahoney</a>.
           
         </td>

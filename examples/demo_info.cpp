@@ -1,4 +1,4 @@
-// Copyright 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
+// Copyright 1999 Scott Thomas Haug <scott@id3.org>
 //  
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.24 2000/10/15 06:39:26 eldamitri Exp $
+// $Id: demo_info.cpp,v 1.25 2000/10/15 16:37:54 eldamitri Exp $
 
 
 #ifdef HAVE_CONFIG_H
@@ -34,7 +34,7 @@
 
 using namespace dami;
 
-static String VERSION_NUMBER = "$Revision: 1.24 $";
+static String VERSION_NUMBER = "$Revision: 1.25 $";
 
 void PrintUsage(const char *sName)
 {

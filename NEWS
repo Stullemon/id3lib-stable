@@ -1,4 +1,4 @@
-$Id: NEWS,v 1.23 2000/09/15 00:04:35 eldamitri Exp $
+$Id: NEWS,v 1.24 2000/10/15 16:37:54 eldamitri Exp $
 
 2000-09-07 Version 3.7.13
 
@@ -219,7 +219,7 @@ $Id: NEWS,v 1.23 2000/09/15 00:04:35 eldamitri Exp $
 
 2000-04-15 Version 3.7.0
 
-* New project management: MusicMatch handed reigns over to Scott Haug
+* New project management: MusicMatch handed reigns over to Scott Thomas Haug
 * New project licensing: LGPL (http://www.gnu.org/copyleft/lesser.html)
 * New versioning: 3.7.x is unstable series leading up to 3.8.x stable
 * Many bug fixes
