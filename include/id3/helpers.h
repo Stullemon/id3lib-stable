@@ -1,4 +1,4 @@
-// $Id: helpers.h,v 1.1 2000/10/02 17:03:49 eldamitri Exp $
+// $Id: helpers.h,v 1.2 2000/10/09 01:55:22 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -64,6 +64,7 @@ namespace dami
       size_t     removeYears(ID3_TagImpl&);
       
       String     getComment(const ID3_TagImpl&, String desc);
+      String     getV1Comment(const ID3_TagImpl&);
       ID3_Frame* setComment(ID3_TagImpl&, String, String, String);
       size_t     removeComments(ID3_TagImpl&, String);
       size_t     removeAllComments(ID3_TagImpl&);
