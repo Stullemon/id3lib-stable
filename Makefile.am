@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.13 2000/04/19 02:03:31 eldamitri Exp $
+# $Id: Makefile.am,v 1.14 2000/04/21 19:55:09 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -30,20 +30,38 @@ config.h.win32: $(top_builddir)/config.status $(top_srcdir)/config.h.win32.in
 id3lib.spec: $(top_builddir)/config.status $(top_srcdir)/id3lib.spec.in 
 	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
+docsdistdir = $(PACKAGE)-doc-$(VERSION)
 
-.PHONY: release snapshot
+.PHONY: release snapshot docs-release docs
+
+docs:
+	-cd doc && $(MAKE) $(AM_MAKEFLAGS) $@
+
+docs-release: docs
+	-mv doc/$(docsdistdir).* .
+	-cd examples && $(MAKE) $(AM_MAKEFLAGS) clean
+	-mkdir $(docsdistdir)
+	-cp -R examples           $(docsdistdir)
+	-cp    doc/*.*            $(docsdistdir)
+	-cp -R doc/@DOX_DIR_HTML@ $(docsdistdir)
+	-find $(docsdistdir) -name "Makefile*" -exec rm -f {} \;
+	-find $(docsdistdir) -name "*.mp3"     -exec rm -f {} \;
+	GZIP=$(GZIP_ENV) $(TAR) zcf $(docsdistdir).tar.gz $(docsdistdir)
+	-rm -rf $(docsdistdir)
 
 release: config.h.win32 id3lib.spec
-	rm -rf .deps */.deps
-	$(MAKE) distcheck
+	-rm -rf .deps */.deps $(distdir).zip
+	$(MAKE) $(AM_MAKEFLAGS) distcheck
 	GZIP=$(GZIP_ENV) $(TAR) zxf $(distdir).tar.gz
 	cd $(distdir) && cp config.h.win32 config.h
 	cd $(distdir) && zip -r ../$(distdir).zip *
+	cd $(distdir) && ./configure && $(MAKE) $(AM_MAKEFLAGS) docs-release
+	mv $(distdir)/$(docsdistdir).* .
 	-rm -rf $(distdir)
 
 snapshot: config.h.win32
 	ss_distdir=$(PACKAGE)-`date +"%Y%m%d"`; \
-	$(MAKE) distdir distdir=$$ss_distdir; \
+	$(MAKE) $(AM_MAKEFLAGS) distdir distdir=$$ss_distdir; \
 	chmod -R a+r $$ss_distdir; \
 	GZIP=$(GZIP_ENV) $(TAR) chozf $${ss_distdir}.tar.gz $$ss_distdir; \
 	cd $$ss_distdir && cp config.h.win32 config.h && cd ..; \
@@ -51,6 +69,12 @@ snapshot: config.h.win32
 	rm -rf $$ss_distdir
 
 # $Log: Makefile.am,v $
+# Revision 1.14  2000/04/21 19:55:09  eldamitri
+# (docs): Added for creating documentation from top directory
+# (docs-release): Added for automating creation of documentation
+# deliverables
+# (release): Updated to create documentation release
+#
 # Revision 1.13  2000/04/19 02:03:31  eldamitri
 # (SUBDIRS): Added 'examples'
 #
