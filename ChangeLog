@@ -1,5 +1,10 @@
 2000-07-07  Scott Haug  <scott@id3.org>
 
+	* NEWS 
+	* configure.in
+	* id3lib.spec.in: 
+	Updated for 3.7.12 release
+
 	* src/tag_render.cpp 
 	(RenderV1): Renders comments in the id3v1 tag with a description of
 	STR_V1_COMMENT_DESC
