@@ -1,5 +1,15 @@
 2000-05-10  Scott Haug  <scott@id3.org>
 
+	* src/field_string_ascii.cpp 
+	(ParseASCIIString): Minor fix
+
+	* src/frame_parse.cpp 
+	(Parse): Fixed a minor bug with initializing fields not in scope
+
+	* examples/demo_info.cpp 
+	(PrintInformation): Removed old comment that no longer described the 
+	operation of the function accurately.
+
 	* include/id3/misc_support.h: 
 	Updated interface to synced lyrics helper funcs to accept refs instead
 	of pointers, where appropriate.
