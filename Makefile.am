@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.9 2000/04/08 04:47:38 eldamitri Exp $
+# $Id: Makefile.am,v 1.10 2000/04/09 14:05:44 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -13,15 +13,44 @@
 # require automake 1.4
 AUTOMAKE_OPTIONS = 1.4
 
-EXTRA_DIST = reconf config.h.win32.in
+EXTRA_DIST =                    \
+        reconf                  \
+        config.h.win32          \
+        config.h.win32.in 
 SUBDIRS = . m4 doc src include prj zlib
 
 INCLUDES = @ID3LIB_DEBUG_FLAGS@
 
 config.h.win32: $(top_builddir)/config.status $(top_srcdir)/config.h.win32.in 
-        cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status 
+	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status 
+
+.PHONY: release snapshot
+
+release: config.h.win32
+	rm -rf .deps */.deps
+	$(MAKE) distcheck
+	GZIP=$(GZIP_ENV) $(TAR) zxf $(distdir).tar.gz
+	cd $(distdir) && cp config.h.win32 config.h
+	cd $(distdir) && zip -r ../$(distdir).zip *
+	-rm -rf $(distdir)
+
+snapshot: config.h.win32
+	ss_distdir=$(PACKAGE)-`date +"%Y%m%d"`; \
+	$(MAKE) distdir distdir=$$ss_distdir; \
+	chmod -R a+r $$ss_distdir; \
+	GZIP=$(GZIP_ENV) $(TAR) chozf $${ss_distdir}.tar.gz $$ss_distdir; \
+	cd $$ss_distdir && cp config.h.win32 config.h && cd ..; \
+	cd $$ss_distdir && zip -r ../$${ss_distdir}.zip * && cd ..; \
+	rm -rf $$ss_distdir
 
 # $Log: Makefile.am,v $
+# Revision 1.10  2000/04/09 14:05:44  eldamitri
+# (config.h.win32): Fixed bug in creating config.h.win32.
+# (release): Added.  Creates id3lib-$(VERSION).tar.gz and
+# id3lib-$(VERSION).zip.
+# (snapshot): Added.  Created id3lib-$(DATE).tar.gz and
+# id3lib-$(DATE).zip
+#
 # Revision 1.9  2000/04/08 04:47:38  eldamitri
 # Updated for config.h.win32.
 #
