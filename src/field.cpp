@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.16 2000/05/09 13:34:39 eldamitri Exp $
+// $Id: field.cpp,v 1.17 2000/05/10 01:39:29 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -1054,3 +1054,17 @@ ID3_Field::operator=( const ID3_Field &rField )
   //__spec  = rField.__spec;
   return *this;
 }
+
+/*
+bool ID3_Field::SetEncoding(ID3_TextEnc enc)
+{
+  bool changed = this->IsEncodable() && (enc != this->GetEncoding()) &&
+    (ID3TE_NONE < enc && enc < fld::NUMENCODINGS);
+  if (changed)
+  {
+    this->_SetEncoding(enc);
+    __changed = true;
+  }
+  return changed;
+}
+*/
