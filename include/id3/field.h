@@ -1,4 +1,4 @@
-// $Id: field.h,v 1.5 1999/12/17 16:05:02 scott Exp $
+// $Id: field.h,v 1.6 1999/12/26 16:40:04 scott Exp $
 //  
 // This program is free software; you can distribute it and/or modify it under 
 // the terms discussed in the COPYING file, which should have been included  
@@ -144,7 +144,7 @@ struct ID3_FrameDef
     if you only plan to generate 3.0 tags.
 
     @author Dirk Mahoney
-    @version $Id: field.h,v 1.5 1999/12/17 16:05:02 scott Exp $
+    @version $Id: field.h,v 1.6 1999/12/26 16:40:04 scott Exp $
     @see ID3_Tag
     @see ID3_Frame
     @see ID3_Err 
@@ -406,10 +406,10 @@ protected:
   luint RenderUnicodeString(uchar *buffer);
   luint RenderBinary(uchar *buffer);
   
-  luint ParseInteger(const uchar *buffer, const luint posn, const luint buffSize);
-  luint ParseASCIIString(const uchar *buffer, const luint posn, const luint buffSize);
-  luint ParseUnicodeString(const uchar *buffer, const luint posn, const luint buffSize);
-  luint ParseBinary(const uchar *buffer, const luint posn, const luint buffSize);
+  size_t ParseInteger(const uchar *buffer, luint posn, size_t nSize);
+  size_t ParseASCIIString(const uchar *buffer, luint posn, size_t nSize);
+  size_t ParseUnicodeString(const uchar *buffer, luint posn, size_t nSize);
+  size_t ParseBinary(const uchar *buffer, luint posn, size_t nSize);
   
 };
 
@@ -419,6 +419,9 @@ ID3_FrameID   ID3_FindFrameID(const char *id);
 #endif
 
 // $Log: field.h,v $
+// Revision 1.6  1999/12/26 16:40:04  scott
+// (class ID3_Field): Cleaned up interface to Parse* methods.
+//
 // Revision 1.5  1999/12/17 16:05:02  scott
 // Updated opening comment block.
 //
