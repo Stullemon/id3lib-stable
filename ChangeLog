@@ -1,5 +1,15 @@
 2000-06-22  Scott Haug  <scott@id3.org>
 
+	* src/error.cpp 
+	(ID3_Error): Use strdup rather than strlen + new + strncpy
+	(~ID3_Error): Use array delete to free memory
+
+	* include/id3/error.h 
+	(class ID3_Error): 
+	- Copy constructor's parameter now const
+	- All methods return char strings now return const char strings
+	- Added default constructor
+
 	* src/tag_parse_lyrics3.cpp 
 	(ID3_IsCRLF): Added
 	(ID3_IsTimeStamp): Added
