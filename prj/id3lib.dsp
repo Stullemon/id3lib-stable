@@ -94,7 +94,7 @@ LINK32=link.exe
 # PROP Default_Filter "c;cpp"
 # Begin Source File
 
-SOURCE=..\src\dll_wrapper.cpp
+SOURCE=..\src\c_wrapper.cpp
 # End Source File
 # Begin Source File
 
@@ -131,6 +131,10 @@ SOURCE=..\src\frame_parse.cpp
 # Begin Source File
 
 SOURCE=..\src\frame_render.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\globals.cpp
 # End Source File
 # Begin Source File
 
@@ -184,10 +188,6 @@ SOURCE=..\src\tag_render.cpp
 
 SOURCE=..\src\tag_sync.cpp
 # End Source File
-# Begin Source File
-
-SOURCE=..\src\version.cpp
-# End Source File
 # End Group
 # Begin Group "include"
 
@@ -231,14 +231,6 @@ SOURCE=..\include\id3\sized_types.h
 # Begin Source File
 
 SOURCE=..\include\id3\tag.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\include\id3\types.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\include\id3\version.h
 # End Source File
 # Begin Source File
 

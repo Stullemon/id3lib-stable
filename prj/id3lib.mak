@@ -48,7 +48,7 @@ ALL : "$(OUTDIR)\id3lib.dll"
 !ENDIF 
 
 CLEAN :
-	-@erase "$(INTDIR)\dll_wrapper.obj"
+	-@erase "$(INTDIR)\c_wrapper.obj"
 	-@erase "$(INTDIR)\error.obj"
 	-@erase "$(INTDIR)\field.obj"
 	-@erase "$(INTDIR)\field_binary.obj"
@@ -59,6 +59,7 @@ CLEAN :
 	-@erase "$(INTDIR)\frame_parse.obj"
 	-@erase "$(INTDIR)\frame_render.obj"
 	-@erase "$(INTDIR)\header.obj"
+	-@erase "$(INTDIR)\globals.obj"
 	-@erase "$(INTDIR)\header_frame.obj"
 	-@erase "$(INTDIR)\header_tag.obj"
 	-@erase "$(INTDIR)\int28.obj"
@@ -72,7 +73,6 @@ CLEAN :
 	-@erase "$(INTDIR)\tag_render.obj"
 	-@erase "$(INTDIR)\tag_sync.obj"
 	-@erase "$(INTDIR)\vc50.idb"
-	-@erase "$(INTDIR)\version.obj"
 	-@erase "$(OUTDIR)\id3lib.dll"
 	-@erase "$(OUTDIR)\id3lib.exp"
 	-@erase "$(OUTDIR)\id3lib.lib"
@@ -98,7 +98,7 @@ LINK32_FLAGS=zlib.lib kernel32.lib user32.lib gdi32.lib winspool.lib\
  /pdb:"$(OUTDIR)\id3lib.pdb" /machine:I386 /out:"$(OUTDIR)\id3lib.dll"\
  /implib:"$(OUTDIR)\id3lib.lib" /libpath:"..\zlib" 
 LINK32_OBJS= \
-	"$(INTDIR)\dll_wrapper.obj" \
+	"$(INTDIR)\c_wrapper.obj" \
 	"$(INTDIR)\error.obj" \
 	"$(INTDIR)\field.obj" \
 	"$(INTDIR)\field_binary.obj" \
@@ -108,6 +108,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\frame.obj" \
 	"$(INTDIR)\frame_parse.obj" \
 	"$(INTDIR)\frame_render.obj" \
+	"$(INTDIR)\globals.obj" \
 	"$(INTDIR)\header.obj" \
 	"$(INTDIR)\header_frame.obj" \
 	"$(INTDIR)\header_tag.obj" \
@@ -120,8 +121,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\tag_parse_lyrics3.obj" \
 	"$(INTDIR)\tag_parse_v1.obj" \
 	"$(INTDIR)\tag_render.obj" \
-	"$(INTDIR)\tag_sync.obj" \
-	"$(INTDIR)\version.obj"
+	"$(INTDIR)\tag_sync.obj"
 
 "$(OUTDIR)\id3lib.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -147,7 +147,7 @@ ALL : "$(OUTDIR)\id3lib.dll"
 !ENDIF 
 
 CLEAN :
-	-@erase "$(INTDIR)\dll_wrapper.obj"
+	-@erase "$(INTDIR)\c_wrapper.obj"
 	-@erase "$(INTDIR)\error.obj"
 	-@erase "$(INTDIR)\field.obj"
 	-@erase "$(INTDIR)\field_binary.obj"
@@ -157,6 +157,7 @@ CLEAN :
 	-@erase "$(INTDIR)\frame.obj"
 	-@erase "$(INTDIR)\frame_parse.obj"
 	-@erase "$(INTDIR)\frame_render.obj"
+	-@erase "$(INTDIR)\globals.obj"
 	-@erase "$(INTDIR)\header.obj"
 	-@erase "$(INTDIR)\header_frame.obj"
 	-@erase "$(INTDIR)\header_tag.obj"
@@ -172,7 +173,6 @@ CLEAN :
 	-@erase "$(INTDIR)\tag_sync.obj"
 	-@erase "$(INTDIR)\vc50.idb"
 	-@erase "$(INTDIR)\vc50.pdb"
-	-@erase "$(INTDIR)\version.obj"
 	-@erase "$(OUTDIR)\id3lib.dll"
 	-@erase "$(OUTDIR)\id3lib.exp"
 	-@erase "$(OUTDIR)\id3lib.ilk"
@@ -200,7 +200,7 @@ LINK32_FLAGS=zlib.lib kernel32.lib user32.lib gdi32.lib winspool.lib\
  /pdb:"$(OUTDIR)\id3lib.pdb" /debug /machine:I386 /out:"$(OUTDIR)\id3lib.dll"\
  /implib:"$(OUTDIR)\id3lib.lib" /pdbtype:sept /libpath:"..\zlib" 
 LINK32_OBJS= \
-	"$(INTDIR)\dll_wrapper.obj" \
+	"$(INTDIR)\c_wrapper.obj" \
 	"$(INTDIR)\error.obj" \
 	"$(INTDIR)\field.obj" \
 	"$(INTDIR)\field_binary.obj" \
@@ -210,6 +210,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\frame.obj" \
 	"$(INTDIR)\frame_parse.obj" \
 	"$(INTDIR)\frame_render.obj" \
+	"$(INTDIR)\globals.obj" \
 	"$(INTDIR)\header.obj" \
 	"$(INTDIR)\header_frame.obj" \
 	"$(INTDIR)\header_tag.obj" \
@@ -222,8 +223,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\tag_parse_lyrics3.obj" \
 	"$(INTDIR)\tag_parse_v1.obj" \
 	"$(INTDIR)\tag_render.obj" \
-	"$(INTDIR)\tag_sync.obj" \
-	"$(INTDIR)\version.obj"
+	"$(INTDIR)\tag_sync.obj"
 
 "$(OUTDIR)\id3lib.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -264,7 +264,7 @@ LINK32_OBJS= \
 
 
 !IF "$(CFG)" == "id3lib - Win32 Release" || "$(CFG)" == "id3lib - Win32 Debug"
-SOURCE=..\src\dll_wrapper.cpp
+SOURCE=..\src\c_wrapper.cpp
 DEP_CPP_DLL_W=\
 	"..\config.h"\
 	"..\include\id3\error.h"\
@@ -277,11 +277,9 @@ DEP_CPP_DLL_W=\
 	"..\include\id3\int28.h"\
 	"..\include\id3\sized_types.h"\
 	"..\include\id3\tag.h"\
-	"..\include\id3\types.h"\
-	"..\include\id3\version.h"\
 	
 
-"$(INTDIR)\dll_wrapper.obj" : $(SOURCE) $(DEP_CPP_DLL_W) "$(INTDIR)"\
+"$(INTDIR)\c_wrapper.obj" : $(SOURCE) $(DEP_CPP_DLL_W) "$(INTDIR)"\
  "..\config.h"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
@@ -303,7 +301,6 @@ DEP_CPP_FIELD=\
 	"..\include\id3\globals.h"\
 	"..\include\id3\int28.h"\
 	"..\include\id3\sized_types.h"\
-	"..\include\id3\types.h"\
 	
 
 "$(INTDIR)\field.obj" : $(SOURCE) $(DEP_CPP_FIELD) "$(INTDIR)" "..\config.h"
@@ -318,7 +315,6 @@ DEP_CPP_FIELD_=\
 	"..\include\id3\globals.h"\
 	"..\include\id3\int28.h"\
 	"..\include\id3\sized_types.h"\
-	"..\include\id3\types.h"\
 	
 
 "$(INTDIR)\field_binary.obj" : $(SOURCE) $(DEP_CPP_FIELD_) "$(INTDIR)"\
@@ -334,7 +330,6 @@ DEP_CPP_FIELD_I=\
 	"..\include\id3\globals.h"\
 	"..\include\id3\int28.h"\
 	"..\include\id3\sized_types.h"\
-	"..\include\id3\types.h"\
 	
 
 "$(INTDIR)\field_integer.obj" : $(SOURCE) $(DEP_CPP_FIELD_I) "$(INTDIR)"\
@@ -356,8 +351,6 @@ DEP_CPP_FIELD_S=\
 	"..\include\id3\misc_support.h"\
 	"..\include\id3\sized_types.h"\
 	"..\include\id3\tag.h"\
-	"..\include\id3\types.h"\
-	"..\include\id3\version.h"\
 	
 
 "$(INTDIR)\field_string_ascii.obj" : $(SOURCE) $(DEP_CPP_FIELD_S) "$(INTDIR)"\
@@ -379,8 +372,6 @@ DEP_CPP_FIELD_ST=\
 	"..\include\id3\misc_support.h"\
 	"..\include\id3\sized_types.h"\
 	"..\include\id3\tag.h"\
-	"..\include\id3\types.h"\
-	"..\include\id3\version.h"\
 	
 
 "$(INTDIR)\field_string_unicode.obj" : $(SOURCE) $(DEP_CPP_FIELD_ST)\
@@ -401,8 +392,6 @@ DEP_CPP_FRAME=\
 	"..\include\id3\int28.h"\
 	"..\include\id3\sized_types.h"\
 	"..\include\id3\tag.h"\
-	"..\include\id3\types.h"\
-	"..\include\id3\version.h"\
 	
 
 "$(INTDIR)\frame.obj" : $(SOURCE) $(DEP_CPP_FRAME) "$(INTDIR)" "..\config.h"
@@ -423,7 +412,6 @@ DEP_CPP_FRAME_=\
 	"..\include\id3\header_tag.h"\
 	"..\include\id3\int28.h"\
 	"..\include\id3\sized_types.h"\
-	"..\include\id3\types.h"\
 	{$(INCLUDE)}"sys\types.h"\
 	
 
@@ -448,13 +436,22 @@ DEP_CPP_FRAME_R=\
 	"..\include\id3\misc_support.h"\
 	"..\include\id3\sized_types.h"\
 	"..\include\id3\tag.h"\
-	"..\include\id3\types.h"\
-	"..\include\id3\version.h"\
 	{$(INCLUDE)}"sys\types.h"\
 	
 
 "$(INTDIR)\frame_render.obj" : $(SOURCE) $(DEP_CPP_FRAME_R) "$(INTDIR)"\
  "..\config.h"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+SOURCE=..\src\globals.cpp
+DEP_CPP_HEADE=\
+	"..\config.h"\
+	"..\include\id3\globals.h"\
+	"..\include\id3\sized_types.h"\
+	
+
+"$(INTDIR)\globals.obj" : $(SOURCE) $(DEP_CPP_HEADE) "$(INTDIR)" "..\config.h"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -465,7 +462,6 @@ DEP_CPP_HEADE=\
 	"..\include\id3\header.h"\
 	"..\include\id3\int28.h"\
 	"..\include\id3\sized_types.h"\
-	"..\include\id3\types.h"\
 	
 
 "$(INTDIR)\header.obj" : $(SOURCE) $(DEP_CPP_HEADE) "$(INTDIR)" "..\config.h"
@@ -483,7 +479,6 @@ DEP_CPP_HEADER=\
 	"..\include\id3\header_tag.h"\
 	"..\include\id3\int28.h"\
 	"..\include\id3\sized_types.h"\
-	"..\include\id3\types.h"\
 	
 
 "$(INTDIR)\header_frame.obj" : $(SOURCE) $(DEP_CPP_HEADER) "$(INTDIR)"\
@@ -499,7 +494,6 @@ DEP_CPP_HEADER_=\
 	"..\include\id3\header_tag.h"\
 	"..\include\id3\int28.h"\
 	"..\include\id3\sized_types.h"\
-	"..\include\id3\types.h"\
 	
 
 "$(INTDIR)\header_tag.obj" : $(SOURCE) $(DEP_CPP_HEADER_) "$(INTDIR)"\
@@ -513,7 +507,6 @@ DEP_CPP_INT28=\
 	"..\include\id3\globals.h"\
 	"..\include\id3\int28.h"\
 	"..\include\id3\sized_types.h"\
-	"..\include\id3\types.h"\
 	
 
 "$(INTDIR)\int28.obj" : $(SOURCE) $(DEP_CPP_INT28) "$(INTDIR)" "..\config.h"
@@ -534,8 +527,6 @@ DEP_CPP_MISC_=\
 	"..\include\id3\misc_support.h"\
 	"..\include\id3\sized_types.h"\
 	"..\include\id3\tag.h"\
-	"..\include\id3\types.h"\
-	"..\include\id3\version.h"\
 	
 
 "$(INTDIR)\misc_support.obj" : $(SOURCE) $(DEP_CPP_MISC_) "$(INTDIR)"\
@@ -556,8 +547,6 @@ DEP_CPP_TAG_C=\
 	"..\include\id3\int28.h"\
 	"..\include\id3\sized_types.h"\
 	"..\include\id3\tag.h"\
-	"..\include\id3\types.h"\
-	"..\include\id3\version.h"\
 	
 
 "$(INTDIR)\tag.obj" : $(SOURCE) $(DEP_CPP_TAG_C) "$(INTDIR)" "..\config.h"
@@ -577,8 +566,6 @@ DEP_CPP_TAG_F=\
 	"..\include\id3\int28.h"\
 	"..\include\id3\sized_types.h"\
 	"..\include\id3\tag.h"\
-	"..\include\id3\types.h"\
-	"..\include\id3\version.h"\
 	
 
 "$(INTDIR)\tag_file.obj" : $(SOURCE) $(DEP_CPP_TAG_F) "$(INTDIR)" "..\config.h"
@@ -599,8 +586,6 @@ DEP_CPP_TAG_FI=\
 	"..\include\id3\misc_support.h"\
 	"..\include\id3\sized_types.h"\
 	"..\include\id3\tag.h"\
-	"..\include\id3\types.h"\
-	"..\include\id3\version.h"\
 	
 
 "$(INTDIR)\tag_find.obj" : $(SOURCE) $(DEP_CPP_TAG_FI) "$(INTDIR)"\
@@ -623,8 +608,6 @@ DEP_CPP_TAG_P=\
 	"..\include\id3\int28.h"\
 	"..\include\id3\sized_types.h"\
 	"..\include\id3\tag.h"\
-	"..\include\id3\types.h"\
-	"..\include\id3\version.h"\
 	{$(INCLUDE)}"sys\types.h"\
 	
 
@@ -647,8 +630,6 @@ DEP_CPP_TAG_PA=\
 	"..\include\id3\misc_support.h"\
 	"..\include\id3\sized_types.h"\
 	"..\include\id3\tag.h"\
-	"..\include\id3\types.h"\
-	"..\include\id3\version.h"\
 	
 
 "$(INTDIR)\tag_parse_lyrics3.obj" : $(SOURCE) $(DEP_CPP_TAG_PA) "$(INTDIR)"\
@@ -670,8 +651,6 @@ DEP_CPP_TAG_PAR=\
 	"..\include\id3\misc_support.h"\
 	"..\include\id3\sized_types.h"\
 	"..\include\id3\tag.h"\
-	"..\include\id3\types.h"\
-	"..\include\id3\version.h"\
 	
 
 "$(INTDIR)\tag_parse_v1.obj" : $(SOURCE) $(DEP_CPP_TAG_PAR) "$(INTDIR)"\
@@ -693,8 +672,6 @@ DEP_CPP_TAG_R=\
 	"..\include\id3\misc_support.h"\
 	"..\include\id3\sized_types.h"\
 	"..\include\id3\tag.h"\
-	"..\include\id3\types.h"\
-	"..\include\id3\version.h"\
 	
 
 "$(INTDIR)\tag_render.obj" : $(SOURCE) $(DEP_CPP_TAG_R) "$(INTDIR)"\
@@ -715,20 +692,9 @@ DEP_CPP_TAG_S=\
 	"..\include\id3\int28.h"\
 	"..\include\id3\sized_types.h"\
 	"..\include\id3\tag.h"\
-	"..\include\id3\types.h"\
-	"..\include\id3\version.h"\
 	
 
 "$(INTDIR)\tag_sync.obj" : $(SOURCE) $(DEP_CPP_TAG_S) "$(INTDIR)" "..\config.h"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-SOURCE=..\src\version.cpp
-DEP_CPP_VERSI=\
-	"..\config.h"\
-	
-
-"$(INTDIR)\version.obj" : $(SOURCE) $(DEP_CPP_VERSI) "$(INTDIR)" "..\config.h"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
