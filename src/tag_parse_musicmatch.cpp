@@ -1,4 +1,4 @@
-// $Id: tag_parse_musicmatch.cpp,v 1.16 2000/10/29 01:37:29 eldamitri Exp $
+// $Id: tag_parse_musicmatch.cpp,v 1.17 2001/08/26 23:33:29 dmazzoni Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -29,7 +29,7 @@
 #endif
 
 
-
+#include <ctype.h>
 #include <stdlib.h>
 #include "tag_impl.h"
 #include "utils.h"

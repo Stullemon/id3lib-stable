@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: writers.h,v 1.7 2001/07/30 18:22:53 abscess Exp $
+// $Id: writers.h,v 1.8 2001/08/26 23:33:35 dmazzoni Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -30,6 +30,7 @@
 
 #include <id3/writer.h>
 #include <fstream.h>
+#include <iostream.h>
 #include <string.h>
 
 class ID3_CPP_EXPORT ID3_OStreamWriter : public ID3_Writer

@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.31 2000/10/29 01:37:29 eldamitri Exp $
+// $Id: tag_file.cpp,v 1.32 2001/08/26 23:33:26 dmazzoni Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -107,6 +107,14 @@ static int truncate(const char *path, size_t length)
   }
   
   return result;
+}
+
+#elif defined(macintosh)
+	
+static int truncate(const char *path, size_t length)
+{
+   /* not implemented on the Mac */
+   return -1;
 }
 	
 #endif
@@ -230,7 +238,7 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
     uchar tmpBuffer[BUFSIZ];
     while (!file)
     {
-      file.read(tmpBuffer, BUFSIZ);
+      file.read((char *)tmpBuffer, BUFSIZ);
       size_t nBytes = file.gcount();
       fwrite(tmpBuffer, 1, nBytes, tempOut);
     }
@@ -240,8 +248,8 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
     
     while (!feof(tempOut))
     {
-      size_t nBytes = fread(tmpBuffer, 1, BUFSIZ, tempOut);
-      file.write(tmpBuffer, nBytes);
+      size_t nBytes = fread((char *)tmpBuffer, 1, BUFSIZ, tempOut);
+      file.write((char *)tmpBuffer, nBytes);
     }
     
     fclose(tempOut);
@@ -395,7 +403,7 @@ flags_t ID3_TagImpl::Strip(flags_t ulTagFlag)
     while (!file.eof())
     {
       size_t nBytesToRead = dami::min<size_t>(nBytesRemaining - nBytesCopied, BUFSIZ);
-      file.read(aucBuffer, nBytesToRead);
+      file.read((char *)aucBuffer, nBytesToRead);
       size_t nBytesRead = file.gcount();
 
       if (nBytesRead != nBytesToRead)
@@ -408,7 +416,7 @@ flags_t ID3_TagImpl::Strip(flags_t ulTagFlag)
       {
         long offset = nBytesRead + this->GetPrependedBytes();
         file.seekp(-offset, ios::cur);
-        file.write(aucBuffer, nBytesRead);
+        file.write((char *)aucBuffer, nBytesRead);
         file.seekg(this->GetPrependedBytes(), ios::cur);
         nBytesCopied += nBytesRead;
       }

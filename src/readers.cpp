@@ -1,4 +1,4 @@
-// $Id: readers.cpp,v 1.4 2000/10/29 01:37:29 eldamitri Exp $
+// $Id: readers.cpp,v 1.5 2001/08/26 23:33:20 dmazzoni Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -27,6 +27,8 @@
 #if defined HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include <string.h>
 
 #include "readers.h"
 #include "utils.h"

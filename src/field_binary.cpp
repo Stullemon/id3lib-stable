@@ -1,4 +1,4 @@
-// $Id: field_binary.cpp,v 1.24 2000/10/29 01:37:28 eldamitri Exp $
+// $Id: field_binary.cpp,v 1.25 2001/08/26 23:33:02 dmazzoni Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -30,6 +30,7 @@
 #endif
 
 #include <stdio.h>
+#include <string.h>
 #include <memory.h>
 
 #include "field_impl.h"

@@ -1,4 +1,4 @@
-// $Id: utils.cpp,v 1.18 2001/07/24 08:12:46 thefrogprince Exp $
+// $Id: utils.cpp,v 1.19 2001/08/26 23:33:32 dmazzoni Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -31,6 +31,16 @@
 #if defined HAVE_ICONV_H
 # include <iconv.h>
 # include <errno.h>
+#endif
+
+#include <ctype.h>
+#include <iostream.h>
+
+#ifdef macintosh
+#define NOCREATE ((std::ios_base::openmode)0)
+#define toascii(X) (X)
+#else
+#define NOCREATE ios::nocreate
 #endif
 
 #include "utils.h"
@@ -206,7 +216,7 @@ namespace
 {
   bool exists(String name)
   {
-    ifstream file(name.c_str(), ios::nocreate);
+    ifstream file(name.c_str(), NOCREATE);
     return file.is_open() != 0;
   }
 };
@@ -277,7 +287,7 @@ ID3_Err dami::openWritableFile(String name, fstream& file)
   {
     file.close();
   }
-  file.open(name.c_str(), ios::in | ios::out | ios::binary | ios::nocreate);
+  file.open(name.c_str(), ios::in | ios::out | ios::binary | NOCREATE);
   if (!file)
   {
     return ID3E_ReadOnly;
@@ -297,7 +307,7 @@ ID3_Err dami::openWritableFile(String name, ofstream& file)
   {
     file.close();
   }
-  file.open(name.c_str(), ios::in | ios::out | ios::binary | ios::nocreate);
+  file.open(name.c_str(), ios::in | ios::out | ios::binary | NOCREATE);
   if (!file)
   {
     return ID3E_ReadOnly;
@@ -312,7 +322,7 @@ ID3_Err dami::openReadableFile(String name, fstream& file)
   {
     file.close();
   }
-  file.open(name.c_str(), ios::in | ios::binary | ios::nocreate);
+  file.open(name.c_str(), ios::in | ios::binary | NOCREATE);
   if (!file)
   {
     return ID3E_NoFile;
@@ -327,7 +337,7 @@ ID3_Err dami::openReadableFile(String name, ifstream& file)
   {
     file.close();
   }
-  file.open(name.c_str(), ios::in | ios::binary | ios::nocreate);
+  file.open(name.c_str(), ios::in | ios::binary | NOCREATE);
   if (!file)
   {
     return ID3E_NoFile;
