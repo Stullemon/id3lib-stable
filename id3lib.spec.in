@@ -1,4 +1,4 @@
-# $Id: id3lib.spec.in,v 1.7 2000/04/22 04:50:12 eldamitri Exp $
+# $Id: id3lib.spec.in,v 1.8 2000/04/24 20:21:31 eldamitri Exp $
 
 %define name    @PACKAGE@
 %define	version	@VERSION@
@@ -58,6 +58,36 @@ software library for ID3v1 and ID3v2 tag maniuplation.
 %setup -q
 
 %build
+%ifarch i386 i486
+
+ID3_ARCH=i486
+
+%endif 
+
+%ifarch i586
+
+ID3_ARCH=pentium
+
+%endif 
+
+%ifarch i686
+
+ID3_ARCH=pentiumpro
+
+%endif 
+
+%ifarch k6
+
+ID3_ARCH=k6
+
+%endif
+
+%ifarch i386 i486 i586 i686 k6
+
+RPM_OPT_FLAGS="-O3 -fomit-frame-pointer -pipe -s -mcpu=$ID3_ARCH -march=$ID3_ARCH -ffast-math -fexpensive-optimizations -malign-loops=2 -malign-jumps=2 -malign-functions=2 -mpreferred-stack-boundary=2"
+
+%endif
+
 CXXFLAGS="$RPM_OPT_FLAGS -fexceptions" ./configure --prefix=%prefix
 
 %ifnarch noarch
@@ -125,6 +155,12 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Mon Apr 24 2000 Scott Haug <scott@id3.org> 3.7.3-1
+- Version 3.7.3
+- Added explicite RPM_OPT_FLAGS def based on arch, since -fno-exceptions and
+  -fno-rtti are part of the default flags in rpmrc and we need both exceptions
+  and rtti (exceptions uses rtti)
+
 * Fri Apr 21 2000 Scott Haug <scott@id3.org> 3.7.2-1
 - Version 3.7.2
 - More conditional blocks for noarch
