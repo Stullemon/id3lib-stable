@@ -1,4 +1,4 @@
-// $Id: header_frame.cpp,v 1.15 2000/10/03 04:38:12 eldamitri Exp $
+// $Id: header_frame.cpp,v 1.16 2000/10/09 04:27:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -39,6 +39,7 @@
 #include "field_def.h"
 #include "field_impl.h"
 #include "reader_decorators.h"
+#include "writer_decorators.h"
 
 using namespace dami;
 
@@ -125,7 +126,7 @@ bool ID3_FrameHeader::Parse(ID3_Reader& reader)
     this->SetFrameID(fid);
   }
 
-  io::NumberReader nr(reader);
+  io::BinaryNumberReader nr(reader);
   uint32 dataSize = nr.readNumber(_info->frame_bytes_size);
   ID3D_NOTICE( "ID3_FrameHeader::Parse: dataSize = " << dataSize );
   this->SetDataSize(dataSize);
@@ -136,14 +137,15 @@ bool ID3_FrameHeader::Parse(ID3_Reader& reader)
   return true;
 }
 
-size_t ID3_FrameHeader::Render(uchar *buffer) const
+void ID3_FrameHeader::Render(ID3_Writer& writer) const
 {
   size_t size = 0;
 
   if (NULL == _frame_def)
   {
     // TODO: log this
-    return 0;
+    ID3D_WARNING( "ID3_FrameHeader::Render(): _frame_def is NULL!" );
+    return;
     //ID3_THROW(ID3E_InvalidFrameID);
   }
   char *text_id;
@@ -156,13 +158,12 @@ size_t ID3_FrameHeader::Render(uchar *buffer) const
     text_id = _frame_def->sLongTextID;
   }
 
-  memcpy(&buffer[size], (uchar *) text_id, _info->frame_bytes_id);
-  size += _info->frame_bytes_id;
-  
-  size += ::renderNumber(&buffer[size], _data_size, _info->frame_bytes_size);
-  size += ::renderNumber(&buffer[size], _flags.get(), _info->frame_bytes_flags);
-  
-  return size;
+  ID3D_NOTICE( "ID3_FrameHeader::Render(): writing " << text_id << ", " << (int) _info->frame_bytes_size << " bytes");
+  writer.writeChars((uchar *) text_id, _info->frame_bytes_id);
+  io::BinaryNumberWriter bnw(writer);
+
+  bnw.writeNumber(_data_size, _info->frame_bytes_size);
+  bnw.writeNumber(_flags.get(), _info->frame_bytes_flags);
 }
 
 const char* ID3_FrameHeader::GetTextID() const
