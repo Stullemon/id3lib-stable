@@ -1,6 +1,7 @@
 .deps
 .libs
 Makefile
+Makefile.in
 bak
 dll_wrapper.lo
 error.lo

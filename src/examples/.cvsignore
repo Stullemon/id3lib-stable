@@ -3,6 +3,7 @@
 .kdbgrc.id3info
 .libs
 Makefile
+Makefile.in
 bad-v1.mp3
 bad-v2.mp3
 bad.mp3
