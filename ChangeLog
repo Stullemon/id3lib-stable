@@ -1,3 +1,17 @@
+1999-12-05  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* src/examples/Makefile.am
+	(check_PROGRAMS): Added id3lib
+	(id3tag_SOURCES): Added
+
+	* src/examples/demo_tag.cpp: 
+	Added.  Allows for simple tagging of files from the command line.
+
+	* src/id3/tag_render.cpp 
+	(RenderV2ToHandle): Use mkstemp instead of tmpfile for creating a 
+	temporary file, enabling only a single copy for rendering new id3v2
+	tag.  Used an fstream for the temporary file.
+
 1999-12-04  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* src/id3/tag_parse_v1.cpp
