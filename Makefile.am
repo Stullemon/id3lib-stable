@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.22 2000/08/27 22:37:52 eldamitri Exp $
+# $Id: Makefile.am,v 1.23 2000/09/15 01:49:14 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -69,6 +69,7 @@ release: config.h.win32 id3lib.spec
 	$(MAKE) $(AM_MAKEFLAGS) distcheck
 	GZIP=$(GZIP_ENV) $(TAR) zxf $(distdir).tar.gz
 	-cp -R id3com/ prj/ libprj/ delphi/ $(distdir)
+	-rm -rf $(distdir)/popt
 	-find $(distdir) -name "*~" -exec rm {} \;
 	-find $(distdir) -type d -name CVS -exec rm -r {} \;
 	-find $(distdir) -name .cvsignore -exec rm {} \;
