@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.10 1999/12/01 18:00:59 scott Exp $
+// $Id: field_string_unicode.cpp,v 1.11 1999/12/09 03:32:14 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -60,33 +60,30 @@ void ID3_Field::Set(const unicode_t *string)
 void ID3_Field::Add(const unicode_t *string)
 {
   if (NULL == __sData)
+  {
     Set(string);
+  }
   else
   {
-    unicode_t *temp;
-    luint newLen;
-    lsint nullOffset = 0;
-    
-    // if there is a NULL in this string, set this offset so that we ignore it
-    // in string size calculations
-    if (__ulFlags & ID3FF_NULL)
-      nullOffset = -1;
-      
+    unicode_t *uBuffer = (unicode_t *) __sData;
+
     // +1 is for the NULL at the end and the other +1 is for the list divider
-    newLen = 1 + (__ulSize / sizeof(unicode_t)) + 
-      ucslen(string) + 1 + nullOffset;
+    size_t newLen = ucslen(string) + ucslen(uBuffer) + 1 + 1;
     
+    unicode_t *temp = new unicode_t[newLen];
+    if (NULL == temp)
+    {
+      ID3_THROW(ID3E_NoMemory);
+    }
+
+    ucscpy(temp, uBuffer);
+
     // I use the value 1 as a divider because then I can change it to either a
     // '/' or a NULL at render time.  This allows easy use of these functions
     // for text lists or in the IPLS frame
-    
-    temp = new unicode_t[newLen];
-    if (NULL == temp)
-      ID3_THROW(ID3E_NoMemory);
-
-    ucscpy(temp, (unicode_t *) __sData);
-    temp[(__ulSize / sizeof(unicode_t)) + nullOffset] = L'\001';
-    ucscpy(&temp[(__ulSize / sizeof(unicode_t)) + 1 + nullOffset], string);
+    temp[ucslen(uBuffer)] = L'\001';
+    ucscpy(&temp[ucslen(uBuffer) + 1], string);
+    temp[newLen - 1] = NULL_UNICODE;
       
     Set(temp);
       
@@ -109,7 +106,9 @@ luint ID3_Field::Get(unicode_t *buffer, const luint maxChars, const luint itemNu
     lsint nullOffset = 0;
     
     if (__ulFlags & ID3FF_NULL)
+    {
       nullOffset = -1;
+    }
       
     // first we must find which element is being sought to make sure it exists
     // before we try to get it
@@ -125,7 +124,9 @@ luint ID3_Field::Get(unicode_t *buffer, const luint maxChars, const luint itemNu
       {
         while (*source != L'\001' && *source != L'\0' && posn <
                ((__ulSize / sizeof(unicode_t)) + nullOffset))
+        {
           source++, posn++;
+        }
           
         source++;
         curItemNum++;
@@ -135,16 +136,22 @@ luint ID3_Field::Get(unicode_t *buffer, const luint maxChars, const luint itemNu
       // want, find the end of it
       while (source[sourceLen] != L'\001' && source[sourceLen] != L'\0' &&
              posn <((__ulSize / sizeof(unicode_t) + nullOffset)))
+      {
         sourceLen++, posn++;
+      }
         
       if (NULL == buffer)
+      {
         ID3_THROW(ID3E_NoBuffer);
+      }
 
       luint actualChars = MIN(maxChars, sourceLen);
         
       ucsncpy(buffer, source, actualChars);
       if (actualChars < maxChars)
+      {
         buffer[actualChars] = L'\0';
+      }
       charsUsed = actualChars;
     }
   }
@@ -164,8 +171,12 @@ luint ID3_Field::GetNumTextItems(void)
     numItems++;
     
     while (posn < __ulSize)
+    {
       if (__sData[posn++] == L'\001')
+      {
         numItems++;
+      }
+    }
   }
   
   return numItems;
@@ -177,16 +188,24 @@ luint ID3_Field::ParseUnicodeString(const uchar *buffer, const luint posn, const
   luint nBytes = 0;
   unicode_t *temp = NULL;
   if (__lFixedLength != -1)
+  {
     nBytes = __lFixedLength;
+  }
   else
   {
     if (__ulFlags & ID3FF_NULL)
+    {
       while ((posn + nBytes) < buffSize &&
              !(buffer[posn + nBytes] == 0 && 
                buffer[posn + nBytes + 1] == 0))
+      {
         nBytes += sizeof(unicode_t);
+      }
+    }
     else
+    {
       nBytes = buffSize - posn;
+    }
   }
   
   if (nBytes > 0)
@@ -199,7 +218,9 @@ luint ID3_Field::ParseUnicodeString(const uchar *buffer, const luint posn, const
 
     temp = new unicode_t[(nBytes / sizeof(unicode_t)) + 1];
     if (NULL == temp)
+    {
       ID3_THROW(ID3E_NoMemory);
+    }
 
     luint loc = 0;
 
@@ -246,7 +267,9 @@ luint ID3_Field::ParseUnicodeString(const uchar *buffer, const luint posn, const
   }
   
   if (__ulFlags & ID3FF_NULL)
+  {
     nBytes += sizeof(unicode_t);
+  }
     
   __bHasChanged = false;
   
@@ -265,22 +288,26 @@ luint ID3_Field::RenderUnicodeString(uchar *buffer)
     luint i;
     unicode_t *ourString = (unicode_t *) & buffer[sizeof(unicode_t)];
     
-    // we render at sizeof(unicode_t) bytes into the buffer because we make room
-    // for the Unicode BOM
+    // we render at sizeof(unicode_t) bytes into the buffer because we make
+    // room for the Unicode BOM
     memcpy(&buffer[sizeof(unicode_t)], (uchar *) __sData, 
            nBytes - sizeof(unicode_t));
     
     // now we convert the internal dividers to what they are supposed to be
     for (i = 0; i < nBytes; i++)
+    {
       if (ourString[i] == 1)
       {
         unicode_t sub = L'/';
         
         if (__ulFlags & ID3FF_NULLDIVIDE)
+        {
           sub = L'\0';
+        }
           
         ourString[i] = sub;
       }
+    }
   }
   
   if (nBytes)
@@ -291,8 +318,12 @@ luint ID3_Field::RenderUnicodeString(uchar *buffer)
   }
   
   if (nBytes == sizeof(unicode_t) && (__ulFlags & ID3FF_NULL))
+  {
     for (size_t i = 0; i < sizeof(unicode_t); i++)
+    {
       buffer[i] = 0;
+    }
+  }
     
   __bHasChanged = false;
   
@@ -300,6 +331,10 @@ luint ID3_Field::RenderUnicodeString(uchar *buffer)
 }
 
 // $Log: field_string_unicode.cpp,v $
+// Revision 1.11  1999/12/09 03:32:14  scott
+// (Add): Cleaned up and restructured code to make for easier reading.
+// Also fixed a bug in adding strings to an involved people list frame.
+//
 // Revision 1.10  1999/12/01 18:00:59  scott
 // Changed all of the #include <id3/*> to #include "*" to help ensure that
 // the sources are searched for in the right places (and to make compiling under
