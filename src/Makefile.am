@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.6 2000/04/19 02:02:47 eldamitri Exp $
+# $Id: Makefile.am,v 1.7 2000/04/20 03:47:51 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -24,6 +24,7 @@ the_sources =                   \
   frame.cpp                     \
   frame_parse.cpp               \
   frame_render.cpp              \
+  globals.cpp                   \
   header.cpp                    \
   header_frame.cpp              \
   header_tag.cpp                \
@@ -36,8 +37,7 @@ the_sources =                   \
   tag_parse_lyrics3.cpp         \
   tag_parse_v1.cpp              \
   tag_render.cpp                \
-  tag_sync.cpp                  \
-  version.cpp                   
+  tag_sync.cpp
 
 EXTRA_DIST =                    \
   dll_wrapper.cpp               
@@ -53,6 +53,9 @@ libid3_la_LDFLAGS = \
   -export-dynamic
 
 # $Log: Makefile.am,v $
+# Revision 1.7  2000/04/20 03:47:51  eldamitri
+# (the_sources): Added globals.cpp, removed version.cpp
+#
 # Revision 1.6  2000/04/19 02:02:47  eldamitri
 # Moved from src/id3 to src.
 #
