@@ -1,3 +1,80 @@
+2004-04-11 Sunday 17:36   Thijmen Klok <thijmen@id3lib.org>
+
+	* src/writer_decorators.cpp (1.3): Not in use anymore 
+
+2004-04-11 Sunday 17:31   Thijmen Klok <thijmen@id3lib.org>
+
+	* acconfig.h (1.17), aclocal.m4 (1.19), config.h.in (1.25),
+	config.h.win32 (1.27), config.h.win32.in (1.15), configure (1.81),
+	macconfig.h (1.14), m4/id3_unicode.m4 (1.3), src/utils.cpp (1.30): 
+	Changed ID3_ICONV_FORMAT_ASCII to ID3_ICONV_FORMAT_ISO_8859_1 
+
+2004-04-11 Sunday 17:25   Thijmen Klok <thijmen@id3lib.org>
+
+	* config.h.in (1.24), config.h.win32 (1.26), config.h.win32.in
+	(1.14), configure.in (1.69), configure (1.80), macconfig.h (1.13),
+	src/utils.cpp (1.29): Changed ID3LIB_ICONV_OLDSTYLE to
+	ID3LIB_ICONV_CONSTSOURCE 
+
+2004-04-10 Saturday 19:25   Thijmen Klok <thijmen@id3lib.org>
+
+	* include/id3/globals.h (1.57): Added error codes for convert
+	routines 
+
+2004-04-10 Saturday 16:27   Thijmen Klok <thijmen@id3lib.org>
+
+	* THANKS (1.21): Added Ralf 
+
+2004-04-10 Saturday 14:56   Thijmen Klok <thijmen@id3lib.org>
+
+	* README (1.7): Added code guidelines 
+
+2004-03-23 Tuesday 12:24   Thijmen Klok <thijmen@id3lib.org>
+
+	* libprj/id3lib.dsp (1.17): Made the target multithreaded, same as
+	zlib 
+
+2004-02-26 Thursday 14:06   Thijmen Klok <thijmen@id3lib.org>
+
+	* src/Makefile.in (1.58): Added linking to zlib when zlib is
+	already present 
+
+2004-01-16 Friday 09:50  shadrack
+
+	* include/id3/globals.h (1.56): Fix minor syntax error in globals.h 
+
+2003-12-22 Monday 01:17   Thijmen Klok <thijmen@id3lib.org>
+
+	* src/tag_file.cpp (1.44): Added symlink support 
+
+2003-12-21 Sunday 15:35   Thijmen Klok <thijmen@id3lib.org>
+
+	* src/: mp3_header.h (1.5), mp3_parse.cpp (1.7): fixed incorrect
+	vbr size and endianess 
+
+2003-05-22 Thursday 10:14   Thijmen Klok <thijmen@id3lib.org>
+
+	* include/id3/globals.h (1.55): Changed Trash Metal to Thrash Metal 
+
+2003-05-10 Saturday 21:13   Thijmen Klok <thijmen@id3lib.org>
+
+	* src/utils.cpp (1.28): fixed bug introduced in previous version on
+	wrong use of arguments in strcpy, rolled back to previous version to
+	fix compiler errors 
+
+2003-05-08 Thursday 01:33   Thijmen Klok <thijmen@id3lib.org>
+
+	* foobar (1.1), foobar (1.2): foobar 
+
+2003-03-21 Friday 16:07  slackorama
+
+	* src/utils.cpp (1.27): fix a compilation error on some platforms
+	and a memory leak 
+
+2003-03-02 Sunday 17:41   Thijmen Klok <thijmen@id3lib.org>
+
+	* ChangeLog (1.139): Normal Update 
+
 2003-03-02 Sunday 17:38   Thijmen Klok <thijmen@id3lib.org>
 
 	* THANKS (1.20): added more people 
