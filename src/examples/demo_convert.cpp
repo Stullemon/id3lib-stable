@@ -1,3 +1,5 @@
+// $Id: demo_convert.cpp,v 1.5 1999/11/25 17:15:03 scott Exp $
+//
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
 //  This means that it may be modified, redistributed and used in commercial
@@ -9,46 +11,146 @@
 //  the ID3Lib coordinator, currently Dirk Mahoney (dirk@id3.org).  Approved
 //  submissions may be altered, and will be included and released under these
 //  terms.
-//  
-//  Mon Nov 23 18:34:01 1998
-
 
 #include <iostream.h>
 #include <id3/tag.h>
+#include <getopt.h>
 
-int main( int argc, char *argv[])
+#define VERSION_NUMBER "$Revision: 1.5 $"
+
+void PrintUsage(char *sName)
 {
+  cout << "Usage: " << sName << " [OPTION]... [FILE]..." << endl;
+  cout << "Converts between id3v1 and id3v2 tags of an mp3 file." << endl;
+  cout << endl;
+  cout << "  -1, --v1tag     Render only the id3v1 tag" << endl;
+  cout << "  -2, --v2tag     Render only the id3v2 tag" << endl;
+  cout << "  -h, --help      Display this help and exit" << endl;
+  cout << "  -v, --version   Display version information and exit" << endl;
+  cout << endl;
+  cout << "Will render both types of tag by default.  Only the last" << endl
+       << "tag type indicated in the option list will be used.  Non-" << endl
+       << "rendered will remain unchanged in the original file.  Will" << endl
+       << "also parse and convert Lyrics3 v2.0 frames, but will not" << endl
+       << "render them." << endl;
+}
+
+void PrintVersion(char *sName)
+{
+  cout << sName << ", " << VERSION_NUMBER << endl;
   cout << "ID3v2 Tag Converter - No copyright 1998 Dirk Mahoney" << endl;
   cout << "Uses " << ID3LIB_NAME << " " << ID3LIB_VERSION << endl << endl;
 
   cout << "This program converts ID3v1/1.1 and Lyrics3 v2.0" << endl;
-  cout << "tags to ID3v2 tags.  This program will also remove" << endl;
-  cout << "the old tags." << endl << endl;
+  cout << "tags to ID3v2 tags." << endl << endl;
+}
 
-  if (argc > 1)
+void DisplayTags(ostream &os, luint nTags)
+{
+  if (!((nTags & V1_TAG) || (nTags & V2_TAG)))
+    os << "no tag";
+  if (nTags & V1_TAG)
+    os << "v1";
+  if ((nTags & V1_TAG) && (nTags & V2_TAG))
+    os << " and ";
+  if (nTags & V2_TAG)
+    os << "v2";
+}
+
+int main( int argc, char *argv[])
+{
+  int ulFlag = BOTH_ID3_TAGS;
+  int iOpt;
+  bool bError = false;
+  while (true)
   {
-    try
-    {
-      ID3_Tag myTag;
-      luint argNum = 1;
+    int option_index = 0;
+    int iLongOpt = 0;
+    static struct option long_options[] = 
+    { 
+      { "v1tag",   no_argument, &iLongOpt, '1' },
+      { "v2tag",   no_argument, &iLongOpt, '2' },
+      { "version", no_argument, &iLongOpt, 'v' },
+      { "help",    no_argument, &iLongOpt, 'h' },
+      { 0, 0, 0, 0 }
+    };
+    iOpt = getopt_long (argc, argv, "12vh", long_options, &option_index);
 
-      myTag.Link(argv[argNum]);
-      myTag.Strip();
-      myTag.Update();
-    }
+    if (iOpt == -1)
+      break;
 
-    catch(ID3_Error err)
+    if (iOpt == 0) iOpt = iLongOpt;
+
+    switch (iOpt)
     {
-      cout << err.GetErrorFile() << " (" << err.GetErrorLine() << "): "
-           << err.GetErrorType() << ": " << err.GetErrorDesc() << endl;
+      case '1':
+        ulFlag = V1_TAG;
+        break;
+        
+      case '2':
+        ulFlag = V2_TAG;
+        break;
+
+      case 'v':
+        PrintVersion(argv[0]);
+        exit (0);
+        break;
+        
+
+      case 'h':
+        PrintUsage(argv[0]);
+        exit (0);
+        break;
+
+      case '?':
+        bError = true;
+        break;
+
+      default:
+        cout << "?? getopt returned character code " << iOpt << " ??" << endl;
     }
   }
-  else
+  if (bError)
   {
-    cout << "Usage: " << argv[0] << " <file>" << endl << endl;
-
-    cout << "Where: 'file' is the file you wish to convert." << endl << endl;
+    cout << "Try `" << argv[0] << " --help' for more information." << endl;
   }
+  else 
+    for (size_t nIndex = optind; nIndex < argc; nIndex++)
+    {
+      try
+      {
+        ID3_Tag myTag;
+
+        cout << "Converting " << argv[nIndex] << ": ";
+
+        myTag.Link(argv[nIndex]);
+
+        cout << "attempting ";
+        DisplayTags(cout, ulFlag);
+
+        luint nTags;
+
+        if (ulFlag & V2_TAG)
+        {
+          nTags = myTag.Strip(V2_TAG);
+          cout << ", stripped ";
+          DisplayTags(cout, nTags);
+        }
+        nTags = myTag.Update(ulFlag);
+
+        cout << ", converted ";
+        DisplayTags(cout, nTags);
+
+        cout << endl;
+      }
+
+      catch(ID3_Error err)
+      {
+        cout << endl;
+        cout << err.GetErrorFile() << " (" << err.GetErrorLine() << "): "
+             << err.GetErrorType() << ": " << err.GetErrorDesc() << endl;
+      }
+    }
 
   return 0;
 }
