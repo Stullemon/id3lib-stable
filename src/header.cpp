@@ -1,4 +1,4 @@
-// $Id: header.cpp,v 1.6 2000/05/01 13:05:07 eldamitri Exp $
+// $Id: header.cpp,v 1.7 2000/05/02 21:56:58 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,109 +24,36 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#include <string.h>
-#include <memory.h>
 #include "header.h"
-#include "error.h"
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-ID3_HeaderInfo ID3_SpecInfo[] =
+static const ID3_Header::Info _spec_info[] =
 {
-  //             SIZEOF SIZEOF SIZEOF EXT    EXT  EXPERIM
-  // V2 SPEC     FRID   FRSZ   FRFL   HEADER SIZE BIT
-  {  ID3V2_2_0,  3,     3,     0,     false, 0,   false },
-  {  ID3V2_2_1,  3,     3,     0,     true,  8,   true }, 
-  {  ID3V2_3_0,  4,     4,     2,     false, 10,  false },
-  {  ID3V2_UNKNOWN }
+  // SIZEOF SIZEOF SIZEOF EXT    EXT  EXPERIM
+  // FRID   FRSZ   FRFL   HEADER SIZE BIT
+  {  3,     3,     0,     false, 0,   false }, // ID3V2_2_0
+  {  3,     3,     0,     true,  8,   true  }, // ID3V2_2_1
+  {  4,     4,     2,     false, 10,  false }  // ID3V2_3_0
 };
   
-ID3_HeaderInfo *ID3_LookupHeaderInfo(ID3_V2Spec spec)
+bool ID3_Header::SetSpec(const ID3_V2Spec spec)
 {
-  ID3_HeaderInfo *info = NULL;
-  for (size_t i = 0; ID3_SpecInfo[i].eSpec != ID3V2_UNKNOWN; i++)
+  bool changed = false;
+  if (spec < ID3V2_EARLIEST || spec > ID3V2_LATEST)
   {
-    if (ID3_SpecInfo[i].eSpec == spec)
-    {
-      info = &ID3_SpecInfo[i];
-      break;
-    }
+    changed = __spec != ID3V2_UNKNOWN;
+    __spec = ID3V2_UNKNOWN;
+    __info = NULL;
   }
-    
-  return info;
-}
-
-ID3_HeaderInfo* ID3_LookupHeaderInfo(uchar ver, uchar rev)
-{
-  return ID3_LookupHeaderInfo(ID3_VerRevToV2Spec(ver, rev));
-}
-
-ID3_Header::ID3_Header(void)
-{
-  SetSpec(ID3V2_LATEST);
-  __ulDataSize = 0;
-  __ulFlags = 0;
-}
-
-void ID3_Header::SetSpec(const ID3_V2Spec spec)
-{
-  __spec = spec;
-  __pInfo = ID3_LookupHeaderInfo(spec);
-}
-
-void ID3_Header::SetDataSize(size_t newSize)
-{
-  __ulDataSize = newSize;
-}
-
-size_t ID3_Header::GetDataSize() const
-{
-  return __ulDataSize;
-}
-
-void ID3_Header::SetFlags(uint16 newFlags)
-{
-  __ulFlags = newFlags;
-}
-
-void ID3_Header::AddFlags(uint16 newFlags)
-{
-  __ulFlags |= newFlags;
-}
-
-void ID3_Header::RemoveFlags(uint16 newFlags)
-{
-  __ulFlags &= ~newFlags;
-}
-
-uint16 ID3_Header::GetFlags() const
-{
-  return __ulFlags;
-}
-
-ID3_V2Spec ID3_Header::GetSpec() const
-{
-  return __spec;
-}
-
-void ID3_Header::Clear()
-{
-  __spec = ID3V2_UNKNOWN;
-  __ulDataSize = 0;
-  __ulFlags = 0;
-  //__pInfo = 0;
-}
-
-ID3_Header &ID3_Header::operator=( const ID3_Header& hdr )
-{
-  if (this != &hdr)
+  else
   {
-    SetSpec(hdr.GetSpec());
-    SetDataSize(hdr.GetDataSize());
-    SetFlags(hdr.GetFlags());
-    __pInfo = hdr.__pInfo;
+    changed = __spec != spec;
+    __spec = spec;
+    __info = &_spec_info[__spec - ID3V2_EARLIEST];
   }
-  return *this;
+  __changed = __changed || changed;
+  return changed;
 }
