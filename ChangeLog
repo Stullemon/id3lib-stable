@@ -1,3 +1,16 @@
+1999-12-15  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* include/id3/field.h: 
+	Reformatted some comments.
+
+	* src/id3/field_string_ascii.cpp 
+	(ParseASCIIString): Better comment for assigning bytesUsed. 
+
+1999-12-13  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* src/id3/tag_parse.cpp: 
+	Minor code cleanup.
+
 1999-12-12  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* config.win32: 
@@ -984,3 +997,166 @@
 	* m4/Makefile.am: 
 	Adjusted so that the macros aren't installed.
 
+
+1999-11-04  Scott Thomas Haug  <sth2@cs.wustl.edu>
+	* src/id3/dll.h:
+	* src/id3/error.h:
+	* src/id3/externals.h:
+	* src/id3/field.h:
+	* src/id3/field_binary.cpp:
+	* src/id3/field_integer.cpp:
+	* src/id3/field_string_ascii.cpp:
+	* src/id3/field_string_unicode.cpp:
+	* src/id3/frame.cpp:
+	* src/id3/frame.h:
+	* src/id3/frame_parse.cpp:
+	* src/id3/frame_render.cpp:
+	* src/id3/header.cpp:
+	* src/id3/header.h:
+	* src/id3/header_frame.cpp:
+	* src/id3/header_frame.h:
+	* src/id3/header_tag.cpp:
+	* src/id3/header_tag.h:
+	* src/id3/int28.cpp:
+	* src/id3/int28.h:
+	* src/id3/misc_support.cpp:
+	* src/id3/misc_support.h:
+	* src/id3/tag.cpp:
+	* src/id3/tag.h:
+	* src/id3/tag_file.cpp:
+	* src/id3/tag_find.cpp:
+	* src/id3/tag_parse.cpp:
+	* src/id3/tag_parse_lyrics3.cpp:
+	* src/id3/tag_parse_v1.cpp:
+	* src/id3/tag_render.cpp:
+	* src/id3/tag_sync.cpp:
+	* src/id3/types.h:
+	* src/id3/version.cpp:
+	* src/id3/version.h:
+	Added cvs Id and Log tags to beginning and end of file, respectively.
+	Code clean up.  No semantic changes.
+	
+	* src/examples/demo_convert.cpp:
+	Removed deprecated call to SetVersion (now a private method)
+	
+	* configure.in
+	Removed reference to zlib
+	
+1999-11-02  Scott Thomas Haug  <sth2@cs.wustl.edu>
+	* src/id3/dll.h:
+	* src/id3/error.h:
+	* src/id3/externals.h:
+	* src/id3/field.h:
+	* src/id3/field_binary.cpp:
+	* src/id3/field_integer.cpp:
+	* src/id3/field_string_ascii.cpp:
+	* src/id3/field_string_unicode.cpp:
+	* src/id3/frame.cpp:
+	* src/id3/frame.h:
+	* src/id3/frame_parse.cpp:
+	* src/id3/frame_render.cpp:
+	* src/id3/header.cpp:
+	* src/id3/header.h:
+	* src/id3/header_frame.cpp:
+	* src/id3/header_frame.h:
+	* src/id3/header_tag.cpp:
+	* src/id3/header_tag.h:
+	* src/id3/int28.cpp:
+	* src/id3/int28.h:
+	* src/id3/misc_support.cpp:
+	* src/id3/misc_support.h:
+	* src/id3/tag.cpp:
+	* src/id3/tag.h:
+	* src/id3/tag_file.cpp:
+	* src/id3/tag_find.cpp:
+	* src/id3/tag_parse.cpp:
+	* src/id3/tag_parse_lyrics3.cpp:
+	* src/id3/tag_parse_v1.cpp:
+	* src/id3/tag_render.cpp:
+	* src/id3/tag_sync.cpp:
+	* src/id3/types.h:
+	* src/id3/version.cpp:
+	* src/id3/version.h:
+	Formatting changes (tab to spaces, excess space removal, etc.)
+	
+1999-11-01  Scott Thomas Haug  <sth2@cs.wustl.edu>
+	* src/id3/dll.h:
+	* src/id3/dll_wrapper.cpp:
+	* src/id3/error.cpp:
+	* src/id3/error.h:
+	* src/id3/externals.h:
+	* src/id3/field.cpp:
+	* src/id3/field.h:
+	* src/id3/frame.h:
+	* src/id3/header.h:
+	* src/id3/header_frame.h:
+	* src/id3/header_tag.h:
+	* src/id3/int28.h:
+	* src/id3/misc_support.h:
+	* src/id3/tag.h:
+	* src/id3/types.h:
+	* src/id3/version.h:
+	* src/id3/field_binary.cpp:
+	Cleaned up the code somwhat.  Made some of the files more readable
+ 	in 80 character displays.  Switched tabs to spaces.  Changed
+ 	#include to point to right directory for the id3 .h files. Changed
+ 	call to tmpnam to mkstemp in tag_render.cpp.  Renamed by removing
+	"id3_" suffix and moved to src/id3
+	
+	* src/examples/demo_convert.cpp:
+	Cleaned up code (tabs, whitespace, etc)
+
+	* src/examples/demo_convert.cpp:
+	* src/examples/demo_info.cpp:
+	* src/examples/demo_main.cpp:
+	* src/examples/readme.txt:
+	Moved from orig/sources/examples to src/examples
+
+	* src/id3/Makefile.am:
+	Removed zlib files -- unnecessary for linx
+	
+	* doc/idguide.html:
+	* doc/bugreport.txt:
+	* doc/id3v2-3.00.txt:
+	* doc/id3v2.gif:
+	* doc/id3v2.ico:
+	* doc/id3v2.png:
+	* doc/logo.txt:
+	* doc/software.txt:
+	Moved from orig/documentation to doc
+	
+	* configure.in
+	Now makes Makefiles in src/zlib and src/examples
+	
+	* AUTHORS:
+	* COPYING:
+	* ChangeLog:
+	* INSTALL:
+	* Makefile.am:
+	* NEWS:
+	* README:
+	* THANKS:
+	* configure.in:
+	* doc/Makefile.am:
+	* m4/Makefile.am:
+	* m4/lf_bash.m4:
+	* m4/lf_cc.m4:
+	* m4/lf_cxx.m4:
+	* m4/lf_fortran.m4:
+	* m4/lf_host_type.m4:
+	* m4/lf_list.m4:
+	* m4/lf_local.m4:
+	* m4/lf_nm.m4:
+	* m4/lf_texidoc.m4:
+	* m4/lf_txtc.m4:
+	* m4/lf_warnings.m4:
+	* m4/lf_x11.m4:
+	* orig/dll/id3lib.dll:
+	* orig/dll/id3lib.exp:
+	* orig/dll/id3lib.h:
+	* orig/dll/id3lib.lib:
+	* orig/dll/readme.txt:
+	* src/Makefile.am:
+	* src/examples/Makefile.am:
+	* src/id3/Makefile.am:
+	Initial revision
