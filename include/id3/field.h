@@ -1,4 +1,4 @@
-// $Id: field.h,v 1.10 2000/04/08 04:32:36 eldamitri Exp $
+// $Id: field.h,v 1.11 2000/04/09 22:34:57 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -68,6 +68,7 @@ struct ID3_FieldDef
   ID3_VerCtl    eControl;
   luint         ulFlags;
   ID3_FieldID   eLinkedField;
+  static const ID3_FieldDef* DEFAULT;
 };
 
 class ID3_Frame;
@@ -77,8 +78,8 @@ class ID3_Tag;
 struct ID3_FrameDef
 {
   ID3_FrameID   eID;
-  char         *sShortTextID;
-  char         *sLongTextID;
+  char          sShortTextID[3 + 1];
+  char          sLongTextID[4 + 1];
   lsint         lPriority;    // currently unused
   bool          bTagDiscard;
   bool          bFileDiscard;
@@ -156,7 +157,7 @@ struct ID3_FrameDef
     if you only plan to generate 3.0 tags.
 
     @author Dirk Mahoney
-    @version $Id: field.h,v 1.10 2000/04/08 04:32:36 eldamitri Exp $
+    @version $Id: field.h,v 1.11 2000/04/09 22:34:57 eldamitri Exp $
     @see ID3_Tag
     @see ID3_Frame
     @see ID3_Err 
@@ -431,6 +432,11 @@ ID3_FrameID   ID3_FindFrameID(const char *id);
 #endif
 
 // $Log: field.h,v $
+// Revision 1.11  2000/04/09 22:34:57  eldamitri
+// (struct ID3_FieldDef): Added DEFAULT.
+// (struct ID3_FrameDef): Made text id's fixed length char arrays rather
+// than char ptrs.
+//
 // Revision 1.10  2000/04/08 04:32:36  eldamitri
 // Changed new ANSI-standard C++ include headers to old-style headers.
 //
