@@ -3,11 +3,12 @@
 
 #include <string>
 
-namespace id3
+namespace dami
 {
-  typedef std::basic_string<char>           string;
-  typedef std::basic_string<unsigned char> bstring;
-  typedef std::basic_string<wchar_t>       wstring;
+  typedef std::basic_string<char>           String;
+  typedef std::basic_string<char>          BString;
+  typedef std::basic_string<wchar_t>       WString;
+  //typedef std::basic_string<unsigned char> BString;
 };
 
 #endif /* _ID3LIB_STRINGS_H_ */
