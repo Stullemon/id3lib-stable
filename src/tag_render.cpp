@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.10 2000/05/01 15:30:41 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.11 2000/05/02 16:57:46 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -115,7 +115,7 @@ luint ID3_Tag::Render(uchar *buffer)
 
       UnSync(tempz, newTagSize, &buffer[header.Size()],
              bytesUsed - header.Size());
-      header.SetFlags(ID3HF_UNSYNC);
+      header.SetUnsync(true);
 
       memcpy(&buffer[header.Size()], tempz, newTagSize);
       bytesUsed = newTagSize + header.Size();
