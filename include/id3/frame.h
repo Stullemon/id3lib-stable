@@ -1,4 +1,4 @@
-// $Id: frame.h,v 1.4 1999/12/17 16:05:02 scott Exp $
+// $Id: frame.h,v 1.5 1999/12/26 16:40:08 scott Exp $
 //  
 // This program is free software; you can distribute it and/or modify it under 
 // the terms discussed in the COPYING file, which should have been included  
@@ -28,7 +28,7 @@ class ID3_Tag;
     the implementation of a complex APIC frame and for a simple text frame.
     
     @author Dirk Mahoney
-    @version $Id: frame.h,v 1.4 1999/12/17 16:05:02 scott Exp $
+    @version $Id: frame.h,v 1.5 1999/12/26 16:40:08 scott Exp $
     @see ID3_Tag
     @see ID3_Field
     @see ID3_Err
@@ -118,6 +118,7 @@ private:
   char        __sEncryptionID[256]; // encryption method used with this frame
   char        __sGroupingID[256];   // the group to which this frame belongs
   bool        __bCompression;       // should we try to compress?
+  bool        __bReadOnly;          // Is the tag read only?
   bool        __bHasChanged;        // frame changed since last parse/render?
   bitset      __auiFieldBits;       // which fields are present?
   ID3_FrameID __FrameID;            // what frame are we?
@@ -138,6 +139,9 @@ protected:
 ;
 
 // $Log: frame.h,v $
+// Revision 1.5  1999/12/26 16:40:08  scott
+// (class ID3_Frame): Added bReadOnly property.
+//
 // Revision 1.4  1999/12/17 16:05:02  scott
 // Updated opening comment block.
 //
