@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: field.h,v 1.39 2000/10/08 21:31:32 eldamitri Exp $
+// $Id: field.h,v 1.40 2000/10/12 22:28:06 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -53,6 +53,7 @@ public:
   virtual size_t        Get(char*, size_t) const = 0;
   virtual size_t        Get(char*, size_t, index_t) const = 0;
   virtual const char*   GetText() const = 0;
+  virtual const char*   GetTextItem(index_t) const = 0;
   virtual size_t        Add(const char*) = 0;
 
   // Unicode string field functions
@@ -61,6 +62,7 @@ public:
   virtual size_t        Get(unicode_t *buffer, size_t) const = 0;
   virtual size_t        Get(unicode_t *buffer, size_t, index_t) const = 0;
   virtual const unicode_t* GetUnicodeText() const = 0;
+  virtual const unicode_t* GetUnicodeTextItem(index_t) const = 0;
   virtual size_t        Add(const unicode_t*) = 0;
 
   // binary field functions
