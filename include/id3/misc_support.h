@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: misc_support.h,v 1.25 2001/07/30 18:22:53 abscess Exp $
+// $Id: misc_support.h,v 1.26 2002/03/20 10:32:55 slackorama Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -71,6 +71,7 @@ ID3_C_EXPORT size_t     ID3_RemoveTracks(ID3_Tag*);
 ID3_C_EXPORT char*      ID3_GetGenre(const ID3_Tag*);
 ID3_C_EXPORT size_t     ID3_GetGenreNum(const ID3_Tag*);
 ID3_C_EXPORT ID3_Frame* ID3_AddGenre(ID3_Tag*, size_t ucGenre, bool replace = false);
+ID3_C_EXPORT ID3_Frame* ID3_AddGenre(ID3_Tag*, const char *, bool replace = false);
 ID3_C_EXPORT size_t     ID3_RemoveGenres(ID3_Tag*);
 
 ID3_C_EXPORT char*      ID3_GetLyrics(const ID3_Tag*);
