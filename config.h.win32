@@ -32,11 +32,11 @@
  */
 #define __ID3LIB_NAME "id3lib"
 #define __ID3LIB_DATE ": 2000/08/27 22:40:41 "
-#define __ID3LIB_VERSION "3.7.12"
-#define __ID3LIB_FULLNAME "id3lib-3.7.12"
+#define __ID3LIB_VERSION "3.7.13"
+#define __ID3LIB_FULLNAME "id3lib-3.7.13"
 #define __ID3LIB_MAJOR_VERSION 3
 #define __ID3LIB_MINOR_VERSION 7
-#define __ID3LIB_PATCH_VERSION 12
+#define __ID3LIB_PATCH_VERSION 13
 #define __ID3LIB_INTERFACE_AGE 0
 #define __ID3LIB_BINARY_AGE 0
 /* #undef ID3_COMPILED_WITH_DEBUGGING */
@@ -81,7 +81,7 @@
 #define PACKAGE "id3lib"
 
 /* Version number of package */
-#define VERSION "3.7.12"
+#define VERSION "3.7.13"
 
 /* This is the bottom section */
 
