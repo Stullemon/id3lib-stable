@@ -1,4 +1,4 @@
-# $Id: id3lib.spec.in,v 1.2 2000/04/20 04:03:12 eldamitri Exp $
+# $Id: id3lib.spec.in,v 1.3 2000/04/20 04:58:54 eldamitri Exp $
 
 %define name    @PACKAGE@
 %define	version	@VERSION@
@@ -75,12 +75,13 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-, root, root)
-%doc AUTHORS COPYING ChangeLog NEWS README THANKS TODO
+%doc AUTHORS COPYING ChangeLog HISTORY NEWS README THANKS TODO
 %{prefix}/lib/*.so.*
 
 %files devel
 %defattr(-, root, root)
-%doc AUTHORS COPYING ChangeLog NEWS README THANKS TODO
+%doc AUTHORS COPYING ChangeLog HISTORY NEWS README THANKS TODO
+%{prefix}/include/id3*.h
 %{prefix}/include/id3
 %{prefix}/lib/*.la
 %{prefix}/lib/*.a
@@ -88,15 +89,14 @@ rm -rf $RPM_BUILD_ROOT
 
 %files examples
 %defattr(-, root, root)
-%doc AUTHORS COPYING ChangeLog NEWS README THANKS TODO
+%doc AUTHORS COPYING ChangeLog HISTORY NEWS README THANKS TODO
 %{prefix}/bin/id3*
 
 %files doc
 %defattr(-, root, root)
-%doc AUTHORS COPYING ChangeLog NEWS README THANKS TODO
+%doc AUTHORS COPYING ChangeLog HISTORY NEWS README THANKS TODO
 %doc doc/*.html doc/*.css doc/*.gif doc/*.jpg doc/*.php doc/*.ico doc/*.png 
-%doc doc/*.ps doc/html/*.html doc/html/*.gif doc/html/*.css
-%doc examples/*.cpp examples/*.h examples/*.tag examples/*.mp3
+%doc doc/html examples
 
 ##########################################################################
 %changelog
