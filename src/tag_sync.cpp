@@ -1,4 +1,4 @@
-// $Id: tag_sync.cpp,v 1.5 2000/05/12 03:40:09 eldamitri Exp $
+// $Id: tag_sync.cpp,v 1.6 2000/05/28 23:26:49 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -35,17 +35,22 @@
 
 size_t ID3_ReSync(uchar *data, size_t size)
 {
-  uchar *src, *dest;
-  for (src = dest = data; src < data + size - 1; src++, dest++)
+  const uchar* src = data;
+  const uchar* end = data + size;
+  uchar* dest = data;
+  for (; src < end; src++, dest++)
   {
-    *dest = *src;
-    if (0xFF == src[0] && '\0' == src[1])
+    if (src > dest)
+    {
+      *dest = *src;
+    }
+    if (0xFF == src[0] && src + 1 < end && 0x00 == src[1])
     {
       src++;
     }
   }
   
-  return size - (src - dest);
+  return dest - data;
 }
 
 // Determine if pCur is at a point in the pStart buffer where unsyncing is 
@@ -61,7 +66,7 @@ bool ID3_ShouldUnsync(const uchar *cur, const uchar *start, const size_t size)
     ( cur            < start + size)    &&
     ( cur[0]        == 0xFF)            && // first sync
     ((cur    + 1    == (start + size))  || // last byte?
-     (cur[1] & 0xE0 == 0xE0)            || // second sync
+     (cur[1]        >= 0xE0)            || // second sync
      (cur[1]        == 0x00));             // second null
 }
 
