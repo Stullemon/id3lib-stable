@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.24 2000/10/09 04:26:27 eldamitri Exp $
+// $Id: field_string_unicode.cpp,v 1.25 2000/10/12 22:30:20 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -254,6 +254,22 @@ const unicode_t* ID3_FieldImpl::GetUnicodeText() const
       this->GetEncoding() == ID3TE_UNICODE)
   {
     text = _unicode;
+  }
+  return text;
+}
+
+const unicode_t* ID3_FieldImpl::GetUnicodeTextItem(index_t index) const
+{
+  const unicode_t* text = NULL;
+  if (this->GetType() == ID3FTY_TEXTSTRING && 
+      this->GetEncoding() == ID3TE_ASCII &&
+      index < this->GetNumTextItems())
+  {
+    text = _unicode;
+    for (size_t i = 0; i < index; ++i)
+    {
+      text += ucslen(text) + 1;
+    }
   }
   return text;
 }
