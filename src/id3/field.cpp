@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.16 2000/04/05 05:21:15 eldamitri Exp $
+// $Id: field.cpp,v 1.17 2000/04/08 04:35:48 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,7 +24,7 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#include <cstring>
+#include <string.h>
 #include "field.h"
 
 #if defined HAVE_CONFIG_H
@@ -920,9 +920,14 @@ ID3_Field::operator=( const ID3_Field &rField )
       }
     }
   }
+  return *this;
 }
 
 // $Log: field.cpp,v $
+// Revision 1.17  2000/04/08 04:35:48  eldamitri
+// Changed new ANSI-standard C++ include headers to old-style headers.
+// Fixed return bug in operator=.
+//
 // Revision 1.16  2000/04/05 05:21:15  eldamitri
 // Updated initial comment information to reflect license, copyright
 // change.
