@@ -1,4 +1,4 @@
-// $Id: field_string_ascii.cpp,v 1.19 2000/04/08 04:37:19 eldamitri Exp $
+// $Id: field_string_ascii.cpp,v 1.20 2000/04/17 02:31:35 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -69,7 +69,7 @@ void ID3_Field::Set(const char *sString)
 
 // the ::Get() function for ASCII
 
-luint ID3_Field::Get(char *buffer, luint maxLength, luint itemNum)
+luint ID3_Field::Get(char *buffer, const luint maxLength, const luint itemNum)
 {
   luint bytesUsed = 0;
   unicode_t *temp;
@@ -245,6 +245,10 @@ luint ID3_Field::RenderASCIIString(uchar *buffer)
 }
 
 // $Log: field_string_ascii.cpp,v $
+// Revision 1.20  2000/04/17 02:31:35  eldamitri
+// Updated parameters of certain methods with const modifier to match
+// declaration.
+//
 // Revision 1.19  2000/04/08 04:37:19  eldamitri
 // Changed new ANSI-standard C++ include headers to old-style headers.
 //

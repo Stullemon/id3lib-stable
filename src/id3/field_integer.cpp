@@ -1,4 +1,4 @@
-// $Id: field_integer.cpp,v 1.13 2000/04/05 05:21:15 eldamitri Exp $
+// $Id: field_integer.cpp,v 1.14 2000/04/17 02:31:35 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -31,7 +31,7 @@
 #include <config.h>
 #endif
 
-ID3_Field& ID3_Field::operator=(luint newData)
+ID3_Field& ID3_Field::operator=(const luint newData)
 {
   Set(newData);
   
@@ -39,7 +39,7 @@ ID3_Field& ID3_Field::operator=(luint newData)
 }
 
 
-void ID3_Field::Set(luint newData)
+void ID3_Field::Set(const luint newData)
 {
   Clear();
   
@@ -93,6 +93,10 @@ luint ID3_Field::RenderInteger(uchar *buffer)
 }
 
 // $Log: field_integer.cpp,v $
+// Revision 1.14  2000/04/17 02:31:35  eldamitri
+// Updated parameters of certain methods with const modifier to match
+// declaration.
+//
 // Revision 1.13  2000/04/05 05:21:15  eldamitri
 // Updated initial comment information to reflect license, copyright
 // change.

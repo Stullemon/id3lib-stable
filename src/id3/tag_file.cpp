@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.16 2000/04/08 04:41:38 eldamitri Exp $
+// $Id: tag_file.cpp,v 1.17 2000/04/17 02:31:35 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -206,7 +206,7 @@ luint ID3_Tag::Link(char *fileInfo, bool parseID3v1, bool parseLyrics3)
   return posn;
 }
 
-luint ID3_Tag::Update(luint ulTagFlag)
+luint ID3_Tag::Update(const luint ulTagFlag)
 {
   OpenFileForWriting();
   luint ulTags = NO_TAG;
@@ -345,6 +345,10 @@ luint ID3_Tag::Strip(const luint ulTagFlag)
 
 
 // $Log: tag_file.cpp,v $
+// Revision 1.17  2000/04/17 02:31:35  eldamitri
+// Updated parameters of certain methods with const modifier to match
+// declaration.
+//
 // Revision 1.16  2000/04/08 04:41:38  eldamitri
 // Changed new ANSI-standard C++ include headers to old-style headers.
 // Fixed minor problems for windows.

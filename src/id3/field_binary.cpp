@@ -1,4 +1,4 @@
-// $Id: field_binary.cpp,v 1.12 2000/04/05 05:21:15 eldamitri Exp $
+// $Id: field_binary.cpp,v 1.13 2000/04/17 02:31:35 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -33,7 +33,7 @@
 #include <config.h>
 #endif
 
-void ID3_Field::Set(const uchar *newData, luint newSize)
+void ID3_Field::Set(const uchar *newData, const luint newSize)
 {
   Clear();
   
@@ -56,7 +56,7 @@ void ID3_Field::Set(const uchar *newData, luint newSize)
 }
 
 
-void ID3_Field::Get(uchar *buffer, luint buffLength)
+void ID3_Field::Get(uchar *buffer, const luint buffLength)
 {
   if (NULL == buffer)
   {
@@ -166,6 +166,10 @@ ID3_Field::RenderBinary(uchar *buffer)
 
 
 // $Log: field_binary.cpp,v $
+// Revision 1.13  2000/04/17 02:31:35  eldamitri
+// Updated parameters of certain methods with const modifier to match
+// declaration.
+//
 // Revision 1.12  2000/04/05 05:21:15  eldamitri
 // Updated initial comment information to reflect license, copyright
 // change.

@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.19 2000/04/14 03:39:45 eldamitri Exp $
+// $Id: field.cpp,v 1.20 2000/04/17 02:31:35 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -714,7 +714,7 @@ ID3_Field::Clear(void)
 }
 
 void
-ID3_Field::SetVersion(uchar ver, uchar rev)
+ID3_Field::SetVersion(const uchar ver, const uchar rev)
 {
   // If the version or revision has changed, set the hasChanged flag
   __bHasChanged = (__bHasChanged || __ucVersion != ver || __ucRevision != rev);
@@ -738,7 +738,7 @@ ID3_Field::Size(void)
 }
 
 luint
-ID3_Field::BinSize(bool withExtras)
+ID3_Field::BinSize(const bool withExtras)
 {
   luint bytes   = 0;
 
@@ -926,6 +926,10 @@ ID3_Field::operator=( const ID3_Field &rField )
 }
 
 // $Log: field.cpp,v $
+// Revision 1.20  2000/04/17 02:31:35  eldamitri
+// Updated parameters of certain methods with const modifier to match
+// declaration.
+//
 // Revision 1.19  2000/04/14 03:39:45  eldamitri
 // (ID3FD_LinkedInfo): Fixed bug in definition of LinkedInfo array.
 // (ID3FD_Registration): Renamed ID3FN_SYMBOL to ID3FN_ID
