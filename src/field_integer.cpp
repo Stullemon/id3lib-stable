@@ -1,4 +1,4 @@
-// $Id: field_integer.cpp,v 1.8 2000/05/12 21:07:26 eldamitri Exp $
+// $Id: field_integer.cpp,v 1.9 2000/06/06 12:22:26 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -31,19 +31,25 @@
 #include <config.h>
 #endif
 
-ID3_Field& ID3_Field::operator=(uint32 newData)
-{
-  this->Set(newData);
-  return *this;
-}
+/** \fn ID3_Field& ID3_Field::operator=(uint32 val)
+ ** \brief A shortcut for the Set method.
+ **
+ ** \code
+ **   myFrame.Field(ID3FN_PICTURETYPE) = 0x0B;
+ ** \endcode
+ ** 
+ ** \param val The data to assign to this field
+ ** \sa Set(uint32)
+ **/
 
-
-void ID3_Field::Set(uint32 newData)
+/** \brief Sets the value of the field to the specified integer.
+ ** \param data The data to assign to this field
+ **/
+void ID3_Field::Set(uint32 val)
 {
   Clear();
   
-  // Ack!  This is terrible!
-  __data = (uchar *) newData;
+  __data = (uchar *) val;  // Ack!  This is terrible!
   __size = sizeof(uint32);
   __type = ID3FTY_INTEGER;
   __changed = true;
@@ -51,12 +57,15 @@ void ID3_Field::Set(uint32 newData)
   return ;
 }
 
-
-uint32 ID3_Field::Get() const
-{
-  return (uint32) __data;
-}
-
+/** \fn uint32 ID3_Field::Get() const
+ ** \brief Returns the value of the integer field.
+ ** 
+ ** \code
+ **   uint32 picType = myFrame.Field(ID3FN_PICTURETYPE).Get();
+ ** \endcode
+ **
+ ** \return The value of the integer field
+ **/
 
 size_t ID3_Field::ParseInteger(const uchar *buffer, size_t nSize)
 {
