@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: mp3_parse.cpp,v 1.7 2003/12/21 14:35:16 t1mpy Exp $
+// $Id: mp3_parse.cpp,v 1.8 2004/04/11 17:05:11 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 2002, Thijmen Klok (thijmen@id3lib.org)
@@ -415,6 +415,9 @@ bool Mp3Info::Parse(ID3_Reader& reader, size_t mp3size)
           _mp3_header_output->framesize = 144 * _mp3_header_output->bitrate / _mp3_header_output->frequency + (_tmpheader->padding_bit ? 1 : 0); //Mpeg1
         else
           _mp3_header_output->framesize =  72000 * _mp3_header_output->bitrate / _mp3_header_output->frequency + (_tmpheader->padding_bit ? 1 : 0); //Mpeg2 + Mpeg2.5
+        break;
+      default:
+        _mp3_header_output->framesize = 0; //unable to determine
         break;
     }
 //    if (_mp3_header_output->layer == MPEGLAYER_I)
