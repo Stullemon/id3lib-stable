@@ -1,4 +1,4 @@
-// $Id: dll.h,v 1.4 2000/04/05 05:20:52 eldamitri Exp $
+// $Id: dll.h,v 1.5 2000/04/07 19:07:37 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -40,6 +40,8 @@ struct ID3_VerInfo
   luint revision;
 };
 
+extern "C"
+{
 
 void        ID3_GetVersion(ID3_VerInfo *info);
 // tag wrappers
@@ -86,9 +88,14 @@ void        ID3Field_GetBINARY(ID3_Field *field, uchar *buffer, luint buffLength
 void        ID3Field_FromFile(ID3_Field *field, char *fileName);
 void        ID3Field_ToFile(ID3_Field *field, char *fileName);
 
+}
+
 #endif
 
 // $Log: dll.h,v $
+// Revision 1.5  2000/04/07 19:07:37  eldamitri
+// Added extern "C"
+//
 // Revision 1.4  2000/04/05 05:20:52  eldamitri
 // Updated initial comment information to reflect license, copyright
 // change.
