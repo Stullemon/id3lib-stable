@@ -165,7 +165,7 @@ STDMETHODIMP CID3Frame::get_FrameName(BSTR *pVal)
 	USES_CONVERSION;
 	try
 	{
-		const char* sDesc = ID3_GetFrameDescription(m_Frame->GetID());
+		const char* sDesc = m_Frame->GetDescription();
 		if(sDesc != NULL)
 		{
 			*pVal = SysAllocString(A2W(sDesc));
