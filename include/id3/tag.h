@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.25 2000/05/06 05:42:20 eldamitri Exp $
+// $Id: tag.h,v 1.26 2000/05/06 21:39:44 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -68,7 +68,7 @@ public:
   luint      Render(uchar *buffer);
   luint      RenderV1(char *buffer);
   luint      Size() const;
-  void       Parse(uchar header[ID3_TAGHEADERSIZE], uchar *buffer);
+  size_t     Parse(uchar header[ID3_TAGHEADERSIZE], uchar *buffer);
   luint      Link(const char *fileInfo, const luint tt = (luint) ID3TT_ALL);
   luint      Update(const luint tt = (luint) ID3TT_ID3V2);
   luint      Strip(const luint tt = (luint) ID3TT_ALL);
