@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.12 2000/05/15 16:38:21 eldamitri Exp $
+// $Id: misc_support.cpp,v 1.13 2000/05/28 23:03:02 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -465,12 +465,12 @@ ID3_Frame* ID3_AddTrack(ID3_Tag *tag, uchar ucTrack, uchar ucTotal, bool bReplac
         if (0 == ucTotal)
         {
           sTrack = new char[4];
-          sprintf(sTrack, "%lu", (size_t) ucTrack);
+          sprintf(sTrack, "%lu", (luint) ucTrack);
         }
         else
         {
           sTrack = new char[8];
-          sprintf(sTrack, "%lu/%lu", (size_t) ucTrack, (size_t) ucTotal);
+          sprintf(sTrack, "%lu/%lu", (luint) ucTrack, (luint) ucTotal);
         }
         
         trackFrame->Field(ID3FN_TEXT) = sTrack;
@@ -564,7 +564,7 @@ ID3_Frame* ID3_AddGenre(ID3_Tag *tag, size_t ucGenre, bool bReplace)
       if (NULL != pFrame)
       {
         char sGenre[6];
-        sprintf(sGenre, "(%lu)", (size_t) ucGenre);
+        sprintf(sGenre, "(%lu)", (luint) ucGenre);
 
         pFrame->Field(ID3FN_TEXT) = sGenre;
         tag->AttachFrame(pFrame);
