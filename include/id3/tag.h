@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.19 2000/04/28 16:24:27 eldamitri Exp $
+// $Id: tag.h,v 1.20 2000/05/01 16:38:21 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,9 +28,8 @@
 #define __ID3LIB_TAG_H__
 
 #include <stdio.h>
-#include "frame.h"
-#include "header_frame.h"
 #include "header_tag.h"
+#include "frame.h"
 #include "spec.h"
 
 struct ID3_Elem
@@ -60,7 +59,6 @@ public:
   bool       HasChanged(void) const;
   void       SetUnsync(bool bSync);
   void       SetExtendedHeader(bool bExt);
-  void       SetCompression(bool bComp);
   void       SetPadding(bool bPad);
   void       AddFrame(const ID3_Frame&);
   void       AddFrame(const ID3_Frame*);
@@ -121,6 +119,7 @@ public:
   /* Deprecated! */
   void       AddNewFrame(ID3_Frame* f) { this->AttachFrame(f); }
   luint      Link(char *fileInfo, bool parseID3v1, bool parseLyrics3);
+  void       SetCompression(bool bComp) { ; }
 
 protected:
   void       AddFrame(ID3_Frame *pNewFrame, bool bFreeWhenDone);
@@ -157,7 +156,7 @@ private:
   ID3_Elem*  __pBinaryList;     // the list of yet-to-be-parsed frames currently attached to this tag
   ID3_Elem*  __pFindCursor;     // on which element in the frameList are we currently positioned?
   bool       __bSyncOn;         // should we unsync this tag when rendering?
-  bool       __bCompression;    // should we compress frames when rendering?
+  //bool       __bCompression;    // should we compress frames when rendering?
   bool       __bPadding;        // add padding to tags?
   bool       __bExtendedHeader; // create an extended header when rendering?
   bool       __bHasChanged;     // has the tag changed since the last parse or render?
