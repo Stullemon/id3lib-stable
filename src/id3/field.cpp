@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.5 1999/11/15 20:15:25 scott Exp $
+// $Id: field.cpp,v 1.6 1999/11/16 22:50:19 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -661,9 +661,8 @@ ID3_FindFrameID(char *id)
 luint
 ID3_Field::Render(uchar *buffer)
 {
-  luint bytesUsed       = 0;
+  luint bytesUsed = 0;
   
-  // if (doIt)
   if ((__eControl == ID3VC_HIGHER &&
        __ucVersion >= __ucIOVersion && __ucRevision >= __ucIORevision) ||
       (__ucVersion <= __ucIOVersion && __ucRevision <= __ucIORevision))
@@ -694,6 +693,9 @@ ID3_Field::Render(uchar *buffer)
 }
 
 // $Log: field.cpp,v $
+// Revision 1.6  1999/11/16 22:50:19  scott
+// * field.cpp (Render): Minor reformatting.
+//
 // Revision 1.5  1999/11/15 20:15:25  scott
 // Added include for config.h.  Replaced LU_NULL with ID3FF_NONE for
 // more consistency in flag naming.  Blocked out the ID3FD_Volume
