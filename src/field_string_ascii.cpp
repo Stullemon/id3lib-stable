@@ -1,4 +1,4 @@
-// $Id: field_string_ascii.cpp,v 1.7 2000/05/09 13:28:57 eldamitri Exp $
+// $Id: field_string_ascii.cpp,v 1.8 2000/05/10 03:30:18 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -60,7 +60,7 @@ void ID3_Field::Set(const char *sString)
     Set(temp);
     delete [] temp;
       
-    __type = ID3FTY_ASCIISTRING;
+    __enc = ID3TE_ASCII;
   }
   
   return ;
@@ -125,7 +125,7 @@ void ID3_Field::Add(const char *sString)
     Add(temp);
     delete [] temp;
     
-    __type = ID3FTY_ASCIISTRING;
+    __enc = ID3TE_ASCII;
   }
   
   return ;
@@ -143,7 +143,7 @@ ID3_Field::ParseASCIIString(const uchar *buffer, size_t nSize)
     // The string is of fixed length
     bytesUsed = __length;
   }
-  else if (!(__flags & ID3FF_NULL) || (__flags & ID3FF_NULLDIVIDE))
+  else if (!(__flags & ID3FF_CSTR) || (__flags & ID3FF_LIST))
   {
     // If the string isn't null-terminated or if it is null divided, we're
     // assured this is the last field of of the frame, and we can claim the
@@ -162,8 +162,8 @@ ID3_Field::ParseASCIIString(const uchar *buffer, size_t nSize)
   {
     Set("");
   }
-  // This check needs to come before the check for ID3FF_NULL
-  else if (__flags & ID3FF_NULLDIVIDE)
+  // This check needs to come before the check for ID3FF_CSTR
+  else if (__flags & ID3FF_LIST)
   {
     char *sBuffer = (char *) buffer;
     for (size_t i = 0; i < bytesUsed; i += strlen(&sBuffer[i]) + 1)
@@ -171,8 +171,8 @@ ID3_Field::ParseASCIIString(const uchar *buffer, size_t nSize)
       Add(&sBuffer[i]);
     }
   }
-  // This check needs to come after the check for ID3FF_NULLDIVIDE
-  else if (__flags & ID3FF_NULL)
+  // This check needs to come after the check for ID3FF_LIST
+  else if (__flags & ID3FF_CSTR)
   {
     Set((const char *)buffer);
   }
@@ -197,7 +197,7 @@ ID3_Field::ParseASCIIString(const uchar *buffer, size_t nSize)
     delete [] temp;
   }
   
-  if (__flags & ID3FF_NULL && !(__flags & ID3FF_NULLDIVIDE))
+  if (__flags & ID3FF_CSTR && !(__flags & ID3FF_LIST))
   {
     bytesUsed++;
   }
@@ -223,7 +223,7 @@ luint ID3_Field::RenderASCIIString(uchar *buffer)
       {
         char sub = '/';
           
-        if (__flags & ID3FF_NULLDIVIDE)
+        if (__flags & ID3FF_LIST)
         {
           sub = '\0';
         }
@@ -232,7 +232,7 @@ luint ID3_Field::RenderASCIIString(uchar *buffer)
     }
   }
   
-  if ((1 == nChars) && (__flags & ID3FF_NULL))
+  if ((1 == nChars) && (__flags & ID3FF_CSTR))
   {
     buffer[0] = '\0';
   }
