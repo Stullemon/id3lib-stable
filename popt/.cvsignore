@@ -1,0 +1,9 @@
+.libs
+findme.lo
+libpopt.la
+popt.lo
+poptconfig.lo
+popthelp.lo
+poptparse.lo
+test1
+test2
