@@ -14,7 +14,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.7 2000/04/15 18:44:54 eldamitri Exp $
+// $Id: demo_info.cpp,v 1.2 2000/04/18 21:45:39 eldamitri Exp $
 
 
 #if defined HAVE_CONFIG_H
@@ -439,6 +439,9 @@ int main( int argc, char *argv[])
 }
 
 // $Log: demo_info.cpp,v $
+// Revision 1.2  2000/04/18 21:45:39  eldamitri
+// Moved demo_info.cpp from src/examples to examples
+//
 // Revision 1.7  2000/04/15 18:44:54  eldamitri
 // (PrintInformation): Renamed ID3FN_SYMBOL to ID3FN_ID
 //
