@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.9 2000/09/27 07:26:23 eldamitri Exp $
+# $Id: Makefile.am,v 1.10 2000/10/03 00:31:44 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -11,17 +11,14 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 the_headers =                   \
-  error.h                       \
   field.h                       \
-  flags.h                       \
   frame.h                       \
   globals.h                     \
-  header.h                      \
-  header_frame.h                \
-  header_tag.h                  \
   misc_support.h                \
   sized_types.h                 \
   spec.h                        \
+  reader.h                      \
+  readers.h                     \
   tag.h                         
 
 id3includedir      = $(includedir)/id3
@@ -29,13 +26,17 @@ id3include_HEADERS = $(the_headers)
 
 noinst_HEADERS =                \
   debug.h                       \
+  error.h                       \
   field_def.h                   \
   field_impl.h                  \
+  flags.h                       \
   frame_def.h                   \
   frame_impl.h                  \
-  reader.h                      \
+  header.h                      \
+  header_frame.h                \
+  header_tag.h                  \
   reader_decorators.h           \
-  readers.h                     \
+  readers_compressed.h          \
   strings.h                     \
   uint28.h                      \
   utils.h
