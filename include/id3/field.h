@@ -1,4 +1,4 @@
-// $Id: field.h,v 1.6 1999/12/26 16:40:04 scott Exp $
+// $Id: field.h,v 1.7 2000/01/04 15:42:22 eldamitri Exp $
 //  
 // This program is free software; you can distribute it and/or modify it under 
 // the terms discussed in the COPYING file, which should have been included  
@@ -15,7 +15,7 @@
 #ifndef ID3LIB_FIELD_H
 #define ID3LIB_FIELD_H
 
-#include <wchar.h>
+#include <cstdlib>
 #include "types.h"
 #include "error.h"
 
@@ -144,7 +144,7 @@ struct ID3_FrameDef
     if you only plan to generate 3.0 tags.
 
     @author Dirk Mahoney
-    @version $Id: field.h,v 1.6 1999/12/26 16:40:04 scott Exp $
+    @version $Id: field.h,v 1.7 2000/01/04 15:42:22 eldamitri Exp $
     @see ID3_Tag
     @see ID3_Frame
     @see ID3_Err 
@@ -419,6 +419,36 @@ ID3_FrameID   ID3_FindFrameID(const char *id);
 #endif
 
 // $Log: field.h,v $
+// Revision 1.7  2000/01/04 15:42:22  eldamitri
+// * include/id3/field.h:
+// * include/id3/int28.h:
+// * include/id3/misc_support.h:
+// * include/id3/tag.h:
+// * include/id3/types.h:
+// * src/id3/dll_wrapper.cpp
+// * src/id3/error.cpp
+// * src/id3/field.cpp
+// * src/id3/field_binary.cpp
+// * src/id3/field_integer.cpp
+// * src/id3/field_string_ascii.cpp
+// * src/id3/field_string_unicode.cpp
+// * src/id3/frame.cpp
+// * src/id3/frame_parse.cpp
+// * src/id3/frame_render.cpp
+// * src/id3/header.cpp
+// * src/id3/header_frame.cpp
+// * src/id3/header_tag.cpp
+// * src/id3/int28.cpp
+// * src/id3/misc_support.cpp
+// * src/id3/tag.cpp
+// * src/id3/tag_file.cpp:
+// * src/id3/tag_find.cpp:
+// * src/id3/tag_parse.cpp:
+// * src/id3/tag_parse_lyrics3.cpp:
+// For compilation with gcc 2.95.2 and better compatibility with ANSI/ISO
+// standard C++, updated, rearranged, and removed (where necessary)
+// #include directives.
+//
 // Revision 1.6  1999/12/26 16:40:04  scott
 // (class ID3_Field): Cleaned up interface to Parse* methods.
 //

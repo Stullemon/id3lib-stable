@@ -1,4 +1,4 @@
-// $Id: frame_parse.cpp,v 1.10 1999/12/27 05:55:57 scott Exp $
+// $Id: frame_parse.cpp,v 1.11 2000/01/04 15:42:49 eldamitri Exp $
 // 
 // This program is free software; you can distribute it and/or modify it under
 // the terms discussed in the COPYING file, which should have been included
@@ -12,12 +12,12 @@
 // the id3lib coordinator.  Please see the README file for details on where
 // to send such submissions.
 
+#include <zlib.h>
+#include "frame.h"
+
 #if defined HAVE_CONFIG_H
 #include <config.h>
 #endif
-
-#include "frame.h"
-#include <zlib.h>
 
 void ID3_Frame::Parse(uchar *buffer, luint size)
 {
@@ -44,6 +44,36 @@ void ID3_Frame::Parse(uchar *buffer, luint size)
 }
 
 // $Log: frame_parse.cpp,v $
+// Revision 1.11  2000/01/04 15:42:49  eldamitri
+// * include/id3/field.h:
+// * include/id3/int28.h:
+// * include/id3/misc_support.h:
+// * include/id3/tag.h:
+// * include/id3/types.h:
+// * src/id3/dll_wrapper.cpp
+// * src/id3/error.cpp
+// * src/id3/field.cpp
+// * src/id3/field_binary.cpp
+// * src/id3/field_integer.cpp
+// * src/id3/field_string_ascii.cpp
+// * src/id3/field_string_unicode.cpp
+// * src/id3/frame.cpp
+// * src/id3/frame_parse.cpp
+// * src/id3/frame_render.cpp
+// * src/id3/header.cpp
+// * src/id3/header_frame.cpp
+// * src/id3/header_tag.cpp
+// * src/id3/int28.cpp
+// * src/id3/misc_support.cpp
+// * src/id3/tag.cpp
+// * src/id3/tag_file.cpp:
+// * src/id3/tag_find.cpp:
+// * src/id3/tag_parse.cpp:
+// * src/id3/tag_parse_lyrics3.cpp:
+// For compilation with gcc 2.95.2 and better compatibility with ANSI/ISO
+// standard C++, updated, rearranged, and removed (where necessary)
+// #include directives.
+//
 // Revision 1.10  1999/12/27 05:55:57  scott
 // (Parse): Moved header processing tasks to the header object, now a
 // member of ID3_Frame.

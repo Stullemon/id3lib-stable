@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.18 1999/12/26 15:11:51 scott Exp $
+// $Id: misc_support.cpp,v 1.19 2000/01/04 15:42:49 eldamitri Exp $
 // 
 // This program is free software; you can distribute it and/or modify it under
 // the terms discussed in the COPYING file, which should have been included
@@ -12,13 +12,14 @@
 // the id3lib coordinator.  Please see the README file for details on where
 // to send such submissions.
 
+#include <cstdlib>
+#include <cctype>
+#include <cstdio>
+#include "misc_support.h"
+
 #if defined HAVE_CONFIG_H
 #include <config.h>
 #endif
-
-#include "misc_support.h"
-#include <stdlib.h>
-#include <ctype.h>
 
 // Extract a 32-bit number from a 4-byte character array
 size_t ParseNumber(const uchar *buffer, size_t size)
@@ -810,6 +811,36 @@ size_t ID3_RemoveLyrics(ID3_Tag *tag)
 }
 
 // $Log: misc_support.cpp,v $
+// Revision 1.19  2000/01/04 15:42:49  eldamitri
+// * include/id3/field.h:
+// * include/id3/int28.h:
+// * include/id3/misc_support.h:
+// * include/id3/tag.h:
+// * include/id3/types.h:
+// * src/id3/dll_wrapper.cpp
+// * src/id3/error.cpp
+// * src/id3/field.cpp
+// * src/id3/field_binary.cpp
+// * src/id3/field_integer.cpp
+// * src/id3/field_string_ascii.cpp
+// * src/id3/field_string_unicode.cpp
+// * src/id3/frame.cpp
+// * src/id3/frame_parse.cpp
+// * src/id3/frame_render.cpp
+// * src/id3/header.cpp
+// * src/id3/header_frame.cpp
+// * src/id3/header_tag.cpp
+// * src/id3/int28.cpp
+// * src/id3/misc_support.cpp
+// * src/id3/tag.cpp
+// * src/id3/tag_file.cpp:
+// * src/id3/tag_find.cpp:
+// * src/id3/tag_parse.cpp:
+// * src/id3/tag_parse_lyrics3.cpp:
+// For compilation with gcc 2.95.2 and better compatibility with ANSI/ISO
+// standard C++, updated, rearranged, and removed (where necessary)
+// #include directives.
+//
 // Revision 1.18  1999/12/26 15:11:51  scott
 // (ParseNumber): Defined.  Converts a character buffer up to 4 bytes in
 // size into its equivalent big-endian integer equivalent.

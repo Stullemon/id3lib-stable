@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.16 1999/12/27 05:26:42 scott Exp $
+// $Id: tag_render.cpp,v 1.17 2000/01/04 15:42:49 eldamitri Exp $
 // 
 // This program is free software; you can distribute it and/or modify it under
 // the terms discussed in the COPYING file, which should have been included
@@ -12,16 +12,17 @@
 // the id3lib coordinator.  Please see the README file for details on where
 // to send such submissions.
 
-#if defined HAVE_CONFIG_H
-#include <config.h>
-#endif
-
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <fstream>
 #include <memory.h>
 #include "tag.h"
 #include "misc_support.h"
-#include <stdlib.h>
-#include <fstream.h>
+
+#if defined HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 luint ID3_Tag::Render(uchar *buffer)
 {
@@ -403,6 +404,36 @@ luint ID3_Tag::PaddingSize(luint curSize) const
 
 
 // $Log: tag_render.cpp,v $
+// Revision 1.17  2000/01/04 15:42:49  eldamitri
+// * include/id3/field.h:
+// * include/id3/int28.h:
+// * include/id3/misc_support.h:
+// * include/id3/tag.h:
+// * include/id3/types.h:
+// * src/id3/dll_wrapper.cpp
+// * src/id3/error.cpp
+// * src/id3/field.cpp
+// * src/id3/field_binary.cpp
+// * src/id3/field_integer.cpp
+// * src/id3/field_string_ascii.cpp
+// * src/id3/field_string_unicode.cpp
+// * src/id3/frame.cpp
+// * src/id3/frame_parse.cpp
+// * src/id3/frame_render.cpp
+// * src/id3/header.cpp
+// * src/id3/header_frame.cpp
+// * src/id3/header_tag.cpp
+// * src/id3/int28.cpp
+// * src/id3/misc_support.cpp
+// * src/id3/tag.cpp
+// * src/id3/tag_file.cpp:
+// * src/id3/tag_find.cpp:
+// * src/id3/tag_parse.cpp:
+// * src/id3/tag_parse_lyrics3.cpp:
+// For compilation with gcc 2.95.2 and better compatibility with ANSI/ISO
+// standard C++, updated, rearranged, and removed (where necessary)
+// #include directives.
+//
 // Revision 1.16  1999/12/27 05:26:42  scott
 // (Render): Updated for new version constants and inclusion of header in
 // each frame.
