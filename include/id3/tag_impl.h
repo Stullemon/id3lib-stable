@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: tag_impl.h,v 1.5 2000/10/16 08:45:57 eldamitri Exp $
+// $Id: tag_impl.h,v 1.6 2000/10/21 07:07:34 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -109,7 +109,7 @@ public:
   size_t     GetPrependedBytes() const { return _prepended_bytes; }
   size_t     GetAppendedBytes() const { return _appended_bytes; }
   size_t     GetFileSize() const { return _file_size; }
-  const char* GetFileName() const { return _file_name; }
+  dami::String GetFileName() const { return _file_name; }
   
   /// Finds frame with given frame id
   ID3_Frame* Find(ID3_FrameID id) const;
@@ -169,7 +169,7 @@ private:
   mutable bool       _changed; // has tag changed since last parse or render?
   
   // file-related member variables
-  char*      _file_name;       // name of the file we are linked to
+  dami::String _file_name;       // name of the file we are linked to
   size_t     _file_size;       // the size of the file (without any tag(s))
   size_t     _prepended_bytes; // number of tag bytes at start of file
   size_t     _appended_bytes;  // number of tag bytes at end of file
