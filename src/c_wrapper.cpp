@@ -1,4 +1,4 @@
-// $Id: c_wrapper.cpp,v 1.2 2000/04/22 23:33:55 eldamitri Exp $
+// $Id: c_wrapper.cpp,v 1.3 2000/04/24 14:47:14 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -220,7 +220,8 @@ extern "C"
 
 
   ID3_C_EXPORT
-  void ID3Tag_Parse(ID3Tag *tag, uchar header[ ID3_TAGHEADERSIZE ], uchar *buffer)
+  ID3_Err ID3Tag_Parse(ID3Tag *tag, uchar header[ ID3_TAGHEADERSIZE ],
+                       uchar *buffer)
   {
     try
     {
@@ -229,9 +230,11 @@ extern "C"
         ((ID3_Tag *) tag)->Parse(header, buffer);
       }
     }
-    catch (...)
+    catch (ID3_Error &err)
     {
+      return err.GetErrorID();
     }
+    return ID3E_NoError;
   }
 
 
@@ -256,7 +259,7 @@ extern "C"
 
 
   ID3_C_EXPORT
-  void ID3Tag_Update(ID3Tag *tag)
+  ID3_Err ID3Tag_Update(ID3Tag *tag)
   {
     try
     {
@@ -265,13 +268,16 @@ extern "C"
         ((ID3_Tag *) tag)->Update();
       }
     }
-    catch (...)
+    catch (ID3_Error &err)
     {
+      return err.GetErrorID();
     }
+
+    return ID3E_NoError;
   }
 
   ID3_C_EXPORT
-  void ID3Tag_UpdateType(ID3Tag *tag, const luint tag_type)
+  ID3_Err ID3Tag_UpdateByTagType(ID3Tag *tag, const luint tag_type)
   {
     try
     {
@@ -280,14 +286,17 @@ extern "C"
         ((ID3_Tag *) tag)->Update(tag_type);
       }
     }
-    catch (...)
+    catch (ID3_Error &err)
     {
+      return err.GetErrorID();
     }
+
+    return ID3E_NoError;
   }
 
 
   ID3_C_EXPORT
-  void ID3Tag_Strip(ID3Tag *tag, luint ulTagFlags)
+  ID3_Err ID3Tag_Strip(ID3Tag *tag, luint ulTagFlags)
   {
     try
     {
@@ -296,9 +305,12 @@ extern "C"
         ((ID3_Tag *) tag)->Strip(ulTagFlags);
       }
     }
-    catch (...)
+    catch (ID3_Error &err)
     {
+      return err.GetErrorID();
     }
+
+    return ID3E_NoError;
   }
 
 
