@@ -1,4 +1,4 @@
-// $Id: header_frame.cpp,v 1.13 2000/09/27 08:31:20 eldamitri Exp $
+// $Id: header_frame.cpp,v 1.14 2000/09/30 22:13:11 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,6 +24,12 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
+#if defined HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include "debug.h"
+
 #include <string.h>
 #include <memory.h>
 #include "header_frame.h"
@@ -33,10 +39,6 @@
 #include "field_def.h"
 #include "field_impl.h"
 #include "reader_decorators.h"
-
-#if defined HAVE_CONFIG_H
-#include <config.h>
-#endif
 
 void ID3_FrameHeader::SetUnknownFrame(const char* id)
 {
@@ -91,55 +93,30 @@ size_t ID3_FrameHeader::Size() const
     _info->frame_bytes_flags;
 }
 
-size_t ID3_FrameHeader::Parse(const uchar *buffer, size_t size)
+bool ID3_FrameHeader::Parse(ID3_Reader& reader)
 {
-  size_t index = 0;
-  char text_id[5];
-
+  id3::ExitTrigger et(reader);
   if (!_info)
   {
-    return 0;
+    return false;
   }
-
-  strncpy(text_id, (char *) buffer, _info->frame_bytes_id);
-  text_id[_info->frame_bytes_id] = '\0';
-  index += _info->frame_bytes_id;
-
-  ID3_FrameID fid = ID3_FindFrameID(text_id);
-  if (ID3FID_NOFRAME == fid)
+  if (reader.getEnd() < reader.getCur() + 10)
   {
-    this->SetUnknownFrame(text_id);
-  }
-  else
-  {
-    this->SetFrameID(fid);
+    return false;
   }
 
-  this->SetDataSize(id3::parseNumber(&buffer[index], _info->frame_bytes_size));
-  index += _info->frame_bytes_size;
-
-  _flags.add(id3::parseNumber(&buffer[index], _info->frame_bytes_flags));
-  index += _info->frame_bytes_flags;
+  et.setExitPos(reader.getCur() + 10);
   
-  return index;
-}
+  id3::TextReader tr(reader);
+  id3::string text_id = tr.readText(_info->frame_bytes_id);
 
-void ID3_FrameHeader::Parse(ID3_Reader& reader)
-{
-  char text_id[5];
+  ID3D_NOTICE( "ID3_FrameHeader::Parse: text_id = " << text_id );
 
-  if (!_info)
-  {
-    return;
-  }
-
-  reader.readChars(reinterpret_cast<uchar *>(text_id), _info->frame_bytes_id);
-  text_id[_info->frame_bytes_id] = '\0';
-
-  ID3_FrameID fid = ID3_FindFrameID(text_id);
+  ID3_FrameID fid = ID3_FindFrameID(text_id.c_str());
   if (ID3FID_NOFRAME == fid)
   {
-    this->SetUnknownFrame(text_id);
+    this->SetUnknownFrame(text_id.c_str());
+    ID3D_NOTICE( "ID3_FrameHeader::Parse: unknown frame id" );
   }
   else
   {
@@ -147,9 +124,14 @@ void ID3_FrameHeader::Parse(ID3_Reader& reader)
   }
 
   id3::NumberReader nr(reader);
-  this->SetDataSize(nr.readNumber(_info->frame_bytes_size));
+  uint32 dataSize = nr.readNumber(_info->frame_bytes_size);
+  ID3D_NOTICE( "ID3_FrameHeader::Parse: dataSize = " << dataSize );
+  this->SetDataSize(dataSize);
 
-  _flags.add(nr.readNumber(_info->frame_bytes_flags));
+  uint32 flags = nr.readNumber(_info->frame_bytes_flags);
+  _flags.add(flags);
+
+  return true;
 }
 
 size_t ID3_FrameHeader::Render(uchar *buffer) const
