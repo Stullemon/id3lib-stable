@@ -1,4 +1,4 @@
-// $Id: frame.h,v 1.4 1999/11/04 04:15:54 scott Exp $
+// $Id: frame.h,v 1.5 1999/11/04 04:32:11 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -30,7 +30,7 @@ public:
   ID3_Field& Field(ID3_FieldID name);
   
   // *** PRIVATE INTERNAL DATA - DO NOT USE *** PRIVATE INTERNAL DATA - DO NOT USE ***
-  
+private:
   bool HasChanged(void );
   void SetVersion(uchar ver, uchar rev);
   void Parse(uchar *buffer, luint size);
@@ -54,6 +54,9 @@ protected:
 ;
 
 // $Log: frame.h,v $
+// Revision 1.5  1999/11/04 04:32:11  scott
+// Initial revision
+//
 // Revision 1.4  1999/11/04 04:15:54  scott
 // Added cvs Id and Log tags to beginning and end of file, respectively.
 //
