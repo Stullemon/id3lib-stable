@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.22 2000/06/10 16:09:39 adcockj Exp $
+// $Id: tag_render.cpp,v 1.23 2000/06/23 16:33:01 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -382,40 +382,44 @@ void ID3_Tag::RenderV1ToHandle()
 
 void ID3_Tag::RenderV2ToHandle()
 {
-  uchar *buffer;
+  uchar *buffer = NULL;
   
   if (NULL == __file_handle)
   {
     ID3_THROW(ID3E_NoData);
   }
 
-  size_t size = this->Size();
-  if (!size)
+  // Size() returns an over-estimate of the size needed for the tag
+  size_t tag_size = 0;
+  size_t size_est = this->Size();
+  if (size_est)
   {
-    return;
+    buffer = new uchar[size_est];
+    if (NULL == buffer)
+    {
+      ID3_THROW(ID3E_NoMemory);
+    }
+  
+    tag_size = this->Render(buffer);      
+    if (!tag_size)
+    {
+      delete [] buffer;
+      buffer = NULL;
+    }
   }
   
-  buffer = new uchar[size];
-  if (NULL == buffer)
-  {
-    ID3_THROW(ID3E_NoMemory);
-  }
-  
-  size = this->Render(buffer);      
-  if (0 == size)
-  {
-    delete [] buffer;
-    return;
-  }
 
   // if the new tag fits perfectly within the old and the old one
   // actually existed (ie this isn't the first tag this file has had)
   if ((0 == __starting_bytes && 0 == __file_size) || 
-      (size == __starting_bytes))
+      (tag_size == __starting_bytes))
   {
     fseek(__file_handle, 0, SEEK_SET);
-    fwrite(buffer, 1, size, __file_handle);
-    __starting_bytes = size;
+    if (buffer)
+    {
+      fwrite(buffer, 1, tag_size, __file_handle);
+    }
+    __starting_bytes = tag_size;
   }
   else
   {
@@ -428,7 +432,10 @@ void ID3_Tag::RenderV2ToHandle()
       ID3_THROW(ID3E_ReadOnly);
     }
     
-    fwrite(buffer, 1, size, tempOut);
+    if (buffer)
+    {
+      fwrite(buffer, 1, tag_size, tempOut);
+    }
     
     fseek(__file_handle, __starting_bytes, SEEK_SET);
     
@@ -450,7 +457,6 @@ void ID3_Tag::RenderV2ToHandle()
     
     fclose(tempOut);
     
-    __starting_bytes = size;
 #else
 
     // else we gotta make a temp file, copy the tag into it, copy the
@@ -479,7 +485,10 @@ void ID3_Tag::RenderV2ToHandle()
       remove(sTempFile);
       ID3_THROW(ID3E_ReadOnly);
     }
-    tmpOut.write(buffer, size);
+    if (buffer)
+    {
+      tmpOut.write(buffer, tag_size);
+    }
     fseek(__file_handle, __starting_bytes, SEEK_SET);
       
     uchar buffer2[BUFSIZ];
@@ -498,14 +507,19 @@ void ID3_Tag::RenderV2ToHandle()
 
     OpenFileForWriting();
     
-    __starting_bytes = size;
 #endif
+    __starting_bytes = tag_size;
   }
 
-  // make sure that the v2 flag is on
-  __file_tags.add(ID3TT_ID3V2);
-        
-  delete[] buffer;
+  if (tag_size > 0)
+  {
+    // make sure that the v2 flag is on
+    __file_tags.add(ID3TT_ID3V2);
+  }
+  if (buffer)
+  {
+    delete [] buffer;
+  }
     
   return ;
 }
