@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.19 2000/10/14 18:53:47 eldamitri Exp $
+# $Id: Makefile.am,v 1.20 2000/10/14 20:45:08 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -23,7 +23,6 @@ INCLUDES = \
 
 id3lib_sources =                \
   c_wrapper.cpp                 \
-  error.cpp                     \
   field.cpp                     \
   field_binary.cpp              \
   field_integer.cpp             \
