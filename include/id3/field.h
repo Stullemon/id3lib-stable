@@ -1,4 +1,4 @@
-// $Id: field.h,v 1.27 2000/05/12 21:15:34 eldamitri Exp $
+// $Id: field.h,v 1.28 2000/05/28 03:39:32 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -107,7 +107,7 @@ struct ID3_FrameDef
  ** if you only plan to generate 3.0 tags.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: field.h,v 1.27 2000/05/12 21:15:34 eldamitri Exp $
+ ** @version $Id: field.h,v 1.28 2000/05/28 03:39:32 eldamitri Exp $
  ** \sa ID3_Tag
  ** \sa ID3_Frame
  ** \sa ID3_Err 
@@ -233,7 +233,7 @@ public:
   size_t      Get(char *buffer, ///< Where to copy the data
                   size_t,       ///< Maximum number of characters to copy
                   index_t = 1   ///< The item number to retrieve
-                  );
+                  ) const;
 
   /** For fields which support this feature, adds a string to the list of
    ** strings currently in the field.
@@ -291,7 +291,7 @@ public:
    **                 people frame, the item number to retrieve.
    ** \sa #Get
    **/
-  size_t         Get(unicode_t *buffer, size_t, index_t = 1);
+  size_t        Get(unicode_t *buffer, size_t, index_t = 1) const;
   /** For fields which support this feature, adds a string to the list of
    ** strings currently in the field.
    ** 
@@ -323,7 +323,7 @@ public:
    ** \param buffer Where to copy the contents of the field.
    ** \param length The number of bytes in the buffer
    **/
-  void          Get(uchar *buffer, size_t length);
+  void          Get(uchar *buffer, size_t length) const;
   /** Copies binary data from the file specified to the field.
    ** 
    ** \code
