@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.12 2000/04/10 03:40:56 eldamitri Exp $
+// $Id: tag.h,v 1.13 2000/04/11 03:38:15 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -93,7 +93,7 @@ const luint LEN_V1_GENRE   =   1;
  **
  ** @author Dirk Mahoney (dirk@id3.org)
  ** @author Scott Thomas Haug (sth2@cs.wustl.edu)
- ** @version $Id: tag.h,v 1.12 2000/04/10 03:40:56 eldamitri Exp $
+ ** @version $Id: tag.h,v 1.13 2000/04/11 03:38:15 eldamitri Exp $
  ** @see ID3_Tag
  **/
 struct ID3V1_Tag
@@ -156,33 +156,37 @@ const luint ALL_TAG_TYPES = BOTH_ID3_TAGS | LYRICS_TAG;
  ** This is the 'container' class for everything else.  It is through an
  ** ID3_Tag that most of the productive stuff happens.  Let's look at what's
  ** required to start using ID3v2 tags.
- **  
- ** <pre>#include <id3/tag.h&gt;</pre>
  ** 
- ** This simple <code>#include</code> does it all.  In order to read an
- **  existing tag, do the following:
+ ** \code
+ **   #include <id3/tag.h>
+ ** \endcode
+ ** 
+ ** This simple \c #include does it all.  In order to read an
+ ** existing tag, do the following:
  **
- **  <pre>
- **  ID3_Tag myTag;
- **  myTag.Link("something.mp3");</pre>
+ ** \code
+ **   ID3_Tag myTag;
+ **   myTag.Link("something.mp3");
+ ** \endcode
+ ** 
+ ** That is all there is to it.  Now all you have to do is use the 
+ ** <a href="#Find">Find</a> method to locate the frames you are interested in
+ ** is the following:
+ ** 
+ ** \code
+ **   ID3_Frame *myFrame;
+ **   if (myTag.Find(ID3FID_TITLE) == myFrame)
+ **   {
+ **     char title[1024];
+ **     myFrame->Field(ID3FN_TEXT).Get(title, 1024);
+ **     cout << "Title: " << title << endl;
+ **   }
+ ** \endcode
+ ** 
+ ** This code snippet locates the TITLE frame and copies the contents of the
+ ** text field into a buffer and displays the buffer.  Not difficult, eh?
  **
- **  That is all there is to it.  Now all you have to do is use the 
- **  <a href="#Find">Find</a> method to locate the frames you are interested in
- **  is the following:
- **
- **  <pre>
- **  ID3_Frame *myFrame;
- **  if (myTag.Find(ID3FID_TITLE) == myFrame)
- **  {
- **    char title[1024];
- **    myFrame->Field(ID3FN_TEXT).Get(title, 1024);
- **    cout << "Title: " << title << endl;
- **  }</pre>
- **
- **  This code snippet locates the TITLE frame and copies the contents of the
- **  text field into a buffer and displays the buffer.  Not difficult, eh?
- **
- **  When using the <a href="#Link">Link</a> method of an ID3_Tag object, you
+ ** When using the <a href="#Link">Link</a> method of an ID3_Tag object, you
  ** automatically gain access to any ID3v1/1.1, ID3v2, and Lyrics3 v2.0 tags
  ** present in the file.  The class will automaticaly parse and convert any of
  ** these foreign tag formats into ID3v2 tags.  Also, id3lib will correctly
@@ -190,7 +194,7 @@ const luint ALL_TAG_TYPES = BOTH_ID3_TAGS | LYRICS_TAG;
  ** that id3lib 2.16 supports.
  **
  ** @author Dirk Mahoney
- ** @version $Id: tag.h,v 1.12 2000/04/10 03:40:56 eldamitri Exp $
+ ** @version $Id: tag.h,v 1.13 2000/04/11 03:38:15 eldamitri Exp $
  ** @see ID3_Frame
  ** @see ID3_Field
  ** @see ID3_Err
@@ -241,11 +245,12 @@ public:
    ** href="#SetPadding">SetPadding</a>, and <a
    ** href="#SetCompression">SetCompression</a> methods.
    
-   ** <pre>
-   ** if (myTag.HasChanged())
-   ** {
-   **   // render and output the tag
-   ** }</pre>
+   ** \code
+   **   if (myTag.HasChanged())
+   **   {
+   **     // render and output the tag
+   **   }
+   ** \endcode
    
    ** @return Whether or not the tag has been altered.
    **/
@@ -262,7 +267,9 @@ public:
    **
    ** Be default, tags are created without unsync.
    ** 
-   ** <pre>myTag.SetUnsync(false);</pre>
+   ** \code
+   **   myTag.SetUnsync(false);
+   ** \endcode
    ** 
    ** @param bSync Whether the tag should be unsynchronized
    **/
@@ -278,7 +285,9 @@ public:
    ** By default, id3lib will generate extended headers for all tags in which
    ** extended headers are supported.
    ** 
-   ** <pre>myTag.SetExtendedHeader(true);</pre>
+   ** \code
+   **   myTag.SetExtendedHeader(true);
+   ** \endcode
    ** 
    ** @param bExt Whether to render an extended header
    **/
@@ -295,7 +304,9 @@ public:
    ** This method takes a single boolean parameter.  By default, id3lib will
    ** attempt to compress all the frames in a tag.
    ** 
-   ** <pre>myTag.SetCompression(true);</pre>
+   ** \code
+   **   myTag.SetCompression(true);
+   ** \endcode
    ** 
    ** When creating tags for a version of id3v2 in which compression isn't
    ** defined, the tags are simply rendered without compression to ensure
@@ -328,7 +339,9 @@ public:
    ** 
    ** By default, padding is switched on.
    ** 
-   ** <pre>myTag.SetPadding(false);</pre>
+   ** \code
+   **   myTag.SetPadding(false);
+   ** \endcode
    ** 
    ** @param bPad Whether or not render the tag with padding.
    **/
@@ -341,9 +354,10 @@ public:
    ** attach a frame to a tag.  To use, simply supply its parameter a pointer
    ** to the ID3_Frame object you wish to attach.
    ** 
-   ** <pre>
-   ** ID3_Frame myFrame;
-   ** myTag.AddFrame(&myFrame);</pre> 
+   ** \code
+   **   ID3_Frame myFrame;
+   **   myTag.AddFrame(&myFrame);
+   ** \endcode 
    ** 
    ** As stated, this method attaches the frames to the tag---the tag does
    ** not create its own copy of the frame.  Frames created by an application
@@ -361,9 +375,10 @@ public:
    ** responsibility for the added frame, and will delete the frame and its
    ** contents when the tag goes out of scope or is deleted.
    ** 
-   ** <pre>
-   ** ID3_Frame *myFrame = new ID3_Frame;
-   ** myTag.AddFrame(myFrame);</pre> 
+   ** \code
+   **   ID3_Frame *myFrame = new ID3_Frame;
+   **   myTag.AddFrame(myFrame);
+   ** \endcode
    ** 
    ** @param pNewFrame A pointer to the frame that is being added to the tag.
    **/
@@ -375,10 +390,11 @@ public:
    ** Operator<< supports the addition of a pointer to a frame object, or
    ** the frame object itself.
    **
-   ** <pre>
-   ** ID3_Frame *framePoint, frameObj;
-   ** myTag << framePoint;
-   ** myTag << frameObj;</pre>
+   ** \code
+   **   ID3_Frame *framePoint, frameObj;
+   **   myTag << framePoint;
+   **   myTag << frameObj;
+   ** \endcode
    **
    ** Both these methods attach the given frame to the tag---the tag does not
    ** create its own copy of the frame.  Frames created by an application must
@@ -401,11 +417,12 @@ public:
    ** This method attaches each frame in an array to the tag.  As in 
    ** <a href="#AddFrame">AddFrame</a>, the tag doesn't take responsiblity
    ** for freeing the frames' memory when the tag goes out of scope.
-
-   ** <pre>
-   ** ID3_Frame myFrames[10];
-   ** myTag.AddFrames(myFrames, 10);</pre>
-
+   ** 
+   ** \code
+   **   ID3_Frame myFrames[10];
+   **   myTag.AddFrames(myFrames, 10);
+   ** \endcode
+   ** 
    ** @see ID3_Frame
    ** @see ID3_Frame#AddFrame
    ** @param pNewFrames A pointer to an array of frames to be added to the tag.
@@ -421,10 +438,13 @@ public:
    ** the use one of the <a href="#Find">Find</a> methods to obtain a frame
    ** pointer to pass to this method.
    ** 
-   ** <pre>
-   ** ID3_Frame *someFrame;
-   ** if (someFrame = myTag.Find(ID3FID_TITLE))
-   **   myTag.RemoveFrame(someFrame);</pre> 
+   ** \code
+   **   ID3_Frame *someFrame;
+   **   if (someFrame = myTag.Find(ID3FID_TITLE))
+   **   {
+   **     myTag.RemoveFrame(someFrame);
+   **   }
+   ** \endcode
    **   
    ** @see ID3_Tag#Find
    ** @param pOldFrame A pointer to the frame that is to be removed from the
@@ -467,23 +487,24 @@ public:
    ** memory buffer, first use the result of this call to allocate a buffer of
    ** unsigned chars.
    ** 
-   ** <pre>
-   ** luint tagSize;
-   ** uchar *buffer;
-   ** if (myTag.HasChanged())
-   ** {
-   **   if ((tagSize= myTag.Size()) > 0)
+   ** \code
+   **   luint tagSize;
+   **   uchar *buffer;
+   **   if (myTag.HasChanged())
    **   {
-   **     if (buffer = new uchar[tagSize])
+   **     if ((tagSize= myTag.Size()) > 0)
    **     {
-   **       luint actualSize = myTag.Render(buffer);
-   **       // do something useful with the first
-   **       // 'actualSize' bytes of the buffer,
-   **       // like push it down a socket
-   **       delete [] buffer;
+   **       if (buffer = new uchar[tagSize])
+   **       {
+   **         luint actualSize = myTag.Render(buffer);
+   **         // do something useful with the first
+   **         // 'actualSize' bytes of the buffer,
+   **         // like push it down a socket
+   **         delete [] buffer;
+   **       }
    **     }
    **   }
-   ** }</pre>
+   ** \endcode
    **
    ** @see #Render
    ** @return The (overestimated) number of bytes required to store a binary
@@ -494,35 +515,36 @@ public:
   /** Turns a binary tag into a series of ID3_Frame objects attached to the
    ** tag.
    ** 
-   ** <pre>
-   ** ID3_Tag myTag;
-   ** uchar header[ID3_TAGHEADERSIZE];
-   ** uchar *buffer;
-   ** luint tagSize;
+   ** \code
+   **   ID3_Tag myTag;
+   **   uchar header[ID3_TAGHEADERSIZE];
+   **   uchar *buffer;
+   **   luint tagSize;
    ** 
-   ** // get ID3_TAGHEADERSIZE from a socket or somewhere
-   ** ...
+   **   // get ID3_TAGHEADERSIZE from a socket or somewhere
+   **   // ...
    ** 
-   ** if ((tagSize = ID3_IsTagHeader(ourSourceBuffer)) > -1)
-   ** {
-   **   // read a further 'tagSize' bytes in
-   **   // from our data source
-   **   ...
-   **   
-   **   if (buffer = new uchar[tagSize])
+   **   if ((tagSize = ID3_IsTagHeader(ourSourceBuffer)) > -1)
    **   {
-   **     // now we will call ID3_Tag::Parse()
-   **     // with these values (explained later)
-   **     myTag.Parse(header, buffer);
-   **     
-   **     // do something with the objects,
-   **     // like look for titles, artists, etc.
-   **     ...
-   **    
-   **     // free the buffer
-   **     delete [] buffer;
+   **     // read a further 'tagSize' bytes in
+   **     // from our data source
+   **     // ...
+   **   
+   **     if (buffer = new uchar[tagSize])
+   **     {
+   **       // now we will call ID3_Tag::Parse()
+   **       // with these values (explained later)
+   **       myTag.Parse(header, buffer);
+   **       
+   **       // do something with the objects,
+   **       // like look for titles, artists, etc.
+   **       // ...
+   **       
+   **       // free the buffer
+   **       delete [] buffer;
+   **     }
    **   }
-   ** }</pre>
+   ** \endcode
    ** 
    ** @see ID3_Frame
    ** @param header The byte header read in from the data source.
@@ -547,27 +569,28 @@ public:
    ** Link returns a 'luint' which is the byte position within the file that
    ** the audio starts (i.e., where the id3v2 tag ends).
    ** 
-   ** <pre>
-   ** ID3_Tag *myTag;
-   ** if (myTag = new ID3_Tag)
-   ** {
-   **   myTag->Link("mysong.mp3");
+   ** \code
+   **   ID3_Tag *myTag;
+   **   if (myTag = new ID3_Tag)
+   **   {
+   **     myTag->Link("mysong.mp3");
+   **     
+   **     // do whatever we want with the tag
+   **     // ...
    **   
-   **   // do whatever we want with the tag
-   **   ...
-   **   
-   **   // setup all our rendering parameters
-   **   myTag->SetUnsync(false);
-   **   myTag->SetExtendedHeader(true);
-   **   myTag->SetCompression(true);
-   **   myTag->SetPadding(true);
-   **   
-   **   // write any changes to the file
-   **   myTag->Update()
-   **   
-   **   // free the tag
-   **   delete myTag;
-   ** }</pre>
+   **     // setup all our rendering parameters
+   **     myTag->SetUnsync(false);
+   **     myTag->SetExtendedHeader(true);
+   **     myTag->SetCompression(true);
+   **     myTag->SetPadding(true);
+   **     
+   **     // write any changes to the file
+   **     myTag->Update()
+   **     
+   **     // free the tag
+   **     delete myTag;
+   **   }
+   ** \endcode
    ** 
    ** @see ID3_IsTagHeader
    ** @param fileInfo The filename of the file to link to.
@@ -610,15 +633,16 @@ public:
    ** frames, is allowed), then subsequent calls to <a href="#Find">Find</a>
    ** will return subsequent frame pointers, wrapping if necessary.
    ** 
-   ** <pre>
-   ** ID3_Frame *myFrame;
-   ** if (myFrame = myTag.Find(ID3FID_TITLE))
-   ** {
-   **   // do something with the frame, like copy
-   **   // the contents into a buffer, display the
-   **   // contents in a window, etc.
-   **   ...
-   ** }</pre>
+   ** \code
+   **   ID3_Frame *myFrame;
+   **   if (myFrame = myTag.Find(ID3FID_TITLE))
+   **   {
+   **     // do something with the frame, like copy
+   **     // the contents into a buffer, display the
+   **     // contents in a window, etc.
+   **     // ...
+   **   }
+   ** \endcode
    ** 
    ** You may optionally supply to more parameters ot this method, being an
    ** ID3_FieldID and a value of some sort.  Depending on the field name/ID you
@@ -631,13 +655,14 @@ public:
    ** in the second parameter, whose calue matches that which you supplied as
    ** the third parameter.  For example:
    ** 
-   ** <pre>
-   ** ID3_Frame *myFrame;
-   ** if (myFrame = myTag.Find(ID3FID_TITLE, ID3FN_TEXT, "Nirvana"))
-   ** {
-   **   // found it, do something with it.
-   **   ...
-   ** }</pre>
+   ** \code
+   **   ID3_Frame *myFrame;
+   **   if (myFrame = myTag.Find(ID3FID_TITLE, ID3FN_TEXT, "Nirvana"))
+   **   {
+   **     // found it, do something with it.
+   **     // ...
+   **   }
+   ** \endcode
    **     
    ** This example will return the first TITLE frame and whose TEXT field is
    ** 'Nirvana'.  Currently there is no provision for things like 'contains',
@@ -647,13 +672,14 @@ public:
    ** 
    ** Another example...
    ** 
-   ** <pre>
-   ** ID3_Frame *myFrame;
-   ** if (myFrame = myTag.Find(ID3FID_COMMENT, ID3FN_TEXTENC, ID3TE_UNICODE))
-   ** {
-   **   // found it, do something with it.
-   **   ...
-   ** }</pre>
+   ** \code
+   **   ID3_Frame *myFrame;
+   **   if (myFrame = myTag.Find(ID3FID_COMMENT, ID3FN_TEXTENC, ID3TE_UNICODE))
+   **   {
+   **     // found it, do something with it.
+   **     // ...
+   **   }
+   ** \endcode
    ** 
    ** This returns the first COMMENT frame that uses Unicode as its text
    ** encdoing.
@@ -796,6 +822,9 @@ private:
 #endif
 
 // $Log: tag.h,v $
+// Revision 1.13  2000/04/11 03:38:15  eldamitri
+// Updated comments for use with doxygen.
+//
 // Revision 1.12  2000/04/10 03:40:56  eldamitri
 // Started updating comments for doxygen.
 //

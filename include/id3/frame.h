@@ -1,4 +1,4 @@
-// $Id: frame.h,v 1.8 2000/04/10 20:17:35 eldamitri Exp $
+// $Id: frame.h,v 1.9 2000/04/11 03:38:15 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -38,7 +38,7 @@ class ID3_Tag;
  ** the implementation of a complex APIC frame and for a simple text frame.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: frame.h,v 1.8 2000/04/10 20:17:35 eldamitri Exp $
+ ** @version $Id: frame.h,v 1.9 2000/04/11 03:38:15 eldamitri Exp $
  ** @see ID3_Tag
  ** @see ID3_Field
  ** @see ID3_Err
@@ -80,7 +80,9 @@ public:
    ** Either using this call or via the constructor, this must be the first
    ** command performed on an ID3_Frame object.  
    ** 
-   ** <pre>myFrame.SetID(ID3FID_TITLE);</pre>
+   ** \code
+   **   myFrame.SetID(ID3FID_TITLE);
+   ** \endcode
    ** 
    ** @param id The type of frame this frame should be set to
    ** @see ID3_FrameID
@@ -104,9 +106,10 @@ public:
    ** question so that the result can be used as though it were a field
    ** itself.
    **
-   ** <pre>
-   ** ID3_TextEnc enc;
-   ** enc = (ID3_TextEnc) myFrame.Field(ID3FN_TEXTENC).Get(); </pre>
+   ** \code
+   **   ID3_TextEnc enc;
+   **   enc = (ID3_TextEnc) myFrame.Field(ID3FN_TEXTENC).Get();
+   ** \endcode
    ** 
    ** @param name The name of the field to be retrieved
    ** @returns A reference to the desired field
@@ -139,6 +142,9 @@ private:
 ;
 
 // $Log: frame.h,v $
+// Revision 1.9  2000/04/11 03:38:15  eldamitri
+// Updated comments for use with doxygen.
+//
 // Revision 1.8  2000/04/10 20:17:35  eldamitri
 // Updated comments for use with doxygen.
 //

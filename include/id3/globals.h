@@ -1,4 +1,4 @@
-// $Id: globals.h,v 1.6 2000/04/05 05:20:52 eldamitri Exp $
+// $Id: globals.h,v 1.7 2000/04/11 03:38:15 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -48,8 +48,8 @@ typedef uint16                unicode_t;
 const unicode_t NULL_UNICODE = (unicode_t) '\0';
 
 /**
- * Enumeration of the types of text encodings: ascii or unicode
- */
+ ** Enumeration of the types of text encodings: ascii or unicode
+ **/
 enum ID3_TextEnc
 {
   /// ASCII
@@ -60,8 +60,8 @@ enum ID3_TextEnc
 
 
 /**
- * Enumeration of the different types of fields in a frame.
- */
+ ** Enumeration of the different types of fields in a frame.
+ **/
 enum ID3_FieldID
 {
   ID3FN_NOFIELD = 0,    /// No field
@@ -90,8 +90,8 @@ enum ID3_FieldID
 };
 
 /**
- * Enumeration of the different types of frames recognized by id3lib
- */
+ ** Enumeration of the different types of frames recognized by id3lib
+ **/
 enum ID3_FrameID
 {
   /* ???? */ ID3FID_NOFRAME = 0,       /// No known frame

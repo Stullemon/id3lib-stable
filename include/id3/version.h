@@ -1,4 +1,4 @@
-// $Id: version.h,v 1.4 2000/04/07 04:40:32 eldamitri Exp $
+// $Id: version.h,v 1.5 2000/04/11 03:38:15 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,18 +28,16 @@
 #define ID3LIB_VERSION_H
 
 /** id3lib defines some functions for making known the libraries version info.
-    
-    <p>
-    
-    They are used to identify the version and date of the id3lib that is
-    currently being used.
-*/
+ **    
+ ** They are used to identify the version and date of the id3lib that is
+ ** currently being used.
+ **/
 /// Returns the name of the library (i.e., "id3lib")
-const char *ID3_Name(void);
+const char* ID3_Name(void);
 /// Returns the library release (i.e., "3.0.6")
-const char *ID3_Version(void);
+const char* ID3_Version(void);
 /// Returns the full name of the library (i.e., "id3lib-3.0.6")
-const char *ID3_FullName(void);
+const char* ID3_FullName(void);
 /// Returns the library version (i.e., 3)
 unsigned short ID3_Major(void);
 /// Returns the library revision (i.e., 0)
@@ -50,6 +48,9 @@ unsigned short ID3_Patch(void);
 #endif
 
 // $Log: version.h,v $
+// Revision 1.5  2000/04/11 03:38:15  eldamitri
+// Updated comments for use with doxygen.
+//
 // Revision 1.4  2000/04/07 04:40:32  eldamitri
 // Changed the version functions to reflect the name change of release
 // and revision to major and minor.
