@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.16 2000/05/11 12:49:31 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.17 2000/05/12 03:45:11 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -39,6 +39,7 @@
 #include <memory.h>
 #include "tag.h"
 #include "misc_support.h"
+#include "utils.h"
 
 #ifdef  MAXPATHLEN
 #  define ID3_PATH_LENGTH   (MAXPATHLEN + 1)
@@ -48,25 +49,25 @@
 #  define ID3_PATH_LENGTH   (2048 + 1)
 #endif  /* !MAXPATHLEN && !PATH_MAX */
 
-  /** Renders a binary image of the tag into the supplied buffer.
-   ** 
-   ** See <a href="#Size">Size</a> for an example.  This method returns the
-   ** actual number of the bytes of the buffer used to store the tag.  This
-   ** will be no more than the size of the buffer itself, because
-   ** <a href="#Size">Size</a> over estimates the required buffer size when
-   ** padding is enabled.
-   ** 
-   ** Before calling this method, it is advisable to call <a
-   ** href="#HasChanged">HasChanged</a> first as this will let you know
-   ** whether you should bother rendering the tag.
-   ** 
-   ** @see    ID3_IsTagHeader
-   ** @see    ID3_Tag#HasChanged
-   ** @return The actual number of the bytes of the buffer used to store the
-   **         tag
-   ** @param  buffer The buffer that will contain the rendered tag.
-   **/
-luint ID3_Tag::Render(uchar *buffer)
+/** Renders a binary image of the tag into the supplied buffer.
+ ** 
+ ** See <a href="#Size">Size</a> for an example.  This method returns the
+ ** actual number of the bytes of the buffer used to store the tag.  This
+ ** will be no more than the size of the buffer itself, because
+ ** <a href="#Size">Size</a> over estimates the required buffer size when
+ ** padding is enabled.
+ ** 
+ ** Before calling this method, it is advisable to call <a
+ ** href="#HasChanged">HasChanged</a> first as this will let you know
+ ** whether you should bother rendering the tag.
+ ** 
+ ** @see    ID3_IsTagHeader
+ ** @see    ID3_Tag#HasChanged
+ ** @return The actual number of the bytes of the buffer used to store the
+ **         tag
+ ** @param  buffer The buffer that will contain the rendered tag.
+ **/
+size_t ID3_Tag::Render(uchar *buffer) const
 {
   luint bytesUsed = 0;
   
@@ -78,9 +79,7 @@ luint ID3_Tag::Render(uchar *buffer)
   ID3_Elem *cur = __frames;
   ID3_TagHeader header;
     
-  this->SetSpec(ID3V2_LATEST);
-    
-  header.SetSpec(this->GetSpec());
+  header.SetSpec(ID3V2_LATEST);
   bytesUsed += header.Size();
     
   // set up the encryption and grouping IDs
@@ -98,13 +97,13 @@ luint ID3_Tag::Render(uchar *buffer)
     cur = cur->pNext;
   }
     
-  if (__is_unsync)
+  if (__hdr.GetUnsync())
   {
     uchar *tempz;
     luint newTagSize;
     
-    newTagSize = GetUnSyncSize(&buffer[header.Size()], 
-                               bytesUsed - header.Size());
+    newTagSize = ID3_GetUnSyncSize(&buffer[header.Size()], 
+                                   bytesUsed - header.Size());
     if (newTagSize > 0 && (newTagSize + header.Size()) > bytesUsed)
     {
       tempz = new uchar[newTagSize];
@@ -113,8 +112,8 @@ luint ID3_Tag::Render(uchar *buffer)
         ID3_THROW(ID3E_NoMemory);
       }
 
-      UnSync(tempz, newTagSize, &buffer[header.Size()],
-             bytesUsed - header.Size());
+      ID3_UnSync(tempz, newTagSize, &buffer[header.Size()],
+                 bytesUsed - header.Size());
       header.SetUnsync(true);
 
       memcpy(&buffer[header.Size()], tempz, newTagSize);
@@ -168,7 +167,7 @@ luint ID3_Tag::Render(uchar *buffer)
    ** @return The (overestimated) number of bytes required to store a binary
    **         version of a tag
    **/
-luint ID3_Tag::Size() const
+size_t ID3_Tag::Size() const
 {
   luint bytesUsed = 0;
   ID3_Elem *cur = __frames;
@@ -189,7 +188,7 @@ luint ID3_Tag::Size() const
   }
   
   // add 30% for sync
-  if (__is_unsync)
+  if (__hdr.GetUnsync())
   {
     bytesUsed += bytesUsed / 3;
   }
@@ -216,7 +215,7 @@ void ID3_Tag::RenderExtHeader(uchar *buffer)
    **         tag (should always be 128)
    ** @param  buffer The buffer that will contain the id3v1.1 tag.
    **/
-luint ID3_Tag::RenderV1(uchar *buffer)
+size_t ID3_Tag::RenderV1(uchar *buffer) const
 {
   // Sanity check our buffer
   if (NULL == buffer)
@@ -342,7 +341,7 @@ void ID3_Tag::RenderV1ToHandle()
   }
 
   fwrite(sTag, 1, ID3_V1_LEN, __file_handle);
-  __has_v1_tag = true;
+  __file_tags.add(ID3TT_ID3V1);
 }
 
 void ID3_Tag::RenderV2ToHandle()
@@ -375,12 +374,12 @@ void ID3_Tag::RenderV2ToHandle()
 
   // if the new tag fits perfectly within the old and the old one
   // actually existed (ie this isn't the first tag this file has had)
-  if ((0 == __orig_tag_size && 0 == __file_size) || 
-      (size == __orig_tag_size && size != 0))
+  if ((0 == __starting_bytes && 0 == __file_size) || 
+      (size == __starting_bytes && size != 0))
   {
     fseek(__file_handle, 0, SEEK_SET);
     fwrite(buffer, 1, size, __file_handle);
-    __orig_tag_size = size;
+    __starting_bytes = size;
   }
   else
   {
@@ -395,7 +394,7 @@ void ID3_Tag::RenderV2ToHandle()
     
     fwrite(buffer, 1, size, tempOut);
     
-    fseek(__file_handle, __orig_tag_size, SEEK_SET);
+    fseek(__file_handle, __starting_bytes, SEEK_SET);
     
     uchar buffer2[BUFSIZ];
     while (! feof(__file_handle))
@@ -415,7 +414,7 @@ void ID3_Tag::RenderV2ToHandle()
     
     fclose(tempOut);
     
-    __orig_tag_size = size;
+    __starting_bytes = size;
 #else
 
     // else we gotta make a temp file, copy the tag into it, copy the
@@ -445,7 +444,7 @@ void ID3_Tag::RenderV2ToHandle()
       ID3_THROW(ID3E_ReadOnly);
     }
     tmpOut.write(buffer, size);
-    fseek(__file_handle, __orig_tag_size, SEEK_SET);
+    fseek(__file_handle, __starting_bytes, SEEK_SET);
       
     uchar buffer2[BUFSIZ];
     while (! feof(__file_handle))
@@ -459,7 +458,7 @@ void ID3_Tag::RenderV2ToHandle()
     remove(__file_name);
     rename(sTempFile, __file_name);
     
-    __orig_tag_size = size;
+    __starting_bytes = size;
 #endif
   }
         
@@ -473,7 +472,7 @@ void ID3_Tag::RenderV2ToHandle()
 #define ID3_PADMAX  (4096)
 
 
-luint ID3_Tag::PaddingSize(luint curSize) const
+size_t ID3_Tag::PaddingSize(size_t curSize) const
 {
   luint newSize = 0;
   
@@ -486,10 +485,10 @@ luint ID3_Tag::PaddingSize(luint curSize) const
   // if the old tag was large enough to hold the new tag, then we will simply
   // pad out the difference - that way the new tag can be written without
   // shuffling the rest of the song file around
-  if (__orig_tag_size && (__orig_tag_size >= curSize) && 
-      (__orig_tag_size - curSize) < ID3_PADMAX)
+  if (__starting_bytes && (__starting_bytes >= curSize) && 
+      (__starting_bytes - curSize) < ID3_PADMAX)
   {
-    newSize = __orig_tag_size;
+    newSize = __starting_bytes;
   }
   else
   {
