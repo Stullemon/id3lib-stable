@@ -1,3 +1,23 @@
+2000-04-27  Scott Haug  <scott@id3.org>
+
+	* src/tag_render.cpp 
+	(RenderV2ToHandle): Fixes a nasty bug when saving a V2 tag to a file
+	(thanks John Adcock)
+
+	* src/field.cpp: 
+	Fixed bugs in creation and assignment (thanks John Adcock)
+
+	* src/field_binary.cpp 
+	(Set): Now handles the case when null data is passed in (thanks John 
+	Adcock)
+
+	* id3com/ID3Tag.cpp 
+	(FindFrame): Updated to use AttachFrame (thanks John Adcock)
+	(FindFrameString): Updated to use AttachFrame (thanks John Adcock)
+
+	* id3com/Sample/frmID3Test.frm: 
+	Extended the sample with more utility (thanks John Adcock)
+
 2000-04-26  Scott Haug  <scott@id3.org>
 
 	* NEWS 
