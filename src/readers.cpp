@@ -1,4 +1,4 @@
-// $Id: readers.cpp,v 1.1 2000/10/02 17:08:13 eldamitri Exp $
+// $Id: readers.cpp,v 1.2 2000/10/09 04:28:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -33,10 +33,10 @@
 
 using namespace dami;
 
-ID3_Reader::streamsize
-ID3_MemoryReader::readChars(char_type buf[], streamsize len)
+ID3_Reader::size_type
+ID3_MemoryReader::readChars(char_type buf[], size_type len)
 {
-  streamsize size = ::min<streamsize>(len, _end - _cur);
+  size_type size = ::min<size_type>(len, _end - _cur);
   ::memcpy(buf, _cur, size);
   _cur += size;
   return size;
