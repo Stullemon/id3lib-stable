@@ -16,14 +16,16 @@ else
 LDADD = $(top_builddir)/src/libid3.la
 endif
 
-bin_PROGRAMS            = id3info id3convert id3tag
+bin_PROGRAMS            = id3info id3convert id3tag id3cp
 check_PROGRAMS          = \
   id3simple               \
   testpic                 \
   testunicode             \
   testcompression         \
+  testremove              \
   get_pic                 \
   findeng
+id3cp_SOURCES           = demo_copy.cpp
 id3info_SOURCES         = demo_info.cpp
 id3convert_SOURCES      = demo_convert.cpp
 id3tag_SOURCES          = demo_tag.cpp
@@ -31,6 +33,7 @@ id3simple_SOURCES       = demo_simple.c
 testpic_SOURCES         = test_pic.cpp
 testunicode_SOURCES     = test_unicode.cpp
 testcompression_SOURCES = test_compression.cpp
+testremove_SOURCES      = test_remove.cpp
 get_pic_SOURCES         = get_pic.cpp
 findeng_SOURCES         = findeng.cpp
 
