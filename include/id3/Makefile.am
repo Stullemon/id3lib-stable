@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.5 2000/05/02 20:35:43 eldamitri Exp $
+# $Id: Makefile.am,v 1.6 2000/05/05 03:35:09 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -22,9 +22,11 @@ the_headers =                   \
   misc_support.h                \
   sized_types.h                 \
   spec.h                        \
-  tag.h                         \
-  uint28.h                      \
-  utils.h                       
+  tag.h
 
 id3includedir      = $(includedir)/id3
 id3include_HEADERS = $(the_headers)
+
+noinst_HEADERS = \
+  uint28.h       \
+  utils.h
