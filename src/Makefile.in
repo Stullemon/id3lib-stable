@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.38 2000/10/08 20:26:59 eldamitri Exp $
+# $Id: Makefile.in,v 1.39 2000/10/09 19:07:17 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -80,6 +80,7 @@ DOX_DIR_HTML = @DOX_DIR_HTML@
 DOX_DIR_LATEX = @DOX_DIR_LATEX@
 DOX_DIR_MAN = @DOX_DIR_MAN@
 DOX_DIR_RTF = @DOX_DIR_RTF@
+EXEEXT = @EXEEXT@
 ID3LIB_BINARY_AGE = @ID3LIB_BINARY_AGE@
 ID3LIB_DATE = @ID3LIB_DATE@
 ID3LIB_DEBUG_FLAGS = @ID3LIB_DEBUG_FLAGS@

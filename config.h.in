@@ -31,7 +31,7 @@
  * or static methods.
  */
 #undef HAVE_ZLIB
-#undef HAVE_POPTLIB
+#undef HAVE_GETOPT_LONG
 #undef ID3LIB_DEBUG
 #undef _ID3LIB_NAME
 #undef _ID3LIB_DATE
@@ -44,6 +44,9 @@
 #undef _ID3LIB_BINARY_AGE
 #undef _ID3_COMPILED_WITH_DEBUGGING
 /* */
+
+/* Define if you have the getopt_long function.  */
+#undef HAVE_GETOPT_LONG
 
 /* Define if you have the mkstemp function.  */
 #undef HAVE_MKSTEMP
@@ -95,9 +98,6 @@
 
 /* Define if you have the <memory.h> header file.  */
 #undef HAVE_MEMORY_H
-
-/* Define if you have the <popt.h> header file.  */
-#undef HAVE_POPT_H
 
 /* Define if you have the <stdio.h> header file.  */
 #undef HAVE_STDIO_H

@@ -30,7 +30,7 @@
  * or static methods.
  */
 #undef HAVE_ZLIB
-#undef HAVE_POPTLIB
+#undef HAVE_GETOPT_LONG
 #undef ID3LIB_DEBUG
 #undef _ID3LIB_NAME
 #undef _ID3LIB_DATE
