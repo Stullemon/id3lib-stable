@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.31 2000/05/12 04:24:17 eldamitri Exp $
+// $Id: tag.h,v 1.32 2000/05/12 21:12:48 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -77,7 +77,6 @@ public:
   flags_t    Update(flags_t = (flags_t) ID3TT_ID3V2);
   flags_t    Strip(flags_t = (flags_t) ID3TT_ALL);
 
-  //@{
   /// Finds frame with given frame id
   ID3_Frame* Find(ID3_FrameID id) const;
 
@@ -89,7 +88,6 @@ public:
 
   /// Finds frame with given frame id, fld id, and unicode data
   ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, const unicode_t *) const;
-  //@}
 
   /** Returns the number of frames present in the tag object.
    ** 
@@ -126,7 +124,7 @@ protected:
   void       RenderExtHeader(uchar *);
   ID3_Err    OpenFileForWriting();
   ID3_Err    OpenFileForReading();
-  void       CreateFile();
+  ID3_Err    CreateFile();
   bool       CloseFile();
 
   void       RenderV1ToHandle();
@@ -164,6 +162,6 @@ ID3_Tag& operator<<(ID3_Tag&, const ID3_Frame *);
 //@}
 
 // deprecated!
-lsint ID3_IsTagHeader(const uchar header[ID3_TAGHEADERSIZE]);
+int32 ID3_IsTagHeader(const uchar header[ID3_TAGHEADERSIZE]);
 
 #endif /* __ID3LIB_TAG_H__ */
