@@ -1,3 +1,11 @@
+1999-11-29  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* AUTHORS: 
+	Included text from contact.txt in original distribution.
+
+	* configure.in: 
+	Added many more checks.  Restructured into more logical groups.
+
 1999-11-25  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* Makefile.am (EXTRA_DIST): Added HISTORY and TODO

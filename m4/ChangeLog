@@ -1,3 +1,16 @@
+1999-11-29  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* sh_types.m4: 
+	Added.  Defines size-specific typedefs based on macro defs in limits.h.
+
+	* lf_cxx_convenience.m4: 
+	Added.  Pulled out non-portability macros from lf_cxx.m4.
+
+	* lf_cxx.m4: Moved conenience macros to lf_cxx_convenience.m4.
+
+	* Makefile.am, Makefile.in: Added sh_types.m4 and lf_cxx_convenience.m4
+	to distribution.
+
 1999-11-15  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* Makefile.am: Adjusted so that the macros aren't installed.
