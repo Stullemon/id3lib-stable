@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/xhtml1-transitional.dtd">
-<!-- $Id: index.html.in,v 1.1 2000/04/17 04:55:04 eldamitri Exp $ -->
+<!-- $Id: index.html.in,v 1.2 2000/04/21 19:39:27 eldamitri Exp $ -->
 <html>
   <head>
     <title>id3lib - The ID3v2 C++ Class Library</title>
@@ -219,7 +219,7 @@
 
               <li>
 
-                <a href="html/index.html">Documentation for the id3lib API</a>
+                <a href="@DOX_DIR_HTML@/index.html">Documentation for the id3lib API</a>
                 is available thanks to the <a
                 href="http://www.stack.nl/~dimitri/doxygen/">Doxygen</a>
                 documentation system.
