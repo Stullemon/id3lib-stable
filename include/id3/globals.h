@@ -1,4 +1,4 @@
-/* $Id: globals.h,v 1.16 2000/05/02 21:59:43 eldamitri Exp $
+/* $Id: globals.h,v 1.17 2000/05/04 20:51:27 eldamitri Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags Copyright
  * 1999, 2000 Scott Thomas Haug
@@ -163,6 +163,8 @@ ID3_ENUM(ID3_FieldID)
   ID3FN_VOLCHGLEFT,     /**< Volume chage on the left channel */
   ID3FN_PEAKVOLRIGHT,   /**< Peak volume on the right channel */
   ID3FN_PEAKVOLLEFT,    /**< Peak volume on the left channel */
+  ID3FN_TIMESTAMPFORMAT,/**< SYLT Timestamp Format */
+  ID3FN_CONTENTTYPE,    /**< SYLT content type */
   ID3FN_LASTFIELDID     /**< Last field placeholder */
 };
 
@@ -266,7 +268,7 @@ ID3_ENUM(ID3_V1Lengths)
  **
  ** @author Dirk Mahoney (dirk@id3.org)
  ** @author Scott Thomas Haug (sth2@cs.wustl.edu)
- ** @version $Id: globals.h,v 1.16 2000/05/02 21:59:43 eldamitri Exp $
+ ** @version $Id: globals.h,v 1.17 2000/05/04 20:51:27 eldamitri Exp $
  ** @see ID3_Tag
  **/
 ID3_STRUCT(ID3V1_Tag)
