@@ -1,4 +1,4 @@
-# $Id: id3lib.spec.in,v 1.20 2000/09/15 00:03:02 eldamitri Exp $
+# $Id: id3lib.spec.in,v 1.21 2000/09/30 22:20:21 eldamitri Exp $
 
 %define name    @PACKAGE@
 %define	version	@VERSION@
@@ -88,7 +88,7 @@ RPM_OPT_FLAGS="-O3 -fomit-frame-pointer -pipe -s -mcpu=$ID3_ARCH -march=$ID3_ARC
 
 %endif
 
-CXXFLAGS="$RPM_OPT_FLAGS -fexceptions" ./configure --prefix=%prefix
+CXXFLAGS="$RPM_OPT_FLAGS -fexceptions" ./configure --prefix=%prefix --enable-debug=no
 
 %ifnarch noarch
 
