@@ -1,5 +1,18 @@
 1999-12-01  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
+	* configure.in: 
+	Changed the release information for 3.6.1.
+
+	* NEWS:
+	Updated for the 3.6.1 release.
+
+	* README:
+	Spelling error corrected.
+
+	* ChangeLog:
+	Coalesced all the ChangeLog's (previously one for each directory) into
+	this toplevel ChangeLog.
+
 	* src/id3/tag_render.cpp
 	(RenderV1ToHandle): Removed reference to tagV1---not used.  Other
 	minor windows-compatibility fixes.  (thanks elrod)
@@ -17,8 +30,6 @@
 	* include/id3/misc_support.h: 
 	Minor declaraction problem (thanks elrod).
 
-	* configure.in: Upped the patch number to 1.
-
 	* include/id3/Makefile.am
 	* include/Makefile.am
 	(EXTRA_DIST): Removed.  No extra files to distribute
@@ -29,9 +40,47 @@
 	* configure.in 
 	(AC_OUTPUT): Added include/Makefile and include/id3/Makefile
 
-	* include/id3/Makefile.am: Added.
+	* include/id3/Makefile.am: 
+	Added.
 
-	* include/Makefile.am: Added.
+	* include/Makefile.am: 
+	Added.
+
+	* src/id3/Makefile.am
+	(INCLUDES): Now points to new, toplevel include directory.
+	(the_headers, id3includedir, id3include_HEADERS): Removed.  Headers are
+	no longer in this directory.
+
+	* src/id3/dll_wrapper.cpp
+	* src/id3/error.cpp
+	* src/id3/field.cpp
+	* src/id3/field_binary.cpp
+	* src/id3/field_integer.cpp
+	* src/id3/field_string_ascii.cpp
+	* src/id3/field_string_unicode.cpp
+	* src/id3/frame.cpp
+	* src/id3/frame_parse.cpp
+	* src/id3/frame_render.cpp
+	* src/id3/header.cpp
+	* src/id3/header_frame.cpp
+	* src/id3/header_tag.cpp
+	* src/id3/int28.cpp
+	* src/id3/misc_support.cpp
+	* src/id3/tag.cpp
+	* src/id3/tag_file.cpp
+	* src/id3/tag_find.cpp
+	* src/id3/tag_parse.cpp
+	* src/id3/tag_parse_lyrics3.cpp
+	* src/id3/tag_parse_v1.cpp
+	* src/id3/tag_render.cpp
+	* src/id3/tag_sync.cpp
+	* src/id3/version.cpp:
+	Changed all of the #include <id3/*> to #include "*" to help ensure that
+	the sources are searched for in the right places (and to make compiling
+	under windows easier).
+
+	* src/examples/Makefile.am
+	(INCLUDES): Updated to point to new toplevel include directory.
 
 1999-11-30  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
@@ -61,6 +110,47 @@
 	writers, so I'm torn.  Added versioning macro definitions normally
 	found in version.h.  Probably not the best place for this...
 
+	* src/id3/version.cpp: 
+	Added.  Implements version functions declared in version.h.
+
+	* src/id3/sized_types.h: 
+	Added.  Converted from sh_types.h in toplevel m4 directory.  Defines
+	size-specific types based on macros in limits.h.  int8, uint8, int16,
+	uint16, int32, uint32.
+
+	* src/id3/version.h: 
+	Changed from preprocessor macros to functions.  Now changes to top
+	level configure.in with regards to version info will be reflected in
+	these functions without having to change this file.
+
+	* src/id3/types.h
+	* src/id3/misc_support.h: 
+	Removed include for wchar.h
+
+	* src/id3/misc_support.cpp: 
+	No more SIZE_SPECIFIC_TYPES code.  No more code for wchar's.  Typedefs
+	in sized_types.h guarantee that unicode_t will be two bytes.
+
+	* src/id3/globals.h: 
+	No longer includes config.h.  No more SIZE_SPECIFIC_TYPES code.  No
+	more code for wchar_t.  Added include for sized_types.h.
+
+	* src/id3/Makefile.am
+	(the_headers): Added sized_headers.h
+	(the_sources): Added version.cpp
+	(LTVERSION): Updated to make use of configure.in variables.
+
+	* src/examples/demo_info.cpp
+	* src/examples/demo_convert.cpp: 
+	Updated to reflect changes from version macros to version functions.
+
+	* m4/Makefile.am
+ 	(m4macros): Removed sh_types.m4.
+
+	* m4/sh_types.m4:
+	Removed.  Content now in src/id3/sized_types.h (a more appropriate
+	file).
+
 1999-11-29  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* configure.in:
@@ -72,29 +162,566 @@
 	* configure.in: 
 	Added many more checks.  Restructured into more logical groups.
 
+	* src/id3/Makefile.am: 
+	(the_headers): Added globals.h to header file listing.
+
+	* src/id3/misc_support.h: 
+	Renamed ID3_ASCIItoUnicode to mbstoucs.  Renamed ID3_UnicodeToASCII to
+	ucstombs.  Added declarations for ucslen, ucscpy, ucsncpy, ucscmp, and
+	ucsncmp.
+
+	* src/id3/globals.h: 
+	Updated documentation to work better with doc++ (probably doesn't work
+	well with kdoc anymore).  Added the unicode_t typedef.
+
+	* src/id3/version.h: 
+	Updated documentation to work better with doc++ (probably doesn't work
+	well with kdoc anymore).  Updated the constants.
+
+	* src/id3/misc_support.cpp: 
+	(): Made includsion of wchar.h dependant on SIZE_SPECIFIC_TYPES.
+	Put in compile-time checks to compile differently based on the 
+	definition of unicode_t.
+	(mbstoucs): Renamed from ID3_ASCIItoUnicode.  
+	(ucstombs): Renamed from ID3_UnicodeToASCII.
+	(ucslen): Added.  Returns the length of a unicode character string.
+	(ucscpy): Added.  Copies one unicode string to another.
+	(ucsncpy): Added.  Copies n chars from one unicode string to another.
+	(ucscmp): Added.  Compares two unicode strings.
+	(ucsncmp): Added.  Compares the first n chars of two unicode strings.
+
+	* src/id3/tag_find.cpp: 
+	(): Updated methods to use unicode_t instead of wchar_t.  unicode_t is
+	defined in globals.h.  The type unicode_t is more likely to be two
+	bytes on every platform.  Updated calls to unicode methods to more
+	general methods defined in misc_support.cpp.
+
+	* src/id3/field_string_unicode.cpp
+	(): Updated methods to use unicode_t instead of wchar_t.  unicode_t is
+	defined in globals.h.  The type unicode_t is more likely to be two
+	bytes on every platform.  Updated calls to unicode methods to more
+	general methods defined in misc_support.cpp.
+	(ParseUnicodeString): Fixed a bug (?) to make unicode parsing work.
+	Not really sure if this is the source of the bug, or if there is a
+	more pervasive misunderstanding of the format of unicode.  Need to 
+	check on this.
+
+	* src/id3/field_string_ascii.cpp: 
+	Updated methods to use unicode_t instead of wchar_t.  unicode_t is
+	defined in globals.h.  The type unicode_t is more likely to be two
+	bytes on every platform.  Updated calls to unicode methods to more
+	general methods defined in misc_support.cpp.
+
+	* src/id3/field.cpp: 
+	Updated methods to use unicode_t instead of wchar_t.  unicode_t is
+	defined in globals.h.  The type unicode_t is more likely to be two
+	bytes on every platform.
+
+	* src/id3/error.h
+	* src/id3/field.h
+	* src/id3/frame.h
+	* src/id3/tag.h:
+	Updated documentation to work better with doc++ (probably doesn't work
+	well with kdoc anymore).
+
+	* src/id3/dll.h
+	* src/id3/dll_wrapper.cpp: 
+	Updated unicode function declarations to now pass unicode_t instead of
+	wchar_t.  unicode_t now defined in globals.h.
+
+	* doc/Makefile.am:
+	Removed refs to removed files.
+	
+	* doc/Makefile.am
+	(SUBDIRS): Added.
+
+	* m4/sh_types.m4: 
+	Added.  Defines size-specific typedefs based on macro defs in limits.h.
+
+	* m4/lf_cxx_convenience.m4: 
+	Added.  Pulled out non-portability macros from lf_cxx.m4.
+
+	* m4/lf_cxx.m4: Moved conenience macros to lf_cxx_convenience.m4.
+
+	* m4/Makefile.am
+	* m4/Makefile.in: 
+	Added sh_types.m4 and lf_cxx_convenience.m4 to distribution.
+
+1999-11-26  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* doc/contact.txt: 
+	Removed.  Relevant information updated and included in README and 
+	AUTHORS.
+
+	* doc/software.txt: 
+	Removed.  No longer applies to this fork.
+
+	* doc/bugreport.txt
+	* doc/id3v2-3.00.txt
+	* doc/id3guide.html
+	* doc/logo.txt
+	* doc/contact.txt:
+	dos2unix'ified
+
+	* doc/licence.txt: 
+	Removed.  Replaced with COPYING file in top dir.
+
+	* doc/zlib_readme.txt: 
+	Removed.  zlib sources no longer included in the distribution.
+
+	* doc/id3libhistory.txt: 
+	Removed.  Replaced with HISTORY file in top dir.
+
+	* doc/id3lib305.doc: 
+	Removed.  Replaced with inline documentation found in source,
+ 	converted into various formats (html, latex, texinfo, man) using
+ 	doc++ or kdoc.
+
 1999-11-25  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
-	* Makefile.am (EXTRA_DIST): Added HISTORY and TODO
+	* Makefile.am 
+	(EXTRA_DIST): Added HISTORY and TODO
 
-	* AUTHORS: Minor clarification.
+	* AUTHORS: 
+	Minor clarification.
 
-	* COPYING: Change from the GPL to the original statement about being
-	in the Public Domain.
+	* COPYING: 
+	Change from the GPL to the original statement about being in the Public
+ 	Domain.
 
-	* TODO, HISTORY: Initial revision.
+	* TODO
+	* HISTORY: 
+	Initial revision.
 
-	* NEWS: Actually added some news.
+	* NEWS: 
+	Actually added some news.
 
-	* README: Filled the README with semi-useful information.
+	* README: 
+	Filled the README with semi-useful information.
 
-	* THANKS: Transcribed the Thanks section from Dirkk's original 
-	documentation.
+	* THANKS: 
+	Transcribed the Thanks section from Dirk's original documentation.
+
+	* src/id3/version.h: 
+	Added doc++/kdoc/javadoc-like documentation.  Replaced #define's with
+	const's.
+
+	* src/id3/types.h: 
+	Removed typedefs, which are now included in the globas.h file.
+
+	* src/id3/tag.h
+	(): Added doc++/kdoc/javadoc-like documentation, mostly transcribed
+	from Dirk's ID3Lib Documentation MSWord doc.
+	(ID3_TagTypes): Added.  The different types of tags that can be parsed
+	and/or rendered by id3lib.
+	(class ID3_Tag): Changed the interface to AddFrame slightly.  Now there
+	is two AddTag-like methods: AddTag and AddNewTag.  The former merely
+	attaches the frame to the tag without taking repsonsibility for 
+	deallocating the frame when the tag goes out of scope or is deleted.
+	The latter does take this responsibility.  Granted, there could be a
+	better interface for this, but it works for now...  Update and Strip
+	now return flags which indicate what tags were actually updated or
+	stripped.  Removed OpenLinkedFile method; replaced with 
+	OpenFileForReading, OpenFileForWriting, and CreateFile.
+
+	* src/id3/frame.h: 
+	Added doc++/kdoc/javadoc-like documentation, mostly transcribed
+	from Dirk's ID3Lib Documentation MSWord doc.
+	
+	* src/id3/field.h
+	(): Added doc++/kdoc/javadoc-like documentation, mostly transcribed
+	from Dirk's ID3Lib Documentation MSWord doc.
+	(ID3_FieldFlags ): Created enumeration to replace generic constants.
+	(ID3_FieldID): Removed.  Replaced in globals.h.
+	(ID3_FrameID): Removed.  Replaced in globals.h.
+	(class ID3_Field): Made the constructor private.
+
+	* src/id3/error.h 
+	(): Added doc++/kdoc/javadoc-like documentation.
+	(ID3_Err): Added error types SmallBuffer and ReadOnly.
+
+	* src/id3/misc_support.cpp: 
+	Replaced every call to AddFrame with AddNewFrame.
+
+	* src/id3/tag_render.cpp
+	(Render): Replaced manual array initialization with call to memset.
+	(GenerateTempName): Removed method.  No longer used.
+	(RenderV1): New method.  Renders an id3v1 tag to an array.
+	(RenderV1ToHandle): Moved work of writing tag to array to RenderV1.
+	(RenderV2ToHandle): Rather than generating a temporary file name with
+	mktemp (or similar) and opening that file name to a temporary file,
+	we now use tmpfile to create a temporary file directly.  Unfortunately,
+	this means we can't just rename the tempfile to the original file
+	when all the copying is done, so we have to perform a second copy from
+	the temp file back to the original.  This makes the code less efficient
+	but more portable, as we rely on tmpfile for knowing where to create
+	the temporary file.  To improve, we'll need to figure out a portable
+	mechanism for creating temporary files (i.e., resolve the differences
+	between /tmp/ and C:\temp\).
+
+	* src/id3/tag_parse.cpp 
+	(ProcessBinaries): Minor code reorg.
+
+	* src/id3/tag_file.cpp
+	(OpenLinkedFile): Removed method.  Replaced with CreateFile,
+	OpenFileForReading, and OpenFileForWriting.
+	(CreateFile): New method.  Creates a new file with file name sFileName.
+	Throws if unable to.
+	(OpenFileForWriting): New method.  Opens a file with write permissions.
+	Throws if unable to.
+	(OpenFileForReading): New method.  Opens a file with read permissions.
+	Throws if unable to.
+	(CloseFile): New method.  Closes a file.  Returns true if successful,
+	false otherwise.
+	(Link): Now dynamically allocate sFileName.  Make use of new method
+	OpenFileForReading rather than OpenLinkedFile.  Closes the file
+	when done.
+	(Update): Now returns a flag indicating which tags were actually
+	written.  Calls OpenFileForWriting to open the file appropriately.
+	Closes the file when done.
+	(Strip): Now returns a flag indicating which tags were actually
+	written.  Now strips a file "in place," by copying the non-stripped
+	information to the beginning of the file and using ftruncate to chop
+	off the rest.  Prevents having to create a temporary file.  Calls
+	OpenFileForWriting to open the file appropriately.  Closes the file
+	when done.
+
+	* src/id3/tag.cpp 
+	(SetupTag): Initialized sFileName to NULL rather than the empty string
+	to indicate no filename is present.
+	(ID3_Tag): Deleted sFileName if allocated.  Added call to CloseFile.
+	(AddFrame): Modified to reflect change in interface.  AddFrame now adds
+	a frame without taking responsibility for deallocating the memory when
+	the tag goes out of scope.
+	(AddNewFrame): New method.  AddNewFrame adds a frame and takes 
+	responsibility for deallocating the frame when the tag goes out of 
+	scope.
+
+	* src/id3/error.cpp 
+	(ID3_ErrorDescs): Added descriptions for new error types.
+	(ID3_Error): Minor bugfix in string copying.
+
+	* src/id3/dll.h: 
+	Removed many of the enums and typedefs to globals.h to reduce 
+	redundancy.
+
+	* src/id3/globals.h: 
+	Added.  Includes constants, typedefs, and enums common to several
+	files that were redundantly copying them.
+
+	* src/examples/Makefile.am: 
+	Removed demo_strip from the make rules.
+
+	* src/examples/demo_strip.cpp: 
+	Removed.  Functionality now in demo_convert.cpp with the -s flag.
+	
+	* src/examples/demo_convert.cpp
+	(PrintUsage): Added for printing usage information.
+	(PrintVersion): Added for printing version information.
+	(DisplayTags): Added for printing out the contents of a tag flag.
+	(main): Modified to make use of command-line options via option.h.  
+	Can now choose which type of tag to convert to, can convert multiple
+	tags at once.  Can print out usage and version info.  Added stripping
+	capabilities with the -s flag.
+
+	* doc/id3libhistory.txt: 
+	Rerformatted to fit within 80 characters.
+
+1999-11-19  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* src/id3/tag_render.cpp
+	(RenderV1ToHandle): Added.  Adds or overwrites an id3v1 tag to a file
+	handle.  Needs testing.
+	(RenderV2ToHandle): Renamed from RenderToHandle.
+
+	* src/id3/tag_parse_v1.cpp 
+	(ID3_RemoveTrailingSpaces): Minor code cleanup.
+	(ParseID3v1): Massive recoding of method to make use of new functions
+	defined in misc_support.  Simplifies flow of method.
+
+	* src/id3/tag_find.cpp 
+	(Find): Add const qualifier.
+
+	* src/id3/tag_file.cpp 
+	(Update): Changed parameter to be a flag which indicates which type of
+	tag to update, either V1_TAG, V2_TAG, or BOTH_TAGS.  Updated method to
+	act appropriately based on the parameter passed in.
+	(Strip): Changed parameter to be a flag which indicates which type of
+	tag to update, either V1_TAG, V2_TAG, or BOTH_TAGS.  Updated method to
+	act appropriately based on the parameter passed in.
+
+	* src/id3/tag.h: 
+	Added new constants: STR_V1_COMMENT_DESC (to be added to the
+ 	description of comments converted from id3v1 tags); V1_TAG,
+ 	V2_TAG, and BOTH_TAGS (used for methods Strip and Update to
+ 	determine which tag to act on); and LEN_V1, LEN_V1_ID,
+ 	LEN_V1_TITLE, LEN_V1_ARTIST, LEN_V1_ALBUM, LEN_V1_YEAR,
+ 	LEN_V1_COMMENT, LEN_V1_GENRE (the lengths of the id3v1 tag and its
+ 	fields). Generalized ID3V1_Tag struct using newly defined
+ 	constants.  Added 1 to each char array size for null terminator.
+  	Added const qualifier to appropriate methods and parameters.
+  	Added declaration of RenderV1ToHandle method.  Renamed
+ 	"RenderToHandle" to "RenderV2ToHandle".
+
+	* src/id3/misc_support.h: 
+	Added the function declarations for ID3_GetString, ID3_GetArtist,
+ 	ID3_GetAlbum, ID3_GetTitle, ID3_GetYear, ID3_AddYear,
+ 	ID3_GetComment, ID3_AddComment, ID3_GetTrack, ID3_GetTrackNum,
+ 	ID3_AddTrack, ID3_GetGenre, ID3_GetGenreNum, and ID3_GetLyrics.
+
+	* src/id3/misc_support.cpp 
+	(ID3_ASCIItoUnicode): Updated interface to make parameters const.  
+	Replaced content of the code with call to mbstowcs, a function defined
+	in wchar.h for converting from a regular string to a wchar string.  The
+	original code might be reinstated if another type is used to store 
+	unicode characters.
+	(ID3_UnicodeToASCII): Updated interface to make parameters const.  
+	Replaced content of the code with call to wcstombs, a function defined
+	in wchar.h for converting from a wchar string to a regular string.  The
+	original code might be reinstated if another type is used to store 
+	unicode characters.
+	(ID3_GetString): Added.  Returns a dynamically-allocated copy of the
+	string contained in the frame/field parameters.
+	(ID3_GetArtist): Added.  Returns the artist as a string.  Will return
+	the LEADARTIST, the BAND, the CONDUCTOR, or the COMPOSER, whichever is
+	found first in that order.
+	(ID3_GetAlbum): Added.  Returns the album as a string.
+	(ID3_GetTitle): Added.  Returns the song title as a string.
+	(ID3_GetYear): Added.  Returns the year as a string.
+	(ID3_AddYear): Added.  Adds the year as a string to the frame.
+	(ID3_GetComment): Added.  Returns the first comment found as a string.
+	(ID3_AddComment): Added. Adds the comment as a string with the
+	description stored in STR_V1_COMMENT_DESC, currently "ID3v1_Comment".
+	Won't add if a tag with that or no description already exists.
+	(ID3_GetTrack): Added.  Returns the track number as a string.
+	(ID3_GetTrackNum): Added.  Returns the track number as an unsigned
+	integer.
+	(ID3_AddTrack): Added.  Adds the track number and track total as a
+	string in the form "N/T", where N is the track number and T is the
+	total.  If no total is indicated, then only the track number is added.
+	(ID3_GetGenre): Added.  Returns the genre as a string.
+	(ID3_GetGenreNum): Added. Returns the genre as a number.
+	(ID3_AddGenre): Added.  Adds the genre number as a string in the form
+	"(G)", where G is the genre number.
+	(ID3_GetLyrics): Added.  Gets the unsynced lyrics as a string.
+
+	* src/id3/field_string_unicode.cpp 
+	(operator=): Updated interface to make parameters const.
+	(Set): Updated interface to make parameters const.  Bug fix for fixed
+	length strings.  Minor variable renaming.
+	(Add): Updated interface to make parameters const.
+	(Get): Updated interface to make parameters const.  Fixed bug which 
+	would add a null character to the string regardless of the length of
+	string requested.  Now only adds a null when the actual length of the
+	string is less than the maxium number of characters requested.
+
+	* src/id3/field_string_ascii.cpp 
+	(operator=): Updated interface to make parameters const.
+	(Set): Updated interface to make parameters const.  Bug fix for fixed
+	length strings.
+	(Get): Removed check for nonempty strings so empty strings would be
+	set correctly.  Minor code cleanup.
+	(Add): Updated interface to make parameters const.  Made variable name
+	more descriptive.
+
+	* src/id3/field_integer.cpp 
+	(ParseInteger): Updated interface to make parameters const.
+
+	* src/id3/field_binary.cpp 
+	(Set): Updated interface to make parameters const.
+	(FromFile): Updated interface to make parameters const.
+	(ToFile): Updated interface to make parameters const.
+	(ParseBinary): Updated interface to make parameters const.
+
+	* src/id3/field.h 
+	(class ID3_Field): Updated method interfaces to make appropriate
+	parameters const.
+
+	* src/id3/field.cpp
+	(BinSize): Added check for an ascii string when called by Size, since
+	we store every string internally as unicode.
+	(Parse): Updated interface to make parameters const.
+	(ID3_FindFrameDef): Updated interface to make parameter const.
+	(ID3_FindFrameID): Updated interface to make parameter const.
+
+	* src/id3/dll_wrapper.cpp
+ 	(ID3Tag_Strip): Updated for interface change to
+	Tag::Strip.  Now accepts tag flags rather than a v1 boolean.
+
+	* src/examples/Makefile.am: 
+	Added compilation options for demo_strip.cpp
+
+	* src/examples/demo_info.cpp: 
+	Added runtime options for version and help.  Minor code cleanup.
+
+	* src/examples/demo_strip.cpp: Initial revision.
+
+1999-11-16  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* src/id3/tag_parse.cpp
+	(ProcessBinaries): Added try/catch block to catch any exceptions so
+	that the parser can carry on parsing the rest of the frames if any
+	particular frame is poorly encoded.  Need to add some sort of
+	mechanism to determine how many frames exist, how many have been 
+	parsed correctly and how many have been parsed incorrectly.
+
+	* src/id3/field_string_unicode.cpp
+	(ParseUnicodeString): Put in sanity check for indices so that
+	memcpy doesn't go out of bounds. Made unicode code more specific
+	to the type of data storing unicode characters.  This fix doesn't
+	work if the type is different than two bytes in size.  Need to fix
+	so that the type is guaranteed to be two bytes.
+	(RenderUnicodeString): Made unicode code more specific to the type
+	of data storing unicode characters.
+	
+	* src/id3/field_string_ascii.cpp
+	(ParseASCIIString): Added sanity check for indices so we don't
+ 	call memcpy with out-of-bounds indices.
+
+	* src/id3/field.cpp 
+	(Render): Minor reformatting.
+
+	* src/id3/error.h 
+	(ID3_Err): Added new ID3_Err: ID3E_BadData.
+
+	* src/id3/error.cpp 
+	(ID3_ErrorDescs): Added text entry for ID3E_BadData.
 
 1999-11-15  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
-	* configure.in, configure: 
+	* configure.in
+	* configure: 
 	Changed the distribution version to 3.0.6pre1.
 
-	* Makefile.am, Makefile.in: 
+	* Makefile.am
+	* Makefile.in: 
 	Added EXTRA_DIST and moved EXTRA_SUBDIRS to SUBDIRS.
+
+	* src/Makefile.am 
+	(EXTRA_DIST): Added ChangeLog.
+	(SUBDIRS): Added examples.
+
+	* src/id3/Makefile.am: 
+	Upped the version info to 3.0.6.
+
+	* src/id3/tag_render.cpp:
+	Added include for config.h.  Minor code cleanup.  Removed
+	assignments from if checks; first makes assignment, then checks
+	for appropriate value.  Made private member variable names more
+	descriptive.  Now uses mktemp rather than mkstemp in
+	GenerateTempName so that a file descriptor isn't created along
+	with the temporary name.
+
+	* src/id3/tag_find.cpp:
+	Added include for config.h.  Removed assignments from if checks;
+	first makes assignment, then checks for appropriate value.  Made
+	private member variable names more descriptive.  Major code
+	cleanup: use of for loops instead of while's to ease code
+	readability, more compact looping structures to reduce possibility 
+	in coding or human parsing errors,
+
+	* src/id3/tag_file.cpp:
+	Added include for config.h.  Minor code cleanup.  Removed
+	assignments from if checks; first makes assignment, then checks
+	for appropriate value.  Made private member variable names more
+	descriptive.  OpenLinkedFile now checks to see if the file is
+	writable or not, and still opens the file, even if it can't be
+	written to.  This needs to be more robust (i.e., we shouldn't be
+	creating temp files if the file isn't writable).  Made use of
+	bFileWrtiable variable, which was introduced.
+	
+	* src/id3/tag.h:
+	Made variable names more descriptive.  Added const qualifier to
+	appropriate methods.
+	
+	* src/id3/int28.cpp: 
+	Added include for config.h. Changed some ints to luints to avoid
+	compiler warnings.
+
+	* src/id3/header.h
+	* src/id3/header_frame.h:
+	Made variable names more descriptive.
+	
+	* src/id3/header.cpp:
+	Added include for config.h.  Minor code cleanup.  Made private
+	member variable names more descriptive.  Fixed bug I introduced in
+	logic of checking version/revision numbers in
+	ID3_LookupHeaderInfo, and cleaned up the code in the process.
+
+	* src/id3/frame.h: 
+	Made ID3_Tag a friend of ID3_Frame to allow access to the private
+	members in ID3_Frame.  Made variable names more descriptive.
+	Added const qualifier to appropriate methods.
+
+	* src/id3/field_binary.cpp
+	* src/id3/field_integer.cpp
+	* src/id3/field_string_ascii.cpp
+	* src/id3/field_string_unicode.cpp
+	* src/id3/frame.cpp
+	* src/id3/frame_render.cpp
+	* src/id3/header_frame.cpp
+	* src/id3/misc_support.cpp
+	* src/id3/tag.cpp, tag_parse.cpp
+	* src/id3/tag_parse_lyrics3.cpp
+	* src/id3/tag_parse_v1.cpp
+	* src/id3/tag_sync.cpp:
+	Added include for config.h.  Minor code cleanup.  Removed
+	assignments from if checks; first makes assignment, then checks
+	for appropriate value.  Made private member variable names more
+	descriptive.
+
+	* src/id3/field.h:
+	Made ID3_Frame and ID3_Tag friends of the ID3_Field class to allow
+	access to the private members in ID3_Field.  Made ID3FF field
+	flags const luints, rather than #define's.  Made member variable
+	names of classes and structs more descriptive.  
+	
+	* src/id3/field.cpp: 
+	Added include for config.h.  Replaced LU_NULL with ID3FF_NONE for
+	more consistency in flag naming.  Blocked out the ID3FD_Volume
+	array definition since it is currently unused.  Reformatted
+	ID3_FrameDefs for easier reading (although most lines are more
+	than 80 chars long now).  Made private member variable names more
+	descriptive.  Fixed bug in SetVersion (was checking "rev != rev").
+ 	Adjusted logic somewhat in BinSize to ease code reading.  Fixed
+	bug in BinSize that was causing incorrect parsing of correct
+	frames, such as COMM (previously assumed a wchar_t is 2 bytes,
+	which might not be true on some platforms).
+
+	* src/id3/error.h:
+	Made constructor public.  Added new interface to error reporting
+	to allow for more descriptive error messages (this should still be
+	worked on).  Made private member variable names more descriptive.
+	Added const qualifier to appropriate methods.
+
+	* src/id3/error.cpp: 
+	Added include for config.h.  Added new interface to error
+	reporting to allow for more descriptive error messages (this
+	should still be worked on).  Made private member variable names
+	more descriptive. 
+
+	* src/id3/dll_wrapper.cpp
+	* src/id3/frame_parse.cpp
+	* src/id3/header_tag.cpp:
+	Added include for config.h.  Made variable names more descriptive.
+
+	* src/id3/Makefile.am
+	* src/id3/Makefile.in: 
+	Updated versioning info and CXXFLAGS
+
+	* src/examples/Makefile.am: 
+	Added macros to allow for compiling test programs id3convert and 
+	id3info.
+
+	* src/examples/demo_convert.cpp: 
+	More descriptive error message.
+
+	* src/examples/demo_main.cpp: 
+	Reformatted, dos2unix, cleaned up code, etc.
+
+	* doc/Makefile.am 
+	(EXTRA_DIST): Added doc files that are to be distributed.
+
+	* m4/Makefile.am: 
+	Adjusted so that the macros aren't installed.
 
