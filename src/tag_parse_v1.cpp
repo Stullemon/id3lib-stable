@@ -1,4 +1,4 @@
-// $Id: tag_parse_v1.cpp,v 1.14 2000/10/03 04:51:27 eldamitri Exp $
+// $Id: tag_parse_v1.cpp,v 1.15 2000/10/09 04:31:00 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -34,25 +34,15 @@
 #include "utils.h"
 #include "reader_decorators.h"
 
-namespace dami
-{
-  namespace id3
-  {
-    namespace v1
-    {
-      bool parse(ID3_TagImpl& tag, ID3_Reader& reader);
-    };
-  };
-};
-
 using namespace dami;
 
 bool id3::v1::parse(ID3_TagImpl& tag, ID3_Reader& reader)
 {
-  ID3_Reader::pos_type end = reader.getCur();
+  io::ExitTrigger et(reader);
   
+  ID3_Reader::pos_type end = reader.getCur();
   // posn ourselves at 128 bytes from the current position
-  if (end < ID3_V1_LEN)
+  if (end < reader.getBeg() + ID3_V1_LEN)
   {
     ID3D_NOTICE( "id3::v1::parse: not enough bytes to parse, pos = " << end );
     return false;
@@ -64,7 +54,6 @@ bool id3::v1::parse(ID3_TagImpl& tag, ID3_Reader& reader)
   {
     ID3D_WARNING( "id3::v1::parse: failed to reposition " << ID3_V1_LEN << 
                   " bytes" );
-    reader.setCur(end);
     return false;
   }
   
@@ -75,35 +64,49 @@ bool id3::v1::parse(ID3_TagImpl& tag, ID3_Reader& reader)
   // check to see if it was a tag
   if (id != "TAG")
   {
-    tr.setCur(end);
     return false;
   }
+  et.setExitPos(beg);
   
+  io::TrailingSpacesReader tsr(reader);
   // guess so, let's start checking the v2 tag for frames which are the
   // equivalent of the v1 fields.  When we come across a v1 field that has
   // no current equivalent v2 frame, we create the frame, copy the data
   // from the v1 frame and attach it to the tag
-  String title = tr.readText(ID3_V1_LEN_TITLE);
-  //id3::removeTrailingSpaces(title);
-  id3::v2::setTitle(tag, title);
-  ID3D_NOTICE( "id3::v1::parse: title = " << title );
+  ID3D_NOTICE("id3::v1::parse: read bytes: " << tsr.getCur() - beg);
+  String title = tsr.readString(ID3_V1_LEN_TITLE);
+  if (title.size() > 0)
+  {
+    id3::v2::setTitle(tag, title);
+  }
+  ID3D_NOTICE( "id3::v1::parse: title = \"" << title << "\"" );
   
-  String artist = tr.readText(ID3_V1_LEN_ARTIST);
-  //id3::removeTrailingSpaces(title);
-  id3::v2::setTitle(tag, artist);
-  ID3D_NOTICE( "id3::v1::parse: artist = " << artist );
+  ID3D_NOTICE("id3::v1::parse: read bytes: " << tsr.getCur() - beg);
+  String artist = tsr.readString(ID3_V1_LEN_ARTIST);
+  if (artist.size() > 0)
+  {
+    id3::v2::setArtist(tag, artist);
+  }
+  ID3D_NOTICE( "id3::v1::parse: artist = \"" << artist << "\"" );
   
-  String album = tr.readText(ID3_V1_LEN_ALBUM);
-  //id3::removeTrailingSpaces(title);
-  id3::v2::setTitle(tag, album);
-  ID3D_NOTICE( "id3::v1::parse: album = " << title );
+  ID3D_NOTICE("id3::v1::parse: read bytes: " << tsr.getCur() - beg);
+  String album = tsr.readString(ID3_V1_LEN_ALBUM);
+  if (album.size() > 0) 
+  {
+    id3::v2::setAlbum(tag, album);
+  }
+  ID3D_NOTICE( "id3::v1::parse: album = \"" << title << "\"" );
   
-  String year = tr.readText(ID3_V1_LEN_YEAR);
-  //id3::removeTrailingSpaces(title);
-  id3::v2::setYear(tag, year);
-  ID3D_NOTICE( "id3::v1::parse: year = " << year );
+  ID3D_NOTICE("id3::v1::parse: read bytes: " << tsr.getCur() - beg);
+  String year = tsr.readString(ID3_V1_LEN_YEAR);
+  if (year.size() > 0)
+  {
+    id3::v2::setYear(tag, year);
+  }
+  ID3D_NOTICE( "id3::v1::parse: year = \"" << year << "\"" );
   
-  String comment = tr.readText(ID3_V1_LEN_COMMENT);
+  ID3D_NOTICE("id3::v1::parse: read bytes: " << tsr.getCur() - beg);
+  String comment = tsr.readString(ID3_V1_LEN_COMMENT);
   if (comment.length() == ID3_V1_LEN_COMMENT  &&
       '\0' == comment[ID3_V1_LEN_COMMENT - 2] ||
       '\0' != comment[ID3_V1_LEN_COMMENT - 1])
@@ -112,18 +115,28 @@ bool id3::v1::parse(ID3_TagImpl& tag, ID3_Reader& reader)
     // number.  
     size_t track = comment[ID3_V1_LEN_COMMENT - 1];
     id3::v2::setTrack(tag, track, 0);
-    ID3D_NOTICE( "id3::v1::parse: track = " << track );
-    comment = comment.substr(0, ID3_V1_LEN_COMMENT - 1);
+    ID3D_NOTICE( "id3::v1::parse: track = \"" << track << "\"" );
+
+    ID3D_NOTICE( "id3::v1::parse: comment length = \"" << comment.length() << "\"" );
+    io::StringReader sr(comment);
+    io::TrailingSpacesReader tsr2(sr);
+    comment = tsr2.readString(ID3_V1_LEN_COMMENT - 2);
   }
-  //id3::removeTrailingSpaces(tagID3v1.sComment, 
-  id3::v2::setComment(tag, comment, STR_V1_COMMENT_DESC, "XXX");
-  ID3D_NOTICE( "id3::v1::parse: comment = " << comment );
+  ID3D_NOTICE( "id3::v1::parse: comment = \"" << comment << "\"" );
+  if (comment.size() > 0)
+  {
+    id3::v2::setComment(tag, comment, STR_V1_COMMENT_DESC, "XXX");
+  }
   
+  ID3D_NOTICE("id3::v1::parse: read bytes: " << tsr.getCur() - beg);
   // the GENRE field/frame
-  uchar genre = tr.readChar();
-  id3::v2::setGenre(tag, genre);
-  ID3D_NOTICE( "id3::v1::parse: genre = " << (int) genre );
-  
-  reader.setCur(beg);
+  uchar genre = tsr.readChar();
+  if (genre != 0xFF) 
+  {
+    id3::v2::setGenre(tag, genre);
+  }
+  ID3D_NOTICE( "id3::v1::parse: genre = \"" << (int) genre << "\"" );
+
+  ID3D_NOTICE("id3::v1::parse: read bytes: " << tsr.getCur() - beg);
   return true;
 }
