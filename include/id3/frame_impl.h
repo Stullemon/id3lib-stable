@@ -1,4 +1,5 @@
-// $Id: frame_impl.h,v 1.1 2000/10/01 00:03:28 eldamitri Exp $
+// -*- C++ -*-
+// $Id: frame_impl.h,v 1.2 2000/10/09 01:53:54 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -47,8 +48,8 @@ public:
   
   ID3_Field*  GetField(ID3_FieldID name) const;
 
-  size_t      GetNumFields() const;
-  ID3_Field*  GetFieldAt(index_t) const;
+  size_t      NumFields() const;
+  ID3_Field*  GetFieldNum(index_t) const;
   
   const char* GetDescription() const;
   static const char* GetDescription(ID3_FrameID);
@@ -57,10 +58,9 @@ public:
 
   ID3_FrameImpl&  operator=(const ID3_Frame &);
   bool        HasChanged() const;
-  size_t      Parse(const uchar *buffer, size_t size);
   bool        Parse(ID3_Reader&);
+  void        Render(ID3_Writer&) const;
   size_t      Size();
-  size_t      Render(uchar *buffer) const;
   bool        Contains(ID3_FieldID fld) const
   { return BS_ISSET(_field_bitset, fld) > 0; }
   bool        SetSpec(ID3_V2Spec);
@@ -102,8 +102,6 @@ public:
   }
   uchar GetGroupingID() const { return _grouping_id; }
 
-  // Deprecated
-  ID3_Field&  Field(ID3_FieldID name) const;
 protected:
   bool        _SetID(ID3_FrameID);
   bool        _ClearFields();
