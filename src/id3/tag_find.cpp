@@ -1,4 +1,4 @@
-// $Id: tag_find.cpp,v 1.5 1999/11/15 20:20:47 scott Exp $
+// $Id: tag_find.cpp,v 1.6 1999/11/19 19:10:14 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -21,7 +21,7 @@
 #include <id3/tag.h>
 #include <id3/misc_support.h>
 
-ID3_Elem *ID3_Tag::Find(ID3_Frame *frame)
+ID3_Elem *ID3_Tag::Find(ID3_Frame *frame) const
 {
   ID3_Elem *elem = NULL;
   
@@ -198,6 +198,9 @@ ID3_Frame *ID3_Tag::operator[](luint num) const
 }
 
 // $Log: tag_find.cpp,v $
+// Revision 1.6  1999/11/19 19:10:14  scott
+// * tag_find.cpp (Find): Add const qualifier.
+//
 // Revision 1.5  1999/11/15 20:20:47  scott
 // Added include for config.h.  Removed assignments from if checks;
 // first makes assignment, then checks for appropriate value.  Made
