@@ -1,4 +1,4 @@
-// $Id: tag_parse_musicmatch.cpp,v 1.11 2000/10/03 04:51:27 eldamitri Exp $
+// $Id: tag_parse_musicmatch.cpp,v 1.12 2000/10/09 04:30:48 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -109,70 +109,69 @@ namespace dami
       TextFrameReader(ID3_Reader& reader) : SUPER(reader) { ; }
       virtual ~TextFrameReader() { ; }
 
-      ID3_Frame* readFrame(ID3_FrameID id, const String desc = "")
-      {
-        LENumberReader nr(*this);
-        uint32 size = nr.readInteger(2);
-        ID3D_NOTICE( "io::TextFrameReader::readFrame() size = " << size );
-        if (size == 0)
-        {
-          return NULL;
-        }
-
-        String text;
-        if (ID3FID_SONGLEN != id)
-        {
-          LineFeedReader lfr(*this);
-          TextReader tr(lfr);
-          text = tr.readText(size);
-          ID3D_NOTICE( "io::TextFrameReader::readFrame() text = " << text );
-        }
-        else
-        {
-          TimeReader tr(*this);
-          text = toString(tr.readSeconds(size));
-          ID3D_NOTICE( "io::TextFrameReader::readFrame() songlen = " << text );
-        }
-        //wr.setCur(this->getEnd());
-
-        ID3_Frame* frame = new ID3_Frame(id);
-        if (frame)
-        {
-          if (frame->Contains(ID3FN_TEXT))
-          {
-            frame->Field(ID3FN_TEXT).Set(text.c_str());
-          }
-          else if (frame->Contains(ID3FN_URL))
-          {
-            frame->Field(ID3FN_URL).Set(text.c_str());
-          }
-          if (frame->Contains(ID3FN_LANGUAGE))
-          {
-            frame->Field(ID3FN_LANGUAGE).Set("XXX");
-          }
-          if (frame->Contains(ID3FN_DESCRIPTION))
-          {
-            frame->Field(ID3FN_DESCRIPTION).Set(desc.c_str());
-          }
-        }
-        return frame;
-      }
     };
   };
-
-  namespace mm
-  {
-    bool parse(ID3_TagImpl& tag, ID3_Reader& rdr);
-  }
 };
 
 using namespace dami;
 
+namespace 
+{
+  
+  ID3_Frame* readTextFrame(ID3_Reader& reader, ID3_FrameID id, const String desc = "")
+  {
+    io::LENumberReader nr(reader);
+    uint32 size = nr.readInteger(2);
+    ID3D_NOTICE( "io::TextFrameReader::readFrame() size = " << size );
+    if (size == 0)
+    {
+      return NULL;
+    }
+    
+    String text;
+    if (ID3FID_SONGLEN != id)
+    {
+      io::LineFeedReader lfr(reader);
+      io::TextReader tr(lfr);
+      text = tr.readText(size);
+      ID3D_NOTICE( "io::TextFrameReader::readFrame() text = " << text );
+    }
+    else
+    {
+      io::TimeReader tr(reader);
+      text = toString(tr.readSeconds(size));
+      ID3D_NOTICE( "io::TextFrameReader::readFrame() songlen = " << text );
+    }
+    
+    ID3_Frame* frame = new ID3_Frame(id);
+    if (frame)
+    {
+      if (frame->Contains(ID3FN_TEXT))
+      {
+        frame->GetField(ID3FN_TEXT)->Set(text.c_str());
+      }
+      else if (frame->Contains(ID3FN_URL))
+      {
+        frame->GetField(ID3FN_URL)->Set(text.c_str());
+      }
+      if (frame->Contains(ID3FN_LANGUAGE))
+      {
+        frame->GetField(ID3FN_LANGUAGE)->Set("XXX");
+      }
+      if (frame->Contains(ID3FN_DESCRIPTION))
+      {
+        frame->GetField(ID3FN_DESCRIPTION)->Set(desc.c_str());
+      }
+    }
+    return frame;
+  }
+};
+  
 bool mm::parse(ID3_TagImpl& tag, ID3_Reader& rdr)
 {
+  io::ExitTrigger et(rdr);
   ID3_Reader::pos_type end = rdr.getCur();
-  io::ExitTrigger et(rdr, end);
-  if (end < 48)
+  if (end < rdr.getBeg() + 48)
   {
     ID3D_NOTICE( "mm::parse: bailing, not enough bytes to parse, pos = " << end );
     return false;
@@ -328,7 +327,8 @@ bool mm::parse(ID3_TagImpl& tag, ID3_Reader& rdr)
     
   // Parse the image extension at offset 0
   dataWindow.setCur(offsets[0]);
-  String imgExt = ::removeTrailingSpaces(tr.readText(4));
+  io::TrailingSpacesReader tsr(tr);
+  String imgExt = tsr.readString(4);
     
   // Parse the image binary at offset 1
   dataWindow.setCur(offsets[1]);
@@ -355,11 +355,11 @@ bool mm::parse(ID3_TagImpl& tag, ID3_Reader& rdr)
       {
         String mimetype("image/");
         mimetype += imgExt;
-        frame->Field(ID3FN_MIMETYPE).Set(mimetype.c_str());
-        frame->Field(ID3FN_IMAGEFORMAT).Set("");
-        frame->Field(ID3FN_PICTURETYPE).Set(static_cast<unsigned int>(0));
-        frame->Field(ID3FN_DESCRIPTION).Set("");
-        frame->Field(ID3FN_DATA).Set(reinterpret_cast<const uchar*>(imgData.data()), imgData.size());
+        frame->GetField(ID3FN_MIMETYPE)->Set(mimetype.c_str());
+        frame->GetField(ID3FN_IMAGEFORMAT)->Set("");
+        frame->GetField(ID3FN_PICTURETYPE)->Set(static_cast<unsigned int>(0));
+        frame->GetField(ID3FN_DESCRIPTION)->Set("");
+        frame->GetField(ID3FN_DATA)->Set(reinterpret_cast<const uchar*>(imgData.data()), imgData.size());
         tag.AttachFrame(frame);
       }
     }
@@ -368,25 +368,24 @@ bool mm::parse(ID3_TagImpl& tag, ID3_Reader& rdr)
   //file.seekg(offsets[2]);
   //file.seekg(offsets[3]);
   dataWindow.setCur(offsets[4]);
-  io::TextFrameReader tfr(dataWindow);
     
-  tag.AttachFrame(tfr.readFrame(ID3FID_TITLE));
-  tag.AttachFrame(tfr.readFrame(ID3FID_ALBUM));
-  tag.AttachFrame(tfr.readFrame(ID3FID_LEADARTIST));
-  tag.AttachFrame(tfr.readFrame(ID3FID_CONTENTTYPE));
-  tag.AttachFrame(tfr.readFrame(ID3FID_COMMENT, "MusicMatch_Tempo"));
-  tag.AttachFrame(tfr.readFrame(ID3FID_COMMENT, "MusicMatch_Mood"));
-  tag.AttachFrame(tfr.readFrame(ID3FID_COMMENT, "MusicMatch_Situation"));
-  tag.AttachFrame(tfr.readFrame(ID3FID_COMMENT, "MusicMatch_Preference"));
-  tag.AttachFrame(tfr.readFrame(ID3FID_SONGLEN));
+  tag.AttachFrame(readTextFrame(dataWindow, ID3FID_TITLE));
+  tag.AttachFrame(readTextFrame(dataWindow, ID3FID_ALBUM));
+  tag.AttachFrame(readTextFrame(dataWindow, ID3FID_LEADARTIST));
+  tag.AttachFrame(readTextFrame(dataWindow, ID3FID_CONTENTTYPE));
+  tag.AttachFrame(readTextFrame(dataWindow, ID3FID_COMMENT, "MusicMatch_Tempo"));
+  tag.AttachFrame(readTextFrame(dataWindow, ID3FID_COMMENT, "MusicMatch_Mood"));
+  tag.AttachFrame(readTextFrame(dataWindow, ID3FID_COMMENT, "MusicMatch_Situation"));
+  tag.AttachFrame(readTextFrame(dataWindow, ID3FID_COMMENT, "MusicMatch_Preference"));
+  tag.AttachFrame(readTextFrame(dataWindow, ID3FID_SONGLEN));
     
   // The next 12 bytes can be ignored.  The first 8 represent the 
   // creation date as a 64 bit floating point number.  The last 4 are
   // for a play counter.
-  tfr.skipChars(12);
+  dataWindow.skipChars(12);
     
-  tag.AttachFrame(tfr.readFrame(ID3FID_COMMENT, "MusicMatch_Path"));
-  tag.AttachFrame(tfr.readFrame(ID3FID_COMMENT, "MusicMatch_Serial"));
+  tag.AttachFrame(readTextFrame(dataWindow, ID3FID_COMMENT, "MusicMatch_Path"));
+  tag.AttachFrame(readTextFrame(dataWindow, ID3FID_COMMENT, "MusicMatch_Serial"));
     
   // 2 bytes for track
   uint32 trkNum = nr.readInteger(2);
@@ -396,19 +395,19 @@ bool mm::parse(ID3_TagImpl& tag, ID3_Reader& rdr)
     ID3_Frame* frame = new ID3_Frame(ID3FID_TRACKNUM);
     if (frame)
     {
-      frame->Field(ID3FN_TEXT).Set(trkStr.c_str());
+      frame->GetField(ID3FN_TEXT)->Set(trkStr.c_str());
       tag.AttachFrame(frame);
     }
   }
     
-  tag.AttachFrame(tfr.readFrame(ID3FID_COMMENT, "MusicMatch_Notes"));
-  tag.AttachFrame(tfr.readFrame(ID3FID_COMMENT, "MusicMatch_Bio"));
-  tag.AttachFrame(tfr.readFrame(ID3FID_UNSYNCEDLYRICS));
-  tag.AttachFrame(tfr.readFrame(ID3FID_WWWARTIST));
-  tag.AttachFrame(tfr.readFrame(ID3FID_WWWCOMMERCIALINFO));
-  tag.AttachFrame(tfr.readFrame(ID3FID_COMMENT, "MusicMatch_ArtistEmail"));
+  tag.AttachFrame(readTextFrame(dataWindow, ID3FID_COMMENT, "MusicMatch_Notes"));
+  tag.AttachFrame(readTextFrame(dataWindow, ID3FID_COMMENT, "MusicMatch_Bio"));
+  tag.AttachFrame(readTextFrame(dataWindow, ID3FID_UNSYNCEDLYRICS));
+  tag.AttachFrame(readTextFrame(dataWindow, ID3FID_WWWARTIST));
+  tag.AttachFrame(readTextFrame(dataWindow, ID3FID_WWWCOMMERCIALINFO));
+  tag.AttachFrame(readTextFrame(dataWindow, ID3FID_COMMENT, "MusicMatch_ArtistEmail"));
     
   // email?
-    
+
   return true;
 }
