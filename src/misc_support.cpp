@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.15 2000/06/22 20:16:52 eldamitri Exp $
+// $Id: misc_support.cpp,v 1.16 2000/06/22 23:19:23 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -36,23 +36,23 @@
 
 char *ID3_GetString(const ID3_Frame *frame, ID3_FieldID fldName, size_t nIndex)
 {
-  char *sText = NULL;
+  char *text = NULL;
   if (NULL != frame)
   {
     size_t nText = frame->Field(fldName).Size();
-    sText = new char[nText + 1];
+    text = new char[nText + 1];
     try 
     {
-      frame->Field(fldName).Get(sText, nText, nIndex);
+      frame->Field(fldName).Get(text, nText, nIndex);
     }
-    catch (ID3_Err&)
+    catch (ID3_Error &)
     {
-      delete [] sText;
+      delete [] text;
       return NULL;
     }
-    sText[nText] = '\0';
+    text[nText] = '\0';
   }
-  return sText;
+  return text;
 }
 
 char *ID3_GetArtist(const ID3_Tag *tag)
@@ -63,80 +63,80 @@ char *ID3_GetArtist(const ID3_Tag *tag)
     return sArtist;
   }
 
-  ID3_Frame *pFrame = NULL;
-  if ((pFrame = tag->Find(ID3FID_LEADARTIST)) ||
-      (pFrame = tag->Find(ID3FID_BAND))       ||
-      (pFrame = tag->Find(ID3FID_CONDUCTOR))  ||
-      (pFrame = tag->Find(ID3FID_COMPOSER)))
+  ID3_Frame *frame = NULL;
+  if ((frame = tag->Find(ID3FID_LEADARTIST)) ||
+      (frame = tag->Find(ID3FID_BAND))       ||
+      (frame = tag->Find(ID3FID_CONDUCTOR))  ||
+      (frame = tag->Find(ID3FID_COMPOSER)))
   {
-    sArtist = ID3_GetString(pFrame, ID3FN_TEXT);
+    sArtist = ID3_GetString(frame, ID3FN_TEXT);
   }
   return sArtist;
 }
 
-ID3_Frame* ID3_AddArtist(ID3_Tag *tag, const char *text, bool bReplace)
+ID3_Frame* ID3_AddArtist(ID3_Tag *tag, const char *text, bool replace)
 {
-  ID3_Frame* pFrame = NULL;
+  ID3_Frame* frame = NULL;
   if (NULL != tag && NULL != text && strlen(text) > 0)
   {
-    if (bReplace)
+    if (replace)
     {
       ID3_RemoveArtists(tag);
     }
-    if (bReplace ||
+    if (replace ||
         (tag->Find(ID3FID_LEADARTIST) == NULL &&
          tag->Find(ID3FID_BAND)       == NULL &&
          tag->Find(ID3FID_CONDUCTOR)  == NULL &&
          tag->Find(ID3FID_COMPOSER)   == NULL))
     {
-      pFrame = new ID3_Frame(ID3FID_LEADARTIST);
-      if (pFrame)
+      frame = new ID3_Frame(ID3FID_LEADARTIST);
+      if (frame)
       {
-        pFrame->Field(ID3FN_TEXT) = text;
-        tag->AttachFrame(pFrame);
+        frame->Field(ID3FN_TEXT) = text;
+        tag->AttachFrame(frame);
       }
     }
   }
 
-  return pFrame;
+  return frame;
 }
 
 size_t ID3_RemoveArtists(ID3_Tag *tag)
 {
-  size_t nRemoved = 0;
-  ID3_Frame *pFrame = NULL;
+  size_t num_removed = 0;
+  ID3_Frame *frame = NULL;
 
   if (NULL == tag)
   {
-    return nRemoved;
+    return num_removed;
   }
 
-  while ((pFrame = tag->Find(ID3FID_LEADARTIST)))
+  while ((frame = tag->Find(ID3FID_LEADARTIST)))
   {
-    pFrame = tag->RemoveFrame(pFrame);
-    delete pFrame;
-    nRemoved++;
+    frame = tag->RemoveFrame(frame);
+    delete frame;
+    num_removed++;
   }
-  while ((pFrame = tag->Find(ID3FID_BAND)))
+  while ((frame = tag->Find(ID3FID_BAND)))
   {
-    pFrame = tag->RemoveFrame(pFrame);
-    delete pFrame;
-    nRemoved++;
+    frame = tag->RemoveFrame(frame);
+    delete frame;
+    num_removed++;
   }
-  while ((pFrame = tag->Find(ID3FID_CONDUCTOR)))
+  while ((frame = tag->Find(ID3FID_CONDUCTOR)))
   {
-    pFrame = tag->RemoveFrame(pFrame);
-    delete pFrame;
-    nRemoved++;
+    frame = tag->RemoveFrame(frame);
+    delete frame;
+    num_removed++;
   }
-  while ((pFrame = tag->Find(ID3FID_COMPOSER)))
+  while ((frame = tag->Find(ID3FID_COMPOSER)))
   {
-    pFrame = tag->RemoveFrame(pFrame);
-    delete pFrame;
-    nRemoved++;
+    frame = tag->RemoveFrame(frame);
+    delete frame;
+    num_removed++;
   }
 
-  return nRemoved;
+  return num_removed;
 }
 
 char *ID3_GetAlbum(const ID3_Tag *tag)
@@ -147,55 +147,55 @@ char *ID3_GetAlbum(const ID3_Tag *tag)
     return sAlbum;
   }
 
-  ID3_Frame *pFrame = tag->Find(ID3FID_ALBUM);
-  if (pFrame != NULL)
+  ID3_Frame *frame = tag->Find(ID3FID_ALBUM);
+  if (frame != NULL)
   {
-    sAlbum = ID3_GetString(pFrame, ID3FN_TEXT);
+    sAlbum = ID3_GetString(frame, ID3FN_TEXT);
   }
   return sAlbum;
 }
 
-ID3_Frame* ID3_AddAlbum(ID3_Tag *tag, const char *text, bool bReplace)
+ID3_Frame* ID3_AddAlbum(ID3_Tag *tag, const char *text, bool replace)
 {
-  ID3_Frame* pFrame = NULL;
+  ID3_Frame* frame = NULL;
   if (NULL != tag && NULL != text && strlen(text) > 0)
   {
-    if (bReplace)
+    if (replace)
     {
       ID3_RemoveAlbums(tag);
     }
-    if (bReplace || tag->Find(ID3FID_ALBUM) == NULL)
+    if (replace || tag->Find(ID3FID_ALBUM) == NULL)
     {
-      pFrame = new ID3_Frame(ID3FID_ALBUM);
-      if (pFrame)
+      frame = new ID3_Frame(ID3FID_ALBUM);
+      if (frame)
       {
-        pFrame->Field(ID3FN_TEXT) = text;
-        tag->AttachFrame(pFrame);
+        frame->Field(ID3FN_TEXT) = text;
+        tag->AttachFrame(frame);
       }
     }
   }
   
-  return pFrame;
+  return frame;
 }
 
 size_t ID3_RemoveAlbums(ID3_Tag *tag)
 {
-  size_t nRemoved = 0;
-  ID3_Frame *pFrame = NULL;
+  size_t num_removed = 0;
+  ID3_Frame *frame = NULL;
 
   if (NULL == tag)
   {
-    return nRemoved;
+    return num_removed;
   }
 
-  while ((pFrame = tag->Find(ID3FID_ALBUM)))
+  while ((frame = tag->Find(ID3FID_ALBUM)))
   {
-    pFrame = tag->RemoveFrame(pFrame);
-    delete pFrame;
-    nRemoved++;
+    frame = tag->RemoveFrame(frame);
+    delete frame;
+    num_removed++;
   }
 
-  return nRemoved;
+  return num_removed;
 }
 
 char *ID3_GetTitle(const ID3_Tag *tag)
@@ -206,55 +206,55 @@ char *ID3_GetTitle(const ID3_Tag *tag)
     return sTitle;
   }
 
-  ID3_Frame *pFrame = tag->Find(ID3FID_TITLE);
-  if (pFrame != NULL)
+  ID3_Frame *frame = tag->Find(ID3FID_TITLE);
+  if (frame != NULL)
   {
-    sTitle = ID3_GetString(pFrame, ID3FN_TEXT);
+    sTitle = ID3_GetString(frame, ID3FN_TEXT);
   }
   return sTitle;
 }
 
-ID3_Frame* ID3_AddTitle(ID3_Tag *tag, const char *text, bool bReplace)
+ID3_Frame* ID3_AddTitle(ID3_Tag *tag, const char *text, bool replace)
 {
-  ID3_Frame* pFrame = NULL;
+  ID3_Frame* frame = NULL;
   if (NULL != tag && NULL != text && strlen(text) > 0)
   {
-    if (bReplace)
+    if (replace)
     {
       ID3_RemoveTitles(tag);
     }
-    if (bReplace || tag->Find(ID3FID_TITLE) == NULL)
+    if (replace || tag->Find(ID3FID_TITLE) == NULL)
     {
-      pFrame = new ID3_Frame(ID3FID_TITLE);
-      if (pFrame)
+      frame = new ID3_Frame(ID3FID_TITLE);
+      if (frame)
       {
-        pFrame->Field(ID3FN_TEXT) = text;
-        tag->AttachFrame(pFrame);
+        frame->Field(ID3FN_TEXT) = text;
+        tag->AttachFrame(frame);
       }
     }
   }
   
-  return pFrame;
+  return frame;
 }
 
 size_t ID3_RemoveTitles(ID3_Tag *tag)
 {
-  size_t nRemoved = 0;
-  ID3_Frame *pFrame = NULL;
+  size_t num_removed = 0;
+  ID3_Frame *frame = NULL;
 
   if (NULL == tag)
   {
-    return nRemoved;
+    return num_removed;
   }
 
-  while ((pFrame = tag->Find(ID3FID_TITLE)))
+  while ((frame = tag->Find(ID3FID_TITLE)))
   {
-    pFrame = tag->RemoveFrame(pFrame);
-    delete pFrame;
-    nRemoved++;
+    frame = tag->RemoveFrame(frame);
+    delete frame;
+    num_removed++;
   }
 
-  return nRemoved;
+  return num_removed;
 }
 
 char *ID3_GetYear(const ID3_Tag *tag)
@@ -265,55 +265,55 @@ char *ID3_GetYear(const ID3_Tag *tag)
     return sYear;
   }
 
-  ID3_Frame *pFrame = tag->Find(ID3FID_YEAR);
-  if (pFrame != NULL)
+  ID3_Frame *frame = tag->Find(ID3FID_YEAR);
+  if (frame != NULL)
   {
-    sYear = ID3_GetString(pFrame, ID3FN_TEXT);
+    sYear = ID3_GetString(frame, ID3FN_TEXT);
   }
   return sYear;
 }
 
-ID3_Frame* ID3_AddYear(ID3_Tag *tag, const char *text, bool bReplace)
+ID3_Frame* ID3_AddYear(ID3_Tag *tag, const char *text, bool replace)
 {
-  ID3_Frame* pFrame = NULL;
+  ID3_Frame* frame = NULL;
   if (NULL != tag && NULL != text && strlen(text) > 0)
   {
-    if (bReplace)
+    if (replace)
     {
       ID3_RemoveYears(tag);
     }
-    if (bReplace || tag->Find(ID3FID_YEAR) == NULL)
+    if (replace || tag->Find(ID3FID_YEAR) == NULL)
     {
-      pFrame = new ID3_Frame(ID3FID_YEAR);
-      if (NULL != pFrame)
+      frame = new ID3_Frame(ID3FID_YEAR);
+      if (NULL != frame)
       {
-        pFrame->Field(ID3FN_TEXT) = text;
-        tag->AttachFrame(pFrame);
+        frame->Field(ID3FN_TEXT) = text;
+        tag->AttachFrame(frame);
       }
     }
   }
   
-  return pFrame;
+  return frame;
 }
 
 size_t ID3_RemoveYears(ID3_Tag *tag)
 {
-  size_t nRemoved = 0;
-  ID3_Frame *pFrame = NULL;
+  size_t num_removed = 0;
+  ID3_Frame *frame = NULL;
 
   if (NULL == tag)
   {
-    return nRemoved;
+    return num_removed;
   }
 
-  while ((pFrame = tag->Find(ID3FID_YEAR)))
+  while ((frame = tag->Find(ID3FID_YEAR)))
   {
-    pFrame = tag->RemoveFrame(pFrame);
-    delete pFrame;
-    nRemoved++;
+    frame = tag->RemoveFrame(frame);
+    delete frame;
+    num_removed++;
   }
 
-  return nRemoved;
+  return num_removed;
 }
 
 char *ID3_GetComment(const ID3_Tag *tag)
@@ -324,42 +324,53 @@ char *ID3_GetComment(const ID3_Tag *tag)
     return sComment;
   }
 
-  ID3_Frame *pFrame = tag->Find(ID3FID_COMMENT);
-  if (pFrame != NULL)
+  ID3_Frame *frame = tag->Find(ID3FID_COMMENT);
+  if (frame != NULL)
   {
-    sComment = ID3_GetString(pFrame, ID3FN_TEXT);
+    sComment = ID3_GetString(frame, ID3FN_TEXT);
   }
   return sComment;
 }
 
-ID3_Frame* ID3_AddComment(ID3_Tag *tag, const char *sComment,
-                          const char *sDescription, bool bReplace)
+ID3_Frame* ID3_AddComment(ID3_Tag *tag, const char *text, bool replace)
 {
-  ID3_Frame* pFrame = NULL;
-  if (NULL != tag          &&
-      NULL != sComment     &&
-      NULL != sDescription && 
-      strlen(sComment) > 0)
+  return ID3_AddComment(tag, text, "", replace);
+}
+
+ID3_Frame* ID3_AddComment(ID3_Tag *tag, const char *text,
+                          const char *desc, bool replace)
+{
+  return ID3_AddComment(tag, text, desc, "XXX", replace);
+}
+
+ID3_Frame* ID3_AddComment(ID3_Tag *tag, const char *text,
+                          const char *desc, const char* lang, bool replace)
+{
+  ID3_Frame* frame = NULL;
+  if (NULL != tag  &&
+      NULL != text &&
+      NULL != desc && 
+      strlen(text) > 0)
   {
     bool bAdd = true;
-    if (bReplace)
+    if (replace)
     {
-      ID3_RemoveComments(tag, sDescription);
+      ID3_RemoveComments(tag, desc);
     }
     else
     {
       // See if there is already a comment with this description
       for (size_t nCount = 0; nCount < tag->NumFrames(); nCount++)
       {
-        pFrame = tag->GetFrameNum(nCount);
-        if (pFrame->GetID() == ID3FID_COMMENT)
+        frame = tag->GetFrameNum(nCount);
+        if (frame->GetID() == ID3FID_COMMENT)
         {
-          char *sDesc = ID3_GetString(pFrame, ID3FN_DESCRIPTION);
-          if (strcmp(sDesc, sDescription) == 0)
+          char *tmp_desc = ID3_GetString(frame, ID3FN_DESCRIPTION);
+          if (strcmp(tmp_desc, desc) == 0)
           {
             bAdd = false;
           }
-          delete [] sDesc;
+          delete [] tmp_desc;
           if (!bAdd)
           {
             break;
@@ -369,62 +380,59 @@ ID3_Frame* ID3_AddComment(ID3_Tag *tag, const char *sComment,
     }
     if (bAdd)
     {
-      pFrame = new ID3_Frame(ID3FID_COMMENT);
-      if (NULL != pFrame)
+      frame = new ID3_Frame(ID3FID_COMMENT);
+      if (NULL != frame)
       {
-        pFrame->Field(ID3FN_LANGUAGE) = "eng";
-        pFrame->Field(ID3FN_DESCRIPTION) = sDescription;
-        pFrame->Field(ID3FN_TEXT) = sComment;
-        tag->AttachFrame(pFrame);
+        frame->Field(ID3FN_LANGUAGE) = lang;
+        frame->Field(ID3FN_DESCRIPTION) = desc;
+        frame->Field(ID3FN_TEXT) = text;
+        tag->AttachFrame(frame);
       }
     }
   }
-  return pFrame;
+  return frame;
 }
 
 // Remove all comments with the given description (remove all comments if
-// sDescription is NULL)
-size_t ID3_RemoveComments(ID3_Tag *tag, const char *sDescription)
+// desc is NULL)
+size_t ID3_RemoveComments(ID3_Tag *tag, const char *desc)
 {
-  size_t nRemoved = 0;
+  size_t num_removed = 0;
 
   if (NULL == tag)
   {
-    return nRemoved;
+    return num_removed;
   }
 
   for (size_t nCount = 0; nCount < tag->NumFrames(); nCount++)
   {
-    ID3_Frame *pFrame = tag->GetFrameNum(nCount);
-    if (pFrame->GetID() == ID3FID_COMMENT)
+    ID3_Frame *frame = tag->GetFrameNum(nCount);
+    if (frame->GetID() == ID3FID_COMMENT)
     {
-      bool bRemove = false;
+      bool remove = false;
       // A null description means remove all comments
-      if (NULL == sDescription)
+      if (NULL == desc)
       {
-        bRemove = true;
+        remove = true;
       }
       else
       {
         // See if the description we have matches the description of the 
         // current comment.  If so, set the "remove the comment" flag to true.
-        char *sDesc = ID3_GetString(pFrame, ID3FN_DESCRIPTION);
-        if (strcmp(sDesc, sDescription) == 0)
-        {
-          bRemove = true;
-        }
-        delete [] sDesc;
+        char *tmp_desc = ID3_GetString(frame, ID3FN_DESCRIPTION);
+        remove = (strcmp(tmp_desc, desc) == 0);
+        delete [] tmp_desc;
       }
-      if (bRemove)
+      if (remove)
       {
-        pFrame = tag->RemoveFrame(pFrame);
-        delete pFrame;
-        nRemoved++;
+        frame = tag->RemoveFrame(frame);
+        delete frame;
+        num_removed++;
       }
     }
   }
 
-  return nRemoved;
+  return num_removed;
 }
 
 char *ID3_GetTrack(const ID3_Tag *tag)
@@ -435,10 +443,10 @@ char *ID3_GetTrack(const ID3_Tag *tag)
     return sTrack;
   }
 
-  ID3_Frame *pFrame = tag->Find(ID3FID_TRACKNUM);
-  if (pFrame != NULL)
+  ID3_Frame *frame = tag->Find(ID3FID_TRACKNUM);
+  if (frame != NULL)
   {
-    sTrack = ID3_GetString(pFrame, ID3FN_TEXT);
+    sTrack = ID3_GetString(frame, ID3FN_TEXT);
   }
   return sTrack;
 }
@@ -455,30 +463,30 @@ size_t ID3_GetTrackNum(const ID3_Tag *tag)
   return nTrack;
 }
 
-ID3_Frame* ID3_AddTrack(ID3_Tag *tag, uchar ucTrack, uchar ucTotal, bool bReplace)
+ID3_Frame* ID3_AddTrack(ID3_Tag *tag, uchar trk, uchar ttl, bool replace)
 {
-  ID3_Frame* pFrame = NULL;
-  if (NULL != tag && ucTrack > 0)
+  ID3_Frame* frame = NULL;
+  if (NULL != tag && trk > 0)
   {
-    if (bReplace)
+    if (replace)
     {
       ID3_RemoveTracks(tag);
     }
-    if (bReplace || NULL == tag->Find(ID3FID_TRACKNUM))
+    if (replace || NULL == tag->Find(ID3FID_TRACKNUM))
     {
       ID3_Frame *trackFrame = new ID3_Frame(ID3FID_TRACKNUM);
       if (trackFrame)
       {
         char *sTrack = NULL;
-        if (0 == ucTotal)
+        if (0 == ttl)
         {
           sTrack = new char[4];
-          sprintf(sTrack, "%lu", (luint) ucTrack);
+          sprintf(sTrack, "%lu", (luint) trk);
         }
         else
         {
           sTrack = new char[8];
-          sprintf(sTrack, "%lu/%lu", (luint) ucTrack, (luint) ucTotal);
+          sprintf(sTrack, "%lu/%lu", (luint) trk, (luint) ttl);
         }
         
         trackFrame->Field(ID3FN_TEXT) = sTrack;
@@ -489,27 +497,27 @@ ID3_Frame* ID3_AddTrack(ID3_Tag *tag, uchar ucTrack, uchar ucTotal, bool bReplac
     }
   }
   
-  return pFrame;
+  return frame;
 }
 
 size_t ID3_RemoveTracks(ID3_Tag *tag)
 {
-  size_t nRemoved = 0;
-  ID3_Frame *pFrame = NULL;
+  size_t num_removed = 0;
+  ID3_Frame *frame = NULL;
 
   if (NULL == tag)
   {
-    return nRemoved;
+    return num_removed;
   }
 
-  while ((pFrame = tag->Find(ID3FID_TRACKNUM)))
+  while ((frame = tag->Find(ID3FID_TRACKNUM)))
   {
-    pFrame = tag->RemoveFrame(pFrame);
-    delete pFrame;
-    nRemoved++;
+    frame = tag->RemoveFrame(frame);
+    delete frame;
+    num_removed++;
   }
 
-  return nRemoved;
+  return num_removed;
 }
 
 char *ID3_GetGenre(const ID3_Tag *tag)
@@ -520,10 +528,10 @@ char *ID3_GetGenre(const ID3_Tag *tag)
     return sGenre;
   }
 
-  ID3_Frame *pFrame = tag->Find(ID3FID_CONTENTTYPE);
-  if (pFrame != NULL)
+  ID3_Frame *frame = tag->Find(ID3FID_CONTENTTYPE);
+  if (frame != NULL)
   {
-    sGenre = ID3_GetString(pFrame, ID3FN_TEXT);
+    sGenre = ID3_GetString(frame, ID3FN_TEXT);
   }
 
   return sGenre;
@@ -558,50 +566,50 @@ size_t ID3_GetGenreNum(const ID3_Tag *tag)
   return ulGenre;
 }
 
-ID3_Frame* ID3_AddGenre(ID3_Tag *tag, size_t ucGenre, bool bReplace)
+ID3_Frame* ID3_AddGenre(ID3_Tag *tag, size_t genre, bool replace)
 {
-  ID3_Frame* pFrame = NULL;
-  if (NULL != tag && 0xFF != ucGenre)
+  ID3_Frame* frame = NULL;
+  if (NULL != tag && 0xFF != genre)
   {
-    if (bReplace)
+    if (replace)
     {
       ID3_RemoveGenres(tag);
     }
-    if (bReplace || NULL == tag->Find(ID3FID_CONTENTTYPE))
+    if (replace || NULL == tag->Find(ID3FID_CONTENTTYPE))
     {
-      pFrame = new ID3_Frame(ID3FID_CONTENTTYPE);
-      if (NULL != pFrame)
+      frame = new ID3_Frame(ID3FID_CONTENTTYPE);
+      if (NULL != frame)
       {
         char sGenre[6];
-        sprintf(sGenre, "(%lu)", (luint) ucGenre);
+        sprintf(sGenre, "(%lu)", (luint) genre);
 
-        pFrame->Field(ID3FN_TEXT) = sGenre;
-        tag->AttachFrame(pFrame);
+        frame->Field(ID3FN_TEXT) = sGenre;
+        tag->AttachFrame(frame);
       }
     }
   }
   
-  return pFrame;
+  return frame;
 }
 
 size_t ID3_RemoveGenres(ID3_Tag *tag)
 {
-  size_t nRemoved = 0;
-  ID3_Frame *pFrame = NULL;
+  size_t num_removed = 0;
+  ID3_Frame *frame = NULL;
 
   if (NULL == tag)
   {
-    return nRemoved;
+    return num_removed;
   }
 
-  while ((pFrame = tag->Find(ID3FID_CONTENTTYPE)))
+  while ((frame = tag->Find(ID3FID_CONTENTTYPE)))
   {
-    pFrame = tag->RemoveFrame(pFrame);
-    delete pFrame;
-    nRemoved++;
+    frame = tag->RemoveFrame(frame);
+    delete frame;
+    num_removed++;
   }
 
-  return nRemoved;
+  return num_removed;
 }
 
 char *ID3_GetLyrics(const ID3_Tag *tag)
@@ -612,56 +620,69 @@ char *ID3_GetLyrics(const ID3_Tag *tag)
     return sLyrics;
   }
 
-  ID3_Frame *pFrame = tag->Find(ID3FID_UNSYNCEDLYRICS);
-  if (pFrame != NULL)
+  ID3_Frame *frame = tag->Find(ID3FID_UNSYNCEDLYRICS);
+  if (frame != NULL)
   {
-    sLyrics = ID3_GetString(pFrame, ID3FN_TEXT);
+    sLyrics = ID3_GetString(frame, ID3FN_TEXT);
   }
   return sLyrics;
 }
 
-ID3_Frame* ID3_AddLyrics(ID3_Tag *tag, const char *text, bool bReplace)
+ID3_Frame* ID3_AddLyrics(ID3_Tag *tag, const char *text, bool replace)
 {
-  ID3_Frame* pFrame = NULL;
+  return ID3_AddLyrics(tag, text, "", replace);
+}
+
+ID3_Frame* ID3_AddLyrics(ID3_Tag *tag, const char *text, const char* desc, 
+                         bool replace)
+{
+  return ID3_AddLyrics(tag, text, desc, "XXX", replace);
+}
+
+ID3_Frame* ID3_AddLyrics(ID3_Tag *tag, const char *text, const char* desc,
+                         const char* lang, bool replace)
+{
+  ID3_Frame* frame = NULL;
   if (NULL != tag && strlen(text) > 0)
   {
-    if (bReplace)
+    if (replace)
     {
       ID3_RemoveLyrics(tag);
     }
-    if (bReplace || tag->Find(ID3FID_UNSYNCEDLYRICS) == NULL)
+    if (replace || tag->Find(ID3FID_UNSYNCEDLYRICS) == NULL)
     {
-      pFrame = new ID3_Frame(ID3FID_UNSYNCEDLYRICS);
-      if (NULL != pFrame)
+      frame = new ID3_Frame(ID3FID_UNSYNCEDLYRICS);
+      if (NULL != frame)
       {
-        pFrame->Field(ID3FN_LANGUAGE) = "eng";
-        pFrame->Field(ID3FN_TEXT) = text;
-        tag->AttachFrame(pFrame);
+        frame->Field(ID3FN_LANGUAGE) = lang;
+        frame->Field(ID3FN_DESCRIPTION) = desc;
+        frame->Field(ID3FN_TEXT) = text;
+        tag->AttachFrame(frame);
       }
     }
   }
   
-  return pFrame;
+  return frame;
 }
 
 size_t ID3_RemoveLyrics(ID3_Tag *tag)
 {
-  size_t nRemoved = 0;
-  ID3_Frame *pFrame = NULL;
+  size_t num_removed = 0;
+  ID3_Frame *frame = NULL;
 
   if (NULL == tag)
   {
-    return nRemoved;
+    return num_removed;
   }
 
-  while ((pFrame = tag->Find(ID3FID_UNSYNCEDLYRICS)))
+  while ((frame = tag->Find(ID3FID_UNSYNCEDLYRICS)))
   {
-    pFrame = tag->RemoveFrame(pFrame);
-    delete pFrame;
-    nRemoved++;
+    frame = tag->RemoveFrame(frame);
+    delete frame;
+    num_removed++;
   }
 
-  return nRemoved;
+  return num_removed;
 }
 
 char *ID3_GetLyricist(const ID3_Tag *tag)
@@ -672,61 +693,84 @@ char *ID3_GetLyricist(const ID3_Tag *tag)
     return sLyricist;
   }
 
-  ID3_Frame *pFrame = tag->Find(ID3FID_LYRICIST);
-  if (pFrame != NULL)
+  ID3_Frame *frame = tag->Find(ID3FID_LYRICIST);
+  if (frame != NULL)
   {
-    sLyricist = ID3_GetString(pFrame, ID3FN_TEXT);
+    sLyricist = ID3_GetString(frame, ID3FN_TEXT);
   }
   return sLyricist;
 }
 
-ID3_Frame* ID3_AddLyricist(ID3_Tag *tag, const char *text, bool bReplace)
+ID3_Frame* ID3_AddLyricist(ID3_Tag *tag, const char *text, bool replace)
 {
-  ID3_Frame* pFrame = NULL;
+  ID3_Frame* frame = NULL;
   if (NULL != tag && NULL != text && strlen(text) > 0)
   {
-    if (bReplace)
+    if (replace)
     {
       ID3_RemoveLyricist(tag);
     }
-    if (bReplace || (tag->Find(ID3FID_LYRICIST) == NULL))
+    if (replace || (tag->Find(ID3FID_LYRICIST) == NULL))
     {    
-      pFrame = new ID3_Frame(ID3FID_LYRICIST);
-      if (pFrame)
+      frame = new ID3_Frame(ID3FID_LYRICIST);
+      if (frame)
       {
-        pFrame->Field(ID3FN_TEXT) = text;
-        tag->AttachFrame(pFrame);
+        frame->Field(ID3FN_TEXT) = text;
+        tag->AttachFrame(frame);
       }
     }
   }
 
-  return pFrame;
+  return frame;
 }
 
 size_t ID3_RemoveLyricist(ID3_Tag *tag)
 {
-  size_t nRemoved = 0;
-  ID3_Frame *pFrame = NULL;
+  size_t num_removed = 0;
+  ID3_Frame *frame = NULL;
 
   if (NULL == tag)
   {
-    return nRemoved;
+    return num_removed;
   }
 
-  while ((pFrame = tag->Find(ID3FID_LYRICIST)))
+  while ((frame = tag->Find(ID3FID_LYRICIST)))
   {
-    pFrame = tag->RemoveFrame(pFrame);
-    delete pFrame;
-    nRemoved++;
+    frame = tag->RemoveFrame(frame);
+    delete frame;
+    num_removed++;
   }
 
-  return nRemoved;
+  return num_removed;
 }
 
-ID3_Frame* ID3_AddSyncLyrics(ID3_Tag *tag, const char *lang, const char *desc,
-                             const uchar *text, size_t textsize, bool bReplace)
+ID3_Frame* ID3_AddSyncLyrics(ID3_Tag *tag, const uchar *data, size_t datasize,
+                             ID3_TimeStampFormat format, bool replace)
 {
-  ID3_Frame* pFrame = NULL;
+  return ID3_AddSyncLyrics(tag, data, datasize, format, "", replace);
+}
+
+ID3_Frame* ID3_AddSyncLyrics(ID3_Tag *tag, const uchar *data, size_t datasize,
+                             ID3_TimeStampFormat format, const char *desc, 
+                             bool replace)
+{
+  return ID3_AddSyncLyrics(tag, data, datasize, format, desc, "XXX", replace);
+}
+
+ID3_Frame* ID3_AddSyncLyrics(ID3_Tag *tag, const uchar *data, size_t datasize,
+                             ID3_TimeStampFormat format, const char *desc, 
+                             const char *lang, bool replace)
+{
+  return ID3_AddSyncLyrics(tag, data, datasize, format, desc, lang, 
+                           ID3CT_LYRICS, replace);
+}
+
+ID3_Frame* ID3_AddSyncLyrics(ID3_Tag *tag, const uchar *data, size_t datasize,
+                             ID3_TimeStampFormat format, const char *desc, 
+                             const char *lang, ID3_ContentType type, 
+                             bool replace)
+{
+  ID3_Frame* frame = NULL;
   // language and descriptor should be mandatory
   if ((NULL == lang) || (NULL == desc))
   {
@@ -734,119 +778,119 @@ ID3_Frame* ID3_AddSyncLyrics(ID3_Tag *tag, const char *lang, const char *desc,
   }
 
   // check if a SYLT frame of this language or descriptor already exists
-  ID3_Frame* pFrameExist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_LANGUAGE, 
-                                     (char *) lang);
-  if (!pFrameExist)
+  ID3_Frame* frm_exist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_LANGUAGE, lang);
+  if (!frm_exist)
   {
-    pFrameExist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_DESCRIPTION, 
-                            (char *) desc);
+    frm_exist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_DESCRIPTION, desc);
   }
 
-  if (NULL != tag && NULL != text)
+  if (NULL != tag && NULL != data)
   {
-    if (bReplace && pFrameExist)
+    if (replace && frm_exist)
     {
-      pFrameExist = tag->RemoveFrame (pFrameExist);
-      delete pFrameExist;
-      pFrameExist = NULL;
+      frm_exist = tag->RemoveFrame (frm_exist);
+      delete frm_exist;
+      frm_exist = NULL;
     }
 
     // if the frame still exist, cannot continue
-    if (pFrameExist)
+    if (frm_exist)
     {
       return NULL;
     }
 
-    ID3_Frame* pFrame = new ID3_Frame(ID3FID_SYNCEDLYRICS);
-    if (NULL == pFrame)
+    ID3_Frame* frame = new ID3_Frame(ID3FID_SYNCEDLYRICS);
+    if (NULL == frame)
     {
       ID3_THROW(ID3E_NoMemory);
     }
 
-    pFrame->Field(ID3FN_LANGUAGE) = lang;
-    pFrame->Field(ID3FN_DESCRIPTION) = desc;
-    pFrame->Field(ID3FN_TIMESTAMPFORMAT) = ID3TSF_MS;
-    pFrame->Field(ID3FN_DATA).Set(text, textsize);
-    tag->AttachFrame(pFrame);
+    frame->Field(ID3FN_LANGUAGE) = lang;
+    frame->Field(ID3FN_DESCRIPTION) = desc;
+    frame->Field(ID3FN_TIMESTAMPFORMAT) = format;
+    frame->Field(ID3FN_CONTENTTYPE) = type;
+    frame->Field(ID3FN_DATA).Set(data, datasize);
+    tag->AttachFrame(frame);
   }
 
-  return pFrame;
+  return frame;
 }
 
-ID3_Frame *ID3_GetSyncLyricsInfo(const ID3_Tag *tag, const char *lang, 
-                                 const char *desc, size_t& stampformat, 
-                                 size_t& type, size_t& size)
+ID3_Frame *ID3_GetSyncLyricsInfo(const ID3_Tag *tag, const char *desc, 
+                                 const char *lang,
+                                 ID3_TimeStampFormat& format, 
+                                 ID3_ContentType& type, size_t& size)
 {
   // check if a SYLT frame of this language or descriptor exists
-  ID3_Frame* pFrameExist = NULL;
+  ID3_Frame* frm_exist = NULL;
   if (NULL != lang)
   {
     // search through language
-    pFrameExist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_LANGUAGE, lang);
+    frm_exist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_LANGUAGE, lang);
   }
   else if (NULL != desc)
   {
     // search through descriptor
-    pFrameExist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_DESCRIPTION, desc);
+    frm_exist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_DESCRIPTION, desc);
   }
   else
   {
     // both language and description not specified, search the first SYLT frame
-    pFrameExist = tag->Find(ID3FID_SYNCEDLYRICS);
+    frm_exist = tag->Find(ID3FID_SYNCEDLYRICS);
   }
   
-  if (!pFrameExist)
+  if (!frm_exist)
   {
     return NULL;
   }
   
   // get the lyrics time stamp format
-  stampformat = pFrameExist->Field (ID3FN_TIMESTAMPFORMAT).Get ();
+  format = static_cast<ID3_TimeStampFormat>(frm_exist->Field (ID3FN_TIMESTAMPFORMAT).Get ());
   
   // get the lyrics content type
-  type = pFrameExist->Field (ID3FN_CONTENTTYPE).Get ();
+  type = static_cast<ID3_ContentType>(frm_exist->Field (ID3FN_CONTENTTYPE).Get ());
   
   // get the lyrics size
-  size = pFrameExist->Field (ID3FN_DATA).Size ();
+  size = frm_exist->Field (ID3FN_DATA).Size ();
   
   // return the frame pointer for further uses
-  return pFrameExist;
+  return frm_exist;
 }
 
 ID3_Frame *ID3_GetSyncLyrics(const ID3_Tag *tag, const char *lang, 
                              const char *desc, const uchar *pData, size_t& size)
 {
   // check if a SYLT frame of this language or descriptor exists
-  ID3_Frame* pFrameExist = NULL;
+  ID3_Frame* frm_exist = NULL;
   if (NULL != lang)
   {
     // search through language
-    pFrameExist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_LANGUAGE, lang);
+    frm_exist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_LANGUAGE, lang);
   }
   else if (NULL != desc)
   {
     // search through descriptor
-    pFrameExist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_DESCRIPTION, desc);
+    frm_exist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_DESCRIPTION, desc);
   }
   else
   {
     // both language and description not specified, search the first SYLT frame
-    pFrameExist = tag->Find(ID3FID_SYNCEDLYRICS);
+    frm_exist = tag->Find(ID3FID_SYNCEDLYRICS);
   }
 
-  if (NULL == pFrameExist)
+  if (NULL == frm_exist)
   {
     return NULL;
   }
   
   // get the lyrics size
-  size_t datasize = pFrameExist->Field(ID3FN_DATA).Size();
+  size_t datasize = frm_exist->Field(ID3FN_DATA).Size();
   size = MIN(size, datasize);
 
   // get the lyrics data
-  pData = pFrameExist->Field (ID3FN_DATA).GetBinary();
+  pData = frm_exist->Field (ID3FN_DATA).GetBinary();
 
   // return the frame pointer for further uses
-  return pFrameExist;
+  return frm_exist;
 }
 
