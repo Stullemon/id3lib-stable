@@ -23,8 +23,7 @@
 /* And now the rest of the boys */
 #undef CXX_HAS_BUGGY_FOR_LOOPS
 #undef CXX_HAS_NO_BOOL
-#undef NDEBUG
-#undef YOUR_OS
+#undef SIZE_SPECIFIC_TYPES
 
 @BOTTOM@
 /* This is the bottom section */
@@ -44,36 +43,6 @@
 #endif
 
 //
-// Fortran-like integer looping macros
-// these critters depend on the scoping work-around above
-//
-
-#define loop(COUNTER,BEGIN,END)  \
-for (int COUNTER = BEGIN ; COUNTER <= END ; COUNTER ## ++)
-
-#define inverse_loop(COUNTER,END,BEGIN) \
-for (int COUNTER = END; COUNTER >= BEGIN; COUNTER ## --)
-
-#define integer_loop(COUNTER,BEGIN,END,STEP) \
-for (int COUNTER = BEGIN; COUNTER <= END; COUNTER += STEP)
-
-//
-// Class protection levels
-// addictive syntactic sugar to make coding nicer
-//
-
-#define pub public:
-#define pro protected:
-#define pri private:
-
-//
-// Every mathematician would like to know pi
-// so this is as good a place as any to throw it in.
-//
-
-#define pi 3.14159265358979324
-
-//
 // If the C++ compiler we use doesn't have bool, then
 // the following is a near-perfect work-around. 
 // You must make sure your code does not depend on "int" and "bool"
@@ -86,6 +55,63 @@ for (int COUNTER = BEGIN; COUNTER <= END; COUNTER += STEP)
 #define false 0
 #endif
    
-#include <assert.h>
+
+#ifdef SIZE_SPECIFIC_TYPES
+
+/* 
+ * This file defines size-specific typedefs based on the macros defined in
+ * limits.h
+ */
+
+#include <limits.h>
+
+/* define our datatypes */
+
+/* Define 8-bit types */
+#if UCHAR_MAX == 0xff
+
+typedef unsigned char   uint8;
+typedef signed char      int8;
+
+#else
+#error This machine has no 8-bit type
+#endif /* UCHAR_MAX == 0xff */
+
+/* Define 16-bit types */
+#if UINT_MAX == 0xffff
+
+typedef unsigned int    uint16;
+typedef int              int16;
+
+#elif USHRT_MAX == 0xffff
+
+typedef unsigned short  uint16;
+typedef short            int16;
+
+#else
+#error This machine has no 16-bit type
+#endif /* UINT_MAX == 0xffff */
+
+/* Define 32-bit types */
+#if UINT_MAX == 0xfffffffful
+
+typedef unsigned int    uint32;
+typedef int              int32;
+
+#elif ULONG_MAX == 0xfffffffful
+
+typedef unsigned long   uint32;
+typedef long             int32;
+
+#elif USHRT_MAX == 0xfffffffful
+
+typedef unsigned short  uint32;
+typedef short            int32;
+
+#else
+#error This machine has no 32-bit type
+#endif /* UINT_MAX == 0xfffffffful */
+
+#endif /* SIZE_SPECIFIC_TYPES */
 
 
