@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.14 2000/06/20 16:06:53 eldamitri Exp $
+// $Id: misc_support.cpp,v 1.15 2000/06/22 20:16:52 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -765,6 +765,7 @@ ID3_Frame* ID3_AddSyncLyrics(ID3_Tag *tag, const char *lang, const char *desc,
 
     pFrame->Field(ID3FN_LANGUAGE) = lang;
     pFrame->Field(ID3FN_DESCRIPTION) = desc;
+    pFrame->Field(ID3FN_TIMESTAMPFORMAT) = ID3TSF_MS;
     pFrame->Field(ID3FN_DATA).Set(text, textsize);
     tag->AttachFrame(pFrame);
   }
