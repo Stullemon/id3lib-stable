@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.43 2002/06/27 12:48:10 t1mpy Exp $
+// $Id: tag.cpp,v 1.44 2002/06/28 12:36:10 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -108,7 +108,7 @@ using namespace dami;
  **
  ** \code
  **   // use an std::auto_ptr here to handle object cleanup automatically
- **   ID3_Tag::Iterator* iter = myTag.createIterator();
+ **   ID3_Tag::Iterator* iter = myTag.CreateIterator();
  **   ID3_Frame* myFrame = NULL;
  **   while (NULL != (myFrame = iter->GetNext()))
  **   {
@@ -156,7 +156,7 @@ using namespace dami;
  **   // use an std::auto_ptr here to handle object cleanup automatically
  **   ID3_Frame::Iterator* iter = myFrame->CreateIterator();
  **   ID3_Field* myField = NULL;
- **   while (NULL != (myField = iter->GetNext())
+ **   while (NULL != (myField = iter->GetNext()))
  **   {
  **     // do something with myField
  **   }
@@ -277,7 +277,7 @@ using namespace dami;
  ** formatted 'CDM' frames from the unreleased ID3v2 2.01 draft specification.
  **
  ** \author Dirk Mahoney
- ** \version $Id: tag.cpp,v 1.43 2002/06/27 12:48:10 t1mpy Exp $
+ ** \version $Id: tag.cpp,v 1.44 2002/06/28 12:36:10 t1mpy Exp $
  ** \sa ID3_Frame
  ** \sa ID3_Field
  ** \sa ID3_Err
