@@ -33,8 +33,8 @@ index.html: $(srcdir)/index.html.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-docs: Doxyfile index.html
-	doxygen Doxyfile
+docs: Doxyfile index.html id3lib.css
+	cd $(srcdir) && doxygen Doxyfile
 
 dist-hook: docs
-	@cp -R html latex $(distdir)
+	@cp -R $(srcdir)/html $(srcdir)/latex $(distdir)
