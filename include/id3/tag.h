@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.36 2000/07/01 07:48:17 eldamitri Exp $
+// $Id: tag.h,v 1.37 2000/07/04 21:44:43 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -69,13 +69,16 @@ public:
   
   size_t     Parse(const uchar*, size_t);
   size_t     Parse(const uchar header[ID3_TAGHEADERSIZE], const uchar *buffer);
-  size_t     Render(uchar*) const;
-  size_t     Render(uchar*, ID3_TagType) const;
-  size_t     RenderV1(uchar*) const;
+  size_t     Render(uchar*, ID3_TagType = ID3TT_ID3V2) const;
   
   size_t     Link(const char *fileInfo, flags_t = (flags_t) ID3TT_ALL);
   flags_t    Update(flags_t = (flags_t) ID3TT_ID3V2);
   flags_t    Strip(flags_t = (flags_t) ID3TT_ALL);
+  
+  size_t     GetPrependedBytes() const { return __prepended_bytes; }
+  size_t     GetAppendedBytes() const { return __appended_bytes; }
+  size_t     GetFileSize() const { return __file_size; }
+  const char* GetFileName() const { return __file_name; }
   
   /// Finds frame with given frame id
   ID3_Frame* Find(ID3_FrameID id) const;
@@ -128,15 +131,9 @@ protected:
   ID3_Err    OpenFileForReading();
   ID3_Err    CreateFile();
   bool       CloseFile();
-  
-  void       RenderV1ToHandle();
-  void       RenderV2ToHandle();
-  void       ParseFromHandle(FILE*);
-  size_t     ParseID3v2(FILE*);
-  size_t     ParseID3v1(FILE*);
-  size_t     ParseLyrics3(FILE*);
-  size_t     ParseLyrics3v2(FILE*);
-  size_t     ParseMusicMatch(FILE*);
+
+  void       ParseFile();
+  size_t     RenderV2(uchar*) const;
   
 private:
   ID3_TagHeader __hdr;          // information relevant to the tag header
@@ -152,8 +149,8 @@ private:
   char*      __file_name;       // name of the file we are linked to
   FILE*      __file_handle;     // a handle to the file we are linked to
   size_t     __file_size;       // the size of the file (without any tag(s))
-  size_t     __starting_bytes;  // number of tag bytes at start of file
-  size_t     __ending_bytes;    // number of tag bytes at end of file
+  size_t     __prepended_bytes; // number of tag bytes at start of file
+  size_t     __appended_bytes;  // number of tag bytes at end of file
   bool       __is_file_writable;// is the associated file (via Link) writable?
   ID3_Flags  __tags_to_parse;   // which tag types should attempt to be parsed
   ID3_Flags  __file_tags;       // which tag types does the file contain
@@ -165,6 +162,7 @@ ID3_Tag& operator<<(ID3_Tag&, const ID3_Frame &);
 /// Attaches a pointer to a frame
 ID3_Tag& operator<<(ID3_Tag&, const ID3_Frame *);
 //@}
+size_t     ID3_GetDataSize(const ID3_Tag&);
 
 // deprecated!
 int32 ID3_IsTagHeader(const uchar header[ID3_TAGHEADERSIZE]);
