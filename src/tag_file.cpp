@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.34 2001/12/16 09:40:56 shadrack Exp $
+// $Id: tag_file.cpp,v 1.35 2002/03/03 20:04:15 slackorama Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -47,6 +47,10 @@ using namespace dami;
 
 #if defined HAVE_UNISTD_H
 #  include <unistd.h>
+#endif
+
+#if defined HAVE_SYS_STAT_H
+#  include <sys/stat.h>
 #endif
 
 #if defined WIN32 && (!defined(WINCE))
@@ -305,8 +309,18 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
 
     file.close();
 
-    remove(filename.c_str());
-    rename(sTempFile, filename.c_str());
+    // the following sets the permissions of the new file
+    // to be the same as the original
+#if defined HAVE_SYS_STAT_H
+    struct stat fileStat;
+    if(stat(filename.c_str(), &fileStat) == 0) {
+#endif
+      remove(filename.c_str());
+      rename(sTempFile, filename.c_str());
+#if defined HAVE_SYS_STAT_H
+      chmod(filename.c_str(), fileStat.st_mode);
+    }
+#endif
 
     openWritableFile(filename, file);
 #endif
