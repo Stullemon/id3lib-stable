@@ -14,7 +14,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.14 2000/08/27 22:58:17 eldamitri Exp $
+// $Id: demo_info.cpp,v 1.15 2000/09/14 22:15:21 eldamitri Exp $
 
 #include <iostream.h>
 #include <id3/tag.h>
@@ -22,7 +22,7 @@
 #include <id3/misc_support.h>
 #include <popt.h>
 
-static const char* VERSION_NUMBER = "$Revision: 1.14 $";
+static const char* VERSION_NUMBER = "$Revision: 1.15 $";
 
 void PrintUsage(const char *sName)
 {
@@ -150,12 +150,12 @@ void PrintInformation(const ID3_Tag &myTag)
         case ID3FID_INVOLVEDPEOPLE:
         {
           size_t nItems = myFrame->Field(ID3FN_TEXT).GetNumTextItems();
-          for (size_t nIndex = 1; nIndex <= nItems; nIndex++)
+          for (size_t nIndex = 0; nIndex < nItems; nIndex++)
           {
             char *sPeople = ID3_GetString(myFrame, ID3FN_TEXT, nIndex);
             cout << sPeople;
             delete [] sPeople;
-            if (nIndex < nItems)
+            if (nIndex + 1 < nItems)
             {
               cout << ", ";
             }
