@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.18 2000/07/01 07:48:28 eldamitri Exp $
+// $Id: tag_file.cpp,v 1.19 2000/07/04 22:05:43 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -26,6 +26,15 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <fstream.h>
+
+#ifdef  MAXPATHLEN
+#  define ID3_PATH_LENGTH   (MAXPATHLEN + 1)
+#elif   defined (PATH_MAX)
+#  define ID3_PATH_LENGTH   (PATH_MAX + 1)
+#else   /* !MAXPATHLEN */
+#  define ID3_PATH_LENGTH   (2048 + 1)
+#endif  /* !MAXPATHLEN && !PATH_MAX */
 
 #if defined WIN32
 #  include <windows.h>
@@ -244,25 +253,221 @@ size_t ID3_Tag::Link(const char *fileInfo, flags_t tag_types)
   
   strcpy(__file_name, fileInfo);
   __changed = true;
-  __starting_bytes = 0;
-  __ending_bytes = 0;
+
   if (ID3E_NoError == OpenFileForReading())
   {
-    ParseFromHandle(__file_handle);
-    
+    ParseFile();
     CloseFile();
   }
   
-  if (__starting_bytes > 0)
+  return this->GetPrependedBytes();
+}
+
+size_t RenderV1ToHandle(ID3_Tag& tag, FILE* handle)
+{
+  if (handle == NULL)
   {
-    __starting_bytes += ID3_TagHeader::SIZE;
+    // log this
+    //ID3_THROW(ID3E_NoData);
+    return 0;
+    // cerr << "*** Ack! handle is null!" << endl;
+  }
+  
+  uchar sTag[ID3_V1_LEN];
+  size_t tag_size = tag.Render(sTag, ID3TT_ID3V1);
+
+  if (tag_size > tag.GetAppendedBytes())
+  {
+    if (fseek(handle, 0, SEEK_END) != 0)
+    {
+      // TODO:  This is a bad error message.  Make it more descriptive
+      ID3_THROW(ID3E_NoData);
+    }
+  }
+  else
+  {
+    // We want to check if there is already an id3v1 tag, so we can write over
+    // it.  First, seek to the beginning of any possible id3v1 tag
+    if (fseek(handle, 0-tag_size, SEEK_END) != 0)
+    {
+      // TODO:  This is a bad error message.  Make it more descriptive
+      ID3_THROW(ID3E_NoData);
+    }
+    
+    char sID[ID3_V1_LEN_ID];
+    // Read in the TAG characters
+    if (fread(sID, 1, ID3_V1_LEN_ID, handle) != ID3_V1_LEN_ID)
+    {
+      // TODO:  This is a bad error message.  Make it more descriptive
+      ID3_THROW(ID3E_NoData);
+    }
+
+    // If those three characters are TAG, then there's a preexisting id3v1 tag,
+    // so we should set the file cursor so we can overwrite it with a new tag.
+    if (memcmp(sID, "TAG", ID3_V1_LEN_ID) == 0)
+    {
+      if (fseek(handle, 0-tag_size, SEEK_END) != 0)
+      {
+        // TODO:  This is a bad error message.  Make it more descriptive
+        ID3_THROW(ID3E_NoData);
+      }
+    }
+    // Otherwise, set the cursor to the end of the file so we can append on 
+    // the new tag.
+    else
+    {
+      if (fseek(handle, 0, SEEK_END) != 0)
+      {
+        // TODO:  This is a bad error message.  Make it more descriptive
+        ID3_THROW(ID3E_NoData);
+      }
+    }
+  }
+  
+  fwrite(sTag, sizeof(uchar), tag_size, handle);
+
+  return tag_size;
+}
+
+size_t RenderV2ToHandle(const ID3_Tag& tag, FILE*& handle)
+{
+  uchar *buffer = NULL;
+  
+  if (NULL == handle)
+  {
+    ID3_THROW(ID3E_NoData);
   }
 
-  // the file size represents the file size _without_ the beginning ID3v2 tag
-  // info
-  __file_size -= MIN(__file_size, __starting_bytes);
-  return __starting_bytes;
+  // Size() returns an over-estimate of the size needed for the tag
+  size_t tag_size = 0;
+  size_t size_est = tag.Size();
+  if (size_est)
+  {
+    buffer = new uchar[size_est];
+    if (NULL == buffer)
+    {
+      ID3_THROW(ID3E_NoMemory);
+    }
+  
+    tag_size = tag.Render(buffer, ID3TT_ID3V2);
+    if (!tag_size)
+    {
+      delete [] buffer;
+      buffer = NULL;
+    }
+  }
+  
+
+  cerr << "*** tag.GetPrependedBytes() = " << tag.GetPrependedBytes() << endl;
+  cerr << "*** ID3_GetDataSize(tag) = " << ID3_GetDataSize(tag) << endl;
+  // if the new tag fits perfectly within the old and the old one
+  // actually existed (ie this isn't the first tag this file has had)
+  if ((!tag.GetPrependedBytes() && !ID3_GetDataSize(tag)) ||
+      (tag_size == tag.GetPrependedBytes()))
+  {
+    cerr << "*** fits exactly" << endl;
+    fseek(handle, 0, SEEK_SET);
+    if (buffer)
+    {
+      fwrite(buffer, 1, tag_size, handle);
+    }
+  }
+  else
+  {
+#if !defined HAVE_MKSTEMP
+    // This section is for Windows folk
+
+    FILE *tempOut = tmpfile();
+    if (NULL == tempOut)
+    {
+      ID3_THROW(ID3E_ReadOnly);
+    }
+    
+    if (buffer)
+    {
+      fwrite(buffer, 1, tag_size, tempOut);
+    }
+    
+    fseek(handle, tag.GetPrependedBytes(), SEEK_SET);
+    
+    uchar buffer2[BUFSIZ];
+    while (! feof(handle))
+    {
+      size_t nBytes = fread(buffer2, 1, BUFSIZ, handle);
+      fwrite(buffer2, 1, nBytes, tempOut);
+    }
+    
+    rewind(tempOut);
+    freopen(tag.GetFileName(), "wb+", handle);
+    
+    while (!feof(tempOut))
+    {
+      size_t nBytes = fread(buffer2, 1, BUFSIZ, tempOut);
+      fwrite(buffer2, 1, nBytes, handle);
+    }
+    
+    fclose(tempOut);
+    
+#else
+
+    // else we gotta make a temp file, copy the tag into it, copy the
+    // rest of the old file after the tag, delete the old file, rename
+    // this new file to the old file's name and update the handle
+
+    const char sTmpSuffix[] = ".XXXXXX";
+    if (strlen(tag.GetFileName()) + strlen(sTmpSuffix) > ID3_PATH_LENGTH)
+    {
+      ID3_THROW_DESC(ID3E_NoFile, "filename too long");
+    }
+    char sTempFile[ID3_PATH_LENGTH];
+    strcpy(sTempFile, tag.GetFileName());
+    strcat(sTempFile, sTmpSuffix);
+    
+    int fd = mkstemp(sTempFile);
+    if (fd < 0)
+    {
+      remove(sTempFile);
+      ID3_THROW_DESC(ID3E_NoFile, "couldn't open temp file");
+    }
+
+    ofstream tmpOut(sTempFile);
+    if (!tmpOut.is_open())
+    {
+      remove(sTempFile);
+      ID3_THROW(ID3E_ReadOnly);
+    }
+    if (buffer)
+    {
+      tmpOut.write(buffer, tag_size);
+    }
+    fseek(handle, tag.GetPrependedBytes(), SEEK_SET);
+      
+    uchar buffer2[BUFSIZ];
+    while (! feof(handle))
+    {
+      size_t nBytes = fread(buffer2, 1, BUFSIZ, handle);
+      tmpOut.write(buffer2, nBytes);
+    }
+      
+    tmpOut.close();
+
+    fclose(handle);
+    handle = NULL;
+
+    remove(tag.GetFileName());
+    rename(sTempFile, tag.GetFileName());
+    
+#endif
+  }
+
+  if (buffer)
+  {
+    delete [] buffer;
+  }
+
+  return tag_size;
 }
+
 
 /** Renders the tag and writes it to the attached file; the type of tag
  ** rendered can be specified as a parameter.  The default is to update only
@@ -278,25 +483,42 @@ size_t ID3_Tag::Link(const char *fileInfo, flags_t tag_types)
  **/
 flags_t ID3_Tag::Update(flags_t ulTagFlag)
 {
+  flags_t tags = ID3TT_NONE;
+
   OpenFileForWriting();
   if (NULL == __file_handle)
   {
     CreateFile();
   }
-  flags_t tags = ID3TT_NONE;
-
   if ((ulTagFlag & ID3TT_ID3V2) && this->HasChanged())
   {
-    RenderV2ToHandle();
-    tags |= ID3TT_ID3V2;
+    __prepended_bytes = RenderV2ToHandle(*this, __file_handle);
+    if (__prepended_bytes)
+    {
+      tags |= ID3TT_ID3V2;
+    }
   }
-
+  
+  OpenFileForWriting();
+  if (NULL == __file_handle)
+  {
+    CreateFile();
+  }
   if ((ulTagFlag & ID3TT_ID3V1) && 
       (!this->HasTagType(ID3TT_ID3V1) || this->HasChanged()))
   {
-    RenderV1ToHandle();
-    tags |= ID3TT_ID3V1;
+    size_t tag_bytes = RenderV1ToHandle(*this, __file_handle);
+    if (tag_bytes)
+    {
+      // only add the tag_bytes if there wasn't an id3v1 tag before
+      if (! __file_tags.test(ID3TT_ID3V1))
+      {
+        __appended_bytes += tag_bytes;
+      }
+      tags |= ID3TT_ID3V1;
+    }
   }
+  __changed = false;
   __file_tags.add(tags);
   CloseFile();
   return tags;
@@ -316,7 +538,6 @@ flags_t ID3_Tag::Strip(flags_t ulTagFlag)
   if (ulTagFlag & ID3TT_PREPENDED & __file_tags.get())
   {
     OpenFileForWriting();
-    __file_size -= __starting_bytes;
 
     // We will remove the id3v2 tag in place: since it comes at the beginning
     // of the file, we'll effectively move all the data that comes after the
@@ -328,21 +549,19 @@ flags_t ID3_Tag::Strip(flags_t ulTagFlag)
     // write to. 
     long nNextWrite = ftell(__file_handle);
     // Set the read pointer past the tag
-    fseek(__file_handle, __starting_bytes, SEEK_CUR);
+    fseek(__file_handle, this->GetPrependedBytes(), SEEK_CUR);
     long nNextRead = ftell(__file_handle);
     
     uchar aucBuffer[BUFSIZ];
     
     // The nBytesRemaining variable indicates how many bytes are to be copied
-    size_t nBytesToCopy = __file_size;
+    size_t nBytesToCopy = ID3_GetDataSize(*this);
 
-    // Here we reduce the nBytesToCopy by the size of any tags that appear
-    // at the end of the file (e.g the id3v1 and lyrics tag).  This isn't
-    // strictly necessary, since the truncation stage will remove these,
-    // but this check prevents us from copying them unnecessarily.
-    if (ulTagFlag & ID3TT_APPENDED)
+    // Here we increase the nBytesToCopy by the size of any tags that appear
+    // at the end of the file if we don't want to strip them
+    if (!(ulTagFlag & ID3TT_APPENDED))
     {
-      nBytesToCopy -= __ending_bytes;
+      nBytesToCopy += this->GetAppendedBytes();
     }
     
     // The nBytesRemaining variable indicates how many bytes are left to be 
@@ -391,14 +610,17 @@ flags_t ID3_Tag::Strip(flags_t ulTagFlag)
     CloseFile();
   }
   
-  size_t nNewFileSize = __file_size;
+  size_t nNewFileSize = ID3_GetDataSize(*this);
 
   if ((__file_tags.get() & ID3TT_APPENDED) && (ulTagFlag & ID3TT_APPENDED))
   {
-    // if we're stripping the ID3v1 tag, be sure to reduce the file size by
-    // those bytes
-    nNewFileSize -= __ending_bytes;
     ulTags |= __file_tags.get() & ID3TT_APPENDED;
+  }
+  else
+  {
+    // if we're not stripping the appended tags, be sure to increase the file
+    // size by those bytes
+    nNewFileSize += this->GetAppendedBytes();
   }
   
   if ((ulTagFlag & ID3TT_PREPENDED) && (__file_tags.get() & ID3TT_PREPENDED))
@@ -409,10 +631,10 @@ flags_t ID3_Tag::Strip(flags_t ulTagFlag)
   }
   else
   {
-    // add the original ID3v2 tag size since we don't want to delete it, and
-    // the new file size represents the file size _not_ counting the ID3v2
+    // add the original prepended tag size since we don't want to delete it,
+    // and the new file size represents the file size _not_ counting the ID3v2
     // tag
-    nNewFileSize += __starting_bytes;
+    nNewFileSize += this->GetPrependedBytes();
   }
 
   if (ulTags && (truncate(__file_name, nNewFileSize) == -1))
@@ -420,8 +642,8 @@ flags_t ID3_Tag::Strip(flags_t ulTagFlag)
     ID3_THROW(ID3E_NoFile);
   }
 
-  __starting_bytes = (ulTags & ID3TT_PREPENDED) ? 0 : __starting_bytes;
-  __ending_bytes   = (ulTags & ID3TT_APPENDED)  ? 0 : __ending_bytes;
+  __prepended_bytes = (ulTags & ID3TT_PREPENDED) ? 0 : __prepended_bytes;
+  __appended_bytes  = (ulTags & ID3TT_APPENDED)  ? 0 : __appended_bytes;
   
   __changed = __file_tags.remove(ulTags) || __changed;
   
