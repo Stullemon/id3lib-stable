@@ -1,3 +1,114 @@
+2000-05-28  Scott Haug  <scott@id3.org>
+
+	* src/tag_sync.cpp 
+	(ID3_ReSync): Fixed a bug in ReSync'ing that caused it to improperly
+	handle the last character
+	(ID3_ShouldUnsync): Fixed a bug with recognizing sync signals
+
+	* src/tag_render.cpp 
+	(Render): Now returns 0 with NULL buffer rather than throw,
+
+	* src/tag_parse.cpp 
+	(Parse): No longer saves the return value of ParseFrames to prevent 
+	compiler warnings
+
+	* src/tag.cpp 
+	(ID3_Tag): Reorganized member variable initialization to avoid
+	compiler warnings
+
+	* src/misc_support.cpp 
+	(ID3_AddTrack): Changed size_t's to luints to prevent comiler warnings
+	(ID3_AddGenre): Changed size_t's to luints to prevent comiler warnings
+
+	* src/frame.cpp 
+	(ID3_Frame): Reorganized member variable initialization to avoid
+	compiler warnings
+
+	* src/field_string_unicode.cpp 
+	(ParseUnicodeString): Removed unnecessary cast
+
+	* src/field.cpp 
+	(ID3_Field): Reorganized member variable initialization to avoid
+	compiler warnings
+	(operator=): Added default clause to prevent compiler warning
+
+	* include/id3/tag.h: 
+	Added GetUnsync()
+
+	* examples/test_pic.cpp 
+	(main): Now includes actual picture data, unsyncs tag
+
+	* examples/get_pic.cpp: 
+	Initial revision.
+
+	* examples/composer.jpg: 
+	Added.  Initial revision.
+
+	* examples/Makefile.am 
+	(check_PROGRAMS): Added get_pic
+
+	* src/tag_render.cpp 
+	(RenderFrames): Added so that frames are rendered in correct order
+	(Render): Doesn't render if there aren't any frames, makes use of new
+	RenderFrames function
+	(Size): Size is 0 if there aren't any frames
+
+	* src/header_tag.cpp 
+	(Render): Now always renders the latest version of the spec
+
+	* examples/test_pic.cpp: 
+	(main): uncommented the frame additions
+
+2000-05-27  Scott Haug  <scott@id3.org>
+	
+	* examples/test_pic.cpp: 
+	Added.
+
+	* examples/Makefile.am 
+	(check_PROGRAMS): Added testpic
+
+	* src/tag_find.cpp 
+	(Find): Changed luint to size_t
+
+	* src/tag_file.cpp 
+	(Link): If Linking to a tag that's already Linked, simply close the
+	current file and link to the new one
+	(Strip): Only Strips id3v2 if __starting_bytes > 0
+
+	* src/tag.cpp 
+	(Clear): No longer removes file name.
+
+	* src/frame_render.cpp 
+	(Render): Removed dangling semicolon, fixed call to Render
+
+	* src/frame.cpp 
+	(_ClearFields): Clears bitset field rather than deleting it.
+
+	* src/field_string_unicode.cpp (Get): 
+	* src/field_string_ascii.cpp (Get): 
+	* src/field_binary.cpp (Get): 
+	* include/id3/field.h 
+	(class ID3_Field): All Get() methods now const
+
+	* src/c_wrapper.cpp 
+	* include/id3.h: 
+	- ID3Tag_RemoveFrame returns a pointer to the frame removed
+	- ID3Tag_UpdateByTagType's 2nd parameter is no longer const
+	- luint was replaced with size_t, index_t, flags_t, or uint32
+	- The following functions were updated with const parameters:
+	  ID3Tag_HasChanged, ID3Tag_AddFrame, ID3Tag_AddFrames, 
+	  ID3_RemoveFrame, ID3Tag_Parse, ID3Tag_Link, ID3Tag_Strip, 
+	  ID3Tag_Find*, ID3Tag_GetFrameNum, ID3Frame_GetID, ID3Frame_GetField,
+	  ID3Frame_GetCompression, ID3Field_Size, ID3Field_GetNumTextItems,
+	  ID3Field_SetINT, ID3Field_*UNICODE, ID3Field_*ASCII, ID3Field_*File
+	  
+
+	* id3com/ID3Field.h 
+	* id3com/ID3Tag.cpp 
+	* id3com/id3com.cpp 
+	* id3com/id3com.idl: 
+	Bugfixes (thanks John Adcock)
+
 2000-05-23  Scott Haug  <scott@id3.org>
 
 	* NEWS 
