@@ -1,4 +1,4 @@
-// $Id: frame.h,v 1.2 1999/12/02 22:45:28 scott Exp $
+// $Id: frame.h,v 1.3 1999/12/09 02:45:46 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -28,7 +28,7 @@ class ID3_Tag;
     the implementation of a complex APIC frame and for a simple text frame.
     
     @author Dirk Mahoney
-    @version $Id: frame.h,v 1.2 1999/12/02 22:45:28 scott Exp $
+    @version $Id: frame.h,v 1.3 1999/12/09 02:45:46 scott Exp $
     @see ID3_Tag
     @see ID3_Field
     @see ID3_Err
@@ -112,6 +112,8 @@ public:
   */
   ID3_Field  &Field(ID3_FieldID name) const;
   
+  ID3_Frame  &operator=( const ID3_Frame &rFrame );
+
 private:
   char        __sEncryptionID[256]; // encryption method used with this frame
   char        __sGroupingID[256];   // the group to which this frame belongs
@@ -136,6 +138,9 @@ protected:
 ;
 
 // $Log: frame.h,v $
+// Revision 1.3  1999/12/09 02:45:46  scott
+// (class ID3_Frame): Added operator= method declaration.
+//
 // Revision 1.2  1999/12/02 22:45:28  scott
 // Changed all of the #include <id3/*> to #include "*" to help ensure that
 // the sources are searched for in the right places.
