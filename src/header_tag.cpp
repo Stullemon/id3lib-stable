@@ -1,4 +1,4 @@
-// $Id: header_tag.cpp,v 1.10 2000/05/10 01:42:37 eldamitri Exp $
+// $Id: header_tag.cpp,v 1.11 2000/05/12 21:09:17 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -36,7 +36,7 @@
 
 const char* const ID3_TagHeader::ID = "ID3";
 
-bool ID3_TagHeader::SetSpec(const ID3_V2Spec spec)
+bool ID3_TagHeader::SetSpec(ID3_V2Spec spec)
 {
   bool changed = this->ID3_Header::SetSpec(spec);
   if (changed)
