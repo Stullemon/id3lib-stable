@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.22 2000/10/01 00:40:52 eldamitri Exp $
+// $Id: misc_support.cpp,v 1.23 2000/10/03 04:30:02 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -33,9 +33,11 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <stdio.h>
 
 #include "misc_support.h"
 #include "field.h"
+#include "error.h"
 
 char *ID3_GetString(const ID3_Frame *frame, ID3_FieldID fldName)
 {
@@ -838,10 +840,6 @@ ID3_Frame* ID3_AddSyncLyrics(ID3_Tag *tag, const uchar *data, size_t datasize,
     }
 
     ID3_Frame* frame = new ID3_Frame(ID3FID_SYNCEDLYRICS);
-    if (NULL == frame)
-    {
-      ID3_THROW(ID3E_NoMemory);
-    }
 
     frame->Field(ID3FN_LANGUAGE) = lang;
     frame->Field(ID3FN_DESCRIPTION) = desc;
