@@ -1,5 +1,5 @@
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
-// $Id: uint28.cpp,v 1.7 2000/09/14 23:54:56 eldamitri Exp $
+// $Id: uint28.cpp,v 1.8 2000/10/09 04:32:51 eldamitri Exp $
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -23,6 +23,9 @@
 // http://download.sourceforge.net/id3lib/
 
 #include "uint28.h"
+#include "readers.h"
+#include "reader_decorators.h"
+#include "writers.h"
 
 #if defined HAVE_CONFIG_H
 #  include <config.h>
@@ -32,39 +35,36 @@
 #  include "iomanip.h"
 #endif
 
+using namespace dami;
+
 // values are initialized here
 // this stops the window complier from complaining
 const unsigned short uint28::BITSUSED = 7;
 const uint32 uint28::MINVAL = 0;
 const uint32 uint28::MAXVAL = MASK(BITSUSED*sizeof(uint32));
 
-size_t uint28::Parse(const char* data)
-{
-  return this->Parse(reinterpret_cast<const uchar *>(data));
-}
-
-size_t uint28::Parse(const uchar* data)
+bool uint28::Parse(ID3_Reader& reader)
 {
   uint32 val = 0;
   // For each byte of the first 4 bytes in the string...
   for (size_t i = 0; i < sizeof(uint32); ++i)
   {
+    if (reader.atEnd())
+    {
+      return false;
+    }
     // ...append the last 7 bits to the end of the temp integer...
-    val = (val << BITSUSED) | static_cast<uint32>(data[i]) & MASK(BITSUSED);
+    val = (val << BITSUSED) | static_cast<uint32>(reader.readChar()) & MASK(BITSUSED);
   }
   // ...and assign this value to the object
   *this = val;
   // We should always parse 4 characters
-  return sizeof(uint32);
+  return true;
 }
 
-size_t uint28::Render(char* data) const
+void uint28::Render(ID3_Writer& writer) const
 {
-  return this->Render(reinterpret_cast<uchar*>(data));
-}
-
-size_t uint28::Render(uchar* data) const
-{
+  uchar data[sizeof(uint32)];
   uint32 val = this->to_uint32();
   // This loop renders the value to the character buffer in reverse order, as 
   // it is easy to extract the last 7 bits of an integer.  This is why the
@@ -81,26 +81,19 @@ size_t uint28::Render(uchar* data) const
   }
   
   // Should always render 4 bytes
-  return sizeof(uint32);
+  writer.writeChars(data, sizeof(uint32));
 }
 
 ostream& operator<<(ostream& os, const uint28& val)
 {
-  // The easiest way to write a 28-bit integer to a char stream is to render
-  // it to a char buffer and then write the char buffer to the stream
-  char data[sizeof(uint32)];
-  val.Render(data);
-  os.write(data, sizeof(uint32));
+  ID3_OStreamWriter osw(os);
+  val.Render(osw);
   return os;
 }
 
 istream& operator>>(istream& in, uint28& val)
 {
-  // The easiest way to extract a 28-bit integer from a char stream is to 
-  // read 4 bytes into a char buffer and then extract the 28-bit integer from
-  // the buffer
-  char data[sizeof(uint32)];
-  in.read(data, sizeof(uint32));
-  val = data;
+  ID3_IStreamReader isr(in);
+  val.Parse(isr);
   return in;
 }
