@@ -1,4 +1,4 @@
-// $Id: c_wrapper.cpp,v 1.1 2000/04/21 04:58:45 eldamitri Exp $
+// $Id: c_wrapper.cpp,v 1.2 2000/04/22 23:33:55 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -270,6 +270,21 @@ extern "C"
     }
   }
 
+  ID3_C_EXPORT
+  void ID3Tag_UpdateType(ID3Tag *tag, const luint tag_type)
+  {
+    try
+    {
+      if (tag)
+      {
+        ((ID3_Tag *) tag)->Update(tag_type);
+      }
+    }
+    catch (...)
+    {
+    }
+  }
+
 
   ID3_C_EXPORT
   void ID3Tag_Strip(ID3Tag *tag, luint ulTagFlags)
@@ -411,6 +426,52 @@ extern "C"
 
 
   // frame wrappers
+
+  ID3_C_EXPORT
+  ID3Frame *ID3Frame_New(void)
+  {
+    ID3_Frame* frame = NULL;
+    try
+    {
+      frame = new ID3_Frame;
+    }
+    catch (...)
+    {
+    }
+  
+    return (ID3Frame *) frame;
+  }
+
+  ID3_C_EXPORT
+  ID3Frame *ID3Frame_NewID(ID3_FrameID id)
+  {
+    ID3_Frame* frame = NULL;
+    try
+    {
+      frame = new ID3_Frame(id);
+    }
+    catch (...)
+    {
+    }
+  
+    return (ID3Frame *) frame;
+  }
+
+  ID3_C_EXPORT
+  void ID3Frame_Delete(ID3Frame *frame)
+  {
+    try
+    {
+      if (frame)
+      {
+        delete (ID3_Frame *) frame;
+      }
+    }
+    catch (...)
+    {
+    }
+  }
+
 
   ID3_C_EXPORT
   void ID3Frame_Clear(ID3Frame *frame)
