@@ -1,4 +1,4 @@
-// $Id: tag_parse_lyrics3.cpp,v 1.32 2002/07/31 13:45:18 t1mpy Exp $
+// $Id: tag_parse_lyrics3.cpp,v 1.33 2002/07/31 14:35:29 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -66,7 +66,9 @@ namespace
                 ']' == reader.readChar());
     reader.setCur(cur);
     if (its)
+    {
       ID3D_NOTICE( "isTimeStamp(): found timestamp, cur = " << reader.getCur() );
+    }
     return its;
   }
   
