@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.15 2000/05/10 15:19:20 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.16 2000/05/11 12:49:31 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -227,21 +227,21 @@ luint ID3_Tag::RenderV1(uchar *buffer)
   // pCur is used to mark where to next write in the buffer
   // sTemp is used as a temporary string pointer for functions that return
   //  dynamically created strings
-  uchar* pCur = buffer;
+  char* pCur = (char *) buffer;
   char* sTemp = NULL;
 
   // The default char for a v1 tag is null
   memset(buffer, '\0', ID3_V1_LEN);
 
   // Write the TAG identifier
-  memcpy(pCur, "TAG", ID3_V1_LEN_ID);
+  strncpy(pCur, "TAG", ID3_V1_LEN_ID);
   pCur = &pCur[ID3_V1_LEN_ID];
 
   // Write the TITLE
   sTemp = ID3_GetTitle(this);
   if (sTemp != NULL)
   {
-    memcpy(pCur, sTemp, ID3_V1_LEN_TITLE);
+    strncpy(pCur, sTemp, ID3_V1_LEN_TITLE);
     delete [] sTemp;
   }
   pCur = &pCur[ID3_V1_LEN_TITLE];
@@ -250,7 +250,7 @@ luint ID3_Tag::RenderV1(uchar *buffer)
   sTemp = ID3_GetArtist(this);
   if (sTemp != NULL)
   {
-    memcpy(pCur, sTemp, ID3_V1_LEN_ARTIST);
+    strncpy(pCur, sTemp, ID3_V1_LEN_ARTIST);
     delete [] sTemp;
   }
   pCur = &pCur[ID3_V1_LEN_ARTIST];
@@ -259,7 +259,7 @@ luint ID3_Tag::RenderV1(uchar *buffer)
   sTemp = ID3_GetAlbum(this);
   if (sTemp != NULL)
   {
-    memcpy(pCur, sTemp, ID3_V1_LEN_ALBUM);
+    strncpy(pCur, sTemp, ID3_V1_LEN_ALBUM);
     delete [] sTemp;
   }
   pCur = &pCur[ID3_V1_LEN_ALBUM];
@@ -268,7 +268,7 @@ luint ID3_Tag::RenderV1(uchar *buffer)
   sTemp = ID3_GetYear(this);
   if (sTemp != NULL)
   {
-    memcpy(pCur, sTemp, ID3_V1_LEN_YEAR);
+    strncpy(pCur, sTemp, ID3_V1_LEN_YEAR);
     delete [] sTemp;
   }
   pCur = &pCur[ID3_V1_LEN_YEAR];
@@ -277,7 +277,7 @@ luint ID3_Tag::RenderV1(uchar *buffer)
   sTemp = ID3_GetComment(this);
   if (sTemp != NULL)
   {
-    memcpy(pCur, sTemp, ID3_V1_LEN_COMMENT);
+    strncpy(pCur, sTemp, ID3_V1_LEN_COMMENT);
     delete [] sTemp;
   }
   pCur = &pCur[ID3_V1_LEN_COMMENT];
