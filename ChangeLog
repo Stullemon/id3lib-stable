@@ -1,5 +1,34 @@
 2000-04-09  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
+	* src/id3/tag_parse.cpp: 
+	Minor structure change.
+
+	* src/id3/header_frame.cpp 
+	(ID3_FrameHeader): Added implementation.
+	(SetUnknownFrame): Added implementation.
+	(SetFrameID): Sanity checking inputs.
+	(Parse): Now checks to make sure frame id isn't bogus.  If it is, 
+	creates an "unknown" frame.
+	(Render): Fixed bug in short/long id determination logic
+	(GetTextID): Fixed bug in short/long id determination logic
+	(Copy): Handles case when copying a frame that has an "unknown" frame
+	type.
+	(Clear): Now deletes __pFrameDef is it was dynamically created.
+
+	* src/id3/field.cpp: 
+	Added implementation for DEFAULT.
+
+	* include/id3/header_frame.h 
+	(class ID3_FrameHeader): Added destructor and new method 
+	SetUnknownFrame(const char*) for creating a frame with an unknown
+	frame id.  Added __bDynFrameDef member, set when __pFrameDef has been
+	dynamically created.
+
+	* include/id3/field.h 
+	(struct ID3_FieldDef): Added DEFAULT.
+	(struct ID3_FrameDef): Made text id's fixed length char arrays rather
+	than char ptrs.
+
 	* configure.in: 
 	Added check for mkstemp.
 
