@@ -1,3 +1,20 @@
+2002-07-05 Friday 14:33   Thijmen Klok <thijmen@id3lib.org>
+
+	* src/tag_parse.cpp (1.41): cleanup of internal variable file added 
+
+2002-07-05 Friday 14:31   Thijmen Klok <thijmen@id3lib.org>
+
+	* src/: header_frame.h (1.2), frame_render.cpp (1.25): Fixed bug
+	unknown frames corrupting tag 
+
+2002-07-03 Wednesday 22:36   Thijmen Klok <thijmen@id3lib.org>
+
+	* src/tag_file.cpp (1.39): Fixed deleted MP3 after update 
+
+2002-07-03 Wednesday 00:27   Thijmen Klok <thijmen@id3lib.org>
+
+	* ChangeLog (1.128): added last two days 
+
 2002-07-03 Wednesday 00:10   Thijmen Klok <thijmen@id3lib.org>
 
 	* include/id3/field.h (1.47), include/id3/frame.h (1.42),
