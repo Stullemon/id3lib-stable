@@ -84,6 +84,9 @@ OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
+lt_age = @lt_age@
+lt_rev = @lt_rev@
+lt_ver = @lt_ver@
 
 SUBDIRS = html latex man texinfo
 EXTRA_DIST =    ChangeLog               bugreport.txt           id3guide.html           id3v2-3.00.txt          id3v2.gif               id3v2.ico               id3v2.png               logo.txt                software.txt

@@ -30,7 +30,22 @@
 /* And now the rest of the boys */
 #undef CXX_HAS_BUGGY_FOR_LOOPS
 #undef CXX_HAS_NO_BOOL
-#undef SIZE_SPECIFIC_TYPES
+
+/* config.h defines these preprocesser symbols to be used by id3lib for
+ * determining internal versioning information.  The intent is that these
+ * macros will be made available int the library via functions or static
+ * methods.
+ */
+/* Defines which version of id3lib is being used (int) */
+#undef ID3LIB_VERSION
+/* Defines which revision of id3lib is being used (int) */
+#undef ID3LIB_REVISION
+/* Defines which patch of id3lib is being used (int) */
+#undef ID3LIB_PATCH
+/* The date of this id3lib release */
+#undef ID3LIB_DATE
+/* The identifying string of this id3lib */
+#undef ID3LIB_FULLNAME
 
 /* Define if you have the ftruncate function.  */
 #undef HAVE_FTRUNCATE
@@ -97,63 +112,4 @@
 #define false 0
 #endif
    
-
-#ifdef SIZE_SPECIFIC_TYPES
-
-/* 
- * This file defines size-specific typedefs based on the macros defined in
- * limits.h
- */
-
-#include <limits.h>
-
-/* define our datatypes */
-
-/* Define 8-bit types */
-#if UCHAR_MAX == 0xff
-
-typedef unsigned char   uint8;
-typedef signed char      int8;
-
-#else
-#error This machine has no 8-bit type
-#endif /* UCHAR_MAX == 0xff */
-
-/* Define 16-bit types */
-#if UINT_MAX == 0xffff
-
-typedef unsigned int    uint16;
-typedef int              int16;
-
-#elif USHRT_MAX == 0xffff
-
-typedef unsigned short  uint16;
-typedef short            int16;
-
-#else
-#error This machine has no 16-bit type
-#endif /* UINT_MAX == 0xffff */
-
-/* Define 32-bit types */
-#if UINT_MAX == 0xfffffffful
-
-typedef unsigned int    uint32;
-typedef int              int32;
-
-#elif ULONG_MAX == 0xfffffffful
-
-typedef unsigned long   uint32;
-typedef long             int32;
-
-#elif USHRT_MAX == 0xfffffffful
-
-typedef unsigned short  uint32;
-typedef short            int32;
-
-#else
-#error This machine has no 32-bit type
-#endif /* UINT_MAX == 0xfffffffful */
-
-#endif /* SIZE_SPECIFIC_TYPES */
-
 

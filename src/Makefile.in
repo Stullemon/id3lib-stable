@@ -84,6 +84,9 @@ OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
+lt_age = @lt_age@
+lt_rev = @lt_rev@
+lt_ver = @lt_ver@
 
 SUBDIRS = id3 examples
 EXTRA_DIST = ChangeLog
