@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.25 2000/09/11 07:46:32 eldamitri Exp $
+// $Id: tag.cpp,v 1.26 2000/10/03 04:32:55 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,14 +28,12 @@
 #include <config.h>
 #endif
 
-#if defined HAVE_SYS_PARAM_H
-#include <sys/param.h>
-#endif
-
 #include "tag.h"
-#include "uint28.h"
-#include "utils.h"
-#include <string.h>
+#include "tag_impl.h"
+#include "readers.h"
+#include "strings.h"
+
+using namespace dami;
 
 /** \class ID3_Tag
  ** \brief The representative class of an id3 tag.
@@ -79,153 +77,11 @@
  ** 'CDM' frames from the unreleased ID3v2 2.01 draft specification.
  **
  ** \author Dirk Mahoney
- ** \version $Id: tag.cpp,v 1.25 2000/09/11 07:46:32 eldamitri Exp $
+ ** \version $Id: tag.cpp,v 1.26 2000/10/03 04:32:55 eldamitri Exp $
  ** \sa ID3_Frame
  ** \sa ID3_Field
  ** \sa ID3_Err
  **/
-
-/** Analyses a buffer to determine if we have a valid ID3v2 tag header.
- ** If so, return the total number of bytes (including the header) to
- ** read so we get all of the tag
- **/
-size_t ID3_Tag::IsV2Tag(const uchar* const data)
-{
-  size_t tagSize = 0;
-  
-  if (strncmp(ID3_TagHeader::ID, (char *)data, ID3_TagHeader::ID_SIZE) == 0 &&
-      data[ID3_TagHeader::MAJOR_OFFSET]    <  0xFF &&
-      data[ID3_TagHeader::MINOR_OFFSET]    <  0xFF &&
-      data[ID3_TagHeader::SIZE_OFFSET + 0] <  0x80 &&
-      data[ID3_TagHeader::SIZE_OFFSET + 1] <  0x80 &&
-      data[ID3_TagHeader::SIZE_OFFSET + 2] <  0x80 &&
-      data[ID3_TagHeader::SIZE_OFFSET + 3] <  0x80)
-  {
-    uint28 data_size(&data[ID3_TagHeader::SIZE_OFFSET]);
-    tagSize = data_size.to_uint32() + ID3_TagHeader::SIZE;
-  }
-  else if (strncmp(ID3_TagHeader::ID, (char *)data, ID3_TagHeader::ID_SIZE) != 0)
-  {
-    // clog << "*** IsV2Tag: Not an id3v2 tag header" << endl;
-  }
-  else if (data[ID3_TagHeader::MAJOR_OFFSET]    >=  0xFF)
-  {
-    // clog << "*** IsV2Tag: Major offset" << endl;
-  }
-  else if (data[ID3_TagHeader::MINOR_OFFSET]    >=  0xFF)
-  {
-    // clog << "*** ISV2Tag: Minor offset" << endl;
-  }
-  else if (data[ID3_TagHeader::SIZE_OFFSET + 0] >=  0x80)
-  {
-    // clog << "*** ISV2Tag: 1st size offset" << endl;
-  }
-  else if (data[ID3_TagHeader::SIZE_OFFSET + 1] >=  0x80)
-  {
-    // clog << "*** ISV2Tag: 2nd size offset" << endl;
-  }
-  else if (data[ID3_TagHeader::SIZE_OFFSET + 2] >=  0x80)
-  {
-    // clog << "*** ISV2Tag: 3rd size offset" << endl;
-  }
-  else if (data[ID3_TagHeader::SIZE_OFFSET + 3] >=  0x80)
-  {
-    // clog << "*** ISV2Tag: 4th size offset" << endl;
-  }
-  else
-  {
-    // clog << "*** shouldn't get here!" << endl;
-  }
-  
-  return tagSize;
-}
-
-int32 ID3_IsTagHeader(const uchar data[ID3_TAGHEADERSIZE])
-{
-  size_t size = ID3_Tag::IsV2Tag(data);
-  
-  if (!size)
-  {
-    return -1;
-  }
-  
-  return size - ID3_TagHeader::SIZE;
-}
-
-void ID3_RemoveFromList(ID3_Elem *which, ID3_Elem **list)
-{
-  ID3_Elem *cur = *list;
-
-  if (cur == which)
-  {
-    *list = which->pNext;
-    delete which;
-    which = NULL;
-  }
-  else
-  {
-    while (cur)
-    {
-      if (cur->pNext == which)
-      {
-        cur->pNext = which->pNext;
-        delete which;
-        which = NULL;
-        break;
-      }
-      else
-      {
-        cur = cur->pNext;
-      }
-    }
-  }
-}
-
-
-void ID3_ClearList(ID3_Elem *list)
-{
-  ID3_Elem *next = NULL;
-  for (ID3_Elem *cur = list; cur; cur = next)
-  {
-    next = cur->pNext;
-    delete cur;
-  }
-}
-
-/** Copies a frame to the tag.  The frame parameter can thus safely be deleted
- ** or allowed to go out of scope.
- ** 
- ** Operator<< supports the addition of a pointer to a frame object, or
- ** the frame object itself.
- **
- ** \code
- **   ID3_Frame *pFrame, frame;
- **   p_frame = &frame;
- **   myTag << pFrame;
- **   myTag << frame;
- ** \endcode
- **
- ** Both these methods copy the given frame to the tag---the tag creates its
- ** own copy of the frame.
- ** 
- ** \name operator<<
- ** \param frame The frame to be added to the tag.
- **/
-ID3_Tag& operator<<(ID3_Tag& tag, const ID3_Frame& frame)
-{
-  tag.AddFrame(frame);
-  
-  return tag;
-}
-
-
-ID3_Tag& operator<<(ID3_Tag& tag, const ID3_Frame *frame)
-{
-  tag.AddFrame(frame);
-  
-  return tag;
-}
-
 
 /** Default constructor; it can accept an optional filename as a parameter.
  **
@@ -237,18 +93,8 @@ ID3_Tag& operator<<(ID3_Tag& tag, const ID3_Frame *frame)
  ** \param name The filename of the mp3 file to link to
  **/
 ID3_Tag::ID3_Tag(const char *name)
-  : _frames(NULL),
-    _file_name(new char[ID3_PATH_LENGTH]),
-    _file_size(0),
-    _prepended_bytes(0),
-    _appended_bytes(0),
-    _is_file_writable(false)
+  : _impl(new ID3_TagImpl(name))
 {
-  this->Clear();
-  if (name)
-  {
-    this->Link(name);
-  }
 }
 
 /** Standard copy constructor.
@@ -256,21 +102,13 @@ ID3_Tag::ID3_Tag(const char *name)
  ** \param tag What is copied into this tag
  **/
 ID3_Tag::ID3_Tag(const ID3_Tag &tag)
-  : _frames(NULL),
-    _file_name(new char[ID3_PATH_LENGTH]),
-    _file_size(0),
-    _prepended_bytes(0),
-    _appended_bytes(0),
-    _is_file_writable(false)
+  : _impl(new ID3_TagImpl(tag))
 {
-  *this = tag;
 }
 
 ID3_Tag::~ID3_Tag()
 {
-  this->Clear();
-  
-  delete [] _file_name;
+  delete _impl;
 }
 
 /** Clears the object and disassociates it from any files.
@@ -280,153 +118,7 @@ ID3_Tag::~ID3_Tag()
  **/
 void ID3_Tag::Clear()
 {
-  if (_frames)
-  {
-    ID3_ClearList(_frames);
-    _frames = NULL;
-  }
-  _num_frames = 0;
-  _cursor = NULL;
-  _is_padded = true;
-  
-  _hdr.Clear();
-  _hdr.SetSpec(ID3V2_LATEST);
-  
-  _tags_to_parse.clear();
-
-  _changed = true;
-}
-
-
-void ID3_Tag::AddFrame(const ID3_Frame& frame)
-{
-  this->AddFrame(&frame);
-}
-
-/** Attaches a frame to the tag; the tag doesn't take responsibility for
- ** releasing the frame's memory when tag goes out of scope.
- ** 
- ** Optionally, operator<< can also be used to attach a frame to a tag.  To
- ** use, simply supply its parameter a pointer to the ID3_Frame object you wish
- ** to attach.
- ** 
- ** \code
- **   ID3_Frame myFrame;
- **   myTag.AddFrame(&myFrame);
- ** \endcode 
- ** 
- ** As stated, this method attaches the frames to the tag---the tag does
- ** not create its own copy of the frame.  Frames created by an application
- ** must exist until the frame is removed or the tag is finished with it.
- ** 
- ** \param pFrame A pointer to the frame that is being added to the tag.
- ** \sa ID3_Frame
- **/
-void ID3_Tag::AddFrame(const ID3_Frame *frame)
-{
-  if (frame)
-  {
-    ID3_Frame* new_frame = new ID3_Frame(*frame);
-    this->AttachFrame(new_frame);
-  }
-}
-
-/** Attaches a frame to the tag; the tag takes responsibility for
- ** releasing the frame's memory when tag goes out of scope.
- ** 
- ** This method accepts responsibility for the attached frame's memory, and
- ** will delete the frame and its contents when the tag goes out of scope or is
- ** deleted.  Therefore, be sure the frame isn't "Attached" to other tags.
- ** 
- ** \code
- **   ID3_Frame *frame = new ID3_Frame;
- **   myTag.AttachFrame(frame);
- ** \endcode
- ** 
- ** \param frame A pointer to the frame that is being added to the tag.
- **/
-void ID3_Tag::AttachFrame(ID3_Frame *frame)
-{
-  
-  if (NULL == frame)
-  {
-    // log this
-    return;
-    //ID3_THROW(ID3E_NoData);
-  }
-
-  ID3_Elem *elem = new ID3_Elem;
-  elem->pNext = _frames;
-  elem->pFrame = frame;
-  
-  _frames = elem;
-  _num_frames++;
-  _cursor = NULL;
-  
-  _changed = true;
-}
-
-
-/** Copies an array of frames to the tag.
- ** 
- ** This method copies each frame in an array to the tag.  As in 
- ** AddFrame, the tag adds a copy of the frame, and it assumes responsiblity
- ** for freeing the frames' memory when the tag goes out of scope.
- ** 
- ** \code
- **   ID3_Frame myFrames[10];
- **   myTag.AddFrames(myFrames, 10);
- ** \endcode
- ** 
- ** \sa ID3_Frame
- ** \sa ID3_Frame#AddFrame
- ** \param pNewFrames A pointer to an array of frames to be added to the tag.
- ** \param nFrames The number of frames in the array pNewFrames.
- **/
-void ID3_Tag::AddFrames(const ID3_Frame *frames, size_t numFrames)
-{
-  for (index_t i = numFrames - 1; i >= 0; i--)
-  {
-    AddFrame(frames[i]);
-  }
-}
-
-
-/** Removes a frame from the tag.
- ** 
- ** If you already own the frame object in question, then you should already
- ** have a pointer to the frame you want to delete.  If not, or if you wish to
- ** delete a pre-existing frame (from a tag you have parsed, for example), the
- ** use one of the Find methods to obtain a frame pointer to pass to this
- ** method.
- ** 
- ** \code
- **   ID3_Frame *someFrame;
- **   if (someFrame = myTag.Find(ID3FID_TITLE))
- **   {
- **     myTag.RemoveFrame(someFrame);
- **   }
- ** \endcode
- **   
- ** \sa ID3_Tag#Find
- ** \param pOldFrame A pointer to the frame that is to be removed from the
- **                  tag
- **/
-ID3_Frame* ID3_Tag::RemoveFrame(const ID3_Frame *frame)
-{
-  ID3_Frame *the_frame = NULL;
-  ID3_Elem *elem = Find(frame);
-  if (NULL != elem)
-  {
-    the_frame = elem->pFrame;
-    //assert(the_frame == frame);
-    elem->pFrame = NULL;
-    ID3_RemoveFromList(elem, &_frames);
-    --_num_frames;
-    _changed = true;
-  }
-    
-  return the_frame;
+  _impl->Clear();
 }
 
 
@@ -455,43 +147,12 @@ ID3_Frame* ID3_Tag::RemoveFrame(const ID3_Frame *frame)
  **/
 bool ID3_Tag::HasChanged() const
 {
-  bool changed = _changed;
-  
-  if (! changed)
-  {
-    ID3_Elem *cur = _frames;
-    
-    while (cur)
-    {
-      if (cur->pFrame)
-      {
-        changed = cur->pFrame->HasChanged();
-      }
-        
-      if (changed)
-      {
-        break;
-      }
-      else
-      {
-        cur = cur->pNext;
-      }
-    }
-  }
-  
-  return changed;
+  return _impl->HasChanged();
 }
 
-bool ID3_Tag::SetSpec(ID3_V2Spec spec)
+size_t ID3_Tag::Size() const
 {
-  bool changed = _hdr.SetSpec(spec);
-  _changed = _changed || changed;
-  return changed;
-}
-
-ID3_V2Spec ID3_Tag::GetSpec() const
-{
-  return _hdr.GetSpec();
+  return _impl->Size();
 }
 
 /** Turns unsynchronization on or off, dependant on the value of the boolean
@@ -513,9 +174,7 @@ ID3_V2Spec ID3_Tag::GetSpec() const
  **/
 bool ID3_Tag::SetUnsync(bool b)
 {
-  bool changed = _hdr.SetUnsync(b);
-  _changed = changed || _changed;
-  return changed;
+  return _impl->SetUnsync(b);
 }
 
 
@@ -537,9 +196,7 @@ bool ID3_Tag::SetUnsync(bool b)
  **/
 bool ID3_Tag::SetExtendedHeader(bool ext)
 {
-  bool changed = _hdr.SetExtended(ext);
-  _changed = changed || _changed;
-  return changed;
+  return _impl->SetExtendedHeader(ext);
 }
 
 /** Turns padding on or off, dependant on the value of the boolean
@@ -573,38 +230,401 @@ bool ID3_Tag::SetExtendedHeader(bool ext)
  **/
 bool ID3_Tag::SetPadding(bool pad)
 {
-  bool changed = (_is_padded != pad);
-  _changed = changed || _changed;
-  if (changed)
-  {
-    _is_padded = pad;
-  }
-  
-  return changed;
+  return _impl->SetPadding(pad);
+}
+
+void ID3_Tag::AddFrame(const ID3_Frame& frame)
+{
+  _impl->AddFrame(frame);
+}
+
+/** Attaches a frame to the tag; the tag doesn't take responsibility for
+ ** releasing the frame's memory when tag goes out of scope.
+ ** 
+ ** Optionally, operator<< can also be used to attach a frame to a tag.  To
+ ** use, simply supply its parameter a pointer to the ID3_Frame object you wish
+ ** to attach.
+ ** 
+ ** \code
+ **   ID3_Frame myFrame;
+ **   myTag.AddFrame(&myFrame);
+ ** \endcode 
+ ** 
+ ** As stated, this method attaches the frames to the tag---the tag does
+ ** not create its own copy of the frame.  Frames created by an application
+ ** must exist until the frame is removed or the tag is finished with it.
+ ** 
+ ** \param pFrame A pointer to the frame that is being added to the tag.
+ ** \sa ID3_Frame
+ **/
+void ID3_Tag::AddFrame(const ID3_Frame* frame)
+{
+  _impl->AddFrame(frame);
+}
+
+/** Attaches a frame to the tag; the tag takes responsibility for
+ ** releasing the frame's memory when tag goes out of scope.
+ ** 
+ ** This method accepts responsibility for the attached frame's memory, and
+ ** will delete the frame and its contents when the tag goes out of scope or is
+ ** deleted.  Therefore, be sure the frame isn't "Attached" to other tags.
+ ** 
+ ** \code
+ **   ID3_Frame *frame = new ID3_Frame;
+ **   myTag.AttachFrame(frame);
+ ** \endcode
+ ** 
+ ** \param frame A pointer to the frame that is being added to the tag.
+ **/
+void ID3_Tag::AttachFrame(ID3_Frame *frame)
+{
+  _impl->AttachFrame(frame);
 }
 
 
-ID3_Tag &
-ID3_Tag::operator=( const ID3_Tag &rTag )
+/** Removes a frame from the tag.
+ ** 
+ ** If you already own the frame object in question, then you should already
+ ** have a pointer to the frame you want to delete.  If not, or if you wish to
+ ** delete a pre-existing frame (from a tag you have parsed, for example), the
+ ** use one of the Find methods to obtain a frame pointer to pass to this
+ ** method.
+ ** 
+ ** \code
+ **   ID3_Frame *someFrame;
+ **   if (someFrame = myTag.Find(ID3FID_TITLE))
+ **   {
+ **     myTag.RemoveFrame(someFrame);
+ **   }
+ ** \endcode
+ **   
+ ** \sa ID3_Tag#Find
+ ** \param pOldFrame A pointer to the frame that is to be removed from the
+ **                  tag
+ **/
+ID3_Frame* ID3_Tag::RemoveFrame(const ID3_Frame *frame)
+{
+  return _impl->RemoveFrame(frame);
+}
+
+bool ID3_Tag::Parse(ID3_Reader& reader)
+{
+  return _impl->Parse(reader);
+}
+
+size_t ID3_Tag::Parse(const uchar* buffer, size_t bytes)
+{
+  ID3_MemoryReader mr(reinterpret_cast<const char *>(buffer), bytes);
+  ID3_Reader::pos_type beg = mr.getCur();
+  this->Parse(mr);
+  return mr.getEnd() - beg;
+}
+
+/** Turns a binary tag into a series of ID3_Frame objects attached to the
+ ** tag.
+ ** 
+ ** \code
+ **   ID3_Tag myTag;
+ **   uchar header[ID3_TAGHEADERSIZE];
+ **   uchar *buffer;
+ **   luint tagSize;
+ ** 
+ **   // get ID3_TAGHEADERSIZE from a socket or somewhere
+ **   // ...
+ ** 
+ **   if ((tagSize = ID3_IsTagHeader(ourSourceBuffer)) > -1)
+ **   {
+ **     // read a further 'tagSize' bytes in
+ **     // from our data source
+ **     // ...
+ **   
+ **     if (buffer = new uchar[tagSize])
+ **     {
+ **       // now we will call ID3_Tag::Parse()
+ **       // with these values (explained later)
+ **       myTag.Parse(header, buffer);
+ **       
+ **       // do something with the objects,
+ **       // like look for titles, artists, etc.
+ **       // ...
+ **       
+ **       // free the buffer
+ **       delete [] buffer;
+ **     }
+ **   }
+ ** \endcode
+ ** 
+ ** \sa ID3_Frame
+ ** @param header The byte header read in from the data source.
+ ** @param buffer The remainder of the tag (not including the data source) 
+ **               read in from the data source.
+ **/
+size_t ID3_Tag::Parse(const uchar header[ID3_TagHeader::SIZE],
+		      const uchar *buffer)
+{
+  size_t size = ID3_Tag::IsV2Tag(header);
+  if (0 == size)
+  {
+    return 0;
+  }
+  ::BString buf;
+  buf.reserve(ID3_TagHeader::SIZE + size);
+  buf.append((char*)header, ID3_TagHeader::SIZE);
+  buf.append((char*)buffer, size);
+  return this->Parse((uchar*)buf.data(), buf.size());
+}
+
+/** Renders the tag and writes it to the attached file; the type of tag
+ ** rendered can be specified as a parameter.  The default is to update only
+ ** the ID3v2 tag.  See the ID3_TagType enumeration for the constants that
+ ** can be used.
+ ** 
+ ** Make sure the rendering parameters are set before calling the method.
+ ** See the Link dcoumentation for an example of this method in use.
+ ** 
+ ** \sa ID3_TagType
+ ** \sa Link
+ ** \param tt The type of tag to update.
+ **/
+size_t ID3_Tag::Render(uchar* buffer, ID3_TagType tt) const
+{
+  return _impl->Render(buffer, tt);
+}
+
+/** Attaches a file to the tag, parses the file, and adds any tag information
+ ** found in the file to the tag.
+ ** 
+ ** Use this method if you created your ID3_Tag object without supplying a
+ ** parameter to the constructor (maybe you created an array of ID3_Tag
+ ** pointers).  This is the preferred method of interacting with files, since
+ ** id3lib can automatically do things like parse foreign tag formats and
+ ** handle padding when linked to a file.  When a tag is linked to a file, you
+ ** do not need to use the Size(), Render(const uchar*, size_t), or
+ ** Parse(ID3_Reader&) methods or the IsV2Tag(ID3_Reader&) static function--
+ ** id3lib will take care of those details for you.  The single parameter is a
+ ** pointer to a file name.
+ ** 
+ ** Link returns the size of the the id3v2 tag (if any) that begins the file.
+ ** 
+ ** \code
+ **   ID3_Tag myTag;
+ **   myTag.Link("mysong.mp3");
+ **   
+ **   // do whatever we want with the tag
+ **   // ...
+ **   
+ **   // setup all our rendering parameters
+ **   myTag->SetUnsync(false);
+ **   myTag->SetExtendedHeader(true);
+ **   myTag->SetCompression(true);
+ **   myTag->SetPadding(true);
+ **   
+ **   // write any changes to the file
+ **   myTag->Update()
+ **   
+ ** \endcode
+ ** 
+ ** @see IsV2Tag
+ ** @param fileInfo The filename of the file to link to.
+ **/
+size_t ID3_Tag::Link(const char *fileInfo, flags_t flags)
+{
+  return _impl->Link(fileInfo, flags);
+}
+
+flags_t ID3_Tag::Update(flags_t flags)
+{
+  return _impl->Update(flags);
+}
+
+/** Strips the tag(s) from the attached file. The type of tag stripped
+ ** can be specified as a parameter.  The default is to strip all tag types.
+ ** 
+ ** \param tt The type of tag to strip
+ ** \sa ID3_TagType
+ **/
+flags_t ID3_Tag::Strip(flags_t flags)
+{
+  return _impl->Strip(flags);
+}
+  
+size_t ID3_Tag::GetPrependedBytes() const 
+{
+  return _impl->GetPrependedBytes();
+}
+
+size_t ID3_Tag::GetAppendedBytes() const 
+{ 
+  return _impl->GetAppendedBytes();
+}
+
+size_t ID3_Tag::GetFileSize() const 
+{ 
+  return _impl->GetFileSize();
+}
+
+const char* ID3_Tag::GetFileName() const 
+{ 
+  return _impl->GetFileName();
+}
+
+/// Finds frame with given frame id
+ID3_Frame* ID3_Tag::Find(ID3_FrameID id) const
+{
+  return _impl->Find(id);
+}
+
+/// Finds frame with given frame id, fld id, and integer data
+ID3_Frame* ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, uint32 data) const
+{
+  return _impl->Find(id, fld, data);
+}
+
+/// Finds frame with given frame id, fld id, and ascii data
+ID3_Frame* ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, const char* data) const
+{
+  return _impl->Find(id, fld, data);
+}
+
+/// Finds frame with given frame id, fld id, and unicode data
+ID3_Frame* ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, const unicode_t* data) const
+{
+  return _impl->Find(id, fld, data);
+}
+
+size_t ID3_Tag::NumFrames() const
+{
+  return _impl->NumFrames();
+}
+
+ID3_Frame* ID3_Tag::GetFrameNum(index_t index) const
+{
+  return _impl->GetFrameNum(index);
+}
+
+ID3_Frame* ID3_Tag::operator[](index_t index) const
+{
+  return this->GetFrameNum(index);
+}
+
+ID3_Tag& ID3_Tag::operator=( const ID3_Tag &rTag )
 {
   if (this != &rTag)
   {
-    Clear();
-    size_t nFrames = rTag.NumFrames();
-    for (size_t nIndex = 0; nIndex < nFrames; nIndex++)
-    {
-      ID3_Frame *frame = new ID3_Frame;
-      // Copy the frames in reverse order so that they appear in the same order
-      // as the original tag when rendered.
-      *frame = *(rTag[nFrames - nIndex - 1]);
-      AttachFrame(frame);
-    }
+    *_impl = rTag;
   }
   return *this;
 }
 
-size_t ID3_GetDataSize(const ID3_Tag& tag)
+bool ID3_Tag::GetUnsync() const
 {
-  return tag.GetFileSize() - tag.GetPrependedBytes() - tag.GetAppendedBytes();
+  return _impl->GetUnsync();
 }
+
+bool ID3_Tag::HasTagType(uint16 tt) const
+{
+  return _impl->HasTagType(16);
+}
+
+ID3_V2Spec ID3_Tag::GetSpec() const
+{
+  return _impl->GetSpec();
+}
+
+bool ID3_Tag::SetSpec(ID3_V2Spec spec)
+{
+  return _impl->SetSpec(spec);
+}
+
+/** Analyses a buffer to determine if we have a valid ID3v2 tag header.
+ ** If so, return the total number of bytes (including the header) to
+ ** read so we get all of the tag
+ **/
+size_t ID3_Tag::IsV2Tag(const uchar* const data)
+{
+  ID3_MemoryReader mr(reinterpret_cast<const char*>(data), ID3_TagHeader::SIZE);
+  return ID3_TagImpl::IsV2Tag(mr);
+}
+
+/// Deprecated
+void ID3_Tag::AddNewFrame(ID3_Frame* f) 
+{ 
+  _impl->AttachFrame(f);
+}
+
+void ID3_Tag::AddFrames(const ID3_Frame *frames, size_t numFrames)
+{
+  _impl->AddFrames(frames, numFrames);
+}
+
+size_t ID3_Tag::Link(const char *fileInfo, bool parseID3v1, bool parseLyrics3)
+{
+  _impl->Link(fileInfo, parseID3v1, parseLyrics3);
+}
+
+void ID3_Tag::SetCompression(bool b) 
+{ 
+  ; 
+}
+
+bool ID3_Tag::HasLyrics() const 
+{ 
+  return this->HasTagType(ID3TT_LYRICS);
+}
+bool ID3_Tag::HasV2Tag()  const 
+{ 
+  return this->HasTagType(ID3TT_ID3V2); 
+}
+bool ID3_Tag::HasV1Tag()  const 
+{ 
+  return this->HasTagType(ID3TT_ID3V1); 
+}
+
+/** Copies a frame to the tag.  The frame parameter can thus safely be deleted
+ ** or allowed to go out of scope.
+ ** 
+ ** Operator<< supports the addition of a pointer to a frame object, or
+ ** the frame object itself.
+ **
+ ** \code
+ **   ID3_Frame *pFrame, frame;
+ **   p_frame = &frame;
+ **   myTag << pFrame;
+ **   myTag << frame;
+ ** \endcode
+ **
+ ** Both these methods copy the given frame to the tag---the tag creates its
+ ** own copy of the frame.
+ ** 
+ ** \name operator<<
+ ** \param frame The frame to be added to the tag.
+ **/
+ID3_Tag& ID3_Tag::operator<<(const ID3_Frame& frame)
+{
+  this->AddFrame(frame);
+  return *this;
+}
+
+
+ID3_Tag& ID3_Tag::operator<<(const ID3_Frame* frame)
+{
+  if (frame)
+  {
+    this->AddFrame(frame);
+  }
+  return *this;
+}
+
+int32 ID3_IsTagHeader(const uchar data[ID3_TAGHEADERSIZE])
+{
+  size_t size = ID3_Tag::IsV2Tag(data);
+  
+  if (!size)
+  {
+    return -1;
+  }
+  
+  return size - ID3_TagHeader::SIZE;
+}
+
 
