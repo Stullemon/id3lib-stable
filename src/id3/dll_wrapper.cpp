@@ -1,4 +1,4 @@
-// $Id: dll_wrapper.cpp,v 1.13 2000/04/05 05:21:15 eldamitri Exp $
+// $Id: dll_wrapper.cpp,v 1.14 2000/04/08 04:33:44 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,7 +24,7 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#include <cstring>
+#include <string.h>
 #include "tag.h"
 
 #if defined HAVE_CONFIG_H
@@ -36,8 +36,7 @@
 struct ID3_VerInfo
 {
   char name [ 30 ];
-  luint version,
-  revision;
+  luint major, minor, patch;
 };
 
 
@@ -46,8 +45,9 @@ struct ID3_VerInfo
 CDLLEXPORT
 void ID3_GetVersion(ID3_VerInfo *info)
 {
-  info->version = ID3LIB_VERSION;
-  info->revision = ID3LIB_REVISION;
+  info->major = ID3LIB_MAJOR_VERSION;
+  info->minor = ID3LIB_MINOR_VERSION;
+  info->patch = ID3LIB_PATCH_VERSION;
   strcpy(info->name, PACKAGE);
   
   return ;
@@ -496,6 +496,10 @@ void ID3Field_ToFile(ID3_Field *field, char *fileName)
 #endif
 
 // $Log: dll_wrapper.cpp,v $
+// Revision 1.14  2000/04/08 04:33:44  eldamitri
+// Changed new ANSI-standard C++ include headers to old-style headers.
+// Updated ID3_VerInfo to represent major, minor, and patch versions.
+//
 // Revision 1.13  2000/04/05 05:21:15  eldamitri
 // Updated initial comment information to reflect license, copyright
 // change.
