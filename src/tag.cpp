@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.23 2000/07/04 21:54:57 eldamitri Exp $
+// $Id: tag.cpp,v 1.24 2000/07/11 04:14:02 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -34,15 +34,8 @@
 
 #include "tag.h"
 #include "uint28.h"
+#include "utils.h"
 #include <string.h>
-
-#ifdef  MAXPATHLEN
-#  define ID3_PATH_LENGTH   (MAXPATHLEN + 1)
-#elif   defined (PATH_MAX)
-#  define ID3_PATH_LENGTH   (PATH_MAX + 1)
-#else   /* !MAXPATHLEN */
-#  define ID3_PATH_LENGTH   (2048 + 1)
-#endif  /* !MAXPATHLEN && !PATH_MAX */
 
 /** \class ID3_Tag
  ** \brief The representative class of an id3 tag.
@@ -86,7 +79,7 @@
  ** 'CDM' frames from the unreleased ID3v2 2.01 draft specification.
  **
  ** \author Dirk Mahoney
- ** \version $Id: tag.cpp,v 1.23 2000/07/04 21:54:57 eldamitri Exp $
+ ** \version $Id: tag.cpp,v 1.24 2000/07/11 04:14:02 eldamitri Exp $
  ** \sa ID3_Frame
  ** \sa ID3_Field
  ** \sa ID3_Err
@@ -98,7 +91,7 @@
  **/
 size_t ID3_Tag::IsV2Tag(const uchar* const data)
 {
-  lsint tagSize = 0;
+  size_t tagSize = 0;
   
   if (strncmp(ID3_TagHeader::ID, (char *)data, ID3_TagHeader::ID_SIZE) == 0 &&
       data[ID3_TagHeader::MAJOR_OFFSET]    <  0xFF &&
@@ -110,6 +103,38 @@ size_t ID3_Tag::IsV2Tag(const uchar* const data)
   {
     uint28 data_size(&data[ID3_TagHeader::SIZE_OFFSET]);
     tagSize = data_size.to_uint32() + ID3_TagHeader::SIZE;
+  }
+  else if (strncmp(ID3_TagHeader::ID, (char *)data, ID3_TagHeader::ID_SIZE) != 0)
+  {
+    // clog << "*** IsV2Tag: Not an id3v2 tag header" << endl;
+  }
+  else if (data[ID3_TagHeader::MAJOR_OFFSET]    >=  0xFF)
+  {
+    // clog << "*** IsV2Tag: Major offset" << endl;
+  }
+  else if (data[ID3_TagHeader::MINOR_OFFSET]    >=  0xFF)
+  {
+    // clog << "*** ISV2Tag: Minor offset" << endl;
+  }
+  else if (data[ID3_TagHeader::SIZE_OFFSET + 0] >=  0x80)
+  {
+    // clog << "*** ISV2Tag: 1st size offset" << endl;
+  }
+  else if (data[ID3_TagHeader::SIZE_OFFSET + 1] >=  0x80)
+  {
+    // clog << "*** ISV2Tag: 2nd size offset" << endl;
+  }
+  else if (data[ID3_TagHeader::SIZE_OFFSET + 2] >=  0x80)
+  {
+    // clog << "*** ISV2Tag: 3rd size offset" << endl;
+  }
+  else if (data[ID3_TagHeader::SIZE_OFFSET + 3] >=  0x80)
+  {
+    // clog << "*** ISV2Tag: 4th size offset" << endl;
+  }
+  else
+  {
+    // clog << "*** shouldn't get here!" << endl;
   }
   
   return tagSize;
@@ -214,7 +239,6 @@ ID3_Tag& operator<<(ID3_Tag& tag, const ID3_Frame *frame)
 ID3_Tag::ID3_Tag(const char *name)
   : __frames(NULL),
     __file_name(new char[ID3_PATH_LENGTH]),
-    __file_handle(NULL),
     __file_size(0),
     __prepended_bytes(0),
     __appended_bytes(0),
@@ -234,7 +258,6 @@ ID3_Tag::ID3_Tag(const char *name)
 ID3_Tag::ID3_Tag(const ID3_Tag &tag)
   : __frames(NULL),
     __file_name(new char[ID3_PATH_LENGTH]),
-    __file_handle(NULL),
     __file_size(0),
     __prepended_bytes(0),
     __appended_bytes(0),
@@ -257,8 +280,6 @@ ID3_Tag::~ID3_Tag()
  **/
 void ID3_Tag::Clear()
 {
-  this->CloseFile();
-  
   if (__frames)
   {
     ID3_ClearList(__frames);
