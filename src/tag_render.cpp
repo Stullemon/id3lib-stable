@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.38 2000/10/29 01:37:29 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.39 2001/12/16 09:56:51 shadrack Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -211,7 +211,7 @@ size_t ID3_TagImpl::PaddingSize(size_t curSize) const
   if (this->GetPrependedBytes() && (this->GetPrependedBytes() >= curSize) && 
       (this->GetPrependedBytes() - curSize) < ID3_PADMAX)
   {
-    newSize = this->GetPrependedBytes();
+    newSize = this->GetPrependedBytes()-ID3_TagHeader::SIZE;
   }
   else
   {
