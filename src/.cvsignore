@@ -23,6 +23,7 @@ int28.lo
 libid3.la
 misc_support.lo
 old
+reader_decorators.lo
 readers.lo
 spec.lo
 tag.lo
@@ -38,3 +39,5 @@ tag_sync.lo
 uint28.lo
 utils.lo
 version.lo
+writer_decorators.lo
+writers.lo
