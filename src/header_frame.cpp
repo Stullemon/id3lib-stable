@@ -1,4 +1,4 @@
-// $Id: header_frame.cpp,v 1.3 2000/05/01 13:05:07 eldamitri Exp $
+// $Id: header_frame.cpp,v 1.4 2000/05/02 21:56:39 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,147 +28,146 @@
 #include <memory.h>
 #include "header_frame.h"
 #include "error.h"
-#include "misc_support.h"
+#include "utils.h"
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-ID3_FrameHeader::ID3_FrameHeader()
-  : __pFrameDef(NULL)
-{
-}
-
-ID3_FrameHeader::~ID3_FrameHeader()
-{
-  Clear();
-}
-
 void ID3_FrameHeader::SetUnknownFrame(const char* id)
 {
   Clear();
-  __pFrameDef = new ID3_FrameDef;
-  if (NULL == __pFrameDef)
+  __frame_def = new ID3_FrameDef;
+  if (NULL == __frame_def)
   {
   }
-  __pFrameDef->eID = ID3FID_NOFRAME;
-  __pFrameDef->bTagDiscard = false;
-  __pFrameDef->bFileDiscard = false;
-  __pFrameDef->parseHandler = NULL;
-  __pFrameDef->aeFieldDefs = (ID3_FieldDef *) ID3_FieldDef::DEFAULT;
+  __frame_def->eID = ID3FID_NOFRAME;
+  __frame_def->bTagDiscard = false;
+  __frame_def->bFileDiscard = false;
+  __frame_def->parseHandler = NULL;
+  __frame_def->aeFieldDefs = (ID3_FieldDef *) ID3_FieldDef::DEFAULT;
   if (strlen(id) <= 3)
   {
-    strcpy(__pFrameDef->sShortTextID, id);
-    strcpy(__pFrameDef->sLongTextID, "");
+    strcpy(__frame_def->sShortTextID, id);
+    strcpy(__frame_def->sLongTextID, "");
   }
   else
   {
-    strncpy(__pFrameDef->sLongTextID, id, 4);
-    strcpy(__pFrameDef->sShortTextID, "");
+    strncpy(__frame_def->sLongTextID, id, 4);
+    strcpy(__frame_def->sShortTextID, "");
   }
-  __bDynFrameDef = true;
+  __dyn_frame_def = true;
 }
 
-void ID3_FrameHeader::SetFrameID(ID3_FrameID id)
+bool ID3_FrameHeader::SetFrameID(ID3_FrameID id)
 {
-  if (id == ID3FID_NOFRAME)
+  if (id == ID3FID_NOFRAME || id == this->GetFrameID())
   {
-    return;
+    return false;
   }
-  Clear();
-  __pFrameDef = ID3_FindFrameDef(id);
-  if (__pFrameDef->bTagDiscard)
+  this->Clear();
+  __frame_def = ID3_FindFrameDef(id);
+  if (__frame_def->bTagDiscard)
   {
-    AddFlags(ID3FL_TAGALTER);
+    __flags.add(TAGALTER);
   }
-        
-  if (__pFrameDef->bFileDiscard)
+  
+  if (__frame_def->bFileDiscard)
   {
-    AddFlags(ID3FL_FILEALTER);
+    __flags.add(FILEALTER);
   }
+  return true;
 }
 
-size_t ID3_FrameHeader::Size(void)
+size_t ID3_FrameHeader::Size() const
 {
+  if (!__info)
+  {
+    return 0;
+  }
   return 
-    __pInfo->ucFrameIDBytes   + 
-    __pInfo->ucFrameSizeBytes + 
-    __pInfo->ucFrameFlagsBytes;
+    __info->frame_bytes_id   + 
+    __info->frame_bytes_size + 
+    __info->frame_bytes_flags;
 }
 
-size_t ID3_FrameHeader::Parse(uchar *buffer)
+size_t ID3_FrameHeader::Parse(const uchar *buffer, size_t size)
 {
   size_t nSize = 0;
   char sTextID[5];
 
-  strncpy(sTextID, (char *) buffer, __pInfo->ucFrameIDBytes);
-  sTextID[__pInfo->ucFrameIDBytes] = '\0';
-  nSize += __pInfo->ucFrameIDBytes;
+  if (!__info)
+  {
+    return 0;
+  }
+
+  strncpy(sTextID, (char *) buffer, __info->frame_bytes_id);
+  sTextID[__info->frame_bytes_id] = '\0';
+  nSize += __info->frame_bytes_id;
 
   ID3_FrameID fid = ID3_FindFrameID(sTextID);
   if (ID3FID_NOFRAME == fid)
   {
-    SetUnknownFrame(sTextID);
+    this->SetUnknownFrame(sTextID);
   }
   else
   {
-    SetFrameID(fid);
+    this->SetFrameID(fid);
   }
 
-  SetDataSize(ParseNumber(&buffer[nSize], __pInfo->ucFrameSizeBytes));
-  nSize += __pInfo->ucFrameSizeBytes;
+  this->SetDataSize(id3::ParseNumber(&buffer[nSize], __info->frame_bytes_size));
+  nSize += __info->frame_bytes_size;
 
-  uint16 flags = GetFlags() | 
-    (uint16) ParseNumber(&buffer[nSize], __pInfo->ucFrameFlagsBytes);
-  SetFlags(flags);
-  nSize += __pInfo->ucFrameFlagsBytes;
+  __flags.add(id3::ParseNumber(&buffer[nSize], __info->frame_bytes_flags));
+  nSize += __info->frame_bytes_flags;
   
   return nSize;
 }
 
-size_t ID3_FrameHeader::Render(uchar *buffer)
+size_t ID3_FrameHeader::Render(uchar *buffer) const
 {
-  size_t bytesUsed = 0;
+  size_t size = 0;
 
-  if (NULL == __pFrameDef)
+  if (NULL == __frame_def)
   {
-    ID3_THROW(ID3E_InvalidFrameID);
+    // TODO: log this
+    return 0;
+    //ID3_THROW(ID3E_InvalidFrameID);
   }
   char *sTextID;
-  if (__pInfo->ucFrameIDBytes == strlen(__pFrameDef->sShortTextID))
+  if (__info->frame_bytes_id == strlen(__frame_def->sShortTextID))
   {
-    sTextID = __pFrameDef->sShortTextID;
+    sTextID = __frame_def->sShortTextID;
   }
   else
   {
-    sTextID = __pFrameDef->sLongTextID;
+    sTextID = __frame_def->sLongTextID;
   }
 
-  memcpy(&buffer[bytesUsed], (uchar *) sTextID, __pInfo->ucFrameIDBytes);
-  bytesUsed += __pInfo->ucFrameIDBytes;
+  memcpy(&buffer[size], (uchar *) sTextID, __info->frame_bytes_id);
+  size += __info->frame_bytes_id;
     
-  RenderNumber(&buffer[bytesUsed], __ulDataSize, __pInfo->ucFrameSizeBytes);
-  bytesUsed += __pInfo->ucFrameSizeBytes;
+  id3::RenderNumber(&buffer[size], __data_size, __info->frame_bytes_size);
+  size += __info->frame_bytes_size;
     
-  RenderNumber(&buffer[bytesUsed], __ulFlags, __pInfo->ucFrameFlagsBytes);
-  bytesUsed += __pInfo->ucFrameFlagsBytes;
+  id3::RenderNumber(&buffer[size], __flags.get(), __info->frame_bytes_flags);
+  size += __info->frame_bytes_flags;
 
-  return bytesUsed;
+  return size;
 }
 
-const char *
-ID3_FrameHeader::GetTextID() const
+const char* ID3_FrameHeader::GetTextID() const
 {
   char *sTextID = "";
-  if (NULL != __pFrameDef)
+  if (__info && __frame_def)
   {
-    if (__pInfo->ucFrameIDBytes == strlen(__pFrameDef->sShortTextID))
+    if (__info->frame_bytes_id == strlen(__frame_def->sShortTextID))
     {
-      sTextID = __pFrameDef->sShortTextID;
+      sTextID = __frame_def->sShortTextID;
     }
     else
     {
-      sTextID = __pFrameDef->sLongTextID;
+      sTextID = __frame_def->sLongTextID;
     }
   }
   return sTextID;
@@ -178,27 +177,27 @@ ID3_FrameHeader& ID3_FrameHeader::operator=(const ID3_FrameHeader& hdr)
 {
   if (this != &hdr)
   {
-    Clear();
+    this->Clear();
     this->ID3_Header::operator=(hdr);
-    if (!hdr.__bDynFrameDef)
+    if (!hdr.__dyn_frame_def)
     {
-      __pFrameDef = hdr.__pFrameDef;
+      __frame_def = hdr.__frame_def;
     }
     else
     {
-      __pFrameDef = new ID3_FrameDef;
-      if (NULL == __pFrameDef)
+      __frame_def = new ID3_FrameDef;
+      if (NULL == __frame_def)
       {
         // TODO: throw something here...
       }
-      __pFrameDef->eID = hdr.__pFrameDef->eID;
-      __pFrameDef->bTagDiscard = hdr.__pFrameDef->bTagDiscard;
-      __pFrameDef->bFileDiscard = hdr.__pFrameDef->bFileDiscard;
-      __pFrameDef->parseHandler = hdr.__pFrameDef->parseHandler;
-      __pFrameDef->aeFieldDefs = hdr.__pFrameDef->aeFieldDefs;
-      strcpy(__pFrameDef->sShortTextID, hdr.__pFrameDef->sShortTextID);
-      strcpy(__pFrameDef->sLongTextID, hdr.__pFrameDef->sLongTextID);
-      __bDynFrameDef = true;
+      __frame_def->eID = hdr.__frame_def->eID;
+      __frame_def->bTagDiscard = hdr.__frame_def->bTagDiscard;
+      __frame_def->bFileDiscard = hdr.__frame_def->bFileDiscard;
+      __frame_def->parseHandler = hdr.__frame_def->parseHandler;
+      __frame_def->aeFieldDefs = hdr.__frame_def->aeFieldDefs;
+      strcpy(__frame_def->sShortTextID, hdr.__frame_def->sShortTextID);
+      strcpy(__frame_def->sLongTextID, hdr.__frame_def->sLongTextID);
+      __dyn_frame_def = true;
     }
   }
   return *this;
@@ -207,9 +206,9 @@ ID3_FrameHeader& ID3_FrameHeader::operator=(const ID3_FrameHeader& hdr)
 ID3_FrameID ID3_FrameHeader::GetFrameID() const
 {
   ID3_FrameID eID = ID3FID_NOFRAME;
-  if (NULL != __pFrameDef)
+  if (NULL != __frame_def)
   {
-    eID = __pFrameDef->eID;
+    eID = __frame_def->eID;
   }
 
   return eID;
@@ -217,16 +216,22 @@ ID3_FrameID ID3_FrameHeader::GetFrameID() const
 
 const ID3_FrameDef *ID3_FrameHeader::GetFrameDef() const
 {
-  return __pFrameDef;
+  return __frame_def;
 }
 
-void ID3_FrameHeader::Clear()
+bool ID3_FrameHeader::Clear()
 {
-  ID3_Header::Clear();
-  if (__bDynFrameDef)
+  bool changed = this->ID3_Header::Clear();
+  if (__dyn_frame_def)
   {
-    delete __pFrameDef;
+    delete __frame_def;
+    __dyn_frame_def = false;
+    changed = true;
   }
-  __bDynFrameDef = false;
-  __pFrameDef = NULL;
+  if (__frame_def)
+  {
+    __frame_def = NULL;
+    changed = true;
+  }
+  return changed;
 }
