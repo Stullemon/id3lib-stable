@@ -1,4 +1,4 @@
-/* $Id: globals.h,v 1.11 2000/04/23 17:37:33 eldamitri Exp $
+/* $Id: globals.h,v 1.12 2000/04/24 14:59:20 eldamitri Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags Copyright
  * 1999, 2000 Scott Thomas Haug
@@ -260,7 +260,7 @@ ID3_ENUM(ID3_V1Lengths)
  **
  ** @author Dirk Mahoney (dirk@id3.org)
  ** @author Scott Thomas Haug (sth2@cs.wustl.edu)
- ** @version $Id: globals.h,v 1.11 2000/04/23 17:37:33 eldamitri Exp $
+ ** @version $Id: globals.h,v 1.12 2000/04/24 14:59:20 eldamitri Exp $
  ** @see ID3_Tag
  **/
 ID3_STRUCT(ID3V1_Tag)
@@ -281,7 +281,6 @@ ID3_STRUCT(ID3V1_Tag)
   uchar ucGenre;
 };
 
-// field flags
 ID3_ENUM(ID3_FieldFlags)
 {
   ID3FF_NONE       =      0,
@@ -291,7 +290,7 @@ ID3_ENUM(ID3_FieldFlags)
   ID3FF_ADJUSTEDBY = 1 << 3
 };
 
-// Enumeration of the types of field types
+/** Enumeration of the types of field types */
 ID3_ENUM(ID3_FieldType)
 {
   ID3FTY_INTEGER        = 0,
@@ -306,35 +305,23 @@ ID3_ENUM(ID3_FieldType)
  **/
 ID3_ENUM(ID3_Err)
 {
-  /** No available memory */
-  ID3E_NoMemory = 0,
-  /** No data to parse */
-  ID3E_NoData,
-  /** Improperly formatted data */
-  ID3E_BadData,
-  /** No buffer to write to */
-  ID3E_NoBuffer,
-  /** Buffer is too small */
-  ID3E_SmallBuffer,
-  /** Invalid frame id */
-  ID3E_InvalidFrameID,
-  /** Requested field not found */
-  ID3E_FieldNotFound,
-  /** Unknown field type */
-  ID3E_UnknownFieldType,
-  /** Tag is already attached to a file */
-  ID3E_TagAlreadyAttached,
-  /** Invalid tag version */
-  ID3E_InvalidTagVersion,
-  /** No file to parse */
-  ID3E_NoFile,
-  /** Attempting to write to a read-only file */
-  ID3E_ReadOnly,
-  /** Error in compression/uncompression */
-  ID3E_zlibError
+  ID3E_NoError = 0,             /**< No error reported */
+  ID3E_NoMemory,                /**< No available memory */
+  ID3E_NoData,                  /**< No data to parse */
+  ID3E_BadData,                 /**< Improperly formatted data */
+  ID3E_NoBuffer,                /**< No buffer to write to */
+  ID3E_SmallBuffer,             /**< Buffer is too small */
+  ID3E_InvalidFrameID,          /**< Invalid frame id */
+  ID3E_FieldNotFound,           /**< Requested field not found */
+  ID3E_UnknownFieldType,        /**< Unknown field type */
+  ID3E_TagAlreadyAttached,      /**< Tag is already attached to a file */
+  ID3E_InvalidTagVersion,       /**< Invalid tag version */
+  ID3E_NoFile,                  /**< No file to parse */
+  ID3E_ReadOnly,                /**< Attempting to write to a read-only file */
+  ID3E_zlibError                /**< Error in compression/uncompression */
+
 };
 
-// Used for version control
 ID3_ENUM(ID3_VerCtl)
 {
   ID3VC_HIGHER  = 0,
