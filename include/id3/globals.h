@@ -1,4 +1,4 @@
-/* $Id: globals.h,v 1.29 2000/07/01 07:48:08 eldamitri Exp $
+/* $Id: globals.h,v 1.30 2000/07/02 23:03:41 eldamitri Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags Copyright
  * 1999, 2000 Scott Thomas Haug
@@ -33,8 +33,9 @@
 #define __ID3LIB_GLOBALS_H__
 
 #if defined __cplusplus
-#include <iostream.h>
+#  include <iostream.h>
 #endif
+
 #include <stdlib.h>
 #include "sized_types.h"
 
@@ -57,8 +58,8 @@
 #ifndef __cplusplus
 
 typedef int bool;
-#define false (0)
-#define true (!false)
+#  define false (0)
+#  define true (!false)
 
 #endif /* __cplusplus */
 
@@ -87,7 +88,7 @@ typedef uint16                unicode_t;
 typedef uint16                flags_t;
 /* this needs to be done for compatibility with Sun Solaris */
 #if !defined index_t
-#define index_t               size_t
+#  define index_t               size_t
 #endif
 
 #define NULL_UNICODE ((unicode_t) '\0')
@@ -288,7 +289,7 @@ ID3_ENUM(ID3_V1Lengths)
  **
  ** @author Dirk Mahoney (dirk@id3.org)
  ** @author Scott Thomas Haug (sth2@cs.wustl.edu)
- ** @version $Id: globals.h,v 1.29 2000/07/01 07:48:08 eldamitri Exp $
+ ** @version $Id: globals.h,v 1.30 2000/07/02 23:03:41 eldamitri Exp $
  ** @see ID3_Tag
  **/
 ID3_STRUCT(ID3V1_Tag)
@@ -417,7 +418,7 @@ ID3_ENUM(ID3_TimeStampFormat)
 #endif /* !WIN32 */
 
 #ifndef NULL
-#define NULL ((void*) 0)
+#  define NULL ((void*) 0)
 #endif
 
 #undef MAX
