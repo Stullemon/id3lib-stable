@@ -1,4 +1,4 @@
-// $Id: tag_parse.cpp,v 1.9 1999/12/01 18:00:59 scott Exp $
+// $Id: tag_parse.cpp,v 1.10 1999/12/13 16:49:55 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -29,21 +29,25 @@ ID3_Elem *ID3_Tag::GetLastElem(ID3_Elem *list)
   last = list;
   
   while (last != NULL && last->pNext != NULL)
+  {
     last = last->pNext;
+  }
     
   return last;
 }
 
 void ID3_Tag::AddBinary(uchar *buffer, luint size)
 {
-  uchar *newBin;
-  
   if (0 == size)
+  {
     ID3_THROW(ID3E_NoData);
+  }
 
-  newBin = new uchar[size];
+  uchar *newBin = new uchar[size];
   if (NULL == newBin)
+  {
     ID3_THROW(ID3E_NoMemory);
+  }
 
   ID3_Elem *elem, *lastElem;
       
@@ -51,7 +55,9 @@ void ID3_Tag::AddBinary(uchar *buffer, luint size)
       
   elem = new ID3_Elem;
   if (NULL == elem)
+  {
     ID3_THROW(ID3E_NoMemory);
+  }
 
   elem->pNext = NULL;
   elem->pFrame = NULL;
@@ -61,9 +67,13 @@ void ID3_Tag::AddBinary(uchar *buffer, luint size)
   lastElem = GetLastElem(__pBinaryList);
         
   if (NULL == lastElem)
+  {
     __pBinaryList = elem;
+  }
   else
+  {
     lastElem->pNext = elem;
+  }
     
   return ;
 }
@@ -98,16 +108,17 @@ void ID3_Tag::ExpandBinaries(uchar *buffer, luint size)
       if ('z' == buffer[posn])
       {
         luint expandedSize = 0;
-        uchar *expBin;
         
         expandedSize |= buffer[posn + 1] << 24;
         expandedSize |= buffer[posn + 2] << 16;
         expandedSize |= buffer[posn + 3] << 8;
         expandedSize |= buffer[posn + 4];
         
-        expBin = new uchar[expandedSize];
+        uchar *expBin = new uchar[expandedSize];
         if (NULL == expBin)
+        {
           ID3_THROW(ID3E_NoMemory);
+        }
 
         uncompress(expBin, &expandedSize, 
                    &buffer[posn + 1 + sizeof(luint)], 
@@ -182,7 +193,9 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
       {
         expBin = new uchar[expandedSize];
         if (NULL == expBin)
+        {
           ID3_THROW(ID3E_NoMemory);
+        }
           
         uncompress(expBin, &expandedSize, &cur->acBinary[posn + sizeof(luint)],
                    attr.ulSize - extras);
@@ -190,7 +203,9 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
       
       frame = new ID3_Frame;
       if (NULL == frame)
+      {
         ID3_THROW(ID3E_NoMemory);
+      }
         
       frame->SetID(id);
       
@@ -209,24 +224,27 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
         // here is where we call a special handler for this frame type if one
         // is specified in the frame definition
         {
-          ID3_FrameDef *frameInfo;
-        
-          frameInfo = ID3_FindFrameDef(id);
-        
+          ID3_FrameDef *frameInfo = ID3_FindFrameDef(id);
+          
           if (frameInfo != NULL && frameInfo->parseHandler != NULL)
+          {
             bShouldAttach = frameInfo->parseHandler(frame);
+          }
         }
       }
       catch (ID3_Error err)
       {
         // There's been an error in the parsing of the frame.  It shouldn't be
         // attached.
-        // This should be logged somehow so that the user can determine how
-        // many frames were parsed correctly and how many weren't
+
+        // TODO: This should be logged somehow so that the user can determine
+        // how many frames were parsed correctly and how many weren't 
         // cerr << "xxx Error occurred: " << err.GetErrorDesc() << endl;
         bShouldAttach = false;
         if (NULL != expBin)
+        {
           delete [] expBin;
+        }
       }
       
       if (!bShouldAttach)
@@ -242,7 +260,9 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
           *elem     = new ID3_Elem, 
           *lastElem = GetLastElem(__pFrameList);;
         if (NULL == elem)
+        {
           ID3_THROW(ID3E_NoMemory);
+        }
           
         elem->pNext    = NULL;
         elem->pFrame   = frame;
@@ -250,9 +270,13 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
         elem->bTagOwns = true;
         
         if (NULL == lastElem)
+        {
           __pFrameList = elem;
+        }
         else
+        {
           lastElem->pNext = elem;
+        }
       }
       
       ID3_Elem *temp = cur;
@@ -281,11 +305,14 @@ void ID3_Tag::Parse(uchar header[ID3_TAGHEADERSIZE], uchar *buffer)
   SetVersion(header[3], header[4]);
   
   if (header[5] & ID3HF_UNSYNC)
+  {
     tagSize = ReSync(buffer, tagSize);
+  }
     
   // okay, if we are 2.01, then let's skip over the extended header for now
   // because I am lazy
   if (2 == __ucVersion && 1 == __ucRevision)
+  {
     if (header[5] & ID3HF_EXTENDEDHEADER)
     {
       luint extSize = 0;
@@ -297,10 +324,12 @@ void ID3_Tag::Parse(uchar header[ID3_TAGHEADERSIZE], uchar *buffer)
       
       posn = extSize + sizeof(luint);
     }
+  }
     
   // okay, if we are 3.00, then let's actually parse the extended header (for
   // now, we skip it because we are lazy)
   if (3 == __ucVersion && 0 == __ucRevision)
+  {
     if (header[5] & ID3HF_EXTENDEDHEADER)
     {
       luint extSize = 0;
@@ -312,6 +341,7 @@ void ID3_Tag::Parse(uchar header[ID3_TAGHEADERSIZE], uchar *buffer)
       
       posn = extSize + sizeof(luint);
     }
+  }
     
   // this call will convert the binary data block (tag) into a linked list of
   // binary frames
@@ -349,19 +379,25 @@ luint ID3_Tag::ParseFromHandle(void)
   luint size = 0;
 
   if (NULL == __fFileHandle)
+  {
     ID3_THROW(ID3E_NoData);
+  }
   else
   {
     uchar header[ID3_TAGHEADERSIZE];
     lsint tagSize;
     
     if (fseek(__fFileHandle, 0, SEEK_SET) != 0)
+    {
       ID3_THROW_DESC(ID3E_NoFile, 
                      "ID3_Tag::ParseFromHandle: Ack! Couldn't seek");
+    }
       
     if (fread(header, 1, sizeof(header), __fFileHandle) == 0)
+    {
       ID3_THROW_DESC(ID3E_NoFile, 
                      "ID3_Tag::ParseFromHandle: Ack! Couldn't read");
+    }
 
     tagSize = ID3_IsTagHeader(header);
     if (tagSize > 0)
@@ -370,11 +406,15 @@ luint ID3_Tag::ParseFromHandle(void)
         
       bin = new uchar[tagSize];
       if (NULL == bin)
+      {
         ID3_THROW(ID3E_NoMemory);
+      }
 
       if (fread(bin, 1, tagSize, __fFileHandle) == 0)
+      {
         ID3_THROW_DESC(ID3E_NoFile, 
                        "ID3_Tag::ParseFromHandle: Ack! Couldn't read");
+      }
 
       Parse(header, bin);
       size = tagSize;
@@ -391,6 +431,9 @@ luint ID3_Tag::ParseFromHandle(void)
 }
 
 // $Log: tag_parse.cpp,v $
+// Revision 1.10  1999/12/13 16:49:55  scott
+// Minor code cleanup.
+//
 // Revision 1.9  1999/12/01 18:00:59  scott
 // Changed all of the #include <id3/*> to #include "*" to help ensure that
 // the sources are searched for in the right places (and to make compiling under
