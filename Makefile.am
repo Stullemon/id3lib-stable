@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.23 2000/09/15 01:49:14 eldamitri Exp $
+# $Id: Makefile.am,v 1.24 2000/09/27 09:08:50 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -46,6 +46,9 @@ id3lib.spec: $(top_builddir)/config.status $(top_srcdir)/id3lib.spec.in
 docsdistdir = $(PACKAGE)-doc-$(VERSION)
 
 .PHONY: release snapshot docs-release docs
+
+changelog:
+	./cvs2cl.pl --tags --branches --revisions --day-of-week --prune --fsf -U AUTHORS -W 3600
 
 docs:
 	-cd doc && $(MAKE) $(AM_MAKEFLAGS) $@
