@@ -1,4 +1,4 @@
-// $Id: test_remove.cpp,v 1.11 2002/06/27 12:48:04 t1mpy Exp $
+// $Id: test_remove.cpp,v 1.12 2002/06/29 17:26:06 t1mpy Exp $
 
 #if defined(HAVE_CONFIG_H)
 # include "config.h"
@@ -111,3 +111,4 @@ int main( int argc, char *argv[])
 
   return 0;
 }
+

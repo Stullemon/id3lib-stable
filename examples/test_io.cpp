@@ -1,4 +1,4 @@
-// $Id: test_io.cpp,v 1.4 2000/10/29 08:14:34 eldamitri Exp $
+// $Id: test_io.cpp,v 1.5 2002/06/29 17:25:36 t1mpy Exp $
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -200,3 +200,4 @@ main(size_t argc, const char** argv)
 
   return 0;
 }
+

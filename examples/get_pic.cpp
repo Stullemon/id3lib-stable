@@ -1,4 +1,4 @@
-// $Id: get_pic.cpp,v 1.7 2002/06/27 12:47:46 t1mpy Exp $
+// $Id: get_pic.cpp,v 1.8 2002/06/29 17:25:05 t1mpy Exp $
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -37,3 +37,4 @@ int main( int argc, char *argv[])
 
   return 0;
 }
+
