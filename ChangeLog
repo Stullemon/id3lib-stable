@@ -1,5 +1,46 @@
 2000-04-26  Scott Haug  <scott@id3.org>
 
+	* Makefile.am: 
+	Copy windows projects over manually
+
+	* configure.in: 
+	No longer generate Makefiles for windows projects
+
+	* include/id3.h: 
+	Removed C++ comments
+
+	* id3com/Sample/ID3Test.vbp
+	* id3com/Sample/ID3Test.vbw
+	* id3com/Sample/KMSSCCPRJ.SCC
+	* id3com/Sample/frmID3Test.frm:
+	Initial release; a simple VB app for testing id3com.dll
+
+	* id3com/EnumFields.cpp 
+	* id3com/EnumFields.h 
+	* id3com/ID3COM_p.c 
+	* id3com/ID3Field.cpp 
+	* id3com/ID3Field.h 
+	* id3com/ID3Field.rgs 
+	* id3com/ID3Frame.cpp 
+	* id3com/ID3Frame.h 
+	* id3com/ID3Frame.rgs 
+	* id3com/ID3Tag.cpp 
+	* id3com/ID3Tag.h 
+	* id3com/ID3Tag.rgs 
+	* id3com/StdAfx.cpp 
+	* id3com/StdAfx.h 
+	* id3com/id3com.cpp 
+	* id3com/id3com.dsp 
+	* id3com/id3com.idl: 
+	Thanks to John Adcock for this update
+	- Fixes to work bring id3com up to speed with library.
+	- Fixed namespace collision caused by restructuring
+	- Changed the project file a bit so it is safer
+	- Changed license to LGPL to match rest of library
+
+	* include/id3/globals.h: 
+	Fixed ID3_C_VAR and ID#_C_EXPORT definitions, thanks to John Adcock
+
 	* include/id3/frame.h: 
 	ID3_Frame now inherits from ID3_Speccable, SetSpec's parameter is now
 	const, and declared GetSpec
@@ -11,7 +52,8 @@
 	SetSpec's parameter now const
 
 	* src/field.cpp 
-	Updated lists of supported/unsupported frames (PRIV now supported)
+	Updated lists of supported/unsupported frames (PRIV now supported), 
+	thanks to John Adcock
 	(ID3FD_Private): Added definition
 	(ID3_FrameDefs): Updated Private's definition
 
