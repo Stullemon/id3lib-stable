@@ -19,6 +19,12 @@
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
    Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
+
+#if defined (WIN32)
+#include <string.h>
+#include <malloc.h>
+#endif
+
 
 /* NOTE!!!  AIX requires this to be the first thing in the file.
    Do not put ANYTHING before it!  */
@@ -36,7 +42,7 @@
 #if defined (HAVE_ALLOCA_H) || (defined(sparc) && (defined(sun) || (!defined(USG) && !defined(SVR4) && !defined(__svr4__))))
 #include <alloca.h>
 #else
-#ifndef _AIX
+#if !defined (_AIX) && !defined (WIN32)
 char *alloca ();
 #endif
 #endif /* alloca.h */
@@ -454,7 +460,7 @@ _getopt_internal (argc, argv, optstring, longopts, longind, long_only)
 	   p++, option_index++)
 	if (!strncmp (p->name, nextchar, s - nextchar))
 	  {
-	    if (s - nextchar == strlen (p->name))
+	    if ((size_t)(s - nextchar) == strlen (p->name))
 	      {
 		/* Exact match found.  */
 		pfound = p;

@@ -1,4 +1,4 @@
-// $Id: writers.h,v 1.3 2000/10/14 19:17:45 eldamitri Exp $
+// $Id: writers.h,v 1.4 2000/10/15 06:39:26 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,6 +28,7 @@
 #define _ID3LIB_WRITERS_H_
 
 #include <fstream.h>
+#include <string.h>
 #include "writer.h"
 
 class ID3_OStreamWriter : public ID3_Writer
@@ -69,12 +70,14 @@ class ID3_OStreamWriter : public ID3_Writer
 
 class ID3_OFStreamWriter : public ID3_OStreamWriter
 {
+  ofstream& _file;
  public:
-  ID3_OFStreamWriter(ofstream& writer) : ID3_OStreamWriter(writer) { ; }
+  ID3_OFStreamWriter(ofstream& writer) 
+    : ID3_OStreamWriter(writer), _file(writer) { ; }
     
   virtual void close() 
   { 
-    dynamic_cast<ofstream&>(this->getWriter()).close(); 
+    _file.close();
   }
 };
   
@@ -117,12 +120,14 @@ class ID3_IOStreamWriter : public ID3_Writer
 
 class ID3_FStreamWriter : public ID3_IOStreamWriter
 {
+  fstream& _file;
  public:
-  ID3_FStreamWriter(fstream& writer) : ID3_IOStreamWriter(writer) { ; }
+  ID3_FStreamWriter(fstream& writer) 
+    : ID3_IOStreamWriter(writer), _file(writer) { ; }
     
   virtual void close() 
   { 
-    dynamic_cast<fstream&>(this->getWriter()).close(); 
+    _file.close();
   }
 };
   

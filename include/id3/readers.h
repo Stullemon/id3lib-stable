@@ -1,4 +1,4 @@
-// $Id: readers.h,v 1.5 2000/10/12 22:29:33 eldamitri Exp $
+// $Id: readers.h,v 1.6 2000/10/15 06:39:26 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -73,12 +73,14 @@ class ID3_IStreamReader : public ID3_Reader
   
 class ID3_IFStreamReader : public ID3_IStreamReader
 {
+  ifstream& _file;
  public:
-  ID3_IFStreamReader(ifstream& reader) : ID3_IStreamReader(reader) { ; }
+  ID3_IFStreamReader(ifstream& reader)
+    : ID3_IStreamReader(reader), _file(reader) { ; }
     
   virtual void close() 
   { 
-    dynamic_cast<ifstream&>(this->getReader()).close(); 
+    _file.close();
   }
 };
   

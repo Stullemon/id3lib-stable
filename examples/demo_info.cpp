@@ -14,7 +14,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.23 2000/10/14 20:46:38 eldamitri Exp $
+// $Id: demo_info.cpp,v 1.24 2000/10/15 06:39:26 eldamitri Exp $
 
 
 #ifdef HAVE_CONFIG_H
@@ -34,7 +34,7 @@
 
 using namespace dami;
 
-static String VERSION_NUMBER = "$Revision: 1.23 $";
+static String VERSION_NUMBER = "$Revision: 1.24 $";
 
 void PrintUsage(const char *sName)
 {
@@ -49,7 +49,7 @@ void PrintUsage(const char *sName)
 
 void PrintVersion(const char *sName)
 {
-  cout << sName << " " << VERSION_NUMBER << endl;
+  cout << sName << " " << VERSION_NUMBER.c_str() << endl;
   cout << "Displays ID3 Tag Information - Written by Scott Thomas Haug" << endl;
   cout << "Uses " << ID3LIB_FULL_NAME << endl << endl;
 }
@@ -272,7 +272,7 @@ void PrintInformation(const ID3_Tag &myTag)
             ID3_MemoryReader mr(fld->GetBinary(), fld->BinSize());
             while (!mr.atEnd())
             {
-              cout << io::readString(mr);
+              cout << io::readString(mr).c_str();
               cout << " [" << io::readBENumber(mr, sizeof(uint32)) << " " 
                    << format << "] ";
             }

@@ -1,4 +1,4 @@
-// $Id: writer.h,v 1.2 2000/10/14 19:13:43 eldamitri Exp $
+// $Id: writer.h,v 1.3 2000/10/15 06:39:26 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -37,7 +37,7 @@ class ID3_Writer
   typedef uint32 pos_type;
   typedef  int32 off_type;
   typedef  int16 int_type;
-  static const int_type END_OF_WRITER = -1;
+  static const int_type END_OF_WRITER;
   
   /** Close the writer.  Any further actions on the writer should fail. **/
   virtual void close() = 0;

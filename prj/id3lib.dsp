@@ -98,10 +98,6 @@ SOURCE=..\src\c_wrapper.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\error.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\field.cpp
 # End Source File
 # Begin Source File
@@ -123,6 +119,10 @@ SOURCE=..\src\field_string_unicode.cpp
 # Begin Source File
 
 SOURCE=..\src\frame.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\frame_impl.cpp
 # End Source File
 # Begin Source File
 
@@ -150,7 +150,27 @@ SOURCE=..\src\header_tag.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\helpers.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\io.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\io_decorators.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\io_helpers.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\misc_support.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\readers.cpp
 # End Source File
 # Begin Source File
 
@@ -167,6 +187,10 @@ SOURCE=..\src\tag_file.cpp
 # Begin Source File
 
 SOURCE=..\src\tag_find.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\tag_impl.cpp
 # End Source File
 # Begin Source File
 
@@ -190,15 +214,11 @@ SOURCE=..\src\tag_render.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\tag_sync.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\uint28.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\utils.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\writers.cpp
 # End Source File
 # End Group
 # Begin Group "include"
@@ -206,7 +226,19 @@ SOURCE=..\src\utils.cpp
 # PROP Default_Filter "h;hpp"
 # Begin Source File
 
+SOURCE=..\include\id3\debug.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\include\id3\field.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\id3\field_def.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\id3\field_impl.h
 # End Source File
 # Begin Source File
 
@@ -215,6 +247,14 @@ SOURCE=..\include\id3\flags.h
 # Begin Source File
 
 SOURCE=..\include\id3\frame.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\id3\frame_def.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\id3\frame_impl.h
 # End Source File
 # Begin Source File
 
@@ -234,11 +274,35 @@ SOURCE=..\include\id3\header_tag.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\include\id3\helpers.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\include\id3.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\include\id3\io_decorators.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\id3\io_helpers.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\id3\io_strings.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\include\id3\misc_support.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\id3\reader.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\id3\readers.h
 # End Source File
 # Begin Source File
 
@@ -250,15 +314,27 @@ SOURCE=..\include\id3\spec.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\include\id3\strings.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\include\id3\tag.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\id3\uint28.h
+SOURCE=..\include\id3\tag_impl.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\include\id3\utils.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\id3\writer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\id3\writers.h
 # End Source File
 # Begin Source File
 

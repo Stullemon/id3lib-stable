@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.26 2000/10/14 19:24:38 eldamitri Exp $
+// $Id: field_string_unicode.cpp,v 1.27 2000/10/15 06:39:26 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -116,7 +116,7 @@ size_t ID3_FieldImpl::Set_i(const unicode_t *string, size_t size)
     _num_items = 1;
   }
 
-  return ::min(_chars, size);
+  return min(_chars, size);
 }
 
 size_t ID3_FieldImpl::Set(const unicode_t *string)
@@ -130,7 +130,7 @@ size_t ID3_FieldImpl::Set(const unicode_t *string)
     }
     else
     {
-      len = this->Set_i(string, ::ucslen(string));
+      len = this->Set_i(string, ucslen(string));
     }
   }
   return len;
@@ -204,7 +204,7 @@ size_t ID3_FieldImpl::Add(const unicode_t *str)
     }
     else
     {
-      len = this->Add_i(str, ::ucslen(str));
+      len = this->Add_i(str, ucslen(str));
     }
   }
   return len;
@@ -239,7 +239,7 @@ size_t ID3_FieldImpl::Get(unicode_t *buffer, size_t maxLength) const
       buffer != NULL && maxLength > 0)
   {
     size_t size = this->Size();
-    length = ::min(maxLength, size);
+    length = min(maxLength, size);
     memcpy((void *)buffer, (void *)_unicode, length * 2);
     if (length < maxLength)
     {
@@ -295,7 +295,7 @@ size_t ID3_FieldImpl::Get(unicode_t *buffer, size_t maxLength, index_t itemNum) 
       {
         break;
       }
-      cur += ::ucslen(cur) + 1;
+      cur += ucslen(cur) + 1;
       num++;
     }
     if (cur < end)
@@ -308,7 +308,7 @@ size_t ID3_FieldImpl::Get(unicode_t *buffer, size_t maxLength, index_t itemNum) 
       }
       else
       {
-        length = ::ucslen(cur);
+        length = ucslen(cur);
       }
       ::memcpy((void *)buffer, (void *)cur, length * 2);
       if (length < maxLength)
@@ -371,10 +371,10 @@ bool ID3_FieldImpl::ParseUnicodeString(ID3_Reader& reader)
   {
     String unicode;
     // not null terminated.  
-    const size_t BUFSIZ = 1024;
+    const size_t SIZE = 1024;
     while (!reader.atEnd())
     {
-      unicode += io::readUnicodeText(reader, BUFSIZ);
+      unicode += io::readUnicodeText(reader, SIZE);
     }
     this->Add_i((unicode_t *)unicode.data(), unicode.size() / 2);
     ID3D_NOTICE( "ID3_Frame::ParseUText(): last field string = " << unicode );

@@ -1,4 +1,4 @@
-// $Id: reader.h,v 1.7 2000/10/14 19:13:03 eldamitri Exp $
+// $Id: reader.h,v 1.8 2000/10/15 06:39:26 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -37,7 +37,7 @@ class ID3_Reader
   typedef uint32 pos_type;
   typedef  int32 off_type;
   typedef  int16 int_type;
-  static const int_type END_OF_READER = -1;
+  static const int_type END_OF_READER;
   
   /** Close the reader.  Any further actions on the reader should fail.
    **/

@@ -1,4 +1,4 @@
-// $Id: tag_find.cpp,v 1.20 2000/10/09 04:29:40 eldamitri Exp $
+// $Id: tag_find.cpp,v 1.21 2000/10/15 06:39:26 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -183,7 +183,7 @@ ID3_Frame *ID3_TagImpl::Find(ID3_FrameID id, ID3_FieldID fldID, const unicode_t 
           continue;
         }
 
-        if (::ucscmp(fld->GetUnicodeText(), data) == 0)
+        if (ucscmp(fld->GetUnicodeText(), data) == 0)
         {
           // We've found a valid frame.  Set cursor to be the next element
           frame = cur->pFrame;

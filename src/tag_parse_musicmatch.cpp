@@ -1,4 +1,4 @@
-// $Id: tag_parse_musicmatch.cpp,v 1.14 2000/10/14 19:24:38 eldamitri Exp $
+// $Id: tag_parse_musicmatch.cpp,v 1.15 2000/10/15 06:39:26 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -82,7 +82,7 @@ namespace
     if (ID3FID_SONGLEN != id)
     {
       io::LineFeedReader lfr(reader);
-      text = readText(lfr, size);
+      text = io::readText(lfr, size);
       ID3D_NOTICE( "readTextFrame: text = " << text );
     }
     else
@@ -197,7 +197,7 @@ bool mm::parse(ID3_TagImpl& tag, ID3_Reader& rdr)
       dataWindow.setCur(dataWindow.getCur() - offset);
         
       // now read in the signature to see if it's a match
-      if (readText(dataWindow, 8) == "18273645")
+      if (io::readText(dataWindow, 8) == "18273645")
       {
         metadataSize = possibleSizes[i];
         break;
@@ -272,11 +272,11 @@ bool mm::parse(ID3_TagImpl& tag, ID3_Reader& rdr)
     
   // Parse the image extension at offset 0
   dataWindow.setCur(offsets[0]);
-  String imgExt = readTrailingSpaces(dataWindow, 4);
+  String imgExt = io::readTrailingSpaces(dataWindow, 4);
     
   // Parse the image binary at offset 1
   dataWindow.setCur(offsets[1]);
-  uint32 imgSize = readLENumber(dataWindow, 4);
+  uint32 imgSize = io::readLENumber(dataWindow, 4);
   if (imgSize == 0)
   {
     // no image binary.  don't do anything.
@@ -291,7 +291,7 @@ bool mm::parse(ID3_TagImpl& tag, ID3_Reader& rdr)
     }
     else
     {
-      BString imgData = readAllBinary(imgWindow);
+      BString imgData = io::readAllBinary(imgWindow);
       ID3_Frame* frame = new ID3_Frame(ID3FID_PICTURE);
       if (frame)
       {

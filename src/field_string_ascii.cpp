@@ -1,4 +1,4 @@
-// $Id: field_string_ascii.cpp,v 1.22 2000/10/14 19:24:38 eldamitri Exp $
+// $Id: field_string_ascii.cpp,v 1.23 2000/10/15 06:39:26 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -59,7 +59,7 @@ size_t ID3_FieldImpl::Set_i(const char* string, size_t size)
     _chars = size;
     _ascii = new char[_chars];
   }
-  ::memcpy(_ascii, string, ::min(_chars, size));
+  ::memcpy(_ascii, string, min(_chars, size));
   if (size < _chars)
   {
     ::memset(_ascii + size, '\0', _chars - size);
@@ -75,7 +75,7 @@ size_t ID3_FieldImpl::Set_i(const char* string, size_t size)
     _num_items = 1;
   }
 
-  return ::min(_chars, size);
+  return min(_chars, size);
 }
 
 size_t ID3_FieldImpl::Set(const char *string)
@@ -216,7 +216,7 @@ size_t ID3_FieldImpl::Get(char* buffer, size_t maxLength) const
       buffer != NULL && maxLength > 0)
   {
     size_t size = this->Size();
-    length = ::min(maxLength, size);
+    length = min(maxLength, size);
     ::memcpy(buffer, _ascii, length);
     if (length < maxLength)
     {
@@ -342,10 +342,10 @@ bool ID3_FieldImpl::ParseASCIIString(ID3_Reader& reader)
     ID3D_NOTICE( "ID3_Field::ParseText(): last field string" );
     String ascii;
     // not null terminated.  
-    const size_t BUFSIZ = 1024;
+    const size_t SIZE = 1024;
     while (!reader.atEnd())
     {
-      ascii += io::readText(reader, BUFSIZ);
+      ascii += io::readText(reader, SIZE);
     }
     this->Add_i(ascii.data(), ascii.size());
     ID3D_NOTICE( "ID3_Field::ParseText(): last field string = " << ascii );
