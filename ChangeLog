@@ -1,3 +1,30 @@
+2000-04-10  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* include/id3/header.h 
+	(class ID3_Header): Removed decl of Copy.
+
+	* include/id3/header_frame.h 
+	(class ID3_FrameHeader): Added decl for operator=, removed decl of Copy
+
+	* include/id3/header_tag.h 
+	(class ID3_TagHeader): Added decl for operator=.
+
+	* src/id3/header.cpp
+	* src/id3/header_frame.cpp: 
+	(Copy): removed.
+	(operator=): Updated implementation so it isn't reliant on Copy.
+
+	* src/id3/header_tag.cpp 
+	(operator=): Added implementation.
+
+	* src/id3/misc_support.cpp
+	* src/id3/tag_find.cpp: 
+	Added inclusion of string.h
+
+	* src/id3/int28.cpp: 
+	* src/id3/tag_parse.cpp 
+	(ProcessBinaries): Minor change to prevent warning in windows.
+
 2000-04-09  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* include/id3/tag.h: 
