@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.11 1999/12/17 16:13:04 scott Exp $
+// $Id: tag.cpp,v 1.12 1999/12/27 05:30:03 scott Exp $
 // 
 // This program is free software; you can distribute it and/or modify it under
 // the terms discussed in the COPYING file, which should have been included
@@ -54,8 +54,8 @@ ID3_Tag::ID3_Tag(const ID3_Tag &tag)
 
 void ID3_Tag::SetupTag(char *fileInfo)
 {
-  __ucVersion       = ID3_TAGVERSION;
-  __ucRevision      = ID3_TAGREVISION;
+  __ucVersion       = ID3v2_VERSION;
+  __ucRevision      = ID3v2_REVISION;
   __pFrameList      = NULL;
   __pBinaryList     = NULL;
   __pFindCursor     = NULL;
@@ -385,6 +385,9 @@ ID3_Tag::operator=( const ID3_Tag &rTag )
 }
 
 // $Log: tag.cpp,v $
+// Revision 1.12  1999/12/27 05:30:03  scott
+// (SetupTag): Updated for new version constants.
+//
 // Revision 1.11  1999/12/17 16:13:04  scott
 // Updated opening comment block.
 //
