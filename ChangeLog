@@ -1,3 +1,26 @@
+2000-09-18  John Adcock  <johnadcock@hotmail.com>
+	* ID3Com/ID3COM.rc
+	* ID3Com/ID3Field.cpp
+	* ID3Com/ID3Field.h
+	* ID3Com/ID3Frame.cpp
+	* ID3Com/ID3Frame.h
+	* ID3Com/ID3Tag.cpp
+	* ID3Com/ID3Tag.h
+	* ID3Com/StdAfx.cpp
+	* ID3Com/StdAfx.h
+	* ID3Com/id3com.cpp
+	* ID3Com/id3com.dsp
+	* ID3Com/id3com.idl
+	* ID3Com/resource.h
+	Changed for added Picture Functionality on behalf of Philip Oldaker
+	* ID3Com/BSTRCollection.h
+	* ID3Com/MimeTypes.h
+	* ID3Com/TextCollection.cpp
+	* ID3Com/TextCollection.h
+	* ID3Com/MimeTypes.cpp
+	* ID3Com/TextCollection.rgs
+	New files for picture support
+
 2000-07-15  John Adcock  <johnadcock@hotmail.com>
 
 	* src/tag_parse.cpp
