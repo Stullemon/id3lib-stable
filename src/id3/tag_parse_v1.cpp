@@ -1,4 +1,4 @@
-// $Id: tag_parse_v1.cpp,v 1.8 1999/12/01 18:00:59 scott Exp $
+// $Id: tag_parse_v1.cpp,v 1.9 1999/12/01 22:19:51 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -39,7 +39,7 @@ void ID3_Tag::ParseID3v1(void)
   ID3V1_Tag tagID3v1;
     
   // posn ourselves at 128 bytes from the end of the file
-  if (fseek(__fFileHandle, -LEN_V1, SEEK_END) != 0)
+  if (fseek(__fFileHandle, 0-LEN_V1, SEEK_END) != 0)
     // TODO:  This is a bad error message.  Make it more descriptive
     ID3_THROW(ID3E_NoData);
     
@@ -119,6 +119,9 @@ void ID3_Tag::ParseID3v1(void)
 }
 
 // $Log: tag_parse_v1.cpp,v $
+// Revision 1.9  1999/12/01 22:19:51  scott
+// (ParseID3v1): Minor fix for windows compatibility (thanks elrod).
+//
 // Revision 1.8  1999/12/01 18:00:59  scott
 // Changed all of the #include <id3/*> to #include "*" to help ensure that
 // the sources are searched for in the right places (and to make compiling under
