@@ -1,4 +1,4 @@
-// $Id: field.h,v 1.33 2000/09/14 16:14:27 eldamitri Exp $
+// $Id: field.h,v 1.34 2000/09/14 21:47:47 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -82,20 +82,20 @@ public:
 
   // ASCII string field functions
   ID3_Field&    operator= (const char* s) { this->Set(s); return *this; }
-  void          Set(const char*);
+  size_t        Set(const char*);
   size_t        Get(char*, size_t) const;
   size_t        Get(char*, size_t, index_t) const;
-  void          Add(const char*);
+  size_t        Add(const char*);
 
   // Unicode string field functions
   ID3_Field&    operator= (const unicode_t* s) { this->Set(s); return *this; }
-  void          Set(const unicode_t*);
+  size_t        Set(const unicode_t*);
   size_t        Get(unicode_t *buffer, size_t) const;
   size_t        Get(unicode_t *buffer, size_t, index_t) const;
-  void          Add(const unicode_t*);
+  size_t        Add(const unicode_t*);
 
   // binary field functions
-  void          Set(const uchar*, size_t);
+  size_t        Set(const uchar*, size_t);
   size_t        Get(uchar*, size_t) const;
   void          FromFile(const char*);
   void          ToFile(const char *sInfo) const;
@@ -119,10 +119,10 @@ private:
   //void          SetSpec(ID3_V2Spec);
   size_t        Render(uchar *buffer) const;
   size_t        Parse(const uchar *buffer, size_t buffSize);
-  void          Set_i(const char*, size_t);
-  void          Set_i(const unicode_t*, size_t);
-  void          Add_i(const char*, size_t);
-  void          Add_i(const unicode_t*, size_t);
+  size_t        Set_i(const char*, size_t);
+  size_t        Set_i(const unicode_t*, size_t);
+  size_t        Add_i(const char*, size_t);
+  size_t        Add_i(const unicode_t*, size_t);
 
 private:
   // To prevent public instantiation, the constructor is made private
