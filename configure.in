@@ -1,4 +1,4 @@
-# $Id: configure.in,v 1.47 2000/10/13 18:12:16 eldamitri Exp $
+# $Id: configure.in,v 1.48 2000/10/15 07:02:36 eldamitri Exp $
 
 # Copyright 1999, 2000 Scott Thomas Haug <eldamitri@users.sourceforge.net>
 #  
@@ -76,10 +76,8 @@ VERSION=$ID3LIB_VERSION
 PACKAGE=$ID3LIB_NAME
 
 dnl This is a hack to get the release date using cvs checkin macros
-ID3LIB_DATE="$Date: 2000/10/13 18:12:16 $ID3LIB_UNDEFINED"
 ID3LIB_FULLNAME=$ID3LIB_NAME-$ID3LIB_VERSION
 
-AC_SUBST(ID3LIB_DATE)
 AC_SUBST(ID3LIB_FULLNAME)
 
 AM_CONFIG_HEADER(config.h)
@@ -200,7 +198,6 @@ dnl  */
 dnl #undef HAVE_ZLIB
 dnl #undef HAVE_GETOPT_LONG
 dnl #undef _ID3LIB_NAME
-dnl #undef _ID3LIB_DATE
 dnl #undef _ID3LIB_VERSION
 dnl #undef _ID3LIB_FULLNAME
 dnl #undef _ID3LIB_MAJOR_VERSION
@@ -213,7 +210,6 @@ dnl /* */
 dnl END ACCONFIG
 
 AC_DEFINE_UNQUOTED(_ID3LIB_NAME,                 "$ID3LIB_NAME")
-AC_DEFINE_UNQUOTED(_ID3LIB_DATE,                 "$ID3LIB_DATE")
 AC_DEFINE_UNQUOTED(_ID3LIB_VERSION,              "$ID3LIB_VERSION")
 AC_DEFINE_UNQUOTED(_ID3LIB_FULLNAME,             "$ID3LIB_FULLNAME")
 AC_DEFINE_UNQUOTED(_ID3LIB_MAJOR_VERSION,         $ID3LIB_MAJOR_VERSION)
