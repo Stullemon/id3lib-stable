@@ -1,4 +1,4 @@
-// $Id: c_wrapper.cpp,v 1.20 2002/08/10 10:42:42 t1mpy Exp $
+// $Id: c_wrapper.cpp,v 1.21 2002/08/10 11:47:50 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,7 +28,6 @@
 //#include <string.h>
 #include "id3.h"
 #include "tag.h"
-//#include "frame.h"
 #include "field.h"
 
 #if defined HAVE_CONFIG_H
@@ -44,7 +43,7 @@ extern "C"
 
 #define ID3_CATCH(code) try { code; } catch (...) { }
 
-  ID3_C_EXPORT ID3Tag*
+  ID3_C_EXPORT ID3Tag* CCONV
   ID3Tag_New(void)
   {
     ID3_Tag* tag = NULL;
@@ -53,7 +52,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT void
+  ID3_C_EXPORT void CCONV
   ID3Tag_Delete(ID3Tag *tag)
   {
     if (tag)
@@ -63,7 +62,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT void
+  ID3_C_EXPORT void CCONV
   ID3Tag_Clear(ID3Tag *tag)
   {
     if (tag)
@@ -73,7 +72,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT bool
+  ID3_C_EXPORT bool CCONV
   ID3Tag_HasChanged(const ID3Tag *tag)
   {
     bool changed = false;
@@ -87,7 +86,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT void
+  ID3_C_EXPORT void CCONV
   ID3Tag_SetUnsync(ID3Tag *tag, bool unsync)
   {
     if (tag)
@@ -97,7 +96,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT void
+  ID3_C_EXPORT void CCONV
   ID3Tag_SetExtendedHeader(ID3Tag *tag, bool ext)
   {
     if (tag)
@@ -106,7 +105,7 @@ extern "C"
     }
   }
   
-  ID3_C_EXPORT void
+  ID3_C_EXPORT void CCONV
   ID3Tag_SetPadding(ID3Tag *tag, bool pad)
   {
     if (tag)
@@ -116,7 +115,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT void
+  ID3_C_EXPORT void CCONV
   ID3Tag_AddFrame(ID3Tag *tag, const ID3Frame *frame)
   {
     if (tag)
@@ -126,7 +125,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT void
+  ID3_C_EXPORT void CCONV
   ID3Tag_AttachFrame(ID3Tag *tag, ID3Frame *frame)
   {
     if (tag)
@@ -136,7 +135,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT void
+  ID3_C_EXPORT void CCONV
   ID3Tag_AddFrames(ID3Tag *tag, const ID3Frame *frames, size_t num)
   {
     if (tag)
@@ -146,7 +145,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT ID3Frame*
+  ID3_C_EXPORT ID3Frame* CCONV
   ID3Tag_RemoveFrame(ID3Tag *tag, const ID3Frame *frame)
   {
     ID3_Frame* rem_frame = NULL;
@@ -158,7 +157,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT ID3_Err
+  ID3_C_EXPORT ID3_Err CCONV
   ID3Tag_Parse(ID3Tag *tag, const uchar header[ ID3_TAGHEADERSIZE ],
                const uchar *buffer)
   {
@@ -171,7 +170,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT size_t
+  ID3_C_EXPORT size_t CCONV
   ID3Tag_Link(ID3Tag *tag, const char *fileName)
   {
     size_t offset = 0;
@@ -182,7 +181,7 @@ extern "C"
     return offset;
   }
 
-  ID3_C_EXPORT size_t
+  ID3_C_EXPORT size_t CCONV
   ID3Tag_LinkWithFlags(ID3Tag *tag, const char *fileName, flags_t flags)
   {
     size_t offset = 0;
@@ -195,7 +194,7 @@ extern "C"
 
 
 
-  ID3_C_EXPORT ID3_Err
+  ID3_C_EXPORT ID3_Err CCONV
   ID3Tag_Update(ID3Tag *tag)
   {
     flags_t flags = 0;
@@ -206,7 +205,7 @@ extern "C"
     return ID3E_NoError;
   }
 
-  ID3_C_EXPORT ID3_Err
+  ID3_C_EXPORT ID3_Err CCONV
   ID3Tag_UpdateByTagType(ID3Tag *tag, flags_t tag_type)
   {
     flags_t flags = 0;
@@ -218,7 +217,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT ID3_Err
+  ID3_C_EXPORT ID3_Err CCONV
   ID3Tag_Strip(ID3Tag *tag, flags_t ulTagFlags)
   {
     if (tag)
@@ -229,7 +228,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT ID3Frame*
+  ID3_C_EXPORT ID3Frame* CCONV
   ID3Tag_FindFrameWithID(const ID3Tag *tag, ID3_FrameID id)
   {
     ID3_Frame *frame = NULL;
@@ -243,7 +242,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT ID3Frame*
+  ID3_C_EXPORT ID3Frame* CCONV
   ID3Tag_FindFrameWithINT(const ID3Tag *tag, ID3_FrameID id, 
                           ID3_FieldID fld, uint32 data)
   {
@@ -258,7 +257,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT ID3Frame*
+  ID3_C_EXPORT ID3Frame* CCONV
   ID3Tag_FindFrameWithASCII(const ID3Tag *tag, ID3_FrameID id, 
                             ID3_FieldID fld, const char *data)
   {
@@ -273,7 +272,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT ID3Frame*
+  ID3_C_EXPORT ID3Frame* CCONV
   ID3Tag_FindFrameWithUNICODE(const ID3Tag *tag, ID3_FrameID id, 
                               ID3_FieldID fld, const unicode_t *data)
   {
@@ -288,7 +287,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT size_t
+  ID3_C_EXPORT size_t CCONV
   ID3Tag_NumFrames(const ID3Tag *tag)
   {
     size_t num = 0;
@@ -302,7 +301,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT bool
+  ID3_C_EXPORT bool CCONV
   ID3Tag_HasTagType(const ID3Tag *tag, ID3_TagType tt)
   {
     bool has_tt = false;
@@ -315,7 +314,7 @@ extern "C"
     return has_tt;
   }
 
-  ID3_C_EXPORT ID3TagIterator*
+  ID3_C_EXPORT ID3TagIterator* CCONV
   ID3Tag_CreateIterator(ID3Tag* tag)
   {
     ID3_Tag::Iterator* iter = NULL;
@@ -328,7 +327,7 @@ extern "C"
     return reinterpret_cast<ID3TagIterator*>(iter);
   }
 
-  ID3_C_EXPORT ID3TagConstIterator*
+  ID3_C_EXPORT ID3TagConstIterator* CCONV
   ID3Tag_CreateConstIterator(const ID3Tag* tag)
   {
     ID3_Tag::ConstIterator* iter = NULL;
@@ -341,7 +340,7 @@ extern "C"
     return reinterpret_cast<ID3TagConstIterator*>(iter);
   }
 
-  ID3_C_EXPORT void
+  ID3_C_EXPORT void CCONV
   ID3TagIterator_Delete(ID3TagIterator *iter)
   {
     if (iter)
@@ -350,7 +349,7 @@ extern "C"
     }
   }
 
-  ID3_C_EXPORT ID3Frame*
+  ID3_C_EXPORT ID3Frame* CCONV
   ID3TagIterator_GetNext(ID3TagIterator *iter)
   {
     ID3_Frame* frame = NULL;
@@ -361,7 +360,7 @@ extern "C"
     return reinterpret_cast<ID3Frame*>(frame);
   }
 
-  ID3_C_EXPORT void
+  ID3_C_EXPORT void CCONV
   ID3TagConstIterator_Delete(ID3TagConstIterator *iter)
   {
     if (iter)
@@ -370,7 +369,7 @@ extern "C"
     }
   }
 
-  ID3_C_EXPORT const ID3Frame*
+  ID3_C_EXPORT const ID3Frame* CCONV
   ID3TagConstIterator_GetNext(ID3TagConstIterator *iter)
   {
     const ID3_Frame* frame = NULL;
@@ -383,7 +382,7 @@ extern "C"
 
   // frame wrappers
 
-  ID3_C_EXPORT ID3Frame*
+  ID3_C_EXPORT ID3Frame* CCONV
   ID3Frame_New(void)
   {
     ID3_Frame* frame = NULL;
@@ -391,7 +390,7 @@ extern "C"
     return reinterpret_cast<ID3Frame *>(frame);
   }
 
-  ID3_C_EXPORT ID3Frame*
+  ID3_C_EXPORT ID3Frame* CCONV
   ID3Frame_NewID(ID3_FrameID id)
   {
     ID3_Frame* frame = NULL;
@@ -399,7 +398,7 @@ extern "C"
     return reinterpret_cast<ID3Frame *>(frame);
   }
 
-  ID3_C_EXPORT void
+  ID3_C_EXPORT void CCONV
   ID3Frame_Delete(ID3Frame *frame)
   {
     if (frame)
@@ -409,7 +408,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT void
+  ID3_C_EXPORT void CCONV
   ID3Frame_Clear(ID3Frame *frame)
   {
     if (frame)
@@ -419,7 +418,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT void
+  ID3_C_EXPORT void CCONV
   ID3Frame_SetID(ID3Frame *frame, ID3_FrameID id)
   {
     if (frame)
@@ -429,8 +428,8 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT
-  ID3_FrameID ID3Frame_GetID(const ID3Frame *frame)
+  ID3_C_EXPORT ID3_FrameID CCONV
+  ID3Frame_GetID(const ID3Frame *frame)
   {
     ID3_FrameID id = ID3FID_NOFRAME;
   
@@ -443,7 +442,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT ID3Field*
+  ID3_C_EXPORT ID3Field* CCONV
   ID3Frame_GetField(const ID3Frame *frame, ID3_FieldID name)
   {
     ID3_Field *field = NULL;
@@ -457,7 +456,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT void
+  ID3_C_EXPORT void CCONV
   ID3Frame_SetCompression(ID3Frame *frame, bool comp)
   {
     if (frame)
@@ -467,7 +466,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT bool
+  ID3_C_EXPORT bool CCONV
   ID3Frame_GetCompression(const ID3Frame *frame)
   {
     bool compressed = false;
@@ -482,7 +481,7 @@ extern "C"
   // field wrappers
 
 
-  ID3_C_EXPORT void
+  ID3_C_EXPORT void CCONV
   ID3Field_Clear(ID3Field *field)
   {
     if (field)
@@ -492,7 +491,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT size_t
+  ID3_C_EXPORT size_t CCONV
   ID3Field_Size(const ID3Field *field)
   {
     size_t size = 0;
@@ -506,7 +505,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT size_t
+  ID3_C_EXPORT size_t CCONV
   ID3Field_GetNumTextItems(const ID3Field *field)
   {
     size_t items = 0;
@@ -520,7 +519,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT void
+  ID3_C_EXPORT void CCONV
   ID3Field_SetINT(ID3Field *field, uint32 data)
   {
     if (field)
@@ -530,7 +529,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT uint32
+  ID3_C_EXPORT uint32 CCONV
   ID3Field_GetINT(const ID3Field *field)
   {
     uint32 value = 0;
@@ -544,7 +543,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT void
+  ID3_C_EXPORT void CCONV
   ID3Field_SetUNICODE(ID3Field *field, const unicode_t *string)
   {
     if (field)
@@ -554,7 +553,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT size_t
+  ID3_C_EXPORT size_t CCONV
   ID3Field_GetUNICODE(const ID3Field *field, unicode_t *buffer, size_t maxChars)
   {
     size_t numChars = 0;
@@ -568,7 +567,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT size_t
+  ID3_C_EXPORT size_t CCONV
   ID3Field_GetUNICODEItem(const ID3Field *field, unicode_t *buffer, 
                           size_t maxChars, size_t itemNum)
   {
@@ -583,7 +582,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT void
+  ID3_C_EXPORT void CCONV
   ID3Field_AddUNICODE(ID3Field *field, const unicode_t *string)
   {
     if (field)
@@ -593,7 +592,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT void
+  ID3_C_EXPORT void CCONV
   ID3Field_SetASCII(ID3Field *field, const char *string)
   {
     if (field)
@@ -603,7 +602,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT size_t
+  ID3_C_EXPORT size_t CCONV
   ID3Field_GetASCII(const ID3Field *field, char *buffer, size_t maxChars)
   {
     size_t numChars = 0;
@@ -616,7 +615,7 @@ extern "C"
     return numChars;
   }
 
-  ID3_C_EXPORT size_t
+  ID3_C_EXPORT size_t CCONV
   ID3Field_GetASCIIItem(const ID3Field *field, char *buffer, 
                         size_t maxChars, size_t itemNum)
   {
@@ -631,7 +630,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT void
+  ID3_C_EXPORT void CCONV
   ID3Field_AddASCII(ID3Field *field, const char *string)
   {
     if (field)
@@ -641,7 +640,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT void
+  ID3_C_EXPORT void CCONV
   ID3Field_SetBINARY(ID3Field *field, const uchar *data, size_t size)
   {
     if (field)
@@ -651,7 +650,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT void
+  ID3_C_EXPORT void CCONV
   ID3Field_GetBINARY(const ID3Field *field, uchar *buffer, size_t buffLength)
   {
     if (field)
@@ -661,7 +660,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT void
+  ID3_C_EXPORT void CCONV
   ID3Field_FromFile(ID3Field *field, const char *fileName)
   {
     if (field)
@@ -671,7 +670,7 @@ extern "C"
   }
 
 
-  ID3_C_EXPORT void
+  ID3_C_EXPORT void CCONV
   ID3Field_ToFile(const ID3Field *field, const char *fileName)
   {
     if (field)

@@ -42,8 +42,8 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I ".\\" /I "..\\" /I "..\include" /I "..\include\id3" /I "..\zlib\include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "__DLL" /D "HAVE_CONFIG_H" /D "ID3LIB_COMPILATION" /YX /FD /c
+# ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D ID3LIB_LINKOPTION=2 /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /I ".\\" /I "..\\" /I "..\include" /I "..\include\id3" /I "..\zlib\include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "__DLL" /D "HAVE_CONFIG_H" /D ID3LIB_LINKOPTION=2 /YX /FD /c
 # SUBTRACT CPP /Fr
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /o "NUL" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /o "NUL" /win32
@@ -54,7 +54,8 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 /nologo /subsystem:windows /dll /machine:I386
-# ADD LINK32 ..\zlib\zlib.lib /nologo /subsystem:windows /dll /machine:I386
+# ADD LINK32 ..\zlib\zlib.lib /nologo /subsystem:windows /dll /incremental:yes /machine:I386
+# SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "id3lib - Win32 Debug"
 
@@ -69,8 +70,8 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I ".\\" /I "..\\" /I "..\include" /I "..\include\id3" /I "..\zlib\include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "__DLL" /D "HAVE_CONFIG_H" /D "ID3LIB_COMPILATION" /FR /YX /FD /c
+# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D ID3LIB_LINKOPTION=2 /YX /FD /c
+# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I ".\\" /I "..\\" /I "..\include" /I "..\include\id3" /I "..\zlib\include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "__DLL" /D "HAVE_CONFIG_H" /D ID3LIB_LINKOPTION=2 /FR /YX /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /o "NUL" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /o "NUL" /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -81,7 +82,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 /nologo /subsystem:windows /dll /debug /machine:I386 /pdbtype:sept
 # ADD LINK32 ..\zlib\zlibD.lib /nologo /subsystem:windows /dll /debug /machine:I386 /pdbtype:sept
-# SUBTRACT LINK32 /nodefaultlib
+# SUBTRACT LINK32 /pdb:none
 
 !ENDIF 
 
@@ -170,6 +171,10 @@ SOURCE=..\src\misc_support.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\mp3_parse.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\readers.cpp
 # End Source File
 # Begin Source File
@@ -183,10 +188,6 @@ SOURCE=..\src\tag.cpp
 # Begin Source File
 
 SOURCE=..\src\tag_file.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\mp3_parse.cpp
 # End Source File
 # Begin Source File
 
@@ -246,7 +247,7 @@ SOURCE=..\src\flags.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\id3\frame.h
+SOURCE=..\include\id3\id3lib_frame.h
 # End Source File
 # Begin Source File
 
@@ -262,15 +263,7 @@ SOURCE=..\include\id3\globals.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\id3\id3lib_streams.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\header.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\mp3_header.h
 # End Source File
 # Begin Source File
 
@@ -290,6 +283,14 @@ SOURCE=..\include\id3.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\include\id3\id3lib_streams.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\id3\id3lib_strings.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\include\id3\io_decorators.h
 # End Source File
 # Begin Source File
@@ -306,6 +307,10 @@ SOURCE=..\include\id3\misc_support.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\mp3_header.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\include\id3\reader.h
 # End Source File
 # Begin Source File
@@ -319,10 +324,6 @@ SOURCE=..\include\id3\sized_types.h
 # Begin Source File
 
 SOURCE=..\src\spec.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\include\id3\id3lib_strings.h
 # End Source File
 # Begin Source File
 

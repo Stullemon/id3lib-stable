@@ -40,8 +40,8 @@ RSC=rc.exe
 # PROP Output_Dir "Release"
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /W3 /GX /O2 /I ".\\" /I "..\\" /I "..\include" /I "..\include\id3" /I "..\zlib\include" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "_WINDOWS" /D "HAVE_CONFIG_H" /D "ID3LIB_COMPILATION" /YX /FD /c
+# ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D ID3LIB_LINKOPTION=1 /YX /FD /c
+# ADD CPP /nologo /W3 /GX /O2 /I ".\\" /I "..\\" /I "..\include" /I "..\include\id3" /I "..\zlib\include" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "_WINDOWS" /D "HAVE_CONFIG_H" /D ID3LIB_LINKOPTION=1 /YX /FD /c
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
 # ADD RSC /l 0x809 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -63,8 +63,8 @@ LIB32=link.exe -lib
 # PROP Output_Dir "Debug"
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /I ".\\" /I "..\\" /I "..\include" /I "..\include\id3" /I "..\zlib\include" /D "_DEBUG" /D "ID3LIB_COMPILATION" /D "WIN32" /D "_MBCS" /D "_LIB" /D "_WINDOWS" /D "HAVE_CONFIG_H" /FR /YX /FD /GZ /c
+# ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D ID3LIB_LINKOPTION=1 /YX /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /I ".\\" /I "..\\" /I "..\include" /I "..\include\id3" /I "..\zlib\include" /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "_WINDOWS" /D "HAVE_CONFIG_H" /D ID3LIB_LINKOPTION=1 /FR /YX /FD /GZ /c
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
 # ADD RSC /l 0x809 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -161,6 +161,10 @@ SOURCE=..\src\misc_support.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\mp3_parse.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\readers.cpp
 # End Source File
 # Begin Source File
@@ -189,10 +193,6 @@ SOURCE=..\src\tag_parse.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\mp3_parse.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\tag_parse_lyrics3.cpp
 # End Source File
 # Begin Source File
@@ -216,7 +216,7 @@ SOURCE=..\src\utils.cpp
 SOURCE=..\src\writers.cpp
 # End Source File
 # End Group
-# Begin Group "Header Files"
+# Begin Group "Include Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
@@ -241,14 +241,6 @@ SOURCE=..\src\flags.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\id3\frame.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\mp3_header.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\frame_def.h
 # End Source File
 # Begin Source File
@@ -262,10 +254,6 @@ SOURCE=..\include\id3\globals.h
 # Begin Source File
 
 SOURCE=..\src\header.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\include\id3\id3lib_streams.h
 # End Source File
 # Begin Source File
 
@@ -285,6 +273,18 @@ SOURCE=..\include\id3.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\include\id3\id3lib_frame.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\id3\id3lib_streams.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\id3\id3lib_strings.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\include\id3\io_decorators.h
 # End Source File
 # Begin Source File
@@ -301,6 +301,10 @@ SOURCE=..\include\id3\misc_support.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\mp3_header.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\include\id3\reader.h
 # End Source File
 # Begin Source File
@@ -314,10 +318,6 @@ SOURCE=..\include\id3\sized_types.h
 # Begin Source File
 
 SOURCE=..\src\spec.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\include\id3\id3lib_strings.h
 # End Source File
 # Begin Source File
 

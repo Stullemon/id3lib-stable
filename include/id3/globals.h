@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: globals.h,v 1.50 2002/07/23 13:20:29 t1mpy Exp $
+/* $Id: globals.h,v 1.51 2002/08/10 11:47:50 t1mpy Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags
  * Copyright 1999, 2000 Scott Thomas Haug
@@ -40,20 +40,46 @@
 /* id3lib version.
  * we prefix variable declarations so they can
  * properly get exported in windows dlls.
- * (borrowed from glib.h http://www.gtk.org)
  */
 #ifdef WIN32
-#  ifdef ID3LIB_COMPILATION
-#    define ID3_C_EXPORT extern _declspec(dllexport)
-#    define ID3_CPP_EXPORT __declspec(dllexport)
-#  else /* !ID3LIB_COMPILATION */
-#    define ID3_C_EXPORT extern _declspec(dllimport)
-#    define ID3_CPP_EXPORT __declspec(dllimport)
-#  endif /* !ID3LIB_COMPILATION */
+#  define LINKOPTION_STATIC         1 //both for use and creation of static lib
+#  define LINKOPTION_CREATE_DYNAMIC 2 //should only be used by prj/id3lib.dsp
+#  define LINKOPTION_USE_DYNAMIC    3 //if your project links id3lib dynamic
+#  ifndef ID3LIB_LINKOPTION
+#    pragma message("*** NOTICE *** (not a real error)")
+#    pragma message("* You should include a define in your project which reflect how you link the library")
+#    pragma message("* If you use id3lib.lib or libprj/id3lib.dsp (you link static) you should add")
+#    pragma message("* ID3LIB_LINKOPTION=1 to your preprocessor definitions of your project.")
+#    pragma message("* If you use id3lib.dll (you link dynamic) you should add ID3LIB_LINKOPTION=3")
+#    pragma message("* to your preprocessor definitions of your project.")
+#    pragma message("***")
+#    error read message above or win32.readme.first.txt
+#  else
+#    if (ID3LIB_LINKOPTION == LINKOPTION_CREATE_DYNAMIC) 
+       //used for creating a dynamic dll
+#      define ID3_C_EXPORT extern _declspec(dllexport)
+#      define ID3_CPP_EXPORT __declspec(dllexport)
+#      define CCONV __stdcall // Added for VB & Delphi Compatibility - By FrogPrince Advised By Lothar
+#    endif
+#    if (ID3LIB_LINKOPTION == LINKOPTION_STATIC) 
+       //used for creating a static lib and using a static lib
+#      define ID3_C_EXPORT
+#      define ID3_CPP_EXPORT
+#      define CCONV
+#    endif
+#    if (ID3LIB_LINKOPTION == LINKOPTION_USE_DYNAMIC) 
+       //used for those that do not link static and are using the dynamic dll by including a id3lib header
+#      define ID3_C_EXPORT extern _declspec(dllimport)
+#      define ID3_CPP_EXPORT __declspec(dllimport) //functions like these shouldn't be used by vb and delphi, 
+#      define CCONV __stdcall // Added for VB & Delphi Compatibility - By FrogPrince Advised By Lothar
+#    endif
+#  endif
 #else /* !WIN32 */
 #  define ID3_C_EXPORT
 #  define ID3_CPP_EXPORT
+#  define CCONV
 #endif /* !WIN32 */
+
 #define ID3_C_VAR extern
 
 #ifndef __cplusplus
@@ -202,9 +228,11 @@ ID3_ENUM(ID3_FrameID)
   /* ???? */ ID3FID_NOFRAME = 0,       /**< No known frame */
   /* AENC */ ID3FID_AUDIOCRYPTO,       /**< Audio encryption */
   /* APIC */ ID3FID_PICTURE,           /**< Attached picture */
+  /* ASPI */ ID3FID_AUDIOSEEKPOINT,    /**< Audio seek point index */
   /* COMM */ ID3FID_COMMENT,           /**< Comments */
   /* COMR */ ID3FID_COMMERCIAL,        /**< Commercial frame */
   /* ENCR */ ID3FID_CRYPTOREG,         /**< Encryption method registration */
+  /* EQU2 */ ID3FID_EQUALIZATION2,     /**< Equalisation (2) */
   /* EQUA */ ID3FID_EQUALIZATION,      /**< Equalization */
   /* ETCO */ ID3FID_EVENTTIMING,       /**< Event timing codes */
   /* GEOB */ ID3FID_GENERALOBJECT,     /**< General encapsulated object */
@@ -219,8 +247,11 @@ ID3_ENUM(ID3_FrameID)
   /* POPM */ ID3FID_POPULARIMETER,     /**< Popularimeter */
   /* POSS */ ID3FID_POSITIONSYNC,      /**< Position synchronisation frame */
   /* RBUF */ ID3FID_BUFFERSIZE,        /**< Recommended buffer size */
+  /* RVA2 */ ID3FID_VOLUMEADJ2,        /**< Relative volume adjustment (2) */
   /* RVAD */ ID3FID_VOLUMEADJ,         /**< Relative volume adjustment */
   /* RVRB */ ID3FID_REVERB,            /**< Reverb */
+  /* SEEK */ ID3FID_SEEKFRAME,         /**< Seek frame */
+  /* SIGN */ ID3FID_SIGNATURE,         /**< Signature frame */
   /* SYLT */ ID3FID_SYNCEDLYRICS,      /**< Synchronized lyric/text */
   /* SYTC */ ID3FID_SYNCEDTEMPO,       /**< Synchronized tempo codes */
   /* TALB */ ID3FID_ALBUM,             /**< Album/Movie/Show title */
@@ -229,7 +260,13 @@ ID3_ENUM(ID3_FrameID)
   /* TCON */ ID3FID_CONTENTTYPE,       /**< Content type */
   /* TCOP */ ID3FID_COPYRIGHT,         /**< Copyright message */
   /* TDAT */ ID3FID_DATE,              /**< Date */
+  /* TDEN */ ID3FID_ENCODINGTIME,      /**< Encoding time */
   /* TDLY */ ID3FID_PLAYLISTDELAY,     /**< Playlist delay */
+  /* TDOR */ ID3FID_ORIGRELEASETIME,   /**< Original release time */
+  /* TDRC */ ID3FID_RECORDINGTIME,     /**< Recording time */
+  /* TDRL */ ID3FID_RELEASETIME,       /**< Release time */
+  /* TDTG */ ID3FID_TAGGINGTIME,       /**< Tagging time */
+  /* TIPL */ ID3FID_INVOLVEDPEOPLE2,   /**< Involved people list */
   /* TENC */ ID3FID_ENCODEDBY,         /**< Encoded by */
   /* TEXT */ ID3FID_LYRICIST,          /**< Lyricist/Text writer */
   /* TFLT */ ID3FID_FILETYPE,          /**< File type */
@@ -240,7 +277,9 @@ ID3_ENUM(ID3_FrameID)
   /* TKEY */ ID3FID_INITIALKEY,        /**< Initial key */
   /* TLAN */ ID3FID_LANGUAGE,          /**< Language(s) */
   /* TLEN */ ID3FID_SONGLEN,           /**< Length */
+  /* TMCL */ ID3FID_MUSICIANCREDITLIST,/**< Musician credits list */
   /* TMED */ ID3FID_MEDIATYPE,         /**< Media type */
+  /* TMOO */ ID3FID_MOOD,              /**< Mood */
   /* TOAL */ ID3FID_ORIGALBUM,         /**< Original album/movie/show title */
   /* TOFN */ ID3FID_ORIGFILENAME,      /**< Original filename */
   /* TOLY */ ID3FID_ORIGLYRICIST,      /**< Original lyricist(s)/text writer(s) */
@@ -252,14 +291,19 @@ ID3_ENUM(ID3_FrameID)
   /* TPE3 */ ID3FID_CONDUCTOR,         /**< Conductor/performer refinement */
   /* TPE4 */ ID3FID_MIXARTIST,         /**< Interpreted, remixed, or otherwise modified by */
   /* TPOS */ ID3FID_PARTINSET,         /**< Part of a set */
+  /* TPRO */ ID3FID_PRODUCEDNOTICE,    /**< Produced notice */
   /* TPUB */ ID3FID_PUBLISHER,         /**< Publisher */
   /* TRCK */ ID3FID_TRACKNUM,          /**< Track number/Position in set */
   /* TRDA */ ID3FID_RECORDINGDATES,    /**< Recording dates */
   /* TRSN */ ID3FID_NETRADIOSTATION,   /**< Internet radio station name */
   /* TRSO */ ID3FID_NETRADIOOWNER,     /**< Internet radio station owner */
   /* TSIZ */ ID3FID_SIZE,              /**< Size */
+  /* TSOA */ ID3FID_ALBUMSORTORDER,    /**< Album sort order */
+  /* TSOP */ ID3FID_PERFORMERSORTORDER,/**< Performer sort order */
+  /* TSOT */ ID3FID_TITLESORTORDER,    /**< Title sort order */
   /* TSRC */ ID3FID_ISRC,              /**< ISRC (international standard recording code) */
   /* TSSE */ ID3FID_ENCODERSETTINGS,   /**< Software/Hardware and settings used for encoding */
+  /* TSST */ ID3FID_SETSUBTITLE,       /**< Set subtitle */
   /* TXXX */ ID3FID_USERTEXT,          /**< User defined text information */
   /* TYER */ ID3FID_YEAR,              /**< Year */
   /* UFID */ ID3FID_UNIQUEFILEID,      /**< Unique file identifier */
