@@ -1,4 +1,4 @@
-/* $Id: globals.h,v 1.14 2000/04/26 16:53:32 eldamitri Exp $
+/* $Id: globals.h,v 1.15 2000/04/27 02:36:41 eldamitri Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags Copyright
  * 1999, 2000 Scott Thomas Haug
@@ -39,18 +39,16 @@
  * properly get exported in windows dlls.
  * (borrowed from glib.h http://www.gtk.org)
  */
-#ifdef NATIVE_WIN32
+#ifdef WIN32
 #  ifdef ID3LIB_COMPILATION
-#    define ID3_C_VAR extern
-#    define ID3_C_EXPORT __declspec(dllexport)
+#    define ID3_C_EXPORT extern __declspec(dllexport)
 #  else /* !ID3LIB_COMPILATION */
-#    define ID3_C_VAR 
-#    define ID3_C_EXPORT __declspec(dllimport)
+#    define ID3_C_EXPORT extern __declspec(dllimport)
 #  endif /* !ID3LIB_COMPILATION */
-#else /* !NATIVE_WIN32 */
-#  define ID3_C_VAR extern
+#else /* !WIN32 */
 #  define ID3_C_EXPORT
-#endif /* !NATIVE_WIN32 */
+#endif /* !WIN32 */
+#define ID3_C_VAR extern
 
 #ifndef __cplusplus
 
@@ -266,7 +264,7 @@ ID3_ENUM(ID3_V1Lengths)
  **
  ** @author Dirk Mahoney (dirk@id3.org)
  ** @author Scott Thomas Haug (sth2@cs.wustl.edu)
- ** @version $Id: globals.h,v 1.14 2000/04/26 16:53:32 eldamitri Exp $
+ ** @version $Id: globals.h,v 1.15 2000/04/27 02:36:41 eldamitri Exp $
  ** @see ID3_Tag
  **/
 ID3_STRUCT(ID3V1_Tag)
@@ -352,7 +350,7 @@ ID3_ENUM(ID3_VerCtl)
 /*
  * The following is borrowed from glib.h (http://www.gtk.org)
  */
-#ifdef NATIVE_WIN32
+#ifdef WIN32
 
 /* On native Win32, directory separator is the backslash, and search path
  * separator is the semicolon.
@@ -362,7 +360,7 @@ ID3_ENUM(ID3_VerCtl)
 #  define ID3_SEARCHPATH_SEPARATOR ';'
 #  define ID3_SEARCHPATH_SEPARATOR_S ";"
 
-#else  /* !NATIVE_WIN32 */
+#else  /* !WIN32 */
 
 #  ifndef __EMX__
 /* Unix */
@@ -382,7 +380,7 @@ ID3_ENUM(ID3_VerCtl)
 
 #  endif
 
-#endif /* !NATIVE_WIN32 */
+#endif /* !WIN32 */
 
 #ifndef NULL
 #define NULL ((void*) 0)
