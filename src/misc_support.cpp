@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.7 2000/05/06 21:20:07 eldamitri Exp $
+// $Id: misc_support.cpp,v 1.8 2000/05/08 03:08:06 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -34,8 +34,7 @@
 #include <config.h>
 #endif
 
-char *ID3_GetString(const ID3_Frame *frame, const ID3_FieldID fldName,
-                    const size_t nIndex)
+char *ID3_GetString(const ID3_Frame *frame, ID3_FieldID fldName, size_t nIndex)
 {
   char *sText = NULL;
   if (NULL != frame)
@@ -56,7 +55,7 @@ char *ID3_GetString(const ID3_Frame *frame, const ID3_FieldID fldName,
   return sText;
 }
 
-char *ID3_GetArtist(ID3_Tag *tag)
+char *ID3_GetArtist(const ID3_Tag *tag)
 {
   char *sArtist = NULL;
   if (NULL == tag)
@@ -91,7 +90,7 @@ ID3_Frame* ID3_AddArtist(ID3_Tag *tag, const char *text, bool bReplace)
          tag->Find(ID3FID_COMPOSER)   == NULL))
     {
       pFrame = new ID3_Frame;
-      if (NULL != pFrame)
+      if (pFrame)
       {
         pFrame->SetID(ID3FID_LEADARTIST);
         pFrame->Field(ID3FN_TEXT) = text;
@@ -137,7 +136,7 @@ size_t ID3_RemoveArtists(ID3_Tag *tag)
   return nRemoved;
 }
 
-char *ID3_GetAlbum(ID3_Tag *tag)
+char *ID3_GetAlbum(const ID3_Tag *tag)
 {
   char *sAlbum = NULL;
   if (NULL == tag)
@@ -165,7 +164,7 @@ ID3_Frame* ID3_AddAlbum(ID3_Tag *tag, const char *text, bool bReplace)
     if (bReplace || tag->Find(ID3FID_ALBUM) == NULL)
     {
       pFrame = new ID3_Frame;
-      if (NULL != pFrame)
+      if (pFrame)
       {
         pFrame->SetID(ID3FID_ALBUM);
         pFrame->Field(ID3FN_TEXT) = text;
@@ -196,7 +195,7 @@ size_t ID3_RemoveAlbums(ID3_Tag *tag)
   return nRemoved;
 }
 
-char *ID3_GetTitle(ID3_Tag *tag)
+char *ID3_GetTitle(const ID3_Tag *tag)
 {
   char *sTitle = NULL;
   if (NULL == tag)
@@ -224,13 +223,12 @@ ID3_Frame* ID3_AddTitle(ID3_Tag *tag, const char *text, bool bReplace)
     if (bReplace || tag->Find(ID3FID_TITLE) == NULL)
     {
       pFrame = new ID3_Frame;
-      if (NULL == pFrame)
+      if (pFrame)
       {
-        ID3_THROW(ID3E_NoMemory);
+        pFrame->SetID(ID3FID_TITLE);
+        pFrame->Field(ID3FN_TEXT) = text;
+        tag->AttachFrame(pFrame);
       }
-      pFrame->SetID(ID3FID_TITLE);
-      pFrame->Field(ID3FN_TEXT) = text;
-      tag->AttachFrame(pFrame);
     }
   }
   
@@ -256,7 +254,7 @@ size_t ID3_RemoveTitles(ID3_Tag *tag)
   return nRemoved;
 }
 
-char *ID3_GetYear(ID3_Tag *tag)
+char *ID3_GetYear(const ID3_Tag *tag)
 {
   char *sYear = NULL;
   if (NULL == tag)
@@ -315,7 +313,7 @@ size_t ID3_RemoveYears(ID3_Tag *tag)
   return nRemoved;
 }
 
-char *ID3_GetComment(ID3_Tag *tag)
+char *ID3_GetComment(const ID3_Tag *tag)
 {
   char *sComment = NULL;
   if (NULL == tag)
@@ -426,7 +424,7 @@ size_t ID3_RemoveComments(ID3_Tag *tag, const char *sDescription)
   return nRemoved;
 }
 
-char *ID3_GetTrack(ID3_Tag *tag)
+char *ID3_GetTrack(const ID3_Tag *tag)
 {
   char *sTrack = NULL;
   if (NULL == tag)
@@ -442,7 +440,7 @@ char *ID3_GetTrack(ID3_Tag *tag)
   return sTrack;
 }
 
-luint ID3_GetTrackNum(ID3_Tag *tag)
+luint ID3_GetTrackNum(const ID3_Tag *tag)
 {
   char *sTrack = ID3_GetTrack(tag);
   luint nTrack = 0;
@@ -465,10 +463,8 @@ ID3_Frame* ID3_AddTrack(ID3_Tag *tag, uchar ucTrack, uchar ucTotal, bool bReplac
     }
     if (bReplace || NULL == tag->Find(ID3FID_TRACKNUM))
     {
-      ID3_Frame *trackFrame;
-    
-      trackFrame = new ID3_Frame;
-      if (NULL == trackFrame)
+      ID3_Frame *trackFrame = new ID3_Frame;
+      if (trackFrame)
       {
         char *sTrack = NULL;
         if (0 == ucTotal)
@@ -513,7 +509,7 @@ size_t ID3_RemoveTracks(ID3_Tag *tag)
   return nRemoved;
 }
 
-char *ID3_GetGenre(ID3_Tag *tag)
+char *ID3_GetGenre(const ID3_Tag *tag)
 {
   char *sGenre = NULL;
   if (NULL == tag)
@@ -530,7 +526,7 @@ char *ID3_GetGenre(ID3_Tag *tag)
   return sGenre;
 }
 
-luint ID3_GetGenreNum(ID3_Tag *tag)
+luint ID3_GetGenreNum(const ID3_Tag *tag)
 {
   char *sGenre = ID3_GetGenre(tag);
   luint ulGenre = 0xFF;
@@ -605,7 +601,7 @@ size_t ID3_RemoveGenres(ID3_Tag *tag)
   return nRemoved;
 }
 
-char *ID3_GetLyrics(ID3_Tag *tag)
+char *ID3_GetLyrics(const ID3_Tag *tag)
 {
   char *sLyrics = NULL;
   if (NULL == tag)
@@ -665,7 +661,7 @@ size_t ID3_RemoveLyrics(ID3_Tag *tag)
   return nRemoved;
 }
 
-char *ID3_GetLyricist(ID3_Tag *tag)
+char *ID3_GetLyricist(const ID3_Tag *tag)
 {
   char *sLyricist = NULL;
   if (NULL == tag)
@@ -693,14 +689,12 @@ ID3_Frame* ID3_AddLyricist(ID3_Tag *tag, const char *text, bool bReplace)
     if (bReplace || (tag->Find(ID3FID_LYRICIST) == NULL))
     {    
       pFrame = new ID3_Frame;
-      if (NULL == pFrame)
+      if (pFrame)
       {
-        ID3_THROW(ID3E_NoMemory);
+        pFrame->SetID(ID3FID_LYRICIST);
+        pFrame->Field(ID3FN_TEXT) = text;
+        tag->AttachFrame(pFrame);
       }
-      
-      pFrame->SetID(ID3FID_LYRICIST);
-      pFrame->Field(ID3FN_TEXT) = text;
-      tag->AttachFrame(pFrame);
     }
   }
 
