@@ -1,4 +1,4 @@
-// $Id: tag_parse.cpp,v 1.5 1999/11/15 20:20:55 scott Exp $
+// $Id: tag_parse.cpp,v 1.6 1999/11/16 22:50:37 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -144,6 +144,7 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
     luint expandedSize = 0;
     uchar groupingID = 0;
     uchar encryptionID = 0;
+    bool bShouldAttach = attach;
     
     posn = frHeader.GetFrameInfo(attr, cur->acBinary);
     
@@ -197,28 +198,42 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
       
       frame->SetID(id);
       
-      if (NULL == expBin)
+      try 
       {
-        frame->Parse(&cur->acBinary[posn], attr.ulSize - extras);
+        if (NULL == expBin)
+        {
+          frame->Parse(&cur->acBinary[posn], attr.ulSize - extras);
+        }
+        else
+        {
+          frame->Parse(expBin, expandedSize);
+          delete[] expBin;
+        }
+        
+        // here is where we call a special handler for this frame type if one
+        // is specified in the frame definition
+        {
+          ID3_FrameDef *frameInfo;
+        
+          frameInfo = ID3_FindFrameDef(id);
+        
+          if (frameInfo != NULL && frameInfo->parseHandler != NULL)
+            bShouldAttach = frameInfo->parseHandler(frame);
+        }
       }
-      else
+      catch (ID3_Error err)
       {
-        frame->Parse(expBin, expandedSize);
-        delete[] expBin;
-      }
-        
-      // here is where we call a special handler for this frame type if one is
-      // specified in the frame definition
-      {
-        ID3_FrameDef *frameInfo;
-        
-        frameInfo = ID3_FindFrameDef(id);
-        
-        if (frameInfo != NULL && frameInfo->parseHandler)
-          attach = frameInfo->parseHandler(frame);
+        // There's been an error in the parsing of the frame.  It shouldn't be
+        // attached.
+        // This should be logged somehow so that the user can determine how
+        // many frames were parsed correctly and how many weren't
+        // cerr << "xxx Error occurred: " << err.GetErrorDesc() << endl;
+        bShouldAttach = false;
+        if (NULL != expBin)
+          delete [] expBin;
       }
       
-      if (!attach)
+      if (!bShouldAttach)
       {
         // if not, delete it
         delete frame;
@@ -380,6 +395,14 @@ luint ID3_Tag::ParseFromHandle(void)
 }
 
 // $Log: tag_parse.cpp,v $
+// Revision 1.6  1999/11/16 22:50:37  scott
+// * tag_parse.cpp
+// (ProcessBinaries): Added try/catch block to catch any exceptions so
+// that the parser can carry on parsing the rest of the frames if any
+// particular frame is poorly encoded.  Need to add some sort of
+// mechanism to determine how many frames exist, how many have been
+// parsed correctly and how many have been parsed incorrectly.
+//
 // Revision 1.5  1999/11/15 20:20:55  scott
 // Added include for config.h.  Minor code cleanup.  Removed
 // assignments from if checks; first makes assignment, then checks
