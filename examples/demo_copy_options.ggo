@@ -1,0 +1,8 @@
+# $Id: demo_copy_options.ggo,v 1.1 2000/11/07 09:39:36 eldamitri Exp $
+
+package "id3cp"
+
+option  "v1tag"         1 "Render only the id3v1 tag"           flag    off
+option  "v2tag"         2 "Render only the id3v2 tag"           flag    off
+option  "warning"       w "Turn on warnings (for debugging)"    flag    off
+option  "notice"        n "Turn on notices (for debugging)"     flag    off
