@@ -1,4 +1,22 @@
-$Id: NEWS,v 1.16 2000/05/29 06:57:46 eldamitri Exp $
+$Id: NEWS,v 1.17 2000/06/23 04:22:41 eldamitri Exp $
+
+2000-06-23 Version 3.7.10
+
+* New and updated example tags
+* Corrected unicode parsing and rendering
+* Improved parsing/conversion of Lyrics3 v2.00 tags
+* Fixed errors with exception handling (thanks to Luca Leonardo Scorcia for the
+  bug reports)
+* Fixed bugs/memory leaks with removing frames and updating tag (thanks to Luca
+  Leonardo Scorcia for the bug reports)
+* Improved documentation/implementation for uint28
+* Added GetTextID() method for ID3_Frame objects
+* Tag doesn't render if there aren't any frames; frame doesn't render if there
+  aren't any fields
+* Reordered ID3_AddSyncLyrics() parameters for better consistency with other
+  helper functions
+* ID3_GetSyncLyricsInfo() parameters updated to be more specific
+* Several other minor bug fixes
 
 2000-05-28 Version 3.7.9
 
