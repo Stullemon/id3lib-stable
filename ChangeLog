@@ -1,3 +1,192 @@
+1999-12-27  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* configure.in: 
+	* config.win32: 
+	Changed release information from 3.6.2 to 3.0.6, to prepare for
+	future MusicMatch release to happen Real Soon Now.
+
+	* include/id3/frame.h 
+	(class ID3_Frame): Added declaration for constructor which accepts a
+	frame header to copy.  Removed redundant data members that are now
+	encapsulated within new frame header member.  Added declaration for
+	new methods InitFields and InitFieldBits.
+
+	* include/id3/header.h 
+	(ID3_VERSION, ID3_REVISION): Renamed to ID3v2_*
+	(class ID3_Header): Added declarations for GetVersion, GetRevision,
+	AddFlags, SetFlags, Clear, Copy, and operator= methods.  Changed 
+	return type for Size and Render from luint to size_t.
+
+	* include/id3/header_frame.h: 
+	(ID3_FrameAttr): Removed.
+	(class ID3_FrameHeader): Added declarations for default constructor and
+	Parse, GetFrameID, GetTextID, GetFrameDef, and Clear methods.  Changed
+	return type for Size and Render.  Replaced __eFrameID data member with
+	__pFrameDef, which encapsulates more information about the frame
+	header.
+
+	* include/id3/header_tag.h 
+	(ID3_TAGIDSIZE): Added constant.
+	(class ID3_TagHeader): Minor return type changes for Size and Render.
+
+1999-12-26  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* src/id3/frame.cpp 
+	(ID3_Frame): Added data member initialization list.  Updated to reflect
+	abstraction of field bits initialization.  Added new constructor which
+	accepts a frame header to copy into the frame.
+	(InitFieldBits): Added implementation.  Abstracted from the constuctor.
+	(Clear): Updated to reflect addition of new header data member.  
+	Restructured method so it can be used in more situations.
+	(InitFields): Added implementation. Abstracted from the SetID method.
+	(SetID): Updated to reflect new method abstractions.
+	(GetID, SetVersion, Size): Updated to reflect new frame header data 
+	member.
+
+	* src/id3/frame_parse.cpp 
+	(Parse): Moved header processing tasks to the header object, now a
+	member of ID3_Frame.  
+
+	* src/id3/frame_render.cpp 
+	(Render): Moved header processing tasks to the header object, now a
+	member of ID3_Frame.  Similar changes made due to removal of redundant
+	information from frame object.
+
+	* src/id3/header.cpp 
+	(ID3_Header): Updated for new version constants.
+	(AddFlags): Added implementation.  Adds flag(s) to current flags.
+	(RemoveFlags): Added implementation.  Removes flag(s) from current
+	flags.
+	(GetVersion): Added implementation.  Returns version number of header.
+	(GetRevision): Added implementation.  Returns revision of header.
+	(Clear): Added implementation.  Clears contents of header.
+	(operator=): Added implementation. Assignment operator.
+	(Copy): Added implementation. Copies content of another header.
+
+	* src/id3/header_frame.cpp 
+	(ID3_FrameHeader): Added default constructor.
+	(SetFrameID): Modified to reflect internal representation change.  Now
+	searches and stores frame definition associated with the frame id.
+	(GetFrameInfo): Removed.
+	(Parse): Added implementation.  Based on former GetFrameInfo.
+	(Render): Modified to reflect internal representation change.
+	(GetTextID): Added implementation.  Gets text id associated with frame
+	header.
+	(Copy): Added implementation.  Copies another frame header.
+	(GetFrameID): Added implementation.  Gets frame id associated with 
+	frame header.
+	(GetFrameDef): Added implementation.  Gets frame definition associated
+	with frame header.
+	(Clear): Added implementation.  Clears contents of frame header.
+
+	* src/id3/header_tag.cpp 
+	(Size, Render): Minor return type change.
+	(ID3_IsTagHeader): Updated for new version constants.
+
+	* src/id3/tag.cpp 
+	(SetupTag): Updated for new version constants.
+
+	* src/id3/tag_parse.cpp 
+	(ExpandBinaries, ProcessBinaries): Moved header processing tasks to 
+	the header object, now a member of ID3_Frame.
+
+	* src/id3/tag_render.cpp 
+	(Render): Updated for new version constants and inclusion of header in
+	each frame.
+
+	* include/id3/misc_support.h 
+	(MASK): Defined macro for masking bits.
+	(): Added declarations for ParseNumber and RenderNumber, for converting
+	between character arrays and unsigned ints.
+
+	* include/id3/int28.h 
+	(class int28): Restructured.
+
+	* include/id3/header_frame.h 
+	(ID3FL_READONLY): Renamed from ID3FL_SIGNED.
+	(class ID3_FrameHeader): Minor cleanup to interface.
+
+	* include/id3/header.h 
+	(class ID3_Header): Minor cleanup to interface.
+
+	* include/id3/frame.h 
+	(class ID3_Frame): Added bReadOnly property.
+
+	* include/id3/field.h 
+	(class ID3_Field): Cleaned up interface to Parse* methods.
+
+	* src/id3/tag_parse.cpp 
+	(ExpandBinaries): Now uses ParseNumber, defined in misc_support.
+	(ProcessBinaries): Now uses ParseNumber, defined in misc_support.
+	(Parse): Now uses ParseNumber, defined in misc_support.
+
+	* src/id3/misc_support.cpp 
+	(ParseNumber): Defined.  Converts a character buffer up to 4 bytes in
+	size into its equivalent big-endian integer equivalent.
+	(RenderNumber): Defined.  Converts an integer into an equivalent
+	big-endian binary character array, up to 4 bytes in length.
+
+	* src/id3/int28.cpp 
+	(set): Now uses ParseNumber, defined in misc_support.  Restructured 
+	code.
+
+	* src/id3/header_frame.cpp 
+	(GetFrameInfo): Now uses ParseNumber, defined in misc_support.
+	(Render): Now uses RenderNumber, defined in misc_support.
+
+	* src/id3/header.cpp 
+	(GetDataSize): Added implementation.
+	(GetFlags): Added implementation.
+
+	* src/id3/header_tag.cpp 
+	* src/id3/frame_render.cpp 
+	(Render): Now uses RenderNumber, defined in misc_support.
+
+	* src/id3/field_integer.cpp 
+	(ParseInteger): Now uses ParseNumber, defined in misc_support.
+	(RenderInteger): Now uses RenderNumber, defined in misc_support.
+
+	* src/id3/frame_parse.cpp: 
+	* src/id3/frame.cpp: 
+	* src/id3/field_string_unicode.cpp: 
+	* src/id3/field_string_ascii.cpp:
+	* src/id3/field_binary.cpp: 
+	Minor reformatting.
+
+1999-12-25  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* include/id3/globals.h 
+	(ID3_FieldID): Reformatted.
+	(ID3_FrameID): Reformatted.  Commented descriptions from www.id3.org.  
+	Renamed some frame id's: ID3FID_KEY -> ID3FID_INITIALKEY, 
+	ID3FID_BEATSPERMINUTE -> ID3FID_BPM, ID3FID_OWNER -> ID3FID_FILEOWNER.
+	Added new frame id's for remaining frames: 
+	ID3FID_AUDIOCRYPTO (AENC/CRA), ID3FID_COMMERCIAL (COMR/),
+ 	ID3FID_EQUALIZATION (EQUA/EQU), ID3FID_EVENTTIMING (ETCO/ETC),
+ 	ID3FID_CDID (MCDI/MCI), ID3FID_MPEGLOOKUP (MLLT/MLL),
+ 	ID3FID_OWNERSHIP (OWNE/), ID3FID_POSITIONSYNC (POSS/),
+ 	ID3FID_PRIVATE (PRIV/) ID3FID_BUFFERSIZE (RBUF/BUF),
+ 	ID3FID_VOLUMEADJ (RVAD/RVA), ID3FID_SYNCEDLYRICS (SYLT/SLT),
+ 	ID3FID_SYNCEDTEMPO (SYTC/STC), ID3FID_METACRYPTO (/CRM).
+
+	* src/id3/field.cpp 
+	(): Updated list of implemented and unimplemented frames to include
+	their id3lib frame id, id3v2.2 id, and www.id3.org description.
+	(ID3FD_Unimplemented): Added for unimplemented frames so that their
+	data is preseved when parsing and rendering.
+	(ID3_FrameDefs): Added entries for new frames, using 
+	ID3FD_Unimplemented as frame definition.  Updated renamed entries.
+
+	* src/examples/demo_info.cpp 
+	(GetDescription): Reformatted.  Descriptions now match those from
+	www.id3.org.  Added descriptions for new frame id's.
+	(PrintInformation): Updated for added frames.  Now handles
+ 	unimplemented frames.
+
+	* src/examples/demo_convert.cpp 
+	(PrintUsage): Included new padding option.
+	(main): Added new option for padding the tag.
+
 1999-12-23  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* src/id3/field_string_ascii.cpp 
