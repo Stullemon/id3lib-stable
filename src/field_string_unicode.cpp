@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.21 2000/09/27 08:28:19 eldamitri Exp $
+// $Id: field_string_unicode.cpp,v 1.22 2000/09/30 22:12:23 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -315,7 +315,7 @@ size_t ID3_FieldImpl::GetNumTextItems() const
   return _num_items;
 }
 
-void ID3_FieldImpl::ParseUnicodeString(ID3_Reader& reader)
+bool ID3_FieldImpl::ParseUnicodeString(ID3_Reader& reader)
 {
   ID3D_NOTICE( "ID3_Frame::ParseUText(): reader.getBeg() = " << reader.getBeg() );
   ID3D_NOTICE( "ID3_Frame::ParseUText(): reader.getCur() = " << reader.getCur() );
@@ -336,7 +336,7 @@ void ID3_FieldImpl::ParseUnicodeString(ID3_Reader& reader)
   {
     // lists are always the last field in a frame.  parse all remaining 
     // characters in the reader
-    while (tr.peekChar() != ID3_Reader::END_OF_READER)
+    while (!tr.atEnd())
     {
       id3::string unicode = tr.readText();
       this->Add_i((unicode_t *)unicode.data(), unicode.size() / 2);
@@ -354,7 +354,7 @@ void ID3_FieldImpl::ParseUnicodeString(ID3_Reader& reader)
     id3::string unicode;
     // not null terminated.  
     const size_t BUFSIZ = 1024;
-    while (tr.peekChar() != ID3_Reader::END_OF_READER)
+    while (!tr.atEnd())
     {
       unicode += tr.readText(BUFSIZ);
     }
@@ -363,4 +363,5 @@ void ID3_FieldImpl::ParseUnicodeString(ID3_Reader& reader)
   }
   
   _changed = false;
+  return true;
 }
