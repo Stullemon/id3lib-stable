@@ -1,4 +1,4 @@
-// $Id: globals.h,v 1.7 2000/04/11 03:38:15 eldamitri Exp $
+// $Id: globals.h,v 1.8 2000/04/14 03:39:12 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -79,7 +79,7 @@ enum ID3_FieldID
   ID3FN_IMAGEFORMAT,    /// Image format field
   ID3FN_MIMETYPE,       /// Mimetype field
   ID3FN_COUNTER,        /// Counter field
-  ID3FN_SYMBOL,         /// Symbol field
+  ID3FN_ID,             /// Identifier/Symbol field
   ID3FN_VOLUMEADJ,      /// Volume adjustment field
   ID3FN_NUMBITS,        /// Number of bits field
   ID3FN_VOLCHGRIGHT,    /// Volume chage on the right channel
