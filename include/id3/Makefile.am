@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.12 2000/10/14 18:48:33 eldamitri Exp $
+# $Id: Makefile.am,v 1.13 2000/10/14 20:44:16 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -28,7 +28,6 @@ id3include_HEADERS = $(the_headers)
 
 noinst_HEADERS =                \
   debug.h                       \
-  error.h                       \
   field_def.h                   \
   field_impl.h                  \
   flags.h                       \
