@@ -1,4 +1,4 @@
-// $Id: tag_parse.cpp,v 1.11 1999/12/17 16:13:04 scott Exp $
+// $Id: tag_parse.cpp,v 1.12 1999/12/26 15:11:57 scott Exp $
 // 
 // This program is free software; you can distribute it and/or modify it under
 // the terms discussed in the COPYING file, which should have been included
@@ -21,6 +21,7 @@
 #include <memory.h>
 #include "tag.h"
 #include <zlib.h>
+#include "misc_support.h"
 
 ID3_Elem *ID3_Tag::GetLastElem(ID3_Elem *list)
 {
@@ -107,12 +108,7 @@ void ID3_Tag::ExpandBinaries(uchar *buffer, luint size)
       // if the method was zlib
       if ('z' == buffer[posn])
       {
-        luint expandedSize = 0;
-        
-        expandedSize |= buffer[posn + 1] << 24;
-        expandedSize |= buffer[posn + 2] << 16;
-        expandedSize |= buffer[posn + 3] << 8;
-        expandedSize |= buffer[posn + 4];
+        uint32 expandedSize = ParseNumber(&buffer[posn+1]);
         
         uchar *expBin = new uchar[expandedSize];
         if (NULL == expBin)
@@ -120,7 +116,7 @@ void ID3_Tag::ExpandBinaries(uchar *buffer, luint size)
           ID3_THROW(ID3E_NoMemory);
         }
 
-        uncompress(expBin, &expandedSize, 
+        uncompress(expBin, (luint *) &expandedSize, 
                    &buffer[posn + 1 + sizeof(luint)], 
                    attr.ulSize - sizeof(luint) - 1);
           
@@ -150,20 +146,17 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
     ID3_Frame *frame;
     luint posn;
     luint extras = 0;
-    luint expandedSize = 0;
+    uint32 expandedSize = 0;
     uchar groupingID = 0;
     uchar encryptionID = 0;
     bool bShouldAttach = attach;
+    bool bReadOnly = false;
     
     posn = frHeader.GetFrameInfo(attr, cur->acBinary);
     
     if (attr.ulFlags & ID3FL_COMPRESSION)
     {
-      expandedSize |= cur->acBinary[posn + 0] << 24;
-      expandedSize |= cur->acBinary[posn + 1] << 16;
-      expandedSize |= cur->acBinary[posn + 2] << 8;
-      expandedSize |= cur->acBinary[posn + 3];
-      
+      expandedSize = ParseNumber(&(cur->acBinary[posn]));
       extras += sizeof(luint);
     }
     
@@ -178,6 +171,9 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
       groupingID = cur->acBinary[posn];
       posn++, extras++;
     }
+
+    bReadOnly = attr.ulFlags & ID3FL_READONLY;
+
     id = ID3_FindFrameID(attr.sTextID);
     
     if ((id != whichFrame && ID3FID_NOFRAME != whichFrame) ||
@@ -197,8 +193,8 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
           ID3_THROW(ID3E_NoMemory);
         }
           
-        uncompress(expBin, &expandedSize, &cur->acBinary[posn + sizeof(luint)],
-                   attr.ulSize - extras);
+        uncompress(expBin, (luint *) &expandedSize, 
+                   &cur->acBinary[posn + sizeof(luint)], attr.ulSize - extras);
       }
       
       frame = new ID3_Frame;
@@ -263,7 +259,6 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
         {
           ID3_THROW(ID3E_NoMemory);
         }
-          
         elem->pNext    = NULL;
         elem->pFrame   = frame;
         elem->acBinary = NULL;
@@ -315,13 +310,7 @@ void ID3_Tag::Parse(uchar header[ID3_TAGHEADERSIZE], uchar *buffer)
   {
     if (header[5] & ID3HF_EXTENDEDHEADER)
     {
-      luint extSize = 0;
-      
-      extSize |= buffer[0] << 24;
-      extSize |= buffer[1] << 16;
-      extSize |= buffer[2] << 8;
-      extSize |= buffer[3] << 0;
-      
+      uint32 extSize = ParseNumber(buffer);
       posn = extSize + sizeof(luint);
     }
   }
@@ -332,13 +321,7 @@ void ID3_Tag::Parse(uchar header[ID3_TAGHEADERSIZE], uchar *buffer)
   {
     if (header[5] & ID3HF_EXTENDEDHEADER)
     {
-      luint extSize = 0;
-      
-      extSize |= buffer[0] << 24;
-      extSize |= buffer[1] << 16;
-      extSize |= buffer[2] << 8;
-      extSize |= buffer[3] << 0;
-      
+      uint32 extSize = ParseNumber(buffer);
       posn = extSize + sizeof(luint);
     }
   }
@@ -431,6 +414,11 @@ luint ID3_Tag::ParseFromHandle(void)
 }
 
 // $Log: tag_parse.cpp,v $
+// Revision 1.12  1999/12/26 15:11:57  scott
+// (ExpandBinaries): Now uses ParseNumber, defined in misc_support.
+// (ProcessBinaries): Now uses ParseNumber, defined in misc_support.
+// (Parse): Now uses ParseNumber, defined in misc_support.
+//
 // Revision 1.11  1999/12/17 16:13:04  scott
 // Updated opening comment block.
 //
