@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.36 2000/10/29 01:37:29 eldamitri Exp $
+// $Id: tag.cpp,v 1.37 2000/11/20 08:18:00 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -45,7 +45,8 @@ using namespace dami;
  **
  ** \subsection download Downloading id3lib
  **
- ** First, id3lib must be a part of your development environment.
+ ** First, id3lib must be a part of your development environment.  The latest
+ ** files can always be downloaded from the <a href="http://id3lib.sourceforge.net">id3lib homepage</a>.
  **
  ** \subsection include Preparing your source code
  **
@@ -57,19 +58,187 @@ using namespace dami;
  ** \endcode
  **
  ** There are other files that must be included to access more advanced
- ** functionality, but this will do for us for now.
+ ** functionality, but this will do most of the core functionality.
  ** 
  ** \subsection creation Creating a tag
  ** 
  ** Almost all functionality occurs via an ID3_Tag object.  An ID3_Tag object
  ** basically encapsulates two things: a collection of ID3_Frame objects and
  ** file information.  The goal is to populate an ID3_Tag object with ID3_Frame
- ** objects, and the easiest way to do this is to parse a file.
+ ** objects, and the easiest way to do this is to associate the tag with a
+ ** file.  This is done primarily via the ID3_Tag constructor, like so:
  **
  ** \code
- **   ID3_Tag tag("song.mp3");
+ **   ID3_Tag myTag("song.mp3");
  ** \endcode
  **
+ ** This constructor links, or associates, the object \c tag with the file
+ ** "song.mp3".  In doing so, the tagging information from "song.mp3" is parsed
+ ** and added to \c tag.  This association can also be accomplished by creating
+ ** an empty tag and making an explicit call to Link().
+ **
+ ** \code
+ **   ID3_Tag myTag;
+ **   myTag.Link("song.mp3");
+ ** \endcode
+ **
+ ** The default behavior of Link() is to parse all possible tagging information
+ ** and convert it into ID3v2 frames.  The tagging information parsed can be
+ ** limited to a particular type (or types) of tag by passing an ID3_TagType
+ ** (or combination of ID3_TagType's).  For example, to read only the ID3v1
+ ** tag, pass in the constant ID3TT_ID3V1.
+ **
+ ** \code
+ **   myTag.Link("song.mp3", ID3TT_ID3V1);
+ ** \endcode
+ **
+ ** Another example would be to read in all tags that could possibly appear at
+ ** the end of the file.
+ **
+ ** \code
+ **   myTag.Link("song.mp3", ID3TT_ID3V1 | ID3TT_LYRICS3V2 | ID3TT_MUSICMATCH);
+ ** \endcode
+ **
+ ** \section accessing Accessing the Tag Data
+ **
+ ** After linking with a file, the object \c myTag now contains some or all of
+ ** the tagging information present in the file "song.mp3", represented as
+ ** ID3v2 frames.  How can that information be accessed?  There a variety of
+ ** ways to do this.  One is to iterate through all the frames in the tag.
+ **
+ ** \code
+ **   // use an std::auto_ptr here to handle object cleanup automatically
+ **   ID3_Tag::Iterator* iter = tag.createIterator();
+ **   ID3_Frame* myFrame = NULL;
+ **   while (NULL != (myFrame = iter->GetNext())
+ **   {
+ **     // do something with myFrame
+ **   }
+ **   delete iter;
+ ** \endcode
+ **
+ ** Another way to access tagging information is by searching for specific
+ ** frames using the Find() method.  For example, the album frame can be found
+ ** in the following manner:
+ **
+ ** \code
+ **   ID3_Frame* myFrame = myTag.Find(ID3FID_ALBUM);
+ **   if (NULL != myFrame)
+ **   {
+ **     // do something with myFrame
+ **   }
+ ** \endcode
+ **
+ ** The Find() method can be used to search for frames with specific
+ ** information.  For example, the following code can be used to find the frame
+ ** with the title "Nirvana".
+ **
+ ** \code
+ **   ID3_Frame* myFrame = myTag.Find(ID3FID_TITLE, ID3FN_TEXT, "Nirvana")));
+ **   if (NULL != myFrame)
+ **   {
+ **     // do something with myFrame
+ **   }
+ ** \endcode
+ **     
+ ** As indicated, the Find() method will return a NULL pointer if no such frame
+ ** can be found.  If more than one frame meets the search criteria, subsequent
+ ** calls to Find() with the same parameters will return the other matching
+ ** frames.  The Find() method is guaranteed to return all matching frames
+ ** before it wraps around to return the first matching frame.
+ **
+ ** All ID3_Frame objects are comprised of a collection of ID3_Field objects.
+ ** These fields can represent text, numbers, or binary data.  As with frames,
+ ** fields can be accessed in a variety of manners.  The fields of a frame
+ ** can be iterated over in much the same manner of the frames of a tag.
+ **
+ ** \code
+ **   // use an std::auto_ptr here to handle object cleanup automatically
+ **   ID3_Frame::Iterator* iter = myFrame->createIterator();
+ **   ID3_Field* myField = NULL;
+ **   while (NULL != (myField = iter->GetNext())
+ **   {
+ **     // do something with myField
+ **   }
+ **   delete iter;
+ ** \endcode
+ **
+ ** If you know which field type you're looking for, you can access it
+ ** directly.
+ **
+ ** \code
+ **   ID3_Field* myField = myFrame->GetField(ID3FN_TEXT);
+ **   while (NULL != myField)
+ **   {
+ **     // do something with myField
+ **   }
+ ** \endcode
+ **
+ ** This documentation currently does not include a list of all possible field
+ ** types, nor does it include all possible frame types and the fields they 
+ ** contain.  The source code is the best resource for that information.
+ **
+ ** \todo List all field and frame types.
+ **
+ ** The ID3_Field represents a single piece of data within an ID3v2 frame.  As
+ ** mentioned, an ID3_Field can represent three possible types of
+ ** data: integers, binary data, and test strings.  The type of a particular
+ ** field object is immutable; it is determined at the time of its construction
+ ** (almost always when a frame is constructed) and can't be changed.  If in
+ ** doubt, the field type can be accessed through its GetType() method.
+ **
+ ** Having an ID3_Field object isn't much use if you cannot access and/or 
+ ** alter its data.  Luckily, the id3lib API provides overloaded \c Set and
+ ** \c Get methods for all data types.
+ **
+ ** If the field is an integer, the following methods can be used to access
+ ** the data.
+ **
+ ** \code
+ **   uint32 val = myField->Get();
+ **   myField->Set(5);
+ **   (*myField) = 10;
+ ** \endcode
+ **
+ ** All text data is accessed in a slightly different manner.  The following
+ ** code example best illustrates these differences.
+ **
+ ** \code
+ **   // for ascii strings
+ **   char str1[1024];
+ **   const char* p1 = "My String";
+ **   const char* p2 = "My Other String";
+ **
+ **   myField->Set(p1);
+ **   (*myField) = p2;  // equivalent to Set
+ **
+ **   myField->Get(str1, 1024); // copies up to 1024 bytes of the field data into str1
+ **   p1 = myField->GetRawText(); // returns a pointer to the internal string
+ ** \endcode
+ **
+ ** Binary data is similar to text data, except that its base type is a pointer
+ ** to an unsigned, rather than a signed, char.
+ **
+ ** \code
+ **   // for binary strings
+ **   uchar data[1024];
+ **   const uchar *p1 = getBinaryData(); // not an id3lib function
+ **   size_t size = getBinarySize();     // not an id3lib function
+ **
+ **   myField->Set(p1, size);
+ **
+ **   myField->Get(data, 1024); // copies up to 1024 bytes of the field data into str1
+ **   p1 = myField->GetRawBinary(); // returns a pointer to the internal string
+ ** \endcode
+ **
+ ** \section updating Updating the Tag
+ **
+ ** When you're ready to save your changes back to the file, a single call to
+ ** Update() is sufficient.
+ **
+ ** \code
+ **   tag.Update();
+ ** \endcode
  **
  **/
 
@@ -111,7 +280,7 @@ using namespace dami;
  ** formatted 'CDM' frames from the unreleased ID3v2 2.01 draft specification.
  **
  ** \author Dirk Mahoney
- ** \version $Id: tag.cpp,v 1.36 2000/10/29 01:37:29 eldamitri Exp $
+ ** \version $Id: tag.cpp,v 1.37 2000/11/20 08:18:00 eldamitri Exp $
  ** \sa ID3_Frame
  ** \sa ID3_Field
  ** \sa ID3_Err
