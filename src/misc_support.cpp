@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.23 2000/10/03 04:30:02 eldamitri Exp $
+// $Id: misc_support.cpp,v 1.24 2000/10/09 04:28:41 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -46,13 +46,13 @@ char *ID3_GetString(const ID3_Frame *frame, ID3_FieldID fldName)
   {
     try 
     {
-      ID3_Field& fld = frame->Field(fldName);
-      ID3_TextEnc enc = fld.GetEncoding();
-      fld.SetEncoding(ID3TE_ASCII);
-      size_t nText = fld.Size();
+      ID3_Field* fld = frame->GetField(fldName);
+      ID3_TextEnc enc = fld->GetEncoding();
+      fld->SetEncoding(ID3TE_ASCII);
+      size_t nText = fld->Size();
       text = new char[nText + 1];
-      fld.Get(text, nText + 1);
-      fld.SetEncoding(enc);
+      fld->Get(text, nText + 1);
+      fld->SetEncoding(enc);
     }
     catch (ID3_Error &)
     {
@@ -71,11 +71,11 @@ char *ID3_GetString(const ID3_Frame *frame, ID3_FieldID fldName, size_t nIndex)
   char *text = NULL;
   if (NULL != frame)
   {
-    size_t nText = frame->Field(fldName).Size();
+    size_t nText = frame->GetField(fldName)->Size();
     text = new char[nText + 1];
     try 
     {
-      frame->Field(fldName).Get(text, nText + 1, nIndex);
+      frame->GetField(fldName)->Get(text, nText + 1, nIndex);
     }
     catch (ID3_Error &)
     {
@@ -123,7 +123,7 @@ ID3_Frame* ID3_AddArtist(ID3_Tag *tag, const char *text, bool replace)
       frame = new ID3_Frame(ID3FID_LEADARTIST);
       if (frame)
       {
-        frame->Field(ID3FN_TEXT) = text;
+        frame->GetField(ID3FN_TEXT)->Set(text);
         tag->AttachFrame(frame);
       }
     }
@@ -200,7 +200,7 @@ ID3_Frame* ID3_AddAlbum(ID3_Tag *tag, const char *text, bool replace)
       frame = new ID3_Frame(ID3FID_ALBUM);
       if (frame)
       {
-        frame->Field(ID3FN_TEXT) = text;
+        frame->GetField(ID3FN_TEXT)->Set(text);
         tag->AttachFrame(frame);
       }
     }
@@ -259,7 +259,7 @@ ID3_Frame* ID3_AddTitle(ID3_Tag *tag, const char *text, bool replace)
       frame = new ID3_Frame(ID3FID_TITLE);
       if (frame)
       {
-        frame->Field(ID3FN_TEXT) = text;
+        frame->GetField(ID3FN_TEXT)->Set(text);
         tag->AttachFrame(frame);
       }
     }
@@ -318,7 +318,7 @@ ID3_Frame* ID3_AddYear(ID3_Tag *tag, const char *text, bool replace)
       frame = new ID3_Frame(ID3FID_YEAR);
       if (NULL != frame)
       {
-        frame->Field(ID3FN_TEXT) = text;
+        frame->GetField(ID3FN_TEXT)->Set(text);
         tag->AttachFrame(frame);
       }
     }
@@ -423,9 +423,9 @@ ID3_Frame* ID3_AddComment(ID3_Tag *tag, const char *text,
       frame = new ID3_Frame(ID3FID_COMMENT);
       if (NULL != frame)
       {
-        frame->Field(ID3FN_LANGUAGE) = lang;
-        frame->Field(ID3FN_DESCRIPTION) = desc;
-        frame->Field(ID3FN_TEXT) = text;
+        frame->GetField(ID3FN_LANGUAGE)->Set(lang);
+        frame->GetField(ID3FN_DESCRIPTION)->Set(desc);
+        frame->GetField(ID3FN_TEXT)->Set(text);
         tag->AttachFrame(frame);
       }
     }
@@ -529,7 +529,7 @@ ID3_Frame* ID3_AddTrack(ID3_Tag *tag, uchar trk, uchar ttl, bool replace)
           sprintf(sTrack, "%lu/%lu", (luint) trk, (luint) ttl);
         }
         
-        frame->Field(ID3FN_TEXT) = sTrack;
+        frame->GetField(ID3FN_TEXT)->Set(sTrack);
         tag->AttachFrame(frame);
 
         delete [] sTrack;
@@ -623,7 +623,7 @@ ID3_Frame* ID3_AddGenre(ID3_Tag *tag, size_t genre, bool replace)
         char sGenre[6];
         sprintf(sGenre, "(%lu)", (luint) genre);
 
-        frame->Field(ID3FN_TEXT) = sGenre;
+        frame->GetField(ID3FN_TEXT)->Set(sGenre);
         tag->AttachFrame(frame);
       }
     }
@@ -694,9 +694,9 @@ ID3_Frame* ID3_AddLyrics(ID3_Tag *tag, const char *text, const char* desc,
       frame = new ID3_Frame(ID3FID_UNSYNCEDLYRICS);
       if (NULL != frame)
       {
-        frame->Field(ID3FN_LANGUAGE) = lang;
-        frame->Field(ID3FN_DESCRIPTION) = desc;
-        frame->Field(ID3FN_TEXT) = text;
+        frame->GetField(ID3FN_LANGUAGE)->Set(lang);
+        frame->GetField(ID3FN_DESCRIPTION)->Set(desc);
+        frame->GetField(ID3FN_TEXT)->Set(text);
         tag->AttachFrame(frame);
       }
     }
@@ -755,7 +755,7 @@ ID3_Frame* ID3_AddLyricist(ID3_Tag *tag, const char *text, bool replace)
       frame = new ID3_Frame(ID3FID_LYRICIST);
       if (frame)
       {
-        frame->Field(ID3FN_TEXT) = text;
+        frame->GetField(ID3FN_TEXT)->Set(text);
         tag->AttachFrame(frame);
       }
     }
@@ -818,34 +818,34 @@ ID3_Frame* ID3_AddSyncLyrics(ID3_Tag *tag, const uchar *data, size_t datasize,
   }
 
   // check if a SYLT frame of this language or descriptor already exists
-  ID3_Frame* frm_exist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_LANGUAGE, lang);
-  if (!frm_exist)
+  ID3_Frame* frmExist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_LANGUAGE, lang);
+  if (!frmExist)
   {
-    frm_exist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_DESCRIPTION, desc);
+    frmExist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_DESCRIPTION, desc);
   }
 
   if (NULL != tag && NULL != data)
   {
-    if (replace && frm_exist)
+    if (replace && frmExist)
     {
-      frm_exist = tag->RemoveFrame (frm_exist);
-      delete frm_exist;
-      frm_exist = NULL;
+      frmExist = tag->RemoveFrame (frmExist);
+      delete frmExist;
+      frmExist = NULL;
     }
 
     // if the frame still exist, cannot continue
-    if (frm_exist)
+    if (frmExist)
     {
       return NULL;
     }
 
     ID3_Frame* frame = new ID3_Frame(ID3FID_SYNCEDLYRICS);
 
-    frame->Field(ID3FN_LANGUAGE) = lang;
-    frame->Field(ID3FN_DESCRIPTION) = desc;
-    frame->Field(ID3FN_TIMESTAMPFORMAT) = format;
-    frame->Field(ID3FN_CONTENTTYPE) = type;
-    frame->Field(ID3FN_DATA).Set(data, datasize);
+    frame->GetField(ID3FN_LANGUAGE)->Set(lang);
+    frame->GetField(ID3FN_DESCRIPTION)->Set(desc);
+    frame->GetField(ID3FN_TIMESTAMPFORMAT)->Set(format);
+    frame->GetField(ID3FN_CONTENTTYPE)->Set(type);
+    frame->GetField(ID3FN_DATA)->Set(data, datasize);
     tag->AttachFrame(frame);
   }
 
@@ -858,75 +858,75 @@ ID3_Frame *ID3_GetSyncLyricsInfo(const ID3_Tag *tag, const char *desc,
                                  ID3_ContentType& type, size_t& size)
 {
   // check if a SYLT frame of this language or descriptor exists
-  ID3_Frame* frm_exist = NULL;
+  ID3_Frame* frmExist = NULL;
   if (NULL != lang)
   {
     // search through language
-    frm_exist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_LANGUAGE, lang);
+    frmExist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_LANGUAGE, lang);
   }
   else if (NULL != desc)
   {
     // search through descriptor
-    frm_exist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_DESCRIPTION, desc);
+    frmExist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_DESCRIPTION, desc);
   }
   else
   {
     // both language and description not specified, search the first SYLT frame
-    frm_exist = tag->Find(ID3FID_SYNCEDLYRICS);
+    frmExist = tag->Find(ID3FID_SYNCEDLYRICS);
   }
   
-  if (!frm_exist)
+  if (!frmExist)
   {
     return NULL;
   }
   
   // get the lyrics time stamp format
-  format = static_cast<ID3_TimeStampFormat>(frm_exist->Field (ID3FN_TIMESTAMPFORMAT).Get ());
+  format = static_cast<ID3_TimeStampFormat>(frmExist->GetField(ID3FN_TIMESTAMPFORMAT)->Get ());
   
   // get the lyrics content type
-  type = static_cast<ID3_ContentType>(frm_exist->Field (ID3FN_CONTENTTYPE).Get ());
+  type = static_cast<ID3_ContentType>(frmExist->GetField(ID3FN_CONTENTTYPE)->Get ());
   
   // get the lyrics size
-  size = frm_exist->Field (ID3FN_DATA).Size ();
+  size = frmExist->GetField (ID3FN_DATA)->Size ();
   
   // return the frame pointer for further uses
-  return frm_exist;
+  return frmExist;
 }
 
 ID3_Frame *ID3_GetSyncLyrics(const ID3_Tag *tag, const char *lang, 
                              const char *desc, const uchar *pData, size_t& size)
 {
   // check if a SYLT frame of this language or descriptor exists
-  ID3_Frame* frm_exist = NULL;
+  ID3_Frame* frmExist = NULL;
   if (NULL != lang)
   {
     // search through language
-    frm_exist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_LANGUAGE, lang);
+    frmExist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_LANGUAGE, lang);
   }
   else if (NULL != desc)
   {
     // search through descriptor
-    frm_exist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_DESCRIPTION, desc);
+    frmExist = tag->Find(ID3FID_SYNCEDLYRICS, ID3FN_DESCRIPTION, desc);
   }
   else
   {
     // both language and description not specified, search the first SYLT frame
-    frm_exist = tag->Find(ID3FID_SYNCEDLYRICS);
+    frmExist = tag->Find(ID3FID_SYNCEDLYRICS);
   }
 
-  if (NULL == frm_exist)
+  if (NULL == frmExist)
   {
     return NULL;
   }
   
   // get the lyrics size
-  size_t datasize = frm_exist->Field(ID3FN_DATA).Size();
+  size_t datasize = frmExist->GetField(ID3FN_DATA)->Size();
   size = MIN(size, datasize);
 
   // get the lyrics data
-  pData = frm_exist->Field (ID3FN_DATA).GetBinary();
+  pData = frmExist->GetField (ID3FN_DATA)->GetBinary();
 
   // return the frame pointer for further uses
-  return frm_exist;
+  return frmExist;
 }
 
