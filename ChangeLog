@@ -1,3 +1,35 @@
+2000-04-26  Scott Haug  <scott@id3.org>
+
+	* include/id3/frame.h: 
+	ID3_Frame now inherits from ID3_Speccable, SetSpec's parameter is now
+	const, and declared GetSpec
+
+	* include/id3/header.h: 
+	Removed SetSpec's default parameter, made parameter const
+
+	* include/id3/tag.h: 
+	SetSpec's parameter now const
+
+	* src/field.cpp 
+	Updated lists of supported/unsupported frames (PRIV now supported)
+	(ID3FD_Private): Added definition
+	(ID3_FrameDefs): Updated Private's definition
+
+	* src/frame.cpp: 
+	(SetSpec): Parameter now const
+	(GetSpec): Added implementation
+
+	* src/header.cpp 
+	(ID3_Header): Made call to SetSpec have explicit parameter
+	(SetSpec): Parameter now const
+
+	* src/tag.cpp 
+	(SetSpec): Parameter now const
+
+	* src/tag_render.cpp
+	(PaddingSize): Fix for padding logic, thanks to John Adcock for the 
+	patch.
+
 2000-04-25  Scott Haug  <scott@id3.org>
 
 	* include/id3/field.h: 
