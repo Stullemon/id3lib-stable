@@ -1,3 +1,18 @@
+2000-05-11  Scott Haug  <scott@id3.org>
+
+	* src/field.cpp (Render): 
+	* src/field_string_ascii.cpp (Add, Set): 
+	* src/field_string_unicode.cpp (Set):
+	Fixed major bug that caused all string tags to be written out as binary
+	data with wrong encoding.
+
+	* src/tag_file.cpp 
+	(OpenFileForWriting): Fixed bug when stripping an id3v2 tag w/no id3v1
+	tag
+
+	* src/tag_render.cpp 
+	(RenderV1): Fixed bug with writing too many bytes to the v1 tag
+
 2000-05-10  Scott Haug  <scott@id3.org>
 
 	* NEWS 
