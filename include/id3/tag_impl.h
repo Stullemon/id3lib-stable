@@ -1,4 +1,5 @@
-// $Id: tag_impl.h,v 1.1 2000/10/02 17:08:13 eldamitri Exp $
+// -*- C++ -*-
+// $Id: tag_impl.h,v 1.2 2000/10/09 01:56:48 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -33,9 +34,9 @@
 #include "frame.h"
 #include "field.h"
 #include "spec.h"
-#include "error.h"
 
 class ID3_Reader;
+class ID3_Writer;
 
 struct ID3_Elem
 {
@@ -44,13 +45,37 @@ struct ID3_Elem
   ID3_Frame *pFrame;
 };
 
-/** String used for the description field of a comment tag converted from an
- ** id3v1 tag to an id3v2 tag
- **
- ** \sa #ID3V1_Tag
- **/
-const char STR_V1_COMMENT_DESC[] = "ID3v1 Comment";
-//const char STR_V1_COMMENT_DESC[] = "";
+namespace dami
+{
+  namespace id3
+  {
+    namespace v1
+    {
+      bool parse(ID3_TagImpl&, ID3_Reader&);
+      void render(ID3_Writer&, const ID3_TagImpl&);
+    };
+    namespace v2
+    {
+      bool parse(ID3_TagImpl& tag, ID3_Reader& rdr);
+      void render(ID3_Writer& writer, const ID3_TagImpl& tag);
+    };
+  };
+  namespace lyr3
+  {
+    namespace v1
+    {
+      bool parse(ID3_TagImpl&, ID3_Reader&);
+    };
+    namespace v2
+    {
+      bool parse(ID3_TagImpl&, ID3_Reader&);
+    };
+  };
+  namespace mm
+  {
+    bool parse(ID3_TagImpl&, ID3_Reader&);
+  };
+};
 
 class ID3_TagImpl : public ID3_Speccable
 {
@@ -61,21 +86,22 @@ public:
   
   void       Clear();
   bool       HasChanged() const;
+  bool       SetChanged(bool b) { _changed = b; }
   size_t     Size() const;
   
-  bool       SetUnsync(bool bSync);
-  bool       SetExtendedHeader(bool bExt);
-  bool       SetPadding(bool bPad);
+  bool       SetUnsync(bool);
+  bool       SetExtended(bool);
+  bool       SetExperimental(bool);
+  bool       SetPadding(bool);
+
+  bool       GetUnsync() const;
+  bool       GetExtended() const;
+  bool       GetExperimental() const;
   
   void       AddFrame(const ID3_Frame&);
   void       AddFrame(const ID3_Frame*);
   void       AttachFrame(ID3_Frame*);
   ID3_Frame* RemoveFrame(const ID3_Frame *);
-  
-  bool       Parse(ID3_Reader& reader);
-  size_t     Parse(const uchar*, size_t);
-  size_t     Parse(const uchar header[ID3_TAGHEADERSIZE], const uchar *buffer);
-  size_t     Render(uchar*, ID3_TagType = ID3TT_ID3V2) const;
   
   size_t     Link(const char *fileInfo, flags_t = (flags_t) ID3TT_ALL);
   flags_t    Update(flags_t = (flags_t) ID3TT_ALL);
@@ -110,8 +136,6 @@ public:
   ID3_Frame* operator[](index_t) const;
   ID3_TagImpl&   operator=( const ID3_Tag & );
   
-  bool       GetUnsync() const { return _hdr.GetUnsync(); }
-  
   bool       HasTagType(uint16 tt) const { return _file_tags.test(tt); }
   ID3_V2Spec GetSpec() const;
   bool       SetSpec(ID3_V2Spec);
@@ -126,15 +150,14 @@ public:
   bool       HasLyrics() const { return this->HasTagType(ID3TT_LYRICS); }
   bool       HasV2Tag()  const { return this->HasTagType(ID3TT_ID3V2); }
   bool       HasV1Tag()  const { return this->HasTagType(ID3TT_ID3V1); }
+  size_t     PaddingSize(size_t) const;
   
 protected:
   ID3_Elem*  Find(const ID3_Frame *) const;
-  size_t     PaddingSize(size_t) const;
   
   void       RenderExtHeader(uchar *);
 
   void       ParseFile();
-  size_t     RenderV2(uchar*) const;
   
 private:
   ID3_TagHeader _hdr;          // information relevant to the tag header
