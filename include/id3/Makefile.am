@@ -1,6 +1,4 @@
-# $Id: Makefile.am,v 1.15 2000/10/15 05:43:59 eldamitri Exp $
-# 
-# Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
+# Copyright (C) 1999 Scott Thomas Haug <scott@id3.org>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 

@@ -1,4 +1,4 @@
-# Copyright 2000 Scott Thomas Haug <sth2@cs.wustl.edu>
+# Copyright 2000 Scott Thomas Haug <scott@id3.org>
 #  
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without 
