@@ -49,7 +49,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:"..\id3lib.lib"
+# ADD LIB32 /nologo /out:".\id3lib.lib"
 
 !ELSEIF  "$(CFG)" == "id3lib - Win32 Debug"
 
@@ -72,7 +72,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:"..\id3lib.lib"
+# ADD LIB32 /nologo /out:".\id3libD.lib"
 
 !ENDIF 
 
@@ -254,6 +254,10 @@ SOURCE=..\include\id3\uint28.h
 # Begin Source File
 
 SOURCE=..\include\id3\utils.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\Zlib\Include\Zlib.h
 # End Source File
 # End Group
 # End Target
