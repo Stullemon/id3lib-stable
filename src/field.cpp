@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.27 2000/09/11 07:46:32 eldamitri Exp $
+// $Id: field.cpp,v 1.28 2000/09/14 16:26:21 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -26,6 +26,7 @@
 
 #include <string.h>
 #include "field.h"
+#include "utils.h"
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
@@ -165,7 +166,7 @@ static ID3_FieldDef ID3FD_GeneralText[] =
   },
   {
     ID3FN_LANGUAGE,                     // FIELD NAME
-    ID3FTY_BINARY,                      // FIELD TYPE
+    ID3FTY_TEXTSTRING,                  // FIELD TYPE
     3,                                  // FIXED LEN
     ID3V2_EARLIEST,                     // INITIAL SPEC
     ID3V2_LATEST,                       // ENDING SPEC
@@ -206,7 +207,7 @@ static ID3_FieldDef ID3FD_TermsOfUse[] =
   },
   {
     ID3FN_LANGUAGE,                     // FIELD NAME
-    ID3FTY_BINARY,                      // FIELD TYPE
+    ID3FTY_TEXTSTRING,                  // FIELD TYPE
     3,                                  // FIXED LEN
     ID3V2_3_0,                          // INITIAL SPEC
     ID3V2_LATEST,                       // ENDING SPEC
@@ -549,7 +550,7 @@ static ID3_FieldDef ID3FD_SyncLyrics[] =
   },
   {
     ID3FN_LANGUAGE,                     // FIELD NAME
-    ID3FTY_BINARY,                      // FIELD TYPE
+    ID3FTY_TEXTSTRING,                  // FIELD TYPE
     3,                                  // FIXED LEN
     ID3V2_EARLIEST,                     // INITIAL SPEC
     ID3V2_LATEST,                       // ENDING SPEC
@@ -873,7 +874,7 @@ static  ID3_FrameDef ID3_FrameDefs[] =
  ** if you only plan to generate 3.0 tags.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: field.cpp,v 1.27 2000/09/11 07:46:32 eldamitri Exp $
+ ** @version $Id: field.cpp,v 1.28 2000/09/14 16:26:21 eldamitri Exp $
  ** \sa ID3_Tag
  ** \sa ID3_Frame
  ** \sa ID3_Err 
@@ -882,16 +883,74 @@ static  ID3_FrameDef ID3_FrameDefs[] =
 ID3_Field::ID3_Field()
   : _id(ID3FN_NOFIELD),
     _type(ID3FTY_INTEGER),
-    _length(0),
     _spec_begin(ID3V2_EARLIEST),
     _spec_end(ID3V2_LATEST),
     _flags(0),
     _changed(false),
-    _data(NULL),
-    _size(0),
+    _integer(0),
+    _fixed_length(0),
+    _bytes(0),
+    _num_items(0),
     _enc(ID3TE_NONE)
 {
-  Clear();
+  this->Clear();
+}
+
+ID3_Field::ID3_Field(const ID3_FieldDef& def)
+  : _id(def._id),
+    _type(def._type),
+    _spec_begin(def._spec_begin),
+    _spec_end(def._spec_end),
+    _flags(def._flags),
+    _changed(false),
+    _fixed_length(def._fixed_length),
+    _bytes(_fixed_length),
+    _num_items(0),
+    _enc(ID3TE_NONE)
+{
+  switch (_type)
+  {
+    case ID3FTY_INTEGER:
+    {
+      _integer = 0;
+      if (_bytes == 0)
+      {
+        _bytes = sizeof(uint32);
+      }
+      break;
+    }
+    case ID3FTY_BINARY:
+    {
+      if (_bytes == 0)
+      {
+        _binary = NULL;
+      }
+      else
+      {
+        _binary = new uchar[_bytes];
+        memset(_binary, _bytes, '\0');
+      }
+      break;
+    }
+    case ID3FTY_TEXTSTRING:
+    {
+      _chars = _fixed_length;
+      if (_chars == 0)
+      {
+        _ascii = NULL;
+      }
+      else
+      {
+        _ascii = new char[_chars];
+        memset(_ascii, _chars, '\0');
+      }
+      _enc = ID3TE_ASCII;
+    }
+    default:
+    {
+      break;
+    }
+  }
 }
 
 ID3_Field::~ID3_Field()
@@ -906,16 +965,41 @@ ID3_Field::~ID3_Field()
  **/
 void ID3_Field::Clear()
 {
-  if (_data != NULL && _size > 0 && _type != ID3FTY_INTEGER)
+  switch (_type)
   {
-    delete[] _data;
+    case ID3FTY_INTEGER:
+    {
+      _integer = 0;
+      break;
+    }
+    case ID3FTY_BINARY:
+    {
+      delete [] _binary;
+      _binary = NULL;
+      _bytes = 0;
+      break;
+    }
+    case ID3FTY_TEXTSTRING:
+    {
+      if (this->GetEncoding() == ID3TE_UNICODE)
+      {
+        delete [] _unicode;
+        _unicode = NULL;
+      }
+      else
+      {
+        delete [] _ascii;
+        _ascii = NULL;
+      }
+      _chars = 0;
+      break;
+    }
+    default:
+    {
+      break;
+    }
   }
-    
-  _type       = ID3FTY_INTEGER;
-  _data       = NULL;
-  _size       = sizeof (uint32);
   _changed    = true;
-  _enc        = ID3TE_NONE;
   
   return ;
 }
@@ -945,51 +1029,47 @@ ID3_Field::HasChanged()
  **         fields) or characters (for strings).
  **/
 
-size_t ID3_Field::BinSize(bool withExtras) const
+size_t ID3_Field::BinSize() const
 {
-  size_t bytes   = 0;
+  size_t size = this->Size();
+  if (_type == ID3FTY_TEXTSTRING)
+  {
+    ID3_TextEnc enc = this->GetEncoding();
+    if (enc == ID3TE_UNICODE && size > 0)
+    {
+      size++;
+    }
+    if (_flags & ID3FF_CSTR)
+    {
+      size++;
+    }
+    if (enc == ID3TE_UNICODE)
+    {
+      size *= 2;
+    }
+  }
+  return size;
+}
 
-  bytes = _size;
-    
+size_t ID3_Field::Size() const
+{
+  size_t size = 0;
   // check to see if we are within the legal limit for this field 0 means
   // arbitrary length field
-  if (_length > 0)
+  if (_fixed_length > 0)
   {
-    bytes = _length;
-  }
-  else if (withExtras)
-  {
-    if (NULL == _data && _size > 0)
-    {
-      bytes = (_flags & ID3FF_CSTR) ? sizeof(unicode_t) : 0;
-    }
-      
-    // if we are a Unicode string, add 2 bytes for the BOM (but only if there
-    // is a string to render - regardless of NULL)
-    if (ID3TE_UNICODE == this->GetEncoding() && _data != NULL && _size > 0)
-    {
-      bytes += sizeof(unicode_t);
-    }
-        
-    // if we are an ASCII string, divide by sizeof(unicode_t) because
-    // internally we store the string as Unicode, so the ASCII version will
-    // only be half as long
-    if (_type == ID3FTY_TEXTSTRING && this->GetEncoding() != ID3TE_UNICODE)
-    {
-      bytes /= sizeof(unicode_t);
-    }
+    size = _fixed_length;
   }
   else if (_type == ID3FTY_TEXTSTRING)
   {
-    // because it seems that the application called us via ID3_Field::Size()
-    // we are going to return the number of characters, not bytes.  since we
-    // store every string internally as unicode, we will divide the 'bytes'
-    // variable by the size of a unicode character (should be two bytes)
-    // because Unicode strings have twice as many bytes as they do characters
-    bytes /= sizeof(unicode_t);
+    size = _chars;
   }
-  
-  return bytes;
+  else
+  {
+    size = _bytes;
+  }
+
+  return size;
 }
 
 size_t ID3_Field::Parse(const uchar *buffer, size_t buffSize)
@@ -999,14 +1079,19 @@ size_t ID3_Field::Parse(const uchar *buffer, size_t buffSize)
   switch (this->GetType())
   {
     case ID3FTY_INTEGER:
+    {
       bytesUsed = ParseInteger(buffer, buffSize);
       break;
+    }
         
     case ID3FTY_BINARY:
+    {
       bytesUsed = ParseBinary(buffer, buffSize);
       break;
+    }
         
     case ID3FTY_TEXTSTRING:
+    {
       if (this->GetEncoding() == ID3TE_UNICODE)
       {
         bytesUsed = ParseUnicodeString(buffer, buffSize);
@@ -1016,10 +1101,13 @@ size_t ID3_Field::Parse(const uchar *buffer, size_t buffSize)
         bytesUsed = ParseASCIIString(buffer, buffSize);
       }
       break;
+    }
 
     default:
+    {
       ID3_THROW(ID3E_UnknownFieldType);
       break;
+    }
   }
   
   return bytesUsed;
@@ -1076,14 +1164,7 @@ size_t ID3_Field::Render(uchar *buffer) const
       break;
         
     case ID3FTY_TEXTSTRING:
-      if (this->GetEncoding() == ID3TE_UNICODE)
-      {
-        bytesUsed = RenderUnicodeString(buffer);
-      }
-      else
-      {
-        bytesUsed = RenderASCIIString(buffer);
-      }
+      bytesUsed = RenderString(buffer);
       break;
         
     default:
@@ -1097,7 +1178,7 @@ size_t ID3_Field::Render(uchar *buffer) const
 ID3_Field &
 ID3_Field::operator=( const ID3_Field &rhs )
 {
-  if (this != &rhs)
+  if (this != &rhs && this->GetType() == rhs.GetType())
   {
     switch (rhs.GetType())
     {
@@ -1107,9 +1188,19 @@ ID3_Field::operator=( const ID3_Field &rhs )
         break;
       }
       case ID3FTY_TEXTSTRING:
+      {
+        if (rhs.GetEncoding() == ID3TE_UNICODE)
+        {
+          this->Set_i(rhs._unicode, rhs.Size());
+        }
+        else if (rhs.GetEncoding() == ID3TE_ASCII)
+        {
+          this->Set_i(rhs._ascii, rhs.Size());
+        }
+      }
       case ID3FTY_BINARY:
       {
-        this->Set(rhs._data, rhs._size);
+        this->Set(rhs._binary, rhs.Size());
         break;
       }
       default:
@@ -1118,7 +1209,6 @@ ID3_Field::operator=( const ID3_Field &rhs )
       }
     }
   }
-  _type = rhs._type;
   return *this;
 }
 
@@ -1128,6 +1218,25 @@ bool ID3_Field::SetEncoding(ID3_TextEnc enc)
     (ID3TE_NONE < enc && enc < ID3TE_NUMENCODINGS);
   if (changed)
   {
+    // REMEMBER: _unicode and _ascii are in a union!
+    size_t size = this->Size();
+    if (size > 0)
+    {
+      if (_enc == ID3TE_UNICODE && enc == ID3TE_ASCII)
+      {
+        unicode_t* unicode = _unicode;
+        _ascii = new char[size];
+        ucstombs(_ascii, unicode, size);
+        delete [] unicode;
+      }
+      else if (_enc == ID3TE_ASCII && enc == ID3TE_UNICODE)
+      {
+        char* ascii = _ascii;
+        _unicode = new unicode_t[size];
+        mbstoucs(_unicode, ascii, size);
+        delete [] ascii;
+      }
+    }
     _enc = enc;
     _changed = true;
   }
