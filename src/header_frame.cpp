@@ -1,4 +1,4 @@
-// $Id: header_frame.cpp,v 1.8 2000/05/22 18:58:08 eldamitri Exp $
+// $Id: header_frame.cpp,v 1.9 2000/05/23 15:22:24 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -116,23 +116,6 @@ size_t ID3_FrameHeader::Parse(const uchar *buffer, size_t size)
   __flags.add(ParseNumber(&buffer[index], __info->frame_bytes_flags));
   index += __info->frame_bytes_flags;
   
-  // Parse the extras that can be appeded to a header before the data
-  if (__flags.test(COMPRESSION))
-  {
-    this->SetExpandedSize(ParseNumber(&buffer[index]));
-    index += sizeof(uint32);
-  }
-
-  if (__flags.test(ENCRYPTION))
-  {
-    __encryption_id = buffer[index++];
-  }
-
-  if (__flags.test(GROUPING))
-  {
-    __grouping_id = buffer[index++];
-  }
-
   return index;
 }
 
@@ -158,10 +141,10 @@ size_t ID3_FrameHeader::Render(uchar *buffer) const
 
   memcpy(&buffer[size], (uchar *) text_id, __info->frame_bytes_id);
   size += __info->frame_bytes_id;
-    
+  
   size += RenderNumber(&buffer[size], __data_size, __info->frame_bytes_size);
   size += RenderNumber(&buffer[size], __flags.get(), __info->frame_bytes_flags);
-
+  
   return size;
 }
 
