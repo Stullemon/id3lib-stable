@@ -19,8 +19,10 @@
 
 # List your m4 macros here
 m4macros =              \
+  sh_types.m4           \
   lf_cc.m4              \
   lf_cxx.m4             \
+  lf_cxx_convenience.m4 \
   lf_nm.m4              \
   lf_fortran.m4         \
   lf_lisp.m4            \

@@ -83,7 +83,6 @@ host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
 CC = @CC@
-CPP = @CPP@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 DLLTOOL = @DLLTOOL@
@@ -96,9 +95,8 @@ OBJDUMP = @OBJDUMP@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
-canonical_host_type = @canonical_host_type@
 
-m4macros =    lf_cc.m4                lf_cxx.m4               lf_nm.m4                lf_fortran.m4           lf_lisp.m4              lf_local.m4             lf_txtc.m4              lf_host_type.m4         lf_x11.m4               lf_texidoc.m4           lf_warnings.m4          lf_bash.m4 
+m4macros =    sh_types.m4             lf_cc.m4                lf_cxx.m4               lf_cxx_convenience.m4   lf_nm.m4                lf_fortran.m4           lf_lisp.m4              lf_local.m4             lf_txtc.m4              lf_host_type.m4         lf_x11.m4               lf_texidoc.m4           lf_warnings.m4          lf_bash.m4 
 
 
 # The following is boilerplate
