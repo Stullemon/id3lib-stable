@@ -1,7 +1,8 @@
-// $Id: header.cpp,v 1.10 2002/06/29 17:36:03 t1mpy Exp $
+// $Id: header.cpp,v 1.11 2002/07/31 13:20:49 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
+// Copyright 2002  Thijmen Klok (thijmen@id3lib.org)
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -30,17 +31,19 @@
 #include <config.h>
 #endif
 
-static const ID3_Header::Info _spec_info[] =
-{
-  // SIZEOF SIZEOF SIZEOF EXT    EXT  EXPERIM
-  // FRID   FRSZ   FRFL   HEADER SIZE BIT
-  {  3,     3,     0,     false, 0,   false }, // ID3V2_2_0
-  {  3,     3,     0,     true,  8,   true  }, // ID3V2_2_1
-  {  4,     4,     2,     false, 10,  false }  // ID3V2_3_0
-};
-  
 bool ID3_Header::SetSpec(ID3_V2Spec spec)
 {
+  static ID3_Header::Info _spec_info[] =
+  {
+  // Warning, EXT SIZE are minimum sizes, they can be bigger
+  // SIZEOF SIZEOF SIZEOF IS EXT EXT  EXPERIM
+  // FRID   FRSZ   FRFL   HEADER SIZE BIT
+    {  3,     3,     0,     false, 0,   false }, // ID3V2_2_0
+    {  3,     3,     0,     true,  8,   true  }, // ID3V2_2_1
+    {  4,     4,     2,     false, 10,  false }, // ID3V2_3_0
+    {  4,     4,     2,     false, 6,   false }  // ID3V2_4_0
+  };
+  
   bool changed = false;
   if (spec < ID3V2_EARLIEST || spec > ID3V2_LATEST)
   {

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: tag_impl.h,v 1.6 2002/07/31 12:53:50 t1mpy Exp $
+// $Id: tag_impl.h,v 1.7 2002/07/31 13:20:49 t1mpy Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -94,6 +94,9 @@ public:
   bool       GetUnsync() const;
   bool       GetExtended() const;
   bool       GetExperimental() const;
+  bool       GetFooter() const;
+
+  size_t     GetExtendedBytes() const;
   
   void       AddFrame(const ID3_Frame&);
   void       AddFrame(const ID3_Frame*);

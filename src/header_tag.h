@@ -1,8 +1,9 @@
 // -*- C++ -*-
-// $Id: header_tag.h,v 1.1 2000/10/24 16:14:45 eldamitri Exp $
+// $Id: header_tag.h,v 1.2 2002/07/31 13:20:49 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
+// Copyright 2002  Thijmen Klok (thijmen@id3lib.org)
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -36,9 +37,18 @@ public:
 
   enum
   {
-    UNSYNC       = 1 << 7,
-    EXTENDED     = 1 << 6,
-    EXPERIMENTAL = 1 << 5
+    HEADER_FLAG_UNSYNC       = 1 << 7,
+    HEADER_FLAG_EXTENDED     = 1 << 6,
+    HEADER_FLAG_EXPERIMENTAL = 1 << 5,
+    HEADER_FLAG_FOOTER       = 1 << 4
+  };
+
+  enum
+  {
+    EXT_HEADER_FLAG_BIT1  = 1 << 7,
+    EXT_HEADER_FLAG_BIT2  = 1 << 6,
+    EXT_HEADER_FLAG_BIT3  = 1 << 5,
+    EXT_HEADER_FLAG_BIT4  = 1 << 4
   };
 
   ID3_TagHeader() : ID3_Header() { ; }
@@ -49,30 +59,38 @@ public:
   size_t Size() const;
   void Render(ID3_Writer&) const;
   bool Parse(ID3_Reader&);
+  void ParseExtended(ID3_Reader&);
   ID3_TagHeader& operator=(const ID3_TagHeader&hdr)
   { this->ID3_Header::operator=(hdr); return *this; }
 
   bool SetUnsync(bool b)
   {
-    bool changed = _flags.set(UNSYNC, b);
+    bool changed = _flags.set(HEADER_FLAG_UNSYNC, b);
     _changed = _changed || changed;
     return changed;
   }
-  bool GetUnsync() const { return _flags.test(UNSYNC); }
+  bool GetUnsync() const { return _flags.test(HEADER_FLAG_UNSYNC); }
   bool SetExtended(bool b)
   {
-    bool changed = _flags.set(EXTENDED, b);
+    bool changed = _flags.set(HEADER_FLAG_EXTENDED, b);
     _changed = _changed || changed;
     return changed;
   }
-  bool GetExtended() const { return _flags.test(EXTENDED); }
+  bool GetExtended() const { return _flags.test(HEADER_FLAG_EXTENDED); }
   bool SetExperimental(bool b)
   {
-    bool changed = _flags.set(EXPERIMENTAL, b);
+    bool changed = _flags.set(HEADER_FLAG_EXPERIMENTAL, b);
     _changed = _changed || changed;
     return changed;
   }
-  bool GetExperimental() const { return _flags.test(EXPERIMENTAL); }
+  bool GetExperimental() const { return _flags.test(HEADER_FLAG_EXPERIMENTAL); }
+  bool SetFooter(bool b)
+  {
+    bool changed = _flags.set(HEADER_FLAG_FOOTER, b);
+    _changed = _changed || changed;
+    return changed;
+  }
+  bool GetFooter() const { return _flags.test(HEADER_FLAG_FOOTER); }
 
   // id3v2 tag header signature:  $49 44 33 MM mm GG ss ss ss ss
   // MM = major version (will never be 0xFF)
@@ -87,7 +105,7 @@ public:
     MINOR_OFFSET   = 4,
     FLAGS_OFFSET   = 5,
     SIZE_OFFSET    = 6,
-    SIZE           = 10
+    SIZE           = 10 // does not include extented headers
   };
   
 };

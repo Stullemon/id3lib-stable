@@ -1,8 +1,9 @@
 // -*- C++ -*-
-// $Id: header.h,v 1.2 2002/07/02 22:13:03 t1mpy Exp $
+// $Id: header.h,v 1.3 2002/07/31 13:20:49 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
+// Copyright 2002  Thijmen Klok (thijmen@id3lib.org)
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -43,7 +44,7 @@ public:
     uchar      frame_bytes_size;
     uchar      frame_bytes_flags;
     bool       is_extended;
-    size_t     extended_bytes;
+    size_t     extended_bytes; //including the extended header, so everything!
     bool       is_experimental;
   };
 
@@ -101,7 +102,7 @@ protected:
   ID3_V2Spec      _spec;             // which version of the spec 
   size_t          _data_size;        // how big is the data?
   ID3_Flags       _flags;            // header flags
-  const Info*     _info;             // header info w.r.t. id3v2 spec
+  Info*     _info;             // header info w.r.t. id3v2 spec
   bool            _changed;          // has the header changed since parsing
 }
 ;
