@@ -171,7 +171,8 @@ tag_files = \
   230-unicode.tag       \
   230-syncedlyrics.tag  \
   thatspot.tag          \
-  ozzy.tag              
+  ozzy.tag              \
+  crc53865.mp3 
 
 
 getopt_files = \
