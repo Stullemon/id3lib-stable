@@ -1,4 +1,4 @@
-// $Id: dll_wrapper.cpp,v 1.4 1999/11/04 04:15:54 scott Exp $
+// $Id: dll_wrapper.cpp,v 1.5 1999/11/15 20:23:48 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -14,9 +14,11 @@
 //
 //  Mon Nov 23 18:34:01 1998
 
+#if defined HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <id3/tag.h>
-
 
 #ifdef __DLL
 
@@ -487,6 +489,9 @@ void ID3Field_ToFile(ID3_Field *field, char *fileName)
 #endif
 
 // $Log: dll_wrapper.cpp,v $
+// Revision 1.5  1999/11/15 20:23:48  scott
+// Added include for config.h.
+//
 // Revision 1.4  1999/11/04 04:15:54  scott
 // Added cvs Id and Log tags to beginning and end of file, respectively.
 //
