@@ -1,3 +1,16 @@
+2000-07-06  Scott Haug  <scott@id3.org>
+
+	* NEWS: 
+	Other minor updates for 3.7.11
+
+2000-07-05  Scott Haug  <scott@id3.org>
+
+	* NEWS 
+	* THANKS
+	* configure.in
+	* id3lib.spec.in: 
+	Updated for 3.7.11 release
+
 2000-07-04  Scott Haug  <scott@id3.org>
 
 	* src/tag_render.cpp 
@@ -91,7 +104,7 @@
 	* src/tag_parse_lyrics3.cpp 
 	(ParseLyrics3): Now returns number of bytes parsed.  No longer parses
 	Lyrics3 v2.00 tags
-	(ParseLyrics3v2): Added implementation.
+	(ParseLyrics3v2): Added implementation for parsing Lyrics3 v2.00 tags.
 
 	* src/tag_parse.cpp 
 	(Parse): __file_tags no longer updated
