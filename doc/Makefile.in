@@ -86,10 +86,13 @@ PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
 VERSION = @VERSION@
 canonical_host_type = @canonical_host_type@
+
+EXTRA_DIST =    ChangeLog               bugreport.txt           contact.txt             id3guide.html           id3lib305.doc           id3libhistory.txt       id3v2-3.00.txt          id3v2.gif               id3v2.ico               id3v2.png               licence.txt             logo.txt                software.txt            zlib_readme.txt       
+
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-DIST_COMMON =  Makefile.am Makefile.in
+DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
