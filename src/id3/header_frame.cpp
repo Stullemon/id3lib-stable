@@ -1,4 +1,4 @@
-// $Id: header_frame.cpp,v 1.4 1999/11/04 04:15:55 scott Exp $
+// $Id: header_frame.cpp,v 1.5 1999/11/15 20:19:08 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -14,16 +14,18 @@
 //
 //  Mon Nov 23 18:34:01 1998
 
+#if defined HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <string.h>
 #include <memory.h>
 #include <id3/header_frame.h>
 #include <id3/error.h>
 
-
 void ID3_FrameHeader::SetFrameID(ID3_FrameID id)
 {
-  frameID = id;
+  __eFrameID = id;
   
   return ;
 }
@@ -31,7 +33,7 @@ void ID3_FrameHeader::SetFrameID(ID3_FrameID id)
 
 luint ID3_FrameHeader::Size(void)
 {
-  return info->frameIDBytes + info->frameSizeBytes + info->frameFlagsBytes;
+  return __pInfo->ucFrameIDBytes + __pInfo->ucFrameSizeBytes + __pInfo->ucFrameFlagsBytes;
 }
 
 
@@ -40,24 +42,25 @@ luint ID3_FrameHeader::GetFrameInfo(ID3_FrameAttr &attr, uchar *buffer)
   luint posn = 0;
   luint i = 0;
   
-  strncpy(attr.textID, (char *) buffer, info->frameIDBytes);
-  attr.textID[info->frameIDBytes] = 0;
+  strncpy(attr.sTextID, (char *) buffer, __pInfo->ucFrameIDBytes);
+
+  attr.sTextID[__pInfo->ucFrameIDBytes] = 0;
   
-  posn += info->frameIDBytes;
+  posn += __pInfo->ucFrameIDBytes;
   
-  attr.size = 0;
+  attr.ulSize = 0;
   
-  for(i = 0; i < info->frameSizeBytes; i++)
-    attr.size |= buffer[posn + i] << ((info->frameSizeBytes - 1 - i) * 8);
+  for(i = 0; i < __pInfo->ucFrameSizeBytes; i++)
+    attr.ulSize |= buffer[posn + i] << ((__pInfo->ucFrameSizeBytes - 1 - i) * 8);
     
-  posn += info->frameSizeBytes;
+  posn += __pInfo->ucFrameSizeBytes;
   
-  attr.flags = 0;
+  attr.ulFlags = 0;
   
-  for(i = 0; i < info->frameFlagsBytes; i++)
-    attr.flags |= buffer[posn + i] << ((info->frameFlagsBytes - 1 - i) * 8);
+  for(i = 0; i < __pInfo->ucFrameFlagsBytes; i++)
+    attr.ulFlags |= buffer[posn + i] << ((__pInfo->ucFrameFlagsBytes - 1 - i) * 8);
     
-  posn += info->frameFlagsBytes;
+  posn += __pInfo->ucFrameFlagsBytes;
   
   return posn;
 }
@@ -69,31 +72,30 @@ luint ID3_FrameHeader::Render(uchar *buffer)
   ID3_FrameDef *frameDef = NULL;
   char *textID = NULL;
   luint i;
-  
-  if(frameDef = ID3_FindFrameDef(frameID))
-  {
-    if(info->frameIDBytes < strlen(frameDef->longTextID))
-      textID = frameDef->shortTextID;
-    else
-      textID = frameDef->longTextID;
-  }
-  else
+
+  frameDef = ID3_FindFrameDef(__eFrameID);
+  if (NULL == frameDef)
     ID3_THROW(ID3E_InvalidFrameID);
+
+  if(__pInfo->ucFrameIDBytes < strlen(frameDef->sLongTextID))
+    textID = frameDef->sShortTextID;
+  else
+    textID = frameDef->sLongTextID;
     
-  memcpy(&buffer[bytesUsed], (uchar *) textID, info->frameIDBytes);
-  bytesUsed += info->frameIDBytes;
+  memcpy(&buffer[bytesUsed], (uchar *) textID, __pInfo->ucFrameIDBytes);
+  bytesUsed += __pInfo->ucFrameIDBytes;
   
-  for(i = 0; i < info->frameSizeBytes; i++)
+  for(i = 0; i < __pInfo->ucFrameSizeBytes; i++)
     buffer[bytesUsed + i] = 
-      (uchar)((dataSize >> ((info->frameSizeBytes - i - 1) * 8)) & 0xFF);
+      (uchar)((__ulDataSize >> ((__pInfo->ucFrameSizeBytes - i - 1) * 8)) & 0xFF);
     
-  bytesUsed += info->frameSizeBytes;
+  bytesUsed += __pInfo->ucFrameSizeBytes;
   
-  for(i = 0; i < info->frameFlagsBytes; i++)
+  for(i = 0; i < __pInfo->ucFrameFlagsBytes; i++)
     buffer[bytesUsed + i] = 
-      (uchar)((flags >> ((info->frameFlagsBytes - i - 1) * 8)) & 0xFF);
+      (uchar)((__ulFlags >> ((__pInfo->ucFrameFlagsBytes - i - 1) * 8)) & 0xFF);
     
-  bytesUsed += info->frameFlagsBytes;
+  bytesUsed += __pInfo->ucFrameFlagsBytes;
   
   return bytesUsed;
 }
@@ -101,6 +103,12 @@ luint ID3_FrameHeader::Render(uchar *buffer)
 
 
 // $Log: header_frame.cpp,v $
+// Revision 1.5  1999/11/15 20:19:08  scott
+// Added include for config.h.  Minor code cleanup.  Removed
+// assignments from if checks; first makes assignment, then checks
+// for appropriate value.  Made private member variable names more
+// descriptive.
+//
 // Revision 1.4  1999/11/04 04:15:55  scott
 // Added cvs Id and Log tags to beginning and end of file, respectively.
 //

@@ -1,4 +1,4 @@
-// $Id: field_binary.cpp,v 1.4 1999/11/04 04:15:54 scott Exp $
+// $Id: field_binary.cpp,v 1.5 1999/11/15 20:15:50 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -14,6 +14,9 @@
 //
 //  Mon Nov 23 18:34:01 1998
 
+#if defined HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <stdio.h>
 #include <memory.h>
@@ -24,16 +27,17 @@ void ID3_Field::Set(uchar *newData, luint newSize)
 {
   Clear();
   
-  if (newSize)
+  if (newSize > 0)
   {
-    if (!(data = new uchar[newSize]))
+    __sData = new uchar[newSize];
+    if (NULL == __sData)
       ID3_THROW(ID3E_NoMemory);
       
-    memcpy(data, newData, newSize);
-    size = newSize;
+    memcpy(__sData, newData, newSize);
+    __ulSize = newSize;
     
-    type = ID3FTY_BINARY;
-    hasChanged = true;
+    __eType = ID3FTY_BINARY;
+    __bHasChanged = true;
   }
   
   return ;
@@ -42,14 +46,14 @@ void ID3_Field::Set(uchar *newData, luint newSize)
 
 void ID3_Field::Get(uchar *buffer, luint buffLength)
 {
-  if (! buffer)
+  if (NULL == buffer)
     ID3_THROW(ID3E_NoBuffer);
     
-  if (data && size)
+  if (__sData != NULL && __ulSize > 0)
   {
-    luint actualBytes = MIN(buffLength, size);
+    luint actualBytes = MIN(buffLength, __ulSize);
     
-    memcpy(buffer, data, actualBytes);
+    memcpy(buffer, __sData, actualBytes);
   }
   
   return ;
@@ -62,16 +66,18 @@ void ID3_Field::FromFile(char *info)
   luint fileSize;
   uchar *buffer;
   
-  if (! info)
+  if (NULL == info)
     ID3_THROW(ID3E_NoData);
     
-  if ((temp = fopen(info, "rb")))
+  temp = fopen(info, "rb");
+  if (temp != NULL)
   {
     fseek(temp, 0, SEEK_END);
     fileSize = ftell(temp);
     fseek(temp, 0, SEEK_SET);
     
-    if (buffer = new uchar[fileSize])
+    buffer = new uchar[fileSize];
+    if (buffer != NULL)
     {
       fread(buffer, 1, fileSize, temp);
       
@@ -89,16 +95,17 @@ void ID3_Field::FromFile(char *info)
 
 void ID3_Field::ToFile(char *info)
 {
-  if (! info)
+  if (NULL == info)
     ID3_THROW(ID3E_NoData);
     
-  if ((data != NULL) &&(size > 0))
+  if ((__sData != NULL) && (__ulSize > 0))
   {
     FILE *temp;
     
-    if (temp = fopen(info, "wb"))
+    temp = fopen(info, "wb");
+    if (temp != NULL)
     {
-      fwrite(data, 1, size, temp);
+      fwrite(__sData, 1, __ulSize, temp);
       fclose(temp);
     }
   }
@@ -113,12 +120,12 @@ luint ID3_Field::ParseBinary(uchar *buffer, luint posn, luint buffSize)
   
   bytesUsed = buffSize - posn;
   
-  if (fixedLength != -1)
-    bytesUsed = MIN(fixedLength, bytesUsed);
+  if (__lFixedLength != -1)
+    bytesUsed = MIN(__lFixedLength, bytesUsed);
     
   Set(&buffer[posn], bytesUsed);
   
-  hasChanged = false;
+  __bHasChanged = false;
   
   return bytesUsed;
 }
@@ -129,9 +136,9 @@ luint ID3_Field::RenderBinary(uchar *buffer)
   luint bytesUsed = 0;
   
   bytesUsed = BinSize();
-  memcpy(buffer, (uchar *) data, bytesUsed);
+  memcpy(buffer, (uchar *) __sData, bytesUsed);
   
-  hasChanged = false;
+  __bHasChanged = false;
   
   return bytesUsed;
 }
@@ -139,6 +146,12 @@ luint ID3_Field::RenderBinary(uchar *buffer)
 
 
 // $Log: field_binary.cpp,v $
+// Revision 1.5  1999/11/15 20:15:50  scott
+// Added include for config.h.  Minor code cleanup.  Removed
+// assignments from if checks; first makes assignment, then checks
+// for appropriate value.  Made private member variable names more
+// descriptive.
+//
 // Revision 1.4  1999/11/04 04:15:54  scott
 // Added cvs Id and Log tags to beginning and end of file, respectively.
 //

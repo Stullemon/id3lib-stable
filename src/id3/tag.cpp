@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.4 1999/11/04 04:15:55 scott Exp $
+// $Id: tag.cpp,v 1.5 1999/11/15 20:20:17 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -14,9 +14,13 @@
 //
 //  Mon Nov 23 18:34:01 1998
 
+#if defined HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <id3/tag.h>
 
-luint ID3_Tag::instances = 0;
+luint ID3_Tag::s_ulInstances = 0;
 
 
 ID3_Tag& operator<<(ID3_Tag& tag, ID3_Frame& frame)
@@ -39,29 +43,30 @@ ID3_Tag::ID3_Tag(char *name)
 {
   SetupTag(name);
   
-  instances++;
+  s_ulInstances++;
 }
 
 
 void ID3_Tag::SetupTag(char *fileInfo)
 {
-  version = ID3_TAGVERSION;
-  revision = ID3_TAGREVISION;
-  frameList = NULL;
-  binaryList = NULL;
-  findCursor = NULL;
-  syncOn = false;
-  compression = true;
-  padding = true;
-  extendedHeader = true;
-  fileHandle = NULL;
+  __ucVersion       = ID3_TAGVERSION;
+  __ucRevision      = ID3_TAGREVISION;
+  __pFrameList      = NULL;
+  __pBinaryList     = NULL;
+  __pFindCursor     = NULL;
+  __fFileHandle     = NULL;
+  __bSyncOn         = false;
+  __bCompression    = true;
+  __bPadding        = true;
+  __bExtendedHeader = true;
+  __bFileWritable   = false;
+  __bHasV1Tag       = false;
+  __ulFileSize      = 0;
+  __ulOldTagSize    = 0;
+  __ulExtraBytes    = 0;
 
-  strcpy(fileName, "");
-  strcpy(tempName, "");
-  fileSize = 0;
-  oldTagSize = 0;
-  extraBytes = 0;
-  hasV1Tag = false;
+  strcpy(__sFileName, "");
+  strcpy(__sTempName, "");
   
   Clear();
   
@@ -74,14 +79,14 @@ void ID3_Tag::SetupTag(char *fileInfo)
 
 ID3_Tag::~ID3_Tag(void)
 {
-  if (fileHandle)
-    fclose(fileHandle);
+  if (NULL != __fFileHandle)
+    fclose(__fFileHandle);
     
   Clear();
   
-  instances--;
+  s_ulInstances--;
   
-  if (instances == 0)
+  if (s_ulInstances == 0)
   {}
   
 }
@@ -89,20 +94,20 @@ ID3_Tag::~ID3_Tag(void)
 
 void ID3_Tag::Clear(void)
 {
-  if (frameList)
+  if (NULL != __pFrameList)
   {
-    ClearList(frameList);
-    frameList = NULL;
+    ClearList(__pFrameList);
+    __pFrameList = NULL;
   }
   
-  if (binaryList)
+  if (NULL != __pBinaryList)
   {
-    ClearList(binaryList);
-    binaryList = NULL;
+    ClearList(__pBinaryList);
+    __pBinaryList = NULL;
   }
   
-  findCursor = NULL;
-  hasChanged = true;
+  __pFindCursor = NULL;
+  __bHasChanged = true;
   
   return ;
 }
@@ -112,23 +117,23 @@ void ID3_Tag::DeleteElem(ID3_Elem *cur)
 {
   if (cur)
   {
-    if (cur->tagOwns)
+    if (cur->bTagOwns)
     {
-      if (cur->frame)
+      if (cur->pFrame)
       {
-        delete cur->frame;
-        cur->frame = NULL;
+        delete cur->pFrame;
+        cur->pFrame = NULL;
       }
       
-      if (cur->binary)
+      if (cur->acBinary)
       {
-        delete[] cur->binary;
-        cur->binary = NULL;
+        delete[] cur->acBinary;
+        cur->acBinary = NULL;
       }
     }
     
-    findCursor = NULL;
-    hasChanged = true;
+    __pFindCursor = NULL;
+    __bHasChanged = true;
     
     delete cur;
   }
@@ -143,11 +148,11 @@ void ID3_Tag::ClearList(ID3_Elem *list)
   
   while (cur)
   {
-    ID3_Elem *next;
+    ID3_Elem *pNext;
     
-    next = cur->next;
+    pNext = cur->pNext;
     DeleteElem(cur);
-    cur = next;
+    cur = pNext;
   }
   
   return ;
@@ -158,25 +163,22 @@ void ID3_Tag::AddFrame(ID3_Frame *newFrame, bool freeWhenDone)
 {
   ID3_Elem *elem;
   
-  if (newFrame)
-  {
-    if (elem = new ID3_Elem)
-    {
-      elem->next = frameList;
-      elem->frame = newFrame;
-      elem->binary = NULL;
-      elem->tagOwns = freeWhenDone;
-      
-      frameList = elem;
-      findCursor = NULL;
-      
-      hasChanged = true;
-    }
-    else
-      ID3_THROW(ID3E_NoMemory);
-  }
-  else
+  if (NULL == newFrame)
     ID3_THROW(ID3E_NoData);
+
+  elem = new ID3_Elem;
+  if (NULL == elem)
+    ID3_THROW(ID3E_NoMemory);
+
+  elem->pNext = __pFrameList;
+  elem->pFrame = newFrame;
+  elem->acBinary = NULL;
+  elem->bTagOwns = freeWhenDone;
+      
+  __pFrameList = elem;
+  __pFindCursor = NULL;
+      
+  __bHasChanged = true;
     
   return ;
 }
@@ -195,10 +197,9 @@ void ID3_Tag::AddFrames(ID3_Frame *frames, luint numFrames, bool freeWhenDone)
 
 void ID3_Tag::RemoveFrame(ID3_Frame *frame)
 {
-  ID3_Elem *elem = NULL;
-  
-  if (elem = Find(frame))
-    RemoveFromList(elem, &frameList);
+  ID3_Elem *elem = Find(frame);
+  if (NULL != elem)
+    RemoveFromList(elem, &__pFrameList);
     
   return ;
 }
@@ -210,21 +211,21 @@ void ID3_Tag::RemoveFromList(ID3_Elem *which, ID3_Elem **list)
   
   if (cur == which)
   {
-    *list = which->next;
+    *list = which->pNext;
     DeleteElem(which);
   }
   else
   {
     while (cur)
     {
-      if (cur->next == which)
+      if (cur->pNext == which)
       {
-        cur->next = which->next;
+        cur->pNext = which->pNext;
         DeleteElem(which);
         break;
       }
       else
-        cur = cur->next;
+        cur = cur->pNext;
     }
   }
   
@@ -232,23 +233,23 @@ void ID3_Tag::RemoveFromList(ID3_Elem *which, ID3_Elem **list)
 }
 
 
-bool ID3_Tag::HasChanged(void)
+bool ID3_Tag::HasChanged(void) const
 {
-  bool changed = hasChanged;
+  bool changed = __bHasChanged;
   
   if (! changed)
   {
-    ID3_Elem *cur = frameList;
+    ID3_Elem *cur = __pFrameList;
     
     while (cur)
     {
-      if (cur->frame)
-        changed = cur->frame->HasChanged();
+      if (cur->pFrame)
+        changed = cur->pFrame->HasChanged();
         
       if (changed)
         break;
       else
-        cur = cur->next;
+        cur = cur->pNext;
     }
   }
   
@@ -258,11 +259,11 @@ bool ID3_Tag::HasChanged(void)
 
 void ID3_Tag::SetVersion(uchar ver, uchar rev)
 {
-  if (version != ver || rev != rev)
-    hasChanged = true;
+  if (__ucVersion != ver || __ucRevision != rev)
+    __bHasChanged = true;
     
-  version = ver;
-  revision = rev;
+  __ucVersion = ver;
+  __ucRevision = rev;
   
   return ;
 }
@@ -270,10 +271,10 @@ void ID3_Tag::SetVersion(uchar ver, uchar rev)
 
 void ID3_Tag::SetUnsync(bool newSync)
 {
-  if (syncOn != newSync)
-    hasChanged = true;
+  if (__bSyncOn != newSync)
+    __bHasChanged = true;
     
-  syncOn = newSync;
+  __bSyncOn = newSync;
   
   return ;
 }
@@ -281,10 +282,10 @@ void ID3_Tag::SetUnsync(bool newSync)
 
 void ID3_Tag::SetExtendedHeader(bool ext)
 {
-  if (extendedHeader != ext)
-    hasChanged = true;
+  if (__bExtendedHeader != ext)
+    __bHasChanged = true;
     
-  extendedHeader = ext;
+  __bExtendedHeader = ext;
   
   return ;
 }
@@ -292,10 +293,10 @@ void ID3_Tag::SetExtendedHeader(bool ext)
 
 void ID3_Tag::SetCompression(bool comp)
 {
-  if (compression != comp)
-    hasChanged = true;
+  if (__bCompression != comp)
+    __bHasChanged = true;
     
-  compression = comp;
+  __bCompression = comp;
   
   return ;
 }
@@ -303,31 +304,32 @@ void ID3_Tag::SetCompression(bool comp)
 
 void ID3_Tag::SetPadding(bool pad)
 {
-  if (padding != pad)
-    hasChanged = true;
+  __bHasChanged = __bHasChanged && (__bPadding != pad);
     
-  padding = pad;
+  __bPadding = pad;
   
   return ;
 }
 
 
-luint ID3_Tag::NumFrames(void)
+luint ID3_Tag::NumFrames(void) const
 {
   luint numFrames = 0;
-  ID3_Elem *cur = frameList;
-  
-  while (cur)
+  for (ID3_Elem *cur = __pFrameList; NULL != cur; cur = cur->pNext)
   {
     numFrames++;
-    
-    cur = cur->next;
   }
   
   return numFrames;
 }
 
 // $Log: tag.cpp,v $
+// Revision 1.5  1999/11/15 20:20:17  scott
+// Added include for config.h.  Minor code cleanup.  Removed
+// assignments from if checks; first makes assignment, then checks
+// for appropriate value.  Made private member variable names more
+// descriptive.
+//
 // Revision 1.4  1999/11/04 04:15:55  scott
 // Added cvs Id and Log tags to beginning and end of file, respectively.
 //

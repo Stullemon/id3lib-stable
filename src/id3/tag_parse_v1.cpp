@@ -1,4 +1,4 @@
-// $Id: tag_parse_v1.cpp,v 1.4 1999/11/04 04:15:55 scott Exp $
+// $Id: tag_parse_v1.cpp,v 1.5 1999/11/15 20:21:15 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -14,6 +14,10 @@
 //
 //  Mon Nov 23 18:34:01 1998
 
+#if HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <stdio.h>
 #include <string.h>
 #include <memory.h>
@@ -22,7 +26,7 @@
 
 void ID3_RemoveTrailingSpaces(char *buffer, luint length)
 {
-  for (lsint i = length - 1; i > -1 && buffer[i] == 0x20; i--)
+  for (lsint i = length - 1; i > -1 && 0x20 == buffer[i]; i--)
     buffer[i] = 0;
       
   return ;
@@ -31,129 +35,129 @@ void ID3_RemoveTrailingSpaces(char *buffer, luint length)
 
 void ID3_Tag::ParseID3v1(void)
 {
-  if (fileHandle)
+  if (NULL == __fFileHandle)
+    ID3_THROW(ID3E_NoData);
+
+  ID3V1_Tag temp;
+    
+  // posn ourselves at 128 bytes from the end of the file
+  fseek(__fFileHandle, -128, SEEK_END);
+    
+  // read the next 128 bytes in;
+  fread(&temp, 1, 128, __fFileHandle);
+    
+  ID3_RemoveTrailingSpaces(temp.sTitle,  sizeof(temp.sTitle));
+  ID3_RemoveTrailingSpaces(temp.sArtist, sizeof(temp.sArtist));
+  ID3_RemoveTrailingSpaces(temp.sAlbum,  sizeof(temp.sAlbum));
+    
+  if (0 == temp.sComment[28] && 0 != temp.sComment[29])
+    ID3_RemoveTrailingSpaces(temp.sComment, sizeof(temp.sComment) - 1);
+  else
+    ID3_RemoveTrailingSpaces(temp.sComment, sizeof(temp.sComment));
+      
+  // check to see if it was a tag
+  if (memcmp(temp.sID, "TAG", 3) == 0)
   {
-    ID3V1_Tag temp;
-    
-    // posn ourselves at 128 bytes from the end of the file
-    fseek(fileHandle, -128, SEEK_END);
-    
-    // read the next 128 bytes in;
-    fread(&temp, 1, 128, fileHandle);
-    
-    ID3_RemoveTrailingSpaces(temp.title, sizeof(temp.title));
-    ID3_RemoveTrailingSpaces(temp.artist, sizeof(temp.artist));
-    ID3_RemoveTrailingSpaces(temp.album, sizeof(temp.album));
-    
-    if (temp.comment[28] == 0 && temp.comment[29] != 0)
-      ID3_RemoveTrailingSpaces(temp.comment, sizeof(temp.comment) - 1);
-    else
-      ID3_RemoveTrailingSpaces(temp.comment, sizeof(temp.comment));
+    // guess so, let's start checking the v2 tag for frames which are the
+    // equivalent of the v1 fields.  When we come across a v1 field that has
+    // no current equivalent v2 frame, we create the frame, copy the data
+    // from the v1 frame and attach it to the tag
       
-    // check to see if it was a tag
-    if (memcmp(temp.ID, "TAG", 3) == 0)
+    __bHasV1Tag = true;
+    __ulExtraBytes += sizeof(ID3V1_Tag);
+      
+    ID3_AddTitle(this, temp.sTitle);
+    ID3_AddArtist(this, temp.sArtist);
+    ID3_AddAlbum(this, temp.sAlbum);
+      
+    // the YEAR field/frame
+    if (NULL == Find(ID3FID_YEAR) && 0 != temp.sYear[0])
     {
-      // guess so, let's start checking the v2 tag for frames which are the
-      // equivalent of the v1 fields.  When we come across a v1 field that has
-      // no current equivalent v2 frame, we create the frame, copy the data
-      // from the v1 frame and attach it to the tag
+      ID3_Frame *yearFrame;
       
-      hasV1Tag = true;
-      extraBytes += sizeof(ID3V1_Tag);
+      yearFrame = new ID3_Frame;
+      if (NULL == yearFrame)
+        ID3_THROW(ID3E_NoMemory);
+
+      char buff[5];
       
-      ID3_AddTitle(this, temp.title);
-      ID3_AddArtist(this, temp.artist);
-      ID3_AddAlbum(this, temp.album);
+      strncpy(buff, temp.sYear, 4);
+      buff[4] = 0;
       
-      // the YEAR field/frame
-      if (Find(ID3FID_YEAR) == NULL && temp.year[0] != 0)
+      yearFrame->SetID(ID3FID_YEAR);
+      yearFrame->Field(ID3FN_TEXT) = buff;
+      AddFrame(yearFrame, true);
+    }
+      
+    // the COMMENT field/frame
+    if (NULL == Find(ID3FID_COMMENT) && strlen(temp.sComment) > 0)
+    {
+      ID3_Frame *commentFrame;
+      
+      commentFrame = new ID3_Frame;
+      if (NULL == commentFrame)
+        ID3_THROW(ID3E_NoMemory);
+
+      commentFrame->SetID(ID3FID_COMMENT);
+      commentFrame->Field(ID3FN_LANGUAGE) = "eng";
+      //commentFrame->Field(ID3FN_DESCRIPTION) = "";
+      commentFrame->Field(ID3FN_TEXT) = temp.sComment;
+      AddFrame(commentFrame, true);
+    }
+      
+    // the TRACK field/frame
+    if (0 == temp.sComment[28] && temp.sComment[29] != 0)
+    {
+      if (NULL == Find(ID3FID_TRACKNUM))
       {
-        ID3_Frame *yearFrame;
+        ID3_Frame *trackFrame;
         
-        if (yearFrame = new ID3_Frame)
-        {
-          char buff[5];
-          
-          strncpy(buff, temp.year, 4);
-          buff[4] = 0;
-          
-          yearFrame->SetID(ID3FID_YEAR);
-          yearFrame->Field(ID3FN_TEXT) = buff;
-          AddFrame(yearFrame, true);
-        }
-        else
+        trackFrame = new ID3_Frame;
+        if (NULL == trackFrame)
           ID3_THROW(ID3E_NoMemory);
-      }
-      
-      // the COMMENT field/frame
-      if (Find(ID3FID_COMMENT) == NULL && strlen(temp.comment) > 0)
-      {
-        ID3_Frame *commentFrame;
+
+        char buff[4];
         
-        if (commentFrame = new ID3_Frame)
-        {
-          commentFrame->SetID(ID3FID_COMMENT);
-          commentFrame->Field(ID3FN_LANGUAGE) = "eng";
-          commentFrame->Field(ID3FN_TEXT) = temp.comment;
-          AddFrame(commentFrame, true);
-        }
-        else
+        sprintf(buff, "%lud", (luint) temp.sComment[29]);
+        
+        trackFrame->SetID(ID3FID_TRACKNUM);
+        trackFrame->Field(ID3FN_TEXT) = buff;
+        AddFrame(trackFrame, true);
+      }
+    }
+      
+    // the GENRE field/frame
+    if (temp.ucGenre != 255)
+    {
+      if (NULL == Find(ID3FID_CONTENTTYPE))
+      {
+        ID3_Frame *genreFrame;
+          
+        genreFrame = new ID3_Frame;
+        if (NULL == genreFrame)
           ID3_THROW(ID3E_NoMemory);
+
+        char buff[6];
+        
+        sprintf(buff, "(%lud)", (luint) temp.ucGenre);
+        
+        genreFrame->SetID(ID3FID_CONTENTTYPE);
+        genreFrame->Field(ID3FN_TEXT) = buff;
+        AddFrame(genreFrame, true);
       }
-      
-      // the TRACK field/frame
-      if (temp.comment[28] == 0 && temp.comment[29] != 0)
-      {
-        if (Find(ID3FID_TRACKNUM) == NULL)
-        {
-          ID3_Frame *trackFrame;
-          
-          if (trackFrame = new ID3_Frame)
-          {
-            char buff[4];
-            
-            sprintf(buff, "%d", (luint) temp.comment[29]);
-            
-            trackFrame->SetID(ID3FID_TRACKNUM);
-            trackFrame->Field(ID3FN_TEXT) = buff;
-            AddFrame(trackFrame, true);
-          }
-          else
-            ID3_THROW(ID3E_NoMemory);
-        }
-      }
-      
-      // the GENRE field/frame
-      if (temp.genre != 255)
-      {
-        if (Find(ID3FID_CONTENTTYPE) == NULL)
-        {
-          ID3_Frame *genreFrame;
-          
-          if (genreFrame = new ID3_Frame)
-          {
-            char buff[6];
-            
-            sprintf(buff, "(%d)", (luint) temp.genre);
-            
-            genreFrame->SetID(ID3FID_CONTENTTYPE);
-            genreFrame->Field(ID3FN_TEXT) = buff;
-            AddFrame(genreFrame, true);
-          }
-          else
-            ID3_THROW(ID3E_NoMemory);
-        }
-      }
-      
     }
   }
-  else
-    ID3_THROW(ID3E_NoData);
     
   return ;
 }
 
 // $Log: tag_parse_v1.cpp,v $
+// Revision 1.5  1999/11/15 20:21:15  scott
+// Added include for config.h.  Minor code cleanup.  Removed
+// assignments from if checks; first makes assignment, then checks
+// for appropriate value.  Made private member variable names more
+// descriptive.
+//
 // Revision 1.4  1999/11/04 04:15:55  scott
 // Added cvs Id and Log tags to beginning and end of file, respectively.
 //

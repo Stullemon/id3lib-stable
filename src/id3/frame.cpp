@@ -1,4 +1,4 @@
-// $Id: frame.cpp,v 1.4 1999/11/04 04:15:54 scott Exp $
+// $Id: frame.cpp,v 1.5 1999/11/15 20:17:04 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -14,6 +14,10 @@
 //
 //  Mon Nov 23 18:34:01 1998
 
+#if defined HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <string.h>
 #include <id3/tag.h>
 
@@ -21,26 +25,25 @@ ID3_Frame::ID3_Frame(ID3_FrameID id)
 {
   luint lwordsForFields = 0;
   
-  version = ID3_TAGVERSION;
-  revision = ID3_TAGREVISION;
-  numFields = 0;
-  fields = NULL;
-  groupingID[0] = 0;
-  encryptionID[0] = 0;
-  compression = true;
+  __ucVersion  = ID3_TAGVERSION;
+  __ucRevision = ID3_TAGREVISION;
+  __ulNumFields = 0;
+  __apFields = NULL;
+  __sGroupingID[0] = 0;
+  __sEncryptionID[0] = 0;
+  __bCompression = true;
   
   lwordsForFields =(((luint) ID3FN_LASTFIELDID) - 1) / (sizeof(luint) * 8);
   
   if ((((luint) ID3FN_LASTFIELDID) - 1) %(sizeof(luint) * 8) != 0)
     lwordsForFields++;
     
-  if (fieldBits = new luint[lwordsForFields])
-  {
-    for (luint i = 0; i < lwordsForFields; i++)
-      fieldBits[i] = 0;
-  }
-  else
+  __auiFieldBits = new luint[lwordsForFields];
+  if (NULL == __auiFieldBits)
     ID3_THROW(ID3E_NoMemory);
+
+  for (luint i = 0; i < lwordsForFields; i++)
+    __auiFieldBits[i] = 0;
     
   SetID(id);
 }
@@ -50,23 +53,23 @@ ID3_Frame::~ID3_Frame(void)
 {
   Clear();
   
-  if (fieldBits)
-    delete [] fieldBits;
+  if (__auiFieldBits != NULL)
+    delete [] __auiFieldBits;
 }
 
 
 void ID3_Frame::Clear(void)
 {
-  if (numFields && fields)
+  if (__ulNumFields && __apFields)
   {
-    for (luint i = 0; i < numFields; i++)
-      delete fields[i];
+    for (luint i = 0; i < __ulNumFields; i++)
+      delete __apFields[i];
       
-    delete [] fields;
+    delete [] __apFields;
     
-    fields = NULL;
-    numFields = 0;
-    hasChanged = true;
+    __apFields = NULL;
+    __ulNumFields = 0;
+    __bHasChanged = true;
   }
   
   return ;
@@ -81,107 +84,106 @@ void ID3_Frame::SetID(ID3_FrameID id)
   
   if (id != ID3FID_NOFRAME)
   {
-    if (info = ID3_FindFrameDef(id))
-    {
-      frameID = id;
-      
-      numFields = 0;
-      
-      while(info->fieldDefs[numFields].id != ID3FN_NOFIELD)
-        numFields++;
-        
-      if ((fields = new ID3_Field * [numFields]) == NULL)
-        ID3_THROW(ID3E_NoMemory);
-      else
-      {
-        for (luint i = 0; i < numFields; i++)
-        {
-          if ((fields[i] = new ID3_Field) == NULL)
-            ID3_THROW(ID3E_NoMemory);
-          else
-          {
-            fields[i]->name        = info->fieldDefs[i].id;
-            fields[i]->type        = info->fieldDefs[i].type;
-            fields[i]->fixedLength = info->fieldDefs[i].fixedLength;
-            fields[i]->ioVersion   = info->fieldDefs[i].version;
-            fields[i]->ioRevision  = info->fieldDefs[i].revision;
-            fields[i]->control     = info->fieldDefs[i].control;
-            fields[i]->flags       = info->fieldDefs[i].flags;
-            
-            // tell the frame that this field is present
-            BS_SET(fieldBits, fields[i]->name);
-          }
-        }
-        
-        hasChanged = true;
-      }
-    }
-    else
+    info = ID3_FindFrameDef(id);
+    if (NULL == info)
       ID3_THROW(ID3E_InvalidFrameID);
+
+    __FrameID = id;
+      
+    __ulNumFields = 0;
+      
+    while(info->aeFieldDefs[__ulNumFields].eID != ID3FN_NOFIELD)
+      __ulNumFields++;
+      
+    __apFields = new ID3_Field * [__ulNumFields];
+    if (NULL == __apFields)
+      ID3_THROW(ID3E_NoMemory);
+
+    for (luint i = 0; i < __ulNumFields; i++)
+    {
+      __apFields[i] = new ID3_Field;
+      if (NULL == __apFields[i])
+        ID3_THROW(ID3E_NoMemory);
+
+      __apFields[i]->__eName        = info->aeFieldDefs[i].eID;
+      __apFields[i]->__eType        = info->aeFieldDefs[i].eType;
+      __apFields[i]->__lFixedLength = info->aeFieldDefs[i].lFixedLength;
+      __apFields[i]->__ucIOVersion  = info->aeFieldDefs[i].ucVersion;
+      __apFields[i]->__ucIORevision = info->aeFieldDefs[i].ucRevision;
+      __apFields[i]->__eControl     = info->aeFieldDefs[i].eControl;
+      __apFields[i]->__ulFlags      = info->aeFieldDefs[i].ulFlags;
+            
+      // tell the frame that this field is present
+      BS_SET(__auiFieldBits, __apFields[i]->__eName);
+    }
+        
+    __bHasChanged = true;
   }
   
   return ;
 }
 
 
-ID3_FrameID ID3_Frame::GetID(void)
+ID3_FrameID ID3_Frame::GetID(void) const
 {
-  return frameID;
+  return __FrameID;
 }
 
 
 void ID3_Frame::SetVersion(uchar ver, uchar rev)
 {
-  if (version != ver || rev != rev)
-    hasChanged = true;
+  if (__ucVersion != ver || __ucRevision != rev)
+    __bHasChanged = true;
     
-  version = ver;
-  revision = rev;
+  __ucVersion  = ver;
+  __ucRevision = rev;
   
   return ;
 }
 
-lsint ID3_Frame::FindField(ID3_FieldID fieldName)
+lsint ID3_Frame::FindField(ID3_FieldID fieldName) const
 {
   
-  if (BS_ISSET(fieldBits, fieldName))
+  if (BS_ISSET(__auiFieldBits, fieldName))
   {
-    for (lsint num = 0; num < (lsint) numFields; num++)
-      if (fields[num]->name == fieldName)
+    for (lsint num = 0; num < (lsint) __ulNumFields; num++)
+      if (__apFields[num]->__eName == fieldName)
         return num;
   }
 
   return -1;
 }
 
-ID3_Field& ID3_Frame::Field(ID3_FieldID fieldName)
+ID3_Field& ID3_Frame::Field(ID3_FieldID fieldName) const
 {
-  luint fieldNum = FindField(fieldName);
+  lsint fieldNum = FindField(fieldName);
   
-  if (fieldNum == -1)
+  if (fieldNum < 0)
     ID3_THROW(ID3E_FieldNotFound);
     
-  return *fields[fieldNum];
+  return *__apFields[fieldNum];
 }
 
 void ID3_Frame::UpdateFieldDeps(void)
 {
-  for (luint i = 0; i < numFields; i++)
+  for (luint i = 0; i < __ulNumFields; i++)
   {
-    if (fields[i]->flags & ID3FF_ADJUSTEDBY)
+    if (__apFields[i]->__ulFlags & ID3FF_ADJUSTEDBY)
     {
-      switch(fields[i]->type)
+      switch(__apFields[i]->__eType)
       {
         case ID3FTY_BITFIELD:
         {
-          luint value = 0;
+          //luint value = 0;
           
           // now find the field on which this field is dependent and get a
           // copy of the value of that field.  then adjust the fixedLength of
           // this field to that value / 8.
+          break;
         }
         
-        break;
+        default:
+          break;
       }
     }
   }
@@ -192,9 +194,9 @@ void ID3_Frame::UpdateFieldDeps(void)
 
 void ID3_Frame::UpdateStringTypes(void)
 {
-  for (luint i = 0; i < numFields; i++)
+  for (luint i = 0; i < __ulNumFields; i++)
   {
-    if (fields[i]->flags & ID3FF_ADJUSTENC)
+    if (__apFields[i]->__ulFlags & ID3FF_ADJUSTENC)
     {
       ID3_TextEnc enc;
       ID3_FieldType newType;
@@ -216,7 +218,7 @@ void ID3_Frame::UpdateStringTypes(void)
           break;
       }
       
-      fields[i]->type = newType;
+      __apFields[i]->__eType = newType;
     }
   }
   
@@ -227,50 +229,54 @@ void ID3_Frame::UpdateStringTypes(void)
 luint ID3_Frame::Size(void)
 {
   luint bytesUsed = 0;
-  float factor = 1.0;
+  //float factor = 1.0;
   ID3_FrameHeader header;
   
-  header.SetVersion(version, revision);
+  header.SetVersion(__ucVersion, __ucRevision);
   bytesUsed += header.Size();
   
-  if (strlen(encryptionID))
+  if (strlen(__sEncryptionID))
     bytesUsed++;
     
-  if (strlen(groupingID))
+  if (strlen(__sGroupingID))
     bytesUsed++;
     
   // this call is to tell the string fields what they should be rendered/parsed
   // as (ASCII or Unicode)
   UpdateStringTypes();
   
-  for (luint i = 0; i < numFields; i++)
+  for (luint i = 0; i < __ulNumFields; i++)
   {
-    fields[i]->SetVersion(version, revision);
-    bytesUsed += fields[i]->BinSize();
+    __apFields[i]->SetVersion(__ucVersion, __ucRevision);
+    bytesUsed += __apFields[i]->BinSize();
   }
   
   return bytesUsed;
 }
 
 
-bool ID3_Frame::HasChanged(void)
+bool ID3_Frame::HasChanged(void) const
 {
-  bool changed = hasChanged;
+  bool changed = __bHasChanged;
   
   if (! changed)
   {
-    for (luint i = 0; i < numFields && !changed; i++)
+    for (luint i = 0; i < __ulNumFields && !changed; i++)
     {
-      changed = fields[i]->HasChanged();
+      changed = __apFields[i]->HasChanged();
     }
   }
   
   return changed;
 }
 
-
-
 // $Log: frame.cpp,v $
+// Revision 1.5  1999/11/15 20:17:04  scott
+// Added include for config.h.  Minor code cleanup.  Removed
+// assignments from if checks; first makes assignment, then checks
+// for appropriate value.  Made private member variable names more
+// descriptive.
+//
 // Revision 1.4  1999/11/04 04:15:54  scott
 // Added cvs Id and Log tags to beginning and end of file, respectively.
 //

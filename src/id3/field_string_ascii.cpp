@@ -1,4 +1,4 @@
-// $Id: field_string_ascii.cpp,v 1.4 1999/11/04 04:15:54 scott Exp $
+// $Id: field_string_ascii.cpp,v 1.5 1999/11/15 20:16:15 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -14,6 +14,9 @@
 //
 //  Mon Nov 23 18:34:01 1998
 
+#if defined HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <stdlib.h>
 #include <id3/field.h>
@@ -32,22 +35,19 @@ ID3_Field& ID3_Field::operator= (char *string)
 
 void ID3_Field::Set(char *newString)
 {
-  if (newString)
+  if (newString != NULL)
   {
-    wchar_t *temp;
-    
     Clear();
     
-    if (temp = new wchar_t[strlen(newString) + 1])
-    {
-      ID3_ASCIItoUnicode(temp, newString, strlen(newString) + 1);
-      Set(temp);
-      delete [] temp;
-      
-      type = ID3FTY_ASCIISTRING;
-    }
-    else
+    wchar_t *temp = new wchar_t[strlen(newString) + 1];
+    if (NULL == temp)
       ID3_THROW(ID3E_NoMemory);
+
+    ID3_ASCIItoUnicode(temp, newString, strlen(newString) + 1);
+    Set(temp);
+    delete [] temp;
+      
+    __eType = ID3FTY_ASCIISTRING;
   }
   
   return ;
@@ -62,34 +62,33 @@ luint ID3_Field::Get(char *buffer, luint maxLength, luint itemNum)
   wchar_t *temp;
   char *ascii;
   
-  if (temp = new wchar_t[maxLength])
-  {
-    luint len;
-    
-    if (len = Get(temp, maxLength, itemNum))
-    {
-      if (ascii = new char[len + 1])
-      {
-        luint length;
-        
-        ID3_UnicodeToASCII(ascii, temp, len + 1);
-        
-        length = MIN(strlen(ascii), maxLength);
-        
-        strncpy(buffer, ascii, length);
-        buffer[length] = 0;
-        bytesUsed = length;
-        
-        delete [] ascii;
-      }
-      else
-        ID3_THROW(ID3E_NoMemory);
-    }
-    
-    delete [] temp;
-  }
-  else
+  temp = new wchar_t[maxLength];
+  if (NULL == temp)
     ID3_THROW(ID3E_NoMemory);
+
+  luint len;
+
+  len = Get(temp, maxLength, itemNum);
+  if (len > 0)
+  {
+    ascii = new char[len + 1];
+    if (NULL == ascii)
+      ID3_THROW(ID3E_NoMemory);
+
+    luint length;
+        
+    ID3_UnicodeToASCII(ascii, temp, len + 1);
+        
+    length = MIN(strlen(ascii), maxLength);
+        
+    strncpy(buffer, ascii, length);
+    buffer[length] = 0;
+    bytesUsed = length;
+        
+    delete [] ascii;
+  }
+    
+  delete [] temp;
     
   return bytesUsed;
 }
@@ -101,13 +100,14 @@ void ID3_Field::Add(char *newString)
   {
     wchar_t *temp;
     
-    if (temp = new wchar_t[strlen(newString) + 1])
+    temp = new wchar_t[strlen(newString) + 1];
+    if (NULL == temp)
     {
       ID3_ASCIItoUnicode(temp, newString, strlen(newString) + 1);
       Add(temp);
       delete [] temp;
       
-      type = ID3FTY_ASCIISTRING;
+      __eType = ID3FTY_ASCIISTRING;
     }
   }
   
@@ -120,36 +120,34 @@ luint ID3_Field::ParseASCIIString(uchar *buffer, luint posn, luint buffSize)
   luint bytesUsed = 0;
   char *temp = NULL;
   
-  if (fixedLength != -1)
-    bytesUsed = fixedLength;
+  if (__lFixedLength != -1)
+    bytesUsed = __lFixedLength;
   else
   {
-    if (flags & ID3FF_NULL)
+    if (__ulFlags & ID3FF_NULL)
       while ((posn + bytesUsed) < buffSize && buffer[posn + bytesUsed] != 0)
         bytesUsed++;
     else
       bytesUsed = buffSize - posn;
   }
-  
   if (bytesUsed > 0)
   {
-    if (temp = new char[bytesUsed + 1])
-    {
-      memcpy(temp, &buffer[posn], bytesUsed);
-      temp[bytesUsed] = 0;
-      
-      Set(temp);
-      
-      delete [] temp;
-    }
-    else
+    temp = new char[bytesUsed + 1];
+    if (NULL == temp)
       ID3_THROW(ID3E_NoMemory);
+
+    memcpy(temp, &buffer[posn], bytesUsed);
+    temp[bytesUsed] = 0;
+      
+    Set(temp);
+      
+    delete [] temp;
   }
   
-  if (flags & ID3FF_NULL)
+  if (__ulFlags & ID3FF_NULL)
     bytesUsed++;
     
-  hasChanged = false;
+  __bHasChanged = false;
   
   return bytesUsed;
 }
@@ -161,47 +159,52 @@ luint ID3_Field::RenderASCIIString(uchar *buffer)
   char *ascii;
   
   bytesUsed = BinSize();
-  
-  if (data && size)
+
+  if (__sData && __ulSize)
   {
-    if (ascii = new char[size])
-    {
-      luint i;
-      
-      ID3_UnicodeToASCII(ascii, (wchar_t *) data, size);
-      memcpy(buffer, (uchar *) ascii, bytesUsed);
-      
-      // now we convert the internal dividers to what they are supposed to be
-      for (i = 0; i < bytesUsed; i++)
-        if (buffer[i] == 1)
-        {
-          char sub = '/';
-          
-          if (flags & ID3FF_NULLDIVIDE)
-            sub = '\0';
-            
-          buffer[i] = sub;
-        }
-        
-      if (size - 1 < bytesUsed)
-        for (i = 0; i <(size - 1 - bytesUsed); i++)
-          buffer[bytesUsed + i] = 0x20;
-          
-      delete [] ascii;
-    }
-    else
+    ascii = new char[__ulSize];
+    if (NULL == ascii)
       ID3_THROW(ID3E_NoMemory);
+
+    luint i;
+      
+    ID3_UnicodeToASCII(ascii, (wchar_t *) __sData, __ulSize);
+    memcpy(buffer, (uchar *) ascii, bytesUsed);
+      
+    // now we convert the internal dividers to what they are supposed to be
+    for (i = 0; i < bytesUsed; i++)
+      if (buffer[i] == 1)
+      {
+        char sub = '/';
+          
+        if (__ulFlags & ID3FF_NULLDIVIDE)
+          sub = '\0';
+            
+        buffer[i] = sub;
+      }
+        
+    if (__ulSize - 1 < bytesUsed)
+      for (i = 0; i < (__ulSize - 1 - bytesUsed); i++)
+        buffer[bytesUsed + i] = 0x20;
+          
+    delete [] ascii;
   }
   
-  if (bytesUsed == 1 && flags & ID3FF_NULL)
+  if (bytesUsed == 1 && __ulFlags & ID3FF_NULL)
     buffer[0] = 0;
     
-  hasChanged = false;
+  __bHasChanged = false;
   
   return bytesUsed;
 }
 
 // $Log: field_string_ascii.cpp,v $
+// Revision 1.5  1999/11/15 20:16:15  scott
+// Added include for config.h.  Minor code cleanup.  Removed
+// assignments from if checks; first makes assignment, then checks
+// for appropriate value.  Made private member variable names more
+// descriptive.
+//
 // Revision 1.4  1999/11/04 04:15:54  scott
 // Added cvs Id and Log tags to beginning and end of file, respectively.
 //

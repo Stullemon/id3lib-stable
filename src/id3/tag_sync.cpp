@@ -1,4 +1,4 @@
-// $Id: tag_sync.cpp,v 1.4 1999/11/04 04:15:55 scott Exp $
+// $Id: tag_sync.cpp,v 1.5 1999/11/15 20:21:36 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -13,6 +13,10 @@
 //  terms.
 //
 //  Mon Nov 23 18:34:01 1998
+
+#if defined HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <id3/tag.h>
 
@@ -34,7 +38,8 @@ luint ID3_Tag::ReSync(uchar *binarySourceData, luint sourceSize)
     
     if (temp == 0xFF)
     {
-      if ((temp = *source++) == 0x00)
+      temp = *source++;
+      if (temp == 0x00)
         destinationSize--;
     }
   }
@@ -48,7 +53,8 @@ luint ID3_Tag::ReSync(uchar *binarySourceData, luint sourceSize)
     
     if (temp == 0xFF)
     {
-      if ((temp = *source++) != 0x00)
+      temp = *source++;
+      if (temp != 0x00)
         *dest++ = temp;
     }
   }
@@ -125,6 +131,12 @@ void ID3_Tag::UnSync(uchar *destData, luint destSize, uchar *sourceData, luint s
 
 
 // $Log: tag_sync.cpp,v $
+// Revision 1.5  1999/11/15 20:21:36  scott
+// Added include for config.h.  Minor code cleanup.  Removed
+// assignments from if checks; first makes assignment, then checks
+// for appropriate value.  Made private member variable names more
+// descriptive.
+//
 // Revision 1.4  1999/11/04 04:15:55  scott
 // Added cvs Id and Log tags to beginning and end of file, respectively.
 //
