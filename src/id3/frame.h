@@ -1,4 +1,4 @@
-// $Id: frame.h,v 1.5 1999/11/04 04:32:11 scott Exp $
+// $Id: frame.h,v 1.6 1999/11/15 20:18:11 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -18,42 +18,49 @@
 #include <id3/field.h>
 #include <id3/header_frame.h>
 
+class ID3_Tag;
+
 class ID3_Frame
 {
+  friend ID3_Tag;
 public:
   ID3_Frame(ID3_FrameID id = ID3FID_NOFRAME);
   ~ID3_Frame(void);
   
-  void Clear(void);
-  void SetID(ID3_FrameID id);
-  ID3_FrameID GetID(void);
-  ID3_Field& Field(ID3_FieldID name);
+  void        Clear(void);
+  void        SetID(ID3_FrameID id);
+  ID3_FrameID GetID(void) const;
+  ID3_Field  &Field(ID3_FieldID name) const;
   
-  // *** PRIVATE INTERNAL DATA - DO NOT USE *** PRIVATE INTERNAL DATA - DO NOT USE ***
 private:
-  bool HasChanged(void );
-  void SetVersion(uchar ver, uchar rev);
-  void Parse(uchar *buffer, luint size);
-  luint Size(void);
-  luint Render(uchar *buffer);
-  char encryptionID[256];    // encryption method used with this frame
-  char groupingID[256];      // the group to which this frame belongs
-  bool compression;          // should we try to compress?
-  bool hasChanged;           // has the frame changed since last parse/render?
-  bitset fieldBits;          // which fields are present?
-  ID3_FrameID frameID;       // what frame are we?
+  char        __sEncryptionID[256]; // encryption method used with this frame
+  char        __sGroupingID[256];   // the group to which this frame belongs
+  bool        __bCompression;       // should we try to compress?
+  bool        __bHasChanged;        // frame changed since last parse/render?
+  bitset      __auiFieldBits;       // which fields are present?
+  ID3_FrameID __FrameID;            // what frame are we?
+  uchar       __ucVersion;          // what version tag?
+  uchar       __ucRevision;         // what revision tag?
+  luint       __ulNumFields;        // how many fields are in this frame?
+  ID3_Field **__apFields;           // an array of field object pointers
 protected:
-  void UpdateStringTypes(void);
-  void UpdateFieldDeps(void);
-  lsint FindField(ID3_FieldID name);
-  uchar version;             // what version tag?
-  uchar revision;            // what revision tag?
-  luint numFields;           // how many fields are in this frame?
-  ID3_Field **fields;        // an array of field object pointers
+  bool        HasChanged(void ) const;
+  void        SetVersion(uchar ver, uchar rev);
+  void        Parse(uchar *buffer, luint size);
+  void        UpdateStringTypes(void);
+  void        UpdateFieldDeps(void);
+  luint       Size(void);
+  luint       Render(uchar *buffer);
+  lsint       FindField(ID3_FieldID name) const;
 }
 ;
 
 // $Log: frame.h,v $
+// Revision 1.6  1999/11/15 20:18:11  scott
+// Made ID3_Tag a friend of ID3_Frame to allow access to the private
+// members in ID3_Frame.  Made variable names more descriptive.
+// Added const qualifier to appropriate methods.
+//
 // Revision 1.5  1999/11/04 04:32:11  scott
 // Initial revision
 //
