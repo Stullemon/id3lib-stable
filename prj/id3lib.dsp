@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /I ".\\" /I "..\\" /I "..\include" /I "..\include\id3" /I "..\zlib\include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "__DLL" /D "HAVE_CONFIG_H" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I ".\\" /I "..\\" /I "..\include" /I "..\include\id3" /I "..\zlib\include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "__DLL" /D "HAVE_CONFIG_H" /D "ID3LIB_COMPILATION" /YX /FD /c
 # SUBTRACT CPP /Fr
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /o "NUL" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /o "NUL" /win32
@@ -70,7 +70,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I ".\\" /I "..\\" /I "..\include" /I "..\include\id3" /I "..\zlib\include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "__DLL" /D "HAVE_CONFIG_H" /FR /YX /FD /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I ".\\" /I "..\\" /I "..\include" /I "..\include\id3" /I "..\zlib\include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "__DLL" /D "HAVE_CONFIG_H" /D "ID3LIB_COMPILATION" /FR /YX /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /o "NUL" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /o "NUL" /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -158,6 +158,10 @@ SOURCE=..\src\misc_support.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\spec.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\tag.cpp
 # End Source File
 # Begin Source File
@@ -218,6 +222,10 @@ SOURCE=..\include\id3\header_tag.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\include\id3.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\include\id3\int28.h
 # End Source File
 # Begin Source File
@@ -227,6 +235,10 @@ SOURCE=..\include\id3\misc_support.h
 # Begin Source File
 
 SOURCE=..\include\id3\sized_types.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\id3\spec.h
 # End Source File
 # Begin Source File
 

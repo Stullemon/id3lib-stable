@@ -41,7 +41,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /W3 /GX /O2 /I ".\\" /I "..\\" /I "..\include" /I "..\include\id3" /I "..\zlib\include" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "_WINDOWS" /D "HAVE_CONFIG_H" /YX /FD /c
+# ADD CPP /nologo /W3 /GX /O2 /I ".\\" /I "..\\" /I "..\include" /I "..\include\id3" /I "..\zlib\include" /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "_WINDOWS" /D "HAVE_CONFIG_H" /D "ID3LIB_COMPILATION" /YX /FD /c
 # ADD BASE RSC /l 0x809 /d "NDEBUG"
 # ADD RSC /l 0x809 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -64,7 +64,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /I ".\\" /I "..\\" /I "..\include" /I "..\include\id3" /I "..\zlib\include" /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "_WINDOWS" /D "HAVE_CONFIG_H" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /I ".\\" /I "..\\" /I "..\include" /I "..\include\id3" /I "..\zlib\include" /D "_DEBUG" /D "ID3LIB_COMPILATION" /D "WIN32" /D "_MBCS" /D "_LIB" /D "_WINDOWS" /D "HAVE_CONFIG_H" /FR /YX /FD /GZ /c
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
 # ADD RSC /l 0x809 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -83,6 +83,10 @@ LIB32=link.exe -lib
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+# Begin Source File
+
+SOURCE=..\src\c_wrapper.cpp
+# End Source File
 # Begin Source File
 
 SOURCE=..\src\error.cpp
@@ -145,6 +149,10 @@ SOURCE=..\src\misc_support.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\spec.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\tag.cpp
 # End Source File
 # Begin Source File
@@ -185,10 +193,6 @@ SOURCE=..\config.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\id3.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\include\id3\error.h
 # End Source File
 # Begin Source File
@@ -217,6 +221,10 @@ SOURCE=..\include\id3\header_tag.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\include\id3.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\include\id3\int28.h
 # End Source File
 # Begin Source File
@@ -226,6 +234,10 @@ SOURCE=..\include\id3\misc_support.h
 # Begin Source File
 
 SOURCE=..\include\id3\sized_types.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\id3\spec.h
 # End Source File
 # Begin Source File
 
