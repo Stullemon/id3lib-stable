@@ -1,5 +1,14 @@
 2000-04-10  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
+	* prj/id3lib.dsp
+	* irj/id3lib.dsw
+	* zlib/prj/zlib.dsp:
+	Updated to allow for better compilation under windows.
+	
+	* include/id3/field.h: 
+	* include/id3/frame.h: 
+	Updated comments for use with doxygen.
+
 	* include/id3/header.h 
 	(class ID3_Header): Removed decl of Copy.
 
