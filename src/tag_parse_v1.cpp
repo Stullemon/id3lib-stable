@@ -1,4 +1,4 @@
-// $Id: tag_parse_v1.cpp,v 1.5 2000/05/03 03:02:56 eldamitri Exp $
+// $Id: tag_parse_v1.cpp,v 1.6 2000/05/12 03:45:55 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -77,8 +77,8 @@ void ID3_Tag::ParseID3v1(void)
     // no current equivalent v2 frame, we create the frame, copy the data
     // from the v1 frame and attach it to the tag
       
-    __has_v1_tag = true;
-    __extra_bytes += ID3_V1_LEN;
+    __file_tags.add(ID3TT_ID3V1);
+    __ending_bytes += ID3_V1_LEN;
 
     // the TITLE field/frame
     if (fread(tagID3v1.sTitle, 1, ID3_V1_LEN_TITLE, __file_handle) != ID3_V1_LEN_TITLE)
