@@ -23,6 +23,5 @@ AC_OUTPUT(                      \
   m4/Makefile                   \
   src/Makefile                  \
   src/id3/Makefile              \
-  src/zlib/Makefile             \
   src/examples/Makefile         \
 )
