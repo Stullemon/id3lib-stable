@@ -1,19 +1,24 @@
 id3lib THANKS file
 
-id3lib was originally written by Dirk Mahoney.
+See the AUTHORS file for a list of past and current project maintainers.
 
 Since version 3.05a, several individuals have helped further the development of
-id3lib.  They are listed below.  Please inform the current project maintainer
-if anyone has been missed.
+id3lib.  They are listed below, in no particular order.  Please inform the
+current project maintainer if anyone has been missed.
 
-o Scott Thomas Haug (sth2@cs.wustl.edu) helped revitalize the project after
-  3.05a.  He restructured and cleaned up most of the code to allow for better
-  cross-platform functionality and easier development.
-o Kamran (kamran@musicmatch.com) fixed several bugs in MusicMatch's internal 
+* Kamran (kamran@musicmatch.com) fixed several bugs in MusicMatch's internal 
   version of ID3Lib which were merged into the current public version of 
   id3lib.
-o Alexander Voronin (av@oskarsb.ru) has submitted several patches to fix a 
-  variety of bugs. 
+* Alexander Voronin (av@oskarsb.ru) has submitted several patches to fix a 
+  variety of bugs.
+* John Adcock (johnadcock@hotmail.com) has written a COM wrapper for id3lib
+  as well as several bugfixes.
+* Myers W. Carpenter (myers@fil.org) has submitted a patch for improving the
+  interface and functionality of the library.
+* Justin Rogers (justin@mlstoday.com) has provided much valuable conversation
+  as to the design and implementation of id3lib.
+* Mark B. Elrod (elrod@liquidmetal.com) has provided several patches for better
+  win32 functionality.
 
 Dirk Mahoney included the following at the end of his documentation on ID3Lib
 3.05a.  It is included in verbatim here.
@@ -26,38 +31,38 @@ Dirk Mahoney included the following at the end of his documentation on ID3Lib
   almost literally every corner of the globe.  If I have missed you, please
   forgive my lapse of memory.
 
-  o Jean-loup Gailly and Mark Adler - for their great zlib compression library
+  * Jean-loup Gailly and Mark Adler - for their great zlib compression library
     and for making it free.
-  o Tord Jansson - for much help with teaching me how to make and use DLLs.
-  o Slava Karpenko for creating the MacOS static link libraries for the PowerPC
+  * Tord Jansson - for much help with teaching me how to make and use DLLs.
+  * Slava Karpenko for creating the MacOS static link libraries for the PowerPC
     and CodeWarrior.
-  o Bob Kohn - for his advice, input, and generally creating the ID3Lib license
+  * Bob Kohn - for his advice, input, and generally creating the ID3Lib license
     agreement.
-  o Eng-Keong Lee - for finding a few bugs and for extensively testing ID3Lib
+  * Eng-Keong Lee - for finding a few bugs and for extensively testing ID3Lib
     2.xx.
-  o James Lin - for his 'ID3v2 Programming Guidelines', and many helpful
+  * James Lin - for his 'ID3v2 Programming Guidelines', and many helpful
     suggestions
-  o Michael Mutschler - for prompting me to write the Unicode support and for
+  * Michael Mutschler - for prompting me to write the Unicode support and for
     his input on the ID3Lib calling convention.
-  o Martin Nilsson - for ID3v2, his support of the ID3Lib web page, for many,
+  * Martin Nilsson - for ID3v2, his support of the ID3Lib web page, for many,
     many suggestions, debates, pointers, URLs, documents, and brightly coloured
     fish.
-  o Chris Nunn - for the 3D animated ID3v2 logos which appear in the ID3Lib web
+  * Chris Nunn - for the 3D animated ID3v2 logos which appear in the ID3Lib web
     page and in the distribution.
-  o Lachlan Pitts - for general implementation ideas and his brief but helpful
+  * Lachlan Pitts - for general implementation ideas and his brief but helpful
     work on the up-coming genre tree.
-  o Jukka Poikolainen - for prompting to implement error handling via the C++
+  * Jukka Poikolainen - for prompting to implement error handling via the C++
     exception handling mechanism instead of the old 2.xx-style of using an 
     error handling function.
-  o Carson Puchol - for his help with some minor Linux compilation hassles.
-  o Andreas Sigfridsson - for his initial code for the unsync/resync support
+  * Carson Puchol - for his help with some minor Linux compilation hassles.
+  * Andreas Sigfridsson - for his initial code for the unsync/resync support
     and for his very valuable input in long brainstorming sessions.
-  o Michael Robertson - for helping support ID3Lib by posting announcements on
+  * Michael Robertson - for helping support ID3Lib by posting announcements on
     MP3.com.
-  o Ilana Rudnik - for bug finding and suggestions.
-  o Chuck Zenkus - for his support of ID3v2 and ID3Lib by providing us with a
+  * Ilana Rudnik - for bug finding and suggestions.
+  * Chuck Zenkus - for his support of ID3v2 and ID3Lib by providing us with a
     mirror in the United States and for his bug finding and suggestions.
-  o And last but by no means least, all the others who support ID3Lib by 
+  * And last but by no means least, all the others who support ID3Lib by 
     subscribing to the mailing list and to the contributors to the discussions
     and debates in the ID3v2 discussion group.
 
