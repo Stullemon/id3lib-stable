@@ -1,4 +1,4 @@
-// $Id: field.h,v 1.35 2000/09/14 22:36:24 eldamitri Exp $
+// $Id: field.h,v 1.36 2000/09/21 21:28:35 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -27,144 +27,64 @@
 #ifndef _ID3LIB_FIELD_H_
 #define _ID3LIB_FIELD_H_
 
-#include <stdlib.h>
-#include "error.h"
-
-struct ID3_FieldDef
-{
-  ID3_FieldID   _id;
-  ID3_FieldType _type;
-  size_t        _fixed_length;
-  ID3_V2Spec    _spec_begin;
-  ID3_V2Spec    _spec_end;
-  flags_t       _flags;
-  ID3_FieldID   _linked_field;
-  static const ID3_FieldDef* DEFAULT;
-};
-
-class ID3_Frame;
-class ID3_Tag;
-
-// Structure used for defining how frames are defined internally.
-struct ID3_FrameDef
-{
-  ID3_FrameID   eID;
-  char          sShortTextID[3 + 1];
-  char          sLongTextID[4 + 1];
-  bool          bTagDiscard;
-  bool          bFileDiscard;
-  const ID3_FieldDef* aeFieldDefs;
-  const char *  sDescription;
-};
+#include "globals.h"
 
 class ID3_Field
 {
-  friend class ID3_Frame;
 public:
-  ~ID3_Field();
-  
-  void Clear();
+  virtual void Clear() = 0;
 
-  size_t Size() const;
-  size_t BinSize() const;
-  size_t GetNumTextItems() const;
+  virtual size_t Size() const = 0;
+  virtual size_t BinSize() const = 0;
+  virtual size_t GetNumTextItems() const = 0;
 
   // integer field functions
-  ID3_Field&    operator= (uint32 val) { this->Set(val); return *this; }
-  void          Set(uint32);
-  uint32        Get() const 
-  { 
-    if (this->GetType() == ID3FTY_INTEGER)
-    {
-      return _integer; 
-    }
-    return 0;
-  }
+  virtual ID3_Field&    operator= (uint32 val) = 0;
+  virtual void          Set(uint32) = 0;
+  virtual uint32        Get() const = 0;
 
   // ASCII string field functions
-  ID3_Field&    operator= (const char* s) { this->Set(s); return *this; }
-  size_t        Set(const char*);
-  size_t        Get(char*, size_t) const;
-  size_t        Get(char*, size_t, index_t) const;
-  size_t        Add(const char*);
+  virtual ID3_Field&    operator= (const char* s) = 0;
+  virtual size_t        Set(const char*) = 0;
+  virtual size_t        Get(char*, size_t) const = 0;
+  virtual size_t        Get(char*, size_t, index_t) const = 0;
+  virtual const char*   GetText() const = 0;
+  virtual size_t        Add(const char*) = 0;
 
   // Unicode string field functions
-  ID3_Field&    operator= (const unicode_t* s) { this->Set(s); return *this; }
-  size_t        Set(const unicode_t*);
-  size_t        Get(unicode_t *buffer, size_t) const;
-  size_t        Get(unicode_t *buffer, size_t, index_t) const;
-  size_t        Add(const unicode_t*);
+  virtual ID3_Field&    operator= (const unicode_t* s) = 0;
+  virtual size_t        Set(const unicode_t*) = 0;
+  virtual size_t        Get(unicode_t *buffer, size_t) const = 0;
+  virtual size_t        Get(unicode_t *buffer, size_t, index_t) const = 0;
+  virtual const unicode_t* GetUnicodeText() const = 0;
+  virtual size_t        Add(const unicode_t*) = 0;
 
   // binary field functions
-  size_t        Set(const uchar*, size_t);
-  size_t        Get(uchar*, size_t) const;
-  void          FromFile(const char*);
-  void          ToFile(const char *sInfo) const;
+  virtual size_t        Set(const uchar*, size_t) = 0;
+  virtual size_t        Get(uchar*, size_t) const = 0;
+  virtual const uchar*  GetBinary() const = 0;
+  virtual void          FromFile(const char*) = 0;
+  virtual void          ToFile(const char *sInfo) const = 0;
   
   // miscelaneous functions
-  ID3_Field&    operator=( const ID3_Field & );
-  const uchar*  GetBinary() const { return _binary; }
-  bool          InScope(ID3_V2Spec spec) const
-  { return _spec_begin <= spec && spec <= _spec_end; }
+  virtual ID3_Field&    operator=( const ID3_Field & ) = 0;
+  virtual bool          InScope(ID3_V2Spec spec) const = 0;
 
-  ID3_FieldID   GetID() const { return _id; }
-  ID3_FieldType GetType() const { return _type; }
-  bool          SetEncoding(ID3_TextEnc enc);
-  ID3_TextEnc   GetEncoding() const { return _enc; }
-  bool          IsEncodable() const { return (_flags & ID3FF_ENCODABLE) > 0; }
-  
+  virtual ID3_FieldID   GetID() const = 0;
+  virtual ID3_FieldType GetType() const = 0;
+  virtual bool          SetEncoding(ID3_TextEnc enc) = 0;
+  virtual ID3_TextEnc   GetEncoding() const = 0;
+  virtual bool          IsEncodable() const = 0;
 
-  size_t        Render(uchar *buffer) const;
-  size_t        Parse(const uchar *buffer, size_t buffSize);
-  bool          HasChanged() const;
+  virtual size_t        Render(uchar *buffer) const = 0;
+  virtual size_t        Parse(const uchar *buffer, size_t buffSize) = 0;
+  virtual bool          HasChanged() const = 0;
 
-private:
-  //void          SetSpec(ID3_V2Spec);
-  size_t        Set_i(const char*, size_t);
-  size_t        Set_i(const unicode_t*, size_t);
-  size_t        Add_i(const char*, size_t);
-  size_t        Add_i(const unicode_t*, size_t);
-
-private:
-  // To prevent public instantiation, the constructor is made private
-  ID3_Field();
-  ID3_Field(const ID3_FieldDef&);
-
-  const ID3_FieldID   _id;          // the ID of this field
-  const ID3_FieldType _type;        // what type is this field or should be
-  const ID3_V2Spec    _spec_begin;  // spec end
-  const ID3_V2Spec    _spec_end;    // spec begin
-  const flags_t       _flags;       // special field flags
-  mutable bool        _changed;     // field changed since last parse/render?
-  union                             // anonymous union; contents in class scope
-  {
-    uchar*            _binary;      // for binary strings
-    char*             _ascii;       // for ascii strings
-    unicode_t*        _unicode;     // for unicode strings
-    uint32            _integer;     // for numbers
-  };
-  const size_t        _fixed_length;// for fixed length fields (0 if not)
-  union
-  {
-    size_t            _bytes;       // the size of the field in bytes
-    size_t            _chars;       // the number of characters in the field
-  };
-  size_t              _num_items;   // the number of items in the text string
-  ID3_TextEnc         _enc;         // encoding for text fields
 protected:
-  size_t RenderInteger(uchar *buffer) const;
-  size_t RenderString(uchar *buffer) const;
-  size_t RenderBinary(uchar *buffer) const;
-  
-  size_t ParseInteger(const uchar *buffer, size_t);
-  size_t ParseASCIIString(const uchar *buffer, size_t);
-  size_t ParseUnicodeString(const uchar *buffer, size_t);
-  size_t ParseBinary(const uchar *buffer, size_t);
-  
-};
+  virtual ~ID3_Field() { };
 
-// Ack! Not for public use
-ID3_FrameDef *ID3_FindFrameDef(ID3_FrameID id);
-ID3_FrameID   ID3_FindFrameID(const char *id);
+  // To prevent public instantiation, the constructor is made protected
+  ID3_Field() { };
+};
 
 #endif /* _ID3LIB_FIELD_H_ */
