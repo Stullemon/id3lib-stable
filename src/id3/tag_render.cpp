@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.18 2000/04/05 05:21:15 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.19 2000/04/08 04:44:37 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,10 +24,10 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#include <cstdlib>
-#include <cstring>
-#include <cstdio>
-#include <fstream>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <fstream.h>
 #include <memory.h>
 #include "tag.h"
 #include "misc_support.h"
@@ -325,6 +325,39 @@ void ID3_Tag::RenderV2ToHandle(void)
   }
   else
   {
+#if defined WIN32
+
+    FILE *tempOut = tmpfile();
+    if (NULL == tempOut)
+    {
+      ID3_THROW(ID3E_ReadOnly);
+    }
+    
+    fwrite(buffer, 1, size, tempOut);
+    
+    fseek(__fFileHandle, __ulOldTagSize, SEEK_SET);
+    
+    uchar buffer2[BUFSIZ];
+    while (! feof(__fFileHandle))
+    {
+      size_t nBytes = fread(buffer2, 1, BUFSIZ, __fFileHandle);
+      fwrite(buffer2, 1, nBytes, tempOut);
+    }
+    
+    rewind(tempOut);
+    freopen(__sFileName, "w+", __fFileHandle);
+    
+    while (!feof(tempOut))
+    {
+      size_t nBytes = fread(buffer2, 1, BUFSIZ, tempOut);
+      fwrite(buffer2, 1, nBytes, __fFileHandle);
+    }
+    
+    fclose(tempOut);
+    
+    __ulOldTagSize = size;
+#else
+
     // else we gotta make a temp file, copy the tag into it, copy the
     // rest of the old file after the tag, delete the old file, rename
     // this new file to the old file's name and update the __fFileHandle
@@ -367,6 +400,7 @@ void ID3_Tag::RenderV2ToHandle(void)
     rename(sTempFile, __sFileName);
     
     __ulOldTagSize = size;
+#endif
   }
         
   delete[] buffer;
@@ -416,6 +450,10 @@ luint ID3_Tag::PaddingSize(luint curSize) const
 
 
 // $Log: tag_render.cpp,v $
+// Revision 1.19  2000/04/08 04:44:37  eldamitri
+// Changed new ANSI-standard C++ include headers to old-style headers.
+// (RenderV2ToHandle): Added conditional code for rendering in windows.
+//
 // Revision 1.18  2000/04/05 05:21:15  eldamitri
 // Updated initial comment information to reflect license, copyright
 // change.
