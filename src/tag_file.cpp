@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.2 2000/04/18 22:13:03 eldamitri Exp $
+// $Id: tag_file.cpp,v 1.3 2000/04/23 17:38:00 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -209,17 +209,17 @@ luint ID3_Tag::Link(char *fileInfo, bool parseID3v1, bool parseLyrics3)
 luint ID3_Tag::Update(const luint ulTagFlag)
 {
   OpenFileForWriting();
-  luint ulTags = NO_TAG;
+  luint ulTags = ID3TT_NONE;
 
-  if ((ulTagFlag & V1_TAG) && (!__bHasV1Tag || HasChanged()))
+  if ((ulTagFlag & ID3TT_ID3V1) && (!__bHasV1Tag || HasChanged()))
   {
     RenderV1ToHandle();
-    ulTags |= V1_TAG;
+    ulTags |= ID3TT_ID3V1;
   }
-  if ((ulTagFlag & V2_TAG) && HasChanged())
+  if ((ulTagFlag & ID3TT_ID3V2) && HasChanged())
   {
     RenderV2ToHandle();
-    ulTags |= V2_TAG;
+    ulTags |= ID3TT_ID3V2;
   }
 
   //CloseFile();
@@ -229,15 +229,15 @@ luint ID3_Tag::Update(const luint ulTagFlag)
 
 luint ID3_Tag::Strip(const luint ulTagFlag)
 {
-  luint ulTags = NO_TAG;
+  luint ulTags = ID3TT_NONE;
 
-  if (!(ulTagFlag & V1_TAG) && !(ulTagFlag & V2_TAG))
+  if (!(ulTagFlag & ID3TT_ID3V1) && !(ulTagFlag & ID3TT_ID3V2))
   {
     return ulTags;
   }
 
   // First remove the v2 tag, if requested
-  if (ulTagFlag & V2_TAG)
+  if (ulTagFlag & ID3TT_ID3V2)
   {
     OpenFileForWriting();
 
@@ -264,7 +264,7 @@ luint ID3_Tag::Strip(const luint ulTagFlag)
     // at the end of the file (e.g the id3v1 and lyrics tag).  This isn't
     // strictly necessary, since the truncation stage will remove these,
     // but this check prevents us from copying them unnecessarily.
-    if ((__ulExtraBytes > 0) && (ulTagFlag & V1_TAG))
+    if ((__ulExtraBytes > 0) && (ulTagFlag & ID3TT_ID3V1))
     {
       nBytesToCopy -= __ulExtraBytes;
     }
@@ -317,27 +317,27 @@ luint ID3_Tag::Strip(const luint ulTagFlag)
   }
   
   size_t nNewFileSize = __ulFileSize;
-  if ((__ulExtraBytes > 0) && (ulTagFlag & V1_TAG))
+  if ((__ulExtraBytes > 0) && (ulTagFlag & ID3TT_ID3V1))
   {
     nNewFileSize -= __ulExtraBytes;
-    ulTags |= V1_TAG;
+    ulTags |= ID3TT_ID3V1;
   }
-  if (ulTagFlag & V2_TAG && (__ulOldTagSize > 0))
+  if (ulTagFlag & ID3TT_ID3V2 && (__ulOldTagSize > 0))
   {
     nNewFileSize -= __ulOldTagSize;
-    ulTags |= V2_TAG;
+    ulTags |= ID3TT_ID3V2;
   }
   if (ulTags && (truncate(__sFileName, nNewFileSize) == -1))
   {
     ID3_THROW(ID3E_NoFile);
   }
 
-  __ulOldTagSize = (ulTags & V2_TAG) ? 0 : __ulOldTagSize;
-  __ulExtraBytes = (ulTags & V1_TAG) ? 0 : __ulExtraBytes;
+  __ulOldTagSize = (ulTags & ID3TT_ID3V2) ? 0 : __ulOldTagSize;
+  __ulExtraBytes = (ulTags & ID3TT_ID3V1) ? 0 : __ulExtraBytes;
       
-  __bHasV1Tag    = __bHasV1Tag && !(ulTagFlag & V1_TAG);
+  __bHasV1Tag    = __bHasV1Tag && !(ulTagFlag & ID3TT_ID3V1);
         
-  __bHasChanged  = ((ulTags & V1_TAG) || (ulTags & V2_TAG));
+  __bHasChanged  = ((ulTags & ID3TT_ID3V1) || (ulTags & ID3TT_ID3V2));
   
   return ulTags;
 }
@@ -345,6 +345,9 @@ luint ID3_Tag::Strip(const luint ulTagFlag)
 
 
 // $Log: tag_file.cpp,v $
+// Revision 1.3  2000/04/23 17:38:00  eldamitri
+// - Updated ID3_TagType constants to new names
+//
 // Revision 1.2  2000/04/18 22:13:03  eldamitri
 // Moved tag_file.cpp from src/id3/ to src/
 //
@@ -417,10 +420,10 @@ luint ID3_Tag::Strip(const luint ulTagFlag)
 //
 // Revision 1.5  1999/11/19 19:09:12  scott
 // (Update): Changed parameter to be a flag which indicates which type of
-// tag to update, either V1_TAG, V2_TAG, or BOTH_TAGS.  Updated method to
+// tag to update, either ID3TT_ID3V1, ID3TT_ID3V2, or ID3TT_ID3.  Updated method to
 // act appropriately based on the parameter passed in.
 // (Strip): Changed parameter to be a flag which indicates which type of
-// tag to update, either V1_TAG, V2_TAG, or BOTH_TAGS.  Updated method to
+// tag to update, either ID3TT_ID3V1, ID3TT_ID3V2, or ID3TT_ID3.  Updated method to
 // act appropriately based on the parameter passed in.
 //
 // Revision 1.4  1999/11/15 20:20:37  scott
