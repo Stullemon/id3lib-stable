@@ -1,4 +1,4 @@
-// $Id: tag_parse_lyrics3.cpp,v 1.17 2000/07/01 07:48:43 eldamitri Exp $
+// $Id: tag_parse_lyrics3.cpp,v 1.18 2000/07/04 22:21:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -162,7 +162,7 @@ luint ID3_Lyrics3ToSylt(char *buffer, luint size)
   return dest - buffer;
 }
 
-size_t ID3_Tag::ParseLyrics3(FILE* handle)
+size_t ParseLyrics3(ID3_Tag& tag, FILE* handle)
 {
   size_t tag_bytes = 0;
   if (NULL == handle)
@@ -186,7 +186,7 @@ size_t ID3_Tag::ParseLyrics3(FILE* handle)
     {
       // we have a Lyrics3 v1.00 tag
 
-      if (__file_size < 128 + 9 + 11)
+      if (tag.GetFileSize() - tag.GetPrependedBytes() < 128 + 9 + 11)
       {
         // the file size isn't large enough to actually hold lyrics
         return tag_bytes;
@@ -195,7 +195,7 @@ size_t ID3_Tag::ParseLyrics3(FILE* handle)
       // reserve enough space for lyrics3 + id3v1 tag
       const size_t max_lyr_size = 11 + 5100 + 9 + 128;
 
-      size_t lyr_buffer_size = MIN(max_lyr_size, __file_size);
+      size_t lyr_buffer_size = MIN(max_lyr_size, ID3_GetDataSize(tag));
 
       // Using binary minus rather than unary minus to avoid compiler warning
       fseek(handle, pos - lyr_buffer_size, SEEK_SET);
@@ -223,7 +223,7 @@ size_t ID3_Tag::ParseLyrics3(FILE* handle)
 
       lyr_begin[lyr_size] = '\0';
 
-      ID3_Frame *frame = ID3_AddLyrics(this, lyr_begin, 
+      ID3_Frame *frame = ID3_AddLyrics(&tag, lyr_begin, 
                                        "Converted from Lyrics3 v1.00");
 
     }
@@ -232,7 +232,7 @@ size_t ID3_Tag::ParseLyrics3(FILE* handle)
   return tag_bytes;
 }
 
-size_t ID3_Tag::ParseLyrics3v2(FILE* handle)
+size_t ParseLyrics3v2(ID3_Tag& tag, FILE* handle)
 {
   size_t tag_bytes = 0;
   if (NULL == handle)
@@ -309,7 +309,7 @@ size_t ID3_Tag::ParseLyrics3v2(FILE* handle)
           text[fld_size] = '\0';
           memcpy(text, fld_data, fld_size);
 
-          ID3_AddTitle(this, text);
+          ID3_AddTitle(&tag, text);
 
           delete [] text;
         }
@@ -322,7 +322,7 @@ size_t ID3_Tag::ParseLyrics3v2(FILE* handle)
 
           memcpy(text, fld_data, fld_size);
 
-          ID3_AddArtist(this, text);
+          ID3_AddArtist(&tag, text);
 
           delete[] text;
         }
@@ -334,7 +334,7 @@ size_t ID3_Tag::ParseLyrics3v2(FILE* handle)
           text[fld_size] = '\0';
           memcpy(text, fld_data, fld_size);
 
-          ID3_Frame* frame = ID3_AddAlbum(this, text, true);
+          ID3_Frame* frame = ID3_AddAlbum(&tag, text, true);
 
           delete[] text;
         }
@@ -347,7 +347,7 @@ size_t ID3_Tag::ParseLyrics3v2(FILE* handle)
           text[fld_size] = '\0';
           memcpy(text, fld_data, fld_size);
 
-          ID3_AddLyricist(this, text);
+          ID3_AddLyricist(&tag, text);
 
           delete[] text;
         }
@@ -361,7 +361,7 @@ size_t ID3_Tag::ParseLyrics3v2(FILE* handle)
           text[adj_size] = '\0';
           memcpy(text, fld_data, adj_size);
 
-          ID3_AddComment(this, text, "Lyrics3 v2.00 INF");
+          ID3_AddComment(&tag, text, "Lyrics3 v2.00 INF");
 
           delete [] text;
         }
@@ -379,7 +379,7 @@ size_t ID3_Tag::ParseLyrics3v2(FILE* handle)
             text[adj_size] = '\0';
             memcpy(text, fld_data, adj_size);
 
-            lyr_frame = ID3_AddLyrics(this, text, desc);
+            lyr_frame = ID3_AddLyrics(&tag, text, desc);
 
             delete [] text;
           }
@@ -393,7 +393,7 @@ size_t ID3_Tag::ParseLyrics3v2(FILE* handle)
             adj_size = ID3_Lyrics3ToSylt ((char *)new_data, adj_size);
             
             lyr_frame =
-              ID3_AddSyncLyrics(this, new_data, adj_size, ID3TSF_MS, desc);
+              ID3_AddSyncLyrics(&tag, new_data, adj_size, ID3TSF_MS, desc);
 
             delete [] new_data;
           }
