@@ -1,3 +1,21 @@
+2000-05-03  Scott Haug  <scott@id3.org>
+
+	* include/id3/field.cpp 
+	* include/id3/frame.cpp 
+	* src/field.cpp 
+	* src/frame.cpp: 
+	Replaced ID3_GetFrameDescription() with ID3_Frame::GetDescription() and
+	static ID3_Frame::GetDescription(ID3_FrameID)
+
+	* examples/demo_info.cpp 
+	(PrintInformation): Updated for new ID3_Frame::GetDescription()
+
+	* include/id3/header_tag.h
+	* include/id3/tag.h
+	* src/header_tag.cpp 
+	* src/tag.cpp: 
+	Moved ID3_TagHeader::IsHeader() to ID3_Tag::IsV2Tag()
+
 2000-05-02  Scott Haug  <scott@id3.org>
 
 	* src/tag_file.cpp 
