@@ -1,4 +1,4 @@
-// $Id: utils.cpp,v 1.16 2000/11/07 09:19:02 eldamitri Exp $
+// $Id: utils.cpp,v 1.17 2000/11/20 09:17:58 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -78,7 +78,7 @@ namespace
 
   // converts a Unicode string into ASCII
   
-  String dami::ucstombs(String data)
+  String ucstombs(String data)
   {
     size_t size = data.size() / 2;
     String ascii(size, '\0');
