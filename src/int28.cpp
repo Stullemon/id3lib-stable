@@ -1,4 +1,4 @@
-// $Id: int28.cpp,v 1.12 2000/04/10 16:57:47 eldamitri Exp $
+// $Id: int28.cpp,v 1.2 2000/04/18 22:12:27 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -94,6 +94,9 @@ istream& operator>>(istream& in, int28& val)
 }
 
 // $Log: int28.cpp,v $
+// Revision 1.2  2000/04/18 22:12:27  eldamitri
+// Moved int28.cpp from src/id3/ to src/
+//
 // Revision 1.12  2000/04/10 16:57:47  eldamitri
 // (ProcessBinaries): Minor change to prevent warning in windows.
 //
