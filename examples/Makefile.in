@@ -104,7 +104,8 @@ RANLIB = @RANLIB@
 VERSION = @VERSION@
 
 INCLUDES = -I$(top_srcdir)/include
-LDADD = $(top_builddir)/src/libid3.la
+@ID3_NEEDZLIB_TRUE@LDADD = $(top_builddir)/src/libid3.la $(top_builddir)/zlib/src/libz.la
+@ID3_NEEDZLIB_FALSE@LDADD = $(top_builddir)/src/libid3.la
 
 bin_PROGRAMS = id3info id3convert id3tag
 check_PROGRAMS = id3simple testpic testunicode testcompression get_pic
@@ -117,7 +118,7 @@ testunicode_SOURCES = test_unicode.cpp
 testcompression_SOURCES = test_compression.cpp
 get_pic_SOURCES = get_pic.cpp
 
-EXTRA_DIST =    demo_main.cpp           221-compressed.tag      230-compressed.tag      230-picture.tag         230-unicode.tag
+EXTRA_DIST =    composer.jpg            demo_main.cpp           221-compressed.tag      230-compressed.tag      230-picture.tag         230-unicode.tag
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -131,35 +132,62 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 id3info_OBJECTS =  demo_info.o
 id3info_LDADD = $(LDADD)
-id3info_DEPENDENCIES =  $(top_builddir)/src/libid3.la
+@ID3_NEEDZLIB_TRUE@id3info_DEPENDENCIES =  $(top_builddir)/src/libid3.la \
+@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
+@ID3_NEEDZLIB_FALSE@id3info_DEPENDENCIES =  \
+@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la
 id3info_LDFLAGS = 
 id3convert_OBJECTS =  demo_convert.o
 id3convert_LDADD = $(LDADD)
-id3convert_DEPENDENCIES =  $(top_builddir)/src/libid3.la
+@ID3_NEEDZLIB_TRUE@id3convert_DEPENDENCIES =  \
+@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
+@ID3_NEEDZLIB_FALSE@id3convert_DEPENDENCIES =  \
+@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la
 id3convert_LDFLAGS = 
 id3tag_OBJECTS =  demo_tag.o
 id3tag_LDADD = $(LDADD)
-id3tag_DEPENDENCIES =  $(top_builddir)/src/libid3.la
+@ID3_NEEDZLIB_TRUE@id3tag_DEPENDENCIES =  $(top_builddir)/src/libid3.la \
+@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
+@ID3_NEEDZLIB_FALSE@id3tag_DEPENDENCIES =  $(top_builddir)/src/libid3.la
 id3tag_LDFLAGS = 
 id3simple_OBJECTS =  demo_simple.o
 id3simple_LDADD = $(LDADD)
-id3simple_DEPENDENCIES =  $(top_builddir)/src/libid3.la
+@ID3_NEEDZLIB_TRUE@id3simple_DEPENDENCIES =  \
+@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
+@ID3_NEEDZLIB_FALSE@id3simple_DEPENDENCIES =  \
+@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la
 id3simple_LDFLAGS = 
 testpic_OBJECTS =  test_pic.o
 testpic_LDADD = $(LDADD)
-testpic_DEPENDENCIES =  $(top_builddir)/src/libid3.la
+@ID3_NEEDZLIB_TRUE@testpic_DEPENDENCIES =  $(top_builddir)/src/libid3.la \
+@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
+@ID3_NEEDZLIB_FALSE@testpic_DEPENDENCIES =  \
+@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la
 testpic_LDFLAGS = 
 testunicode_OBJECTS =  test_unicode.o
 testunicode_LDADD = $(LDADD)
-testunicode_DEPENDENCIES =  $(top_builddir)/src/libid3.la
+@ID3_NEEDZLIB_TRUE@testunicode_DEPENDENCIES =  \
+@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
+@ID3_NEEDZLIB_FALSE@testunicode_DEPENDENCIES =  \
+@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la
 testunicode_LDFLAGS = 
 testcompression_OBJECTS =  test_compression.o
 testcompression_LDADD = $(LDADD)
-testcompression_DEPENDENCIES =  $(top_builddir)/src/libid3.la
+@ID3_NEEDZLIB_TRUE@testcompression_DEPENDENCIES =  \
+@ID3_NEEDZLIB_TRUE@$(top_builddir)/src/libid3.la \
+@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
+@ID3_NEEDZLIB_FALSE@testcompression_DEPENDENCIES =  \
+@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la
 testcompression_LDFLAGS = 
 get_pic_OBJECTS =  get_pic.o
 get_pic_LDADD = $(LDADD)
-get_pic_DEPENDENCIES =  $(top_builddir)/src/libid3.la
+@ID3_NEEDZLIB_TRUE@get_pic_DEPENDENCIES =  $(top_builddir)/src/libid3.la \
+@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
+@ID3_NEEDZLIB_FALSE@get_pic_DEPENDENCIES =  \
+@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la
 get_pic_LDFLAGS = 
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)

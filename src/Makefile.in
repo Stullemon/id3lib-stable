@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.17 2000/05/29 01:56:39 eldamitri Exp $
+# $Id: Makefile.in,v 1.18 2000/05/29 06:46:08 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -118,7 +118,8 @@ id3lib_sources =    c_wrapper.cpp                   error.cpp                   
 lib_LTLIBRARIES = libid3.la 
 
 libid3_la_SOURCES = $(id3lib_sources)
-libid3_la_LIBADD = -lz
+@ID3_NEEDZLIB_TRUE@LDADD = $(top_builddir)/zlib/src/libz.la
+@ID3_NEEDZLIB_FALSE@libid3_la_LIBADD = -lz
 libid3_la_LDFLAGS =    -version-info $(LT_VERSION)   -release $(LT_RELEASE)   -export-dynamic
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -131,7 +132,7 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-libid3_la_DEPENDENCIES = 
+@ID3_NEEDZLIB_FALSE@libid3_la_DEPENDENCIES = 
 libid3_la_OBJECTS =  c_wrapper.lo error.lo field.lo field_binary.lo \
 field_integer.lo field_string_ascii.lo field_string_unicode.lo frame.lo \
 frame_parse.lo frame_render.lo globals.lo header.lo header_frame.lo \

@@ -9,7 +9,12 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 INCLUDES = -I$(top_srcdir)/include
+
+if ID3_NEEDZLIB
+LDADD = $(top_builddir)/src/libid3.la $(top_builddir)/zlib/src/libz.la
+else
 LDADD = $(top_builddir)/src/libid3.la
+endif
 
 bin_PROGRAMS            = id3info id3convert id3tag
 check_PROGRAMS          = id3simple testpic testunicode testcompression get_pic
@@ -24,6 +29,7 @@ get_pic_SOURCES         = get_pic.cpp
 
 
 EXTRA_DIST =            \
+  composer.jpg          \
   demo_main.cpp         \
   221-compressed.tag    \
   230-compressed.tag    \
