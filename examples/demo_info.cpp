@@ -14,15 +14,21 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.15 2000/09/14 22:15:21 eldamitri Exp $
+// $Id: demo_info.cpp,v 1.16 2000/09/27 07:02:04 eldamitri Exp $
 
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include <id3/debug.h>
 #include <iostream.h>
 #include <id3/tag.h>
 #include <id3/utils.h>
 #include <id3/misc_support.h>
 #include <popt.h>
 
-static const char* VERSION_NUMBER = "$Revision: 1.15 $";
+static const char* VERSION_NUMBER = "$Revision: 1.16 $";
 
 void PrintUsage(const char *sName)
 {
@@ -268,7 +274,7 @@ void PrintInformation(const ID3_Tag &myTag)
                 bytesleft = bin + size - p,
                 bytestoparse = MIN(sizeof(uint32), bytesleft);
               
-              cout << " [" << ParseNumber(p, bytestoparse) << " " << format << "] ";
+              cout << " [" << id3::parseNumber(p, bytestoparse) << " " << format << "] ";
               p += 4;
             }
           }
@@ -304,6 +310,8 @@ void PrintInformation(const ID3_Tag &myTag)
   }
 }
 
+#define DEBUG
+
 int main( unsigned int argc, const char *argv[])
 {
   const char* appname = argv[0];
@@ -311,10 +319,16 @@ int main( unsigned int argc, const char *argv[])
   bool 
     bAssign = false, 
     bVersion = false, 
+    bNotice = false,
+    bWarning = false,
     bHelp = false;
+  ID3D_INIT_DOUT();
+
   static struct poptOption options[] =
   {
     { "version", 'v', POPT_ARG_NONE, &bVersion, 0 },
+    { "notice",  'n', POPT_ARG_NONE, &bNotice,  0 },
+    { "warning", 'w', POPT_ARG_NONE, &bWarning, 0 },
     { "help",    'h', POPT_ARG_NONE, &bHelp,    0 },
     { "assign",  'a', POPT_ARG_NONE, &bAssign,  0 },
     { NULL,      0,   0,             NULL,      0 }
@@ -340,6 +354,14 @@ int main( unsigned int argc, const char *argv[])
   }
   else
   {
+    if (bWarning)
+    {
+      ID3D_INIT_WARNING();
+    }
+    if (bNotice)
+    {
+      ID3D_INIT_NOTICE();
+    }
     const char* filename = NULL;
     while((filename = poptGetArg(con)) != NULL)
     {
