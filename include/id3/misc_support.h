@@ -1,4 +1,4 @@
-// $Id: misc_support.h,v 1.6 1999/12/17 16:05:02 scott Exp $
+// $Id: misc_support.h,v 1.7 1999/12/26 16:40:26 scott Exp $
 // 
 // This program is free software; you can distribute it and/or modify it under 
 // the terms discussed in the COPYING file, which should have been included  
@@ -18,6 +18,19 @@
 #include <string.h>
 #include "types.h"
 #include "tag.h"
+
+#define MASK(bits) ((1 << (bits)) - 1)
+#define MASK1 MASK(1)
+#define MASK2 MASK(2)
+#define MASK3 MASK(3)
+#define MASK4 MASK(4)
+#define MASK5 MASK(5)
+#define MASK6 MASK(6)
+#define MASK7 MASK(7)
+#define MASK8 MASK(8)
+
+uint32 ParseNumber(const uchar *buffer, size_t size = sizeof(uint32));
+void   RenderNumber(uchar *buffer, uint32 val, size_t size = sizeof(uint32));
 
 // defined in 'id3_misc_support.cpp'
 // these are 'convenience functions,' to make using the library easier for the 
@@ -75,6 +88,11 @@ void ID3_RemoveTrailingSpaces(char *buffer, luint length);
 #endif
 
 // $Log: misc_support.h,v $
+// Revision 1.7  1999/12/26 16:40:26  scott
+// (MASK): Defined macro for masking bits.
+// (): Added declarations for ParseNumber and RenderNumber, for converting
+// between character arrays and unsigned ints.
+//
 // Revision 1.6  1999/12/17 16:05:02  scott
 // Updated opening comment block.
 //
