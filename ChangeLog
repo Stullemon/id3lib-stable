@@ -1,3 +1,26 @@
+2002-07-06 Saturday 23:28   Thijmen Klok <thijmen@id3lib.org>
+
+	* src/tag_parse_v1.cpp (1.24): fixed setting field when previous
+	field was existing but empty 
+
+2002-07-06 Saturday 19:04   Thijmen Klok <thijmen@id3lib.org>
+
+	* src/tag_parse_v1.cpp (1.23): fixed setting genre when previous
+	genre was existing but empty 
+
+2002-07-06 Saturday 15:52   Thijmen Klok <thijmen@id3lib.org>
+
+	* src/: frame_render.cpp (1.26), frame_parse.cpp (1.34): fixed
+	empty frame bugs 
+
+2002-07-05 Friday 18:12   Thijmen Klok <thijmen@id3lib.org>
+
+	* AUTHORS (1.12): Readded Cedric, welcome back :-) 
+
+2002-07-05 Friday 14:35   Thijmen Klok <thijmen@id3lib.org>
+
+	* ChangeLog (1.129): added last few days 
+
 2002-07-05 Friday 14:33   Thijmen Klok <thijmen@id3lib.org>
 
 	* src/tag_parse.cpp (1.41): cleanup of internal variable file added 
@@ -423,7 +446,7 @@
 	* include/id3.h (1.17), src/c_wrapper.cpp (1.17), src/tag.cpp
 	(1.41): Added ID3Tag_LinkWithFlags() function export 
 
-2001-08-27 Monday 01:33   Dominick Mazzoni <dmazzoni@users.sourceforge.net>
+2001-08-27 Monday 01:33  dmazzoni
 
 	* src/field_binary.cpp (1.25), libprj/id3lib.mcp (1.1),
 	src/io_helpers.cpp (1.7), include/id3/io_strings.h (1.3),
@@ -443,25 +466,25 @@
 	(1.41), src/field_impl.h (1.2), src/tag.cpp (1.40): Added FrameInfo
 	class 
 
-2001-08-05 Sunday 23:21   Keith Craigie <abcess@users.sourceforge.net>
+2001-08-05 Sunday 23:21  abscess
 
 	* src/tag_parse_lyrics3.cpp (1.29): album parsing typo fix
 	(courtesy of J.P. Bergamin) 
 
-2001-08-05 Sunday 23:18   Keith Craigie <abcess@users.sourceforge.net>
+2001-08-05 Sunday 23:18  abscess
 
 	* src/frame_parse.cpp (1.31): zero-length frame fix (courtesy of
 	J.P. Bergamin) 
 
-2001-08-05 Sunday 23:16   Keith Craigie <abcess@users.sourceforge.net>
+2001-08-05 Sunday 23:16  abscess
 
 	* examples/demo_simple.c (1.4): displays artist and album 
 
-2001-08-04 Saturday 02:05   Frog Prince <thefrogprince@users.sourceforge.net>
+2001-08-04 Saturday 02:05  thefrogprince
 
 	* src/tag.cpp (1.39): Minor documentation fixes 
 
-2001-07-30 Monday 20:22   Keith Craigie <abcess@users.sourceforge.net>
+2001-07-30 Monday 20:22  abscess
 
 	* include/id3/field.h (1.43), include/id3/frame.h (1.39),
 	include/id3/globals.h (1.43), include/id3/helpers.h (1.4),
@@ -473,11 +496,11 @@
 	src/misc_support.cpp (1.32): applied changes made to repository
 	while stored temporarily on millweed.com 
 
-2001-07-25 Wednesday 05:50   Frog Prince <thefrogprince@users.sourceforge.net>
+2001-07-25 Wednesday 05:50  thefrogprince
 
 	* src/tag.cpp (1.38): Fix ID3_Tag::HasTagType() bug 
 
-2001-07-24 Tuesday 10:12   Frog Prince <thefrogprince@users.sourceforge.net>
+2001-07-24 Tuesday 10:12  thefrogprince
 
 	* libtool (1.11), examples/demo_convert.cpp (1.14),
 	examples/demo_copy.cpp (1.8), examples/demo_copy_options.c (1.5),
