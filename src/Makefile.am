@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.21 2000/10/14 21:23:37 eldamitri Exp $
+# $Id: Makefile.am,v 1.22 2000/10/15 06:40:46 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -37,6 +37,7 @@ id3lib_sources =                \
   header_frame.cpp              \
   header_tag.cpp                \
   helpers.cpp                   \
+  io.cpp                        \
   io_decorators.cpp             \
   io_helpers.cpp                \
   misc_support.cpp              \
