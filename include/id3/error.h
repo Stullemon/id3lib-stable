@@ -1,4 +1,4 @@
-// $Id: error.h,v 1.4 2000/04/05 05:20:52 eldamitri Exp $
+// $Id: error.h,v 1.5 2000/04/07 04:45:31 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -149,6 +149,9 @@ private:
 #endif
 
 // $Log: error.h,v $
+// Revision 1.5  2000/04/07 04:45:31  eldamitri
+// Minor cleanup for log comments.
+//
 // Revision 1.4  2000/04/05 05:20:52  eldamitri
 // Updated initial comment information to reflect license, copyright
 // change.
@@ -175,7 +178,7 @@ private:
 // (ID3_Err): Added error types SmallBuffer and ReadOnly.
 //
 // Revision 1.6  1999/11/16 22:50:15  scott
-// * error.h (ID3_Err): Added new ID3_Err: ID3E_BadData.
+// (ID3_Err): Added new ID3_Err: ID3E_BadData.
 //
 // Revision 1.5  1999/11/15 20:15:13  scott
 // Made constructor public.  Added new interface to error reporting

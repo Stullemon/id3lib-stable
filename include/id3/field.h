@@ -1,4 +1,4 @@
-// $Id: field.h,v 1.8 2000/04/05 05:20:52 eldamitri Exp $
+// $Id: field.h,v 1.9 2000/04/07 04:45:31 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -156,7 +156,7 @@ struct ID3_FrameDef
     if you only plan to generate 3.0 tags.
 
     @author Dirk Mahoney
-    @version $Id: field.h,v 1.8 2000/04/05 05:20:52 eldamitri Exp $
+    @version $Id: field.h,v 1.9 2000/04/07 04:45:31 eldamitri Exp $
     @see ID3_Tag
     @see ID3_Frame
     @see ID3_Err 
@@ -431,36 +431,14 @@ ID3_FrameID   ID3_FindFrameID(const char *id);
 #endif
 
 // $Log: field.h,v $
+// Revision 1.9  2000/04/07 04:45:31  eldamitri
+// Minor cleanup for log comments.
+//
 // Revision 1.8  2000/04/05 05:20:52  eldamitri
 // Updated initial comment information to reflect license, copyright
 // change.
 //
 // Revision 1.7  2000/01/04 15:42:22  eldamitri
-// * include/id3/field.h:
-// * include/id3/int28.h:
-// * include/id3/misc_support.h:
-// * include/id3/tag.h:
-// * include/id3/types.h:
-// * src/id3/dll_wrapper.cpp
-// * src/id3/error.cpp
-// * src/id3/field.cpp
-// * src/id3/field_binary.cpp
-// * src/id3/field_integer.cpp
-// * src/id3/field_string_ascii.cpp
-// * src/id3/field_string_unicode.cpp
-// * src/id3/frame.cpp
-// * src/id3/frame_parse.cpp
-// * src/id3/frame_render.cpp
-// * src/id3/header.cpp
-// * src/id3/header_frame.cpp
-// * src/id3/header_tag.cpp
-// * src/id3/int28.cpp
-// * src/id3/misc_support.cpp
-// * src/id3/tag.cpp
-// * src/id3/tag_file.cpp:
-// * src/id3/tag_find.cpp:
-// * src/id3/tag_parse.cpp:
-// * src/id3/tag_parse_lyrics3.cpp:
 // For compilation with gcc 2.95.2 and better compatibility with ANSI/ISO
 // standard C++, updated, rearranged, and removed (where necessary)
 // #include directives.
@@ -501,8 +479,7 @@ ID3_FrameID   ID3_FindFrameID(const char *id);
 // (class ID3_Field): Made the constructor private.
 //
 // Revision 1.7  1999/11/19 17:19:58  scott
-// * field.h (class ID3_Field): Updated method interfaces to make
-// appropriate parameters const.
+// Updated method interfaces to make appropriate parameters const.
 //
 // Revision 1.6  1999/11/15 20:15:36  scott
 // Made ID3_Frame and ID3_Tag friends of the ID3_Field class to allow

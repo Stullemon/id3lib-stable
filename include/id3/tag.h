@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.8 2000/04/07 04:29:58 eldamitri Exp $
+// $Id: tag.h,v 1.9 2000/04/07 04:45:31 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -93,7 +93,7 @@ const luint LEN_V1_GENRE   =   1;
 
     @author Dirk Mahoney (dirk@id3.org)
     @author Scott Thomas Haug (sth2@cs.wustl.edu)
-    @version $Id: tag.h,v 1.8 2000/04/07 04:29:58 eldamitri Exp $
+    @version $Id: tag.h,v 1.9 2000/04/07 04:45:31 eldamitri Exp $
     @see ID3_Tag
 */
 struct ID3V1_Tag
@@ -192,7 +192,7 @@ const luint ALL_TAG_TYPES = BOTH_ID3_TAGS | LYRICS_TAG;
      that id3lib 2.16 supports.
 
      @author Dirk Mahoney
-     @version $Id: tag.h,v 1.8 2000/04/07 04:29:58 eldamitri Exp $
+     @version $Id: tag.h,v 1.9 2000/04/07 04:45:31 eldamitri Exp $
      @see ID3_Frame
      @see ID3_Field
      @see ID3_Err
@@ -829,6 +829,9 @@ private:
 #endif
 
 // $Log: tag.h,v $
+// Revision 1.9  2000/04/07 04:45:31  eldamitri
+// Minor cleanup for log comments.
+//
 // Revision 1.8  2000/04/07 04:29:58  eldamitri
 // Added optional parameters to Link to make parsing of id3v1/lyrics3
 // tags optional.
@@ -838,31 +841,6 @@ private:
 // change.
 //
 // Revision 1.6  2000/01/04 15:42:22  eldamitri
-// * include/id3/field.h:
-// * include/id3/int28.h:
-// * include/id3/misc_support.h:
-// * include/id3/tag.h:
-// * include/id3/types.h:
-// * src/id3/dll_wrapper.cpp
-// * src/id3/error.cpp
-// * src/id3/field.cpp
-// * src/id3/field_binary.cpp
-// * src/id3/field_integer.cpp
-// * src/id3/field_string_ascii.cpp
-// * src/id3/field_string_unicode.cpp
-// * src/id3/frame.cpp
-// * src/id3/frame_parse.cpp
-// * src/id3/frame_render.cpp
-// * src/id3/header.cpp
-// * src/id3/header_frame.cpp
-// * src/id3/header_tag.cpp
-// * src/id3/int28.cpp
-// * src/id3/misc_support.cpp
-// * src/id3/tag.cpp
-// * src/id3/tag_file.cpp:
-// * src/id3/tag_find.cpp:
-// * src/id3/tag_parse.cpp:
-// * src/id3/tag_parse_lyrics3.cpp:
 // For compilation with gcc 2.95.2 and better compatibility with ANSI/ISO
 // standard C++, updated, rearranged, and removed (where necessary)
 // #include directives.
@@ -909,7 +887,7 @@ private:
 // OpenFileForReading, OpenFileForWriting, and CreateFile.
 //
 // Revision 1.7  1999/11/19 19:07:13  scott
-// * tag.h: Added new constants: STR_V1_COMMENT_DESC (to be added to
+// Added new constants: STR_V1_COMMENT_DESC (to be added to
 // the description of comments converted from id3v1 tags); V1_TAG,
 // V2_TAG, and BOTH_TAGS (used for methods Strip and Update to
 // determine which tag to act on); and LEN_V1, LEN_V1_ID,

@@ -1,4 +1,4 @@
-// $Id: misc_support.h,v 1.9 2000/04/05 05:20:52 eldamitri Exp $
+// $Id: misc_support.h,v 1.10 2000/04/07 04:45:31 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -99,36 +99,14 @@ void ID3_RemoveTrailingSpaces(char *buffer, luint length);
 #endif
 
 // $Log: misc_support.h,v $
+// Revision 1.10  2000/04/07 04:45:31  eldamitri
+// Minor cleanup for log comments.
+//
 // Revision 1.9  2000/04/05 05:20:52  eldamitri
 // Updated initial comment information to reflect license, copyright
 // change.
 //
 // Revision 1.8  2000/01/04 15:42:22  eldamitri
-// * include/id3/field.h:
-// * include/id3/int28.h:
-// * include/id3/misc_support.h:
-// * include/id3/tag.h:
-// * include/id3/types.h:
-// * src/id3/dll_wrapper.cpp
-// * src/id3/error.cpp
-// * src/id3/field.cpp
-// * src/id3/field_binary.cpp
-// * src/id3/field_integer.cpp
-// * src/id3/field_string_ascii.cpp
-// * src/id3/field_string_unicode.cpp
-// * src/id3/frame.cpp
-// * src/id3/frame_parse.cpp
-// * src/id3/frame_render.cpp
-// * src/id3/header.cpp
-// * src/id3/header_frame.cpp
-// * src/id3/header_tag.cpp
-// * src/id3/int28.cpp
-// * src/id3/misc_support.cpp
-// * src/id3/tag.cpp
-// * src/id3/tag_file.cpp:
-// * src/id3/tag_find.cpp:
-// * src/id3/tag_parse.cpp:
-// * src/id3/tag_parse_lyrics3.cpp:
 // For compilation with gcc 2.95.2 and better compatibility with ANSI/ISO
 // standard C++, updated, rearranged, and removed (where necessary)
 // #include directives.
@@ -175,7 +153,7 @@ void ID3_RemoveTrailingSpaces(char *buffer, luint length);
 // ucsncmp.
 //
 // Revision 1.5  1999/11/19 18:59:09  scott
-// * misc_support.h: Added the function declarations for ID3_GetString,
+// Added the function declarations for ID3_GetString,
 // ID3_GetArtist, ID3_GetAlbum, ID3_GetTitle, ID3_GetYear, ID3_AddYear,
 // ID3_GetComment, ID3_AddComment, ID3_GetTrack, ID3_GetTrackNum,
 // ID3_AddTrack, ID3_GetGenre, ID3_GetGenreNum, and ID3_GetLyrics.
