@@ -1,4 +1,4 @@
-// $Id: field_string_ascii.cpp,v 1.11 1999/12/09 03:32:06 scott Exp $
+// $Id: field_string_ascii.cpp,v 1.12 1999/12/13 04:44:07 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -66,6 +66,7 @@ luint ID3_Field::Get(char *buffer, luint maxLength, luint itemNum)
   temp = new unicode_t[maxLength];
   if (NULL == temp)
   {
+    delete [] temp;
     ID3_THROW(ID3E_NoMemory);
   }
 
@@ -74,6 +75,7 @@ luint ID3_Field::Get(char *buffer, luint maxLength, luint itemNum)
   ascii = new char[len + 1];
   if (NULL == ascii)
   {
+    delete [] ascii;
     ID3_THROW(ID3E_NoMemory);
   }
 
@@ -143,7 +145,7 @@ luint ID3_Field::ParseASCIIString(const uchar *buffer, const luint posn, const l
     }
   }
 
-  if (bytesUsed == 0)
+  if (0 == bytesUsed)
   {
     Set("");
   }
@@ -202,7 +204,7 @@ luint ID3_Field::RenderASCIIString(uchar *buffer)
   
   bytesUsed = BinSize();
 
-  if (__sData && __ulSize)
+  if ((__sData > 0) && (__ulSize > 0))
   {
     ascii = new char[__ulSize];
     if (NULL == ascii)
@@ -210,15 +212,19 @@ luint ID3_Field::RenderASCIIString(uchar *buffer)
       ID3_THROW(ID3E_NoMemory);
     }
 
-    luint i;
+    luint nIndex;
       
-    ucstombs(ascii, (unicode_t *) __sData, __ulSize);
+    // MOD 99Apr16 KG   size is the Unicode string length in bytes.
+    // passing this value to the conversion utility was causing random
+    // crashes depending on memory location.
+    // ucstombs(ascii, (unicode_t *) __sData, __ulSize);
+    ucstombs(ascii, (unicode_t *) __sData, bytesUsed);
     memcpy(buffer, (uchar *) ascii, bytesUsed);
       
     // now we convert the internal dividers to what they are supposed to be
-    for (i = 0; i < bytesUsed; i++)
+    for (nIndex = 0; nIndex < bytesUsed; nIndex++)
     {
-      if (buffer[i] == '\1')
+      if ('\1' == buffer[nIndex])
       {
         char sub = '/';
           
@@ -227,24 +233,22 @@ luint ID3_Field::RenderASCIIString(uchar *buffer)
           sub = '\0';
         }
             
-        buffer[i] = sub;
+        buffer[nIndex] = sub;
       }
     }
-   
-    if (__ulSize - 1 < bytesUsed)
+    
+    // pad the remainder of the string with spaces
+    for (nIndex = bytesUsed; nIndex < (__ulSize - 1); nIndex++)
     {
-      for (i = 0; i < (__ulSize - 1 - bytesUsed); i++)
-      {
-        buffer[bytesUsed + i] = 0x20;
-      }
+      buffer[nIndex] = 0x20;
     }
           
     delete [] ascii;
   }
   
-  if (bytesUsed == 1 && __ulFlags & ID3FF_NULL)
+  if ((1 == bytesUsed) && (__ulFlags & ID3FF_NULL))
   {
-    buffer[0] = 0;
+    buffer[0] = '\0';
   }
     
   __bHasChanged = false;
@@ -253,6 +257,11 @@ luint ID3_Field::RenderASCIIString(uchar *buffer)
 }
 
 // $Log: field_string_ascii.cpp,v $
+// Revision 1.12  1999/12/13 04:44:07  scott
+// (Get): Potential memory leaks plugged (thanks MusicMatch).
+// (RenderASCIIString): Bugfix for coversion from unicode to ascii string
+// (thanks MusicMatch).  Some code cleanup.
+//
 // Revision 1.11  1999/12/09 03:32:06  scott
 // (ParseASCIIString): Fixed bug which prevented correct parsing of fields
 // separated with NULL dividers (such as the involved people frame).
