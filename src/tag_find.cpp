@@ -1,4 +1,4 @@
-// $Id: tag_find.cpp,v 1.2 2000/04/18 22:13:15 eldamitri Exp $
+// $Id: tag_find.cpp,v 1.3 2000/04/21 04:54:27 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -37,11 +37,13 @@ ID3_Elem *ID3_Tag::Find(ID3_Frame *frame) const
   ID3_Elem *elem = NULL;
   
   for (ID3_Elem *cur = __pFrameList; NULL != cur; cur = cur->pNext)
+  {
     if (cur->pFrame == frame)
     {
       elem = cur;
       break;
     }
+  }
   
   return elem;
 }
@@ -52,7 +54,9 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id)
   
   // reset the cursor if it isn't set
   if (NULL == __pFindCursor)
+  {
     __pFindCursor = __pFrameList;
+  }
 
   for (int iCount = 0; iCount < 2 && frame == NULL; iCount++)
   {
@@ -209,6 +213,9 @@ ID3_Frame *ID3_Tag::operator[](luint num) const
 }
 
 // $Log: tag_find.cpp,v $
+// Revision 1.3  2000/04/21 04:54:27  eldamitri
+// Minor updates
+//
 // Revision 1.2  2000/04/18 22:13:15  eldamitri
 // Moved tag_find.cpp from src/id3/ to src/
 //
