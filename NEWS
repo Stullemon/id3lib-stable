@@ -1,26 +1,55 @@
 id3lib -- History of visible changes.
-
-Copyright (C) 1999, Scott Thomas Haug <sth2@cs.wustl.edu>
-See the end for copying conditions.
+Please the ChangeLog files in each directory for specific changes to the files
+in that directory.
+Please see the HISTORY file for changes to the library before version 3.6.0.
 
 Please send id3lib bug reports to sth2@cs.wustl.edu.
 
-Version 0.1
+1999-11-23 Version 3.6.0
 
-* List your features here
+A year since the last release!  This version represents a major overhaul in the
+project since the previous release (see the README and HISTORY file for
+details).  Most of the changes are at the implementation and documentation
+level---the library's interface and overall functionality remain mostly
+unchanged.  Below is an overview of the improvements made since version 3.05a.
 
--------------------------------------------------------
-Copying information:
+* Code overhaul: more descriptive variable naming, streamlined implementation
+  logic, cleaner interface specification, generalization of magic numbers and
+  strings.
+* Better documentation: transcribed the the "Documentation for ID3Lib 3.05"
+  document (written by Dirk Mahoney, 22 Nov 1998) into the actual source, using
+  javadoc-like tags so as to create documentation with applications like kdoc 
+  or doc++.  Using these programs allows for creating the documentation in
+  many different formats, including html, texinfo, man, latex, and the like.
+* Added functionality: Added additional functions for simplified access to
+  common tags, such as artist, title, and album.
+* More robust error checking: Improved upon the exception handling already in
+  place to better handle error conditions, such as invalid tags, unrecognized
+  frames, and the like.  Work is still needed to ensure the library can handle
+  error situations gracefully.
+* Improved portability: restructured the code into a GNU-like directory.
+  hierarchy.  By making use of the GNU tools automake and autoconf, a wide
+  variety of platforms can be easily supported.  This allows for a standard
+  "./configure; make; make install" installation process, as well as an
+  equally trivial method for uninstallation: "make uninstall".  Likewise,
+  "make check" builds the example applications (see below).
+* Improved examples: the src/examples/ subdirectory has new and improved
+  examples demonstrating how to make use of ID3Lib.  The "id3convert" example
+  now can convert both ways between id3v1 and id3v2 tags.  Additionally, an
+  "id3strip" app (for stripping id3v1/v2 tags) has been added, as well as an 
+  "id3info" app (for displaying id3v1/v2 tag information about a file).
+* Bug fixing: Fixes, fixes, and more fixes.  A continual process.
 
-Copyright (C) 1999, Scott Thomas Haug <sth2@cs.wustl.edu>
-
-   Permission is granted to anyone to make or distribute verbatim copies
-   of this document as received, in any medium, provided that the
-   copyright notice and this permission notice are preserved,
-   thus giving the recipient permission to redistribute in turn.
-
-   Permission is granted to distribute modified versions
-   of this document, or of portions of it,
-   under the above conditions, provided also that they
-   carry prominent notices stating who last changed them.
-
+There are other changes that may not be so welcome, so I ask for any comments,
+suggestions, or changes that others might feel would be better.
+* The zlib library files were removed from the project.  The need for zlib
+  was instead made a requirement through the configuration process via autoconf
+  and automake.
+* All of the id3lib library files were renamed by removing the "id3_" prefix.
+  Instead, the library files were placed in an id3 subdirectory in the src
+  directory.  Likewise, when the library is installed on a system, an "id3"
+  subdirectory is created in the indicated include directory, and the header
+  files are placed there.  Pragmatically, this means that code that makes use
+  of id3lib needs to "#include <id3/tag.h>" rather than "#include <id3_tag.h>".
+  This was done to create more structure and to avoid clutter in the include
+  directory.
