@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.15 1999/12/09 03:32:22 scott Exp $
+// $Id: misc_support.cpp,v 1.16 1999/12/13 04:44:12 scott Exp $
 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -439,8 +439,8 @@ char *ID3_GetComment(ID3_Tag *tag)
   return sComment;
 }
 
-bool ID3_AddComment(ID3_Tag *tag, const char *sComment, const char *sDescription,
-                    bool bReplace)
+bool ID3_AddComment(ID3_Tag *tag, const char *sComment,
+                    const char *sDescription, bool bReplace)
 {
   bool bSuccess = false;
   if (NULL != tag          &&
@@ -483,7 +483,7 @@ bool ID3_AddComment(ID3_Tag *tag, const char *sComment, const char *sDescription
 
       frame->SetID(ID3FID_COMMENT);
       frame->Field(ID3FN_LANGUAGE) = "eng";
-      frame->Field(ID3FN_DESCRIPTION) = STR_V1_COMMENT_DESC;
+      frame->Field(ID3FN_DESCRIPTION) = sDescription;
       frame->Field(ID3FN_TEXT) = sComment;
       tag->AddNewFrame(frame);
     }
@@ -791,6 +791,10 @@ size_t ID3_RemoveLyrics(ID3_Tag *tag)
 }
 
 // $Log: misc_support.cpp,v $
+// Revision 1.16  1999/12/13 04:44:12  scott
+// (ID3_AddComment): Fixed bug that wasn't adding specified comment
+// description to comment.
+//
 // Revision 1.15  1999/12/09 03:32:22  scott
 // (ID3_GetString): Added implementation for new nIndex parameter, which
 // will pull out the nIndex'th string from the field, such as for the
