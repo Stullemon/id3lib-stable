@@ -1,4 +1,4 @@
-$Id: THANKS,v 1.13 2000/09/05 07:06:07 eldamitri Exp $
+$Id: THANKS,v 1.14 2000/09/06 07:04:35 eldamitri Exp $
 
 id3lib THANKS file
 
@@ -46,6 +46,7 @@ current project maintainer if anyone has been missed.
   - Luca Leonardo Scorcia (scrlln@tin.it)
   - Peter Thorstenson (swede@openlink.com.br)
   - Sasa Ðolic (sasad@moderngroove.com)
+  - Steven Frank (stevenf@users.sourceforge.net)
   - Tim Newsome (nuisance@cmu.edu)
 
 Dirk Mahoney included the following at the end of his documentation on ID3Lib
