@@ -1,13 +1,16 @@
 == OVERVIEW ==
 
-ID3Lib is a C++ class library for manipulating ID3v1/v1.1 and ID3v2 tags.
-It also includes a functional C interface to the library.
-ID3Lib 3.0 conforms to all ID3v2 standards up to and including the ID3v2-3.0
+id3lib is a C++ class library for manipulating ID3v1/v1.1 and ID3v2 tags.
+
+It also includes (or will include very soon now!) a functional C interface to
+the library.
+
+id3lib 3.x conforms to all ID3v2 standards up to and including the ID3v2-3.0
 informal standard.
 
 == REQUIREMENTS ==
 
-In order to successfully compile and use ID3Lib, the following programs and
+In order to successfully compile and use id3lib, the following programs and
 libararies are needed:
 
 using:
@@ -24,8 +27,8 @@ zlib
 
 == BRIEF HISTORY ==
 
-ID3Lib was originally written by Dirk Mahoney, and the original web page for 
-the ID3Lib project was http://www.id3lib.org.  Unfortunately, active 
+id3lib was originally written by Dirk Mahoney, and the original web page for 
+the id3lib project was http://www.id3lib.org.  Unfortunately, active public
 development on the library concluded around November 1998.  According to the
 id3lib page, development was taken over by MusicMatch, the company who produces
 the Windows application MusicMatch Jukebox.  Unfortunately, no further open
