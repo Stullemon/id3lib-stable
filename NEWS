@@ -1,4 +1,17 @@
-$Id: NEWS,v 1.18 2000/06/23 16:58:22 eldamitri Exp $
+$Id: NEWS,v 1.19 2000/07/05 16:36:55 eldamitri Exp $
+
+2000-07-05 Version 3.7.11
+
+* Now parses and converts files with MusicMatch tags (beta - needs testing!)
+* New tag type enums: ID3TT_LYRICS3, ID3TT_LYRICS3V2, ID3TT_MUSICMATCH, 
+  ID3TT_PREPENDED, ID3TT_APPENDED.  Deprecated ID3TT_LYRICS
+* Stripping one type of appended tag strips them all
+* New C function: ID3Tag_HasTagType
+* New methods for ID3_Tag: GetPrependedBytes(), GetAppendedBytes(), 
+  GetFileSize(), and GetFileName()
+* New function: ID3_GetDataSize()
+* Improved file processing routinges
+* Bug fixes
 
 2000-06-23 Version 3.7.10
 
