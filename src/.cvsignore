@@ -21,6 +21,7 @@ header_tag.lo
 int28.lo
 libid3.la
 misc_support.lo
+old
 tag.lo
 tag_file.lo
 tag_find.lo

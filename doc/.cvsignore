@@ -1,4 +1,6 @@
-index.html
 Doxyfile
 Makefile
 Makefile.in
+api
+html
+index.html
