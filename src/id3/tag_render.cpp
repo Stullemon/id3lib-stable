@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.14 1999/12/17 16:13:04 scott Exp $
+// $Id: tag_render.cpp,v 1.15 1999/12/26 00:33:32 scott Exp $
 // 
 // This program is free software; you can distribute it and/or modify it under
 // the terms discussed in the COPYING file, which should have been included
@@ -390,7 +390,7 @@ luint ID3_Tag::PaddingSize(luint curSize) const
     // the tag included) then we just add another 2K of padding
     tempSize = ((tempSize / ID3_PADMULTIPLE) + 1) * ID3_PADMULTIPLE;
     
-    // the size of the new tag is the new filesize minus the song size
+    // the size of the new tag is the new filesize minus the audio data
     newSize = tempSize - __ulFileSize;
   }
   
@@ -400,6 +400,9 @@ luint ID3_Tag::PaddingSize(luint curSize) const
 
 
 // $Log: tag_render.cpp,v $
+// Revision 1.15  1999/12/26 00:33:32  scott
+// Minor comment change.
+//
 // Revision 1.14  1999/12/17 16:13:04  scott
 // Updated opening comment block.
 //
