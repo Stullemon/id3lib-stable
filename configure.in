@@ -1,4 +1,4 @@
-# $Id: configure.in,v 1.58 2002/06/29 20:24:23 t1mpy Exp $
+# $Id: configure.in,v 1.59 2002/06/30 16:24:41 t1mpy Exp $
 
 # Copyright 1999, 2000 Scott Thomas Haug <eldamitri@users.sourceforge.net>
 #  
@@ -130,7 +130,89 @@ AM_CONDITIONAL(ID3_NEEDDEBUG, test x$enable_debug = xyes)
 
 dnl Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS(zlib.h wchar.h sys/param.h unistd.h iconv.h)
+AC_CHECK_HEADERS(zlib.h wchar.h sys/param.h unistd.h )
+
+dnl check wheter iconv is the part of libc.
+AC_CHECK_HEADERS( iconv.h, has_iconv=1,  has_iconv=0)
+
+dnl if we have iconv library, we have to decide if it 
+dnl is present in libc
+
+ICONV_LIB=
+if test $has_iconv = 1; then
+  AC_MSG_CHECKING(where to find iconv_open)
+  exec 6>/dev/null
+  AC_CHECK_FUNCS(iconv_open, iconv_in_libc=1, iconv_in_libc=0)
+  AC_CHECK_LIB(iconv, iconv_open, iconv_in_iconv=1, iconv_in_iconv=0)
+  AC_CHECK_LIB(iconv, libiconv_open, libiconv_in_iconv=1, libiconv_in_iconv=0)
+  if test ! x$silent = xyes; then
+    exec 6>&1
+  fi
+  #standalone library rules over libc
+  if test $iconv_in_iconv = 1 -o $libiconv_in_iconv = 1; then
+    AC_MSG_RESULT(libiconv)
+    ICONV_LIB=-liconv
+  elif test $iconv_in_libc = 1; then
+    AC_MSG_RESULT(libc)
+  else
+    AC_MSG_RESULT(not found (panic))
+    AC_MSG_ERROR([iconv.h found, while iconv library not found])
+  fi
+  #we have iconv at this moment, better check which call to use
+  AC_MSG_CHECKING(whether iconv takes const char ** or char **)
+  AC_TRY_COMPILE([#include <iconv.h>],[
+		{
+		size_t iconv (iconv_t a, const char ** b, size_t *c, char **d, size_t *e);
+		}],
+		iconv_oldstyle=1, iconv_oldstyle=0)
+  if test $iconv_oldstyle = 1; then
+    AC_MSG_RESULT(const char **)
+    AC_DEFINE(ID3LIB_ICONV_OLDSTYLE)
+    #we'll check out the need of
+    #typecast in the call of iconv_open
+    AC_MSG_CHECKING(whether to typecast in iconv)
+    AC_TRY_COMPILE([#include <iconv.h>],[
+                   {
+                      const char *src = "nothing";
+                      char *outbuf;
+                      size_t insize = 0;
+                      size_t outsize = 0;
+                      iconv_t cd;
+                      iconv(cd, &src, &insize, &outbuf, &outsize);
+                   }],
+                   iconv_cast=0, iconv_cast=1)
+    if test $iconv_cast = 1; then
+      AC_MSG_RESULT(yes)
+      AC_DEFINE(ID3LIB_ICONV_CAST_OK)
+    else
+      AC_MSG_RESULT(no)
+    fi
+
+  else
+    AC_MSG_RESULT(char **)
+    #we'll check out the need of
+    #typecast in the call of iconv_open
+    AC_MSG_CHECKING(whether to typecast in iconv)
+    AC_TRY_COMPILE([#include <iconv.h>],[
+                   {
+                      char *src = "nothing";
+                      char *outbuf;
+                      size_t insize = 0;
+                      size_t outsize = 0;
+                      iconv_t cd;
+                      iconv(cd, &src, &insize, &outbuf, &outsize);
+                   }],
+                   iconv_cast=0, iconv_cast=1)
+    if test $iconv_cast = 1; then
+      AC_MSG_RESULT(yes)
+      AC_DEFINE(ID3LIB_ICONV_CAST_OK)
+    else
+      AC_MSG_RESULT(no)
+    fi
+  fi
+
+fi
+AC_SUBST(ICONV_LIB)
 
 dnl Check for c++ features
 AC_LANG_SAVE
