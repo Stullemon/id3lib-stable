@@ -1,10 +1,44 @@
+2000-04-06  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* configure.in: 
+	Changed occurrences of 'micro' to 'patch'.
+
+	* src/id3/version.cpp
+	* include/id3/version.h:
+	Changed the version functions to reflect the name change of release
+	and revision to major and minor.
+
+	* src/id3/tag_parse.cpp (ParseFromHandle)
+	* src/id3/tag_file.cpp (Link)
+	* include/id3/tag.h (class ID3_Tag): 
+	Added optional parameters to Link to make parsing of id3v1/lyrics3
+	tags optional.
+
+	* THANKS 
+	* README: 
+	Updated with current information.
+
+	* Makefile.am: 
+	Put in version requirement for automake (1.4).
+
+	* configure.in
+	* src/id3/Makefile.am:
+	Updated versioning macros, ala glib (http://www.gtk.org).  Also added a
+	few more tests.
+
+	* HISTORY: 
+	Added note to refer to ChangeLog for changes since 3.05a.
+
+	* AUTHORS: 
+	Updated to reflect MusicMatch's release of project direction.
+
 2000-04-05  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
-	* include/id3/field.h: 
-	* include/id3/int28.h: 
-	* include/id3/misc_support.h: 
-	* include/id3/tag.h: 
-	* include/id3/types.h: 
+	* include/id3/field.h
+	* include/id3/int28.h 
+	* include/id3/misc_support.h
+	* include/id3/tag.h
+	* include/id3/types.h
 	* src/id3/dll_wrapper.cpp
 	* src/id3/error.cpp
 	* src/id3/field.cpp
@@ -21,13 +55,13 @@
 	* src/id3/int28.cpp
 	* src/id3/misc_support.cpp
 	* src/id3/tag.cpp
-	* src/id3/tag_file.cpp: 
-	* src/id3/tag_find.cpp: 
-	* src/id3/tag_parse.cpp: 
-	* src/id3/tag_parse_lyrics3.cpp: 
-	* src/id3/tag_parse_v1.cpp: 
-	* src/id3/tag_render.cpp: 
-	* src/id3/tag_sync.cpp: 
+	* src/id3/tag_file.cpp
+	* src/id3/tag_find.cpp 
+	* src/id3/tag_parse.cpp
+	* src/id3/tag_parse_lyrics3.cpp
+	* src/id3/tag_parse_v1.cpp
+	* src/id3/tag_render.cpp
+	* src/id3/tag_sync.cpp
 	* src/id3/version.cpp: 
 	Updated initial comment information to reflect license, copyright
 	change.
