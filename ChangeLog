@@ -1,3 +1,55 @@
+2000-06-06  Scott Haug  <scott@id3.org>
+
+	* src/tag.cpp: 
+	Minor updates to documentation
+
+	* src/frame_render.cpp 
+	(Render): Now returns 0 and renders nothing if either there aren't 
+	any fields or rendering the fields results in nothing rendered
+
+	* src/frame.cpp: 
+	- Moved documentation from header file
+	- Minor code changes
+	- GetID() implementation moved to header file
+	- _FindField implementation removed
+	- Field implementation updated with code from _FindField
+
+	* src/field_string_unicode.cpp: 
+	- Moved documentation from header file
+	- operator=(const unicode_t*) implementation moved to header file
+
+	* src/field_string_ascii.cpp: 
+	- Moved documentation from header file
+	- operator=(const char*) implementation moved to header file
+	- Minor code changes
+
+	* src/field_integer.cpp: 
+	- Moved documentation from header file
+	- operator=(uint32) and Get() implementations moved to header file
+
+	* src/field_binary.cpp: 
+	- Moved documentation from header file
+	- Minor code changes
+
+	* src/field.cpp: 
+	- Moved documentation from header file
+	- Size() implementation moved to header file
+
+	* include/id3/tag.h: 
+	Minor whitespace changes
+
+	* include/id3/frame.h 
+	(class ID3_Frame): 
+	- Moved most documentation to cpp files
+	- GetID() definition now inlined in the class
+	- _FindField() removed
+
+	* include/id3/field.h 
+	(class ID3_Field):  
+	- Moved most documentation to cpp files
+	- ID3_Tag is no longer a friend
+	- Size, Get(uint32), and operator= definitions now inlined in the class
+
 2000-05-29  Scott Haug  <scott@id3.org>
 
 	* examples/findeng.cpp: 
