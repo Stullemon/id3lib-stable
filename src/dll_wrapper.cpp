@@ -1,4 +1,4 @@
-// $Id: dll_wrapper.cpp,v 1.14 2000/04/08 04:33:44 eldamitri Exp $
+// $Id: dll_wrapper.cpp,v 1.2 2000/04/18 22:09:48 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -496,6 +496,9 @@ void ID3Field_ToFile(ID3_Field *field, char *fileName)
 #endif
 
 // $Log: dll_wrapper.cpp,v $
+// Revision 1.2  2000/04/18 22:09:48  eldamitri
+// Moved dll_wrapper.cpp from src/id3/ to src/
+//
 // Revision 1.14  2000/04/08 04:33:44  eldamitri
 // Changed new ANSI-standard C++ include headers to old-style headers.
 // Updated ID3_VerInfo to represent major, minor, and patch versions.
