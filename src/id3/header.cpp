@@ -1,4 +1,4 @@
-// $Id: header.cpp,v 1.8 1999/12/17 16:13:04 scott Exp $
+// $Id: header.cpp,v 1.9 1999/12/26 15:11:13 scott Exp $
 // 
 // This program is free software; you can distribute it and/or modify it under
 // the terms discussed in the COPYING file, which should have been included
@@ -62,21 +62,31 @@ void ID3_Header::SetVersion(uchar ver, uchar rev)
   return ;
 }
 
-void ID3_Header::SetDataSize(luint newSize)
+void ID3_Header::SetDataSize(size_t newSize)
 {
   __ulDataSize = newSize;
-  
-  return ;
 }
 
-void ID3_Header::SetFlags(luint newFlags)
+size_t ID3_Header::GetDataSize() const
+{
+  return __ulDataSize;
+}
+
+void ID3_Header::SetFlags(uint16 newFlags)
 {
   __ulFlags = newFlags;
-  
-  return ;
+}
+
+uint16 ID3_Header::GetFlags() const
+{
+  return __ulFlags;
 }
 
 // $Log: header.cpp,v $
+// Revision 1.9  1999/12/26 15:11:13  scott
+// (GetDataSize): Added implementation.
+// (GetFlags): Added implementation.
+//
 // Revision 1.8  1999/12/17 16:13:04  scott
 // Updated opening comment block.
 //
