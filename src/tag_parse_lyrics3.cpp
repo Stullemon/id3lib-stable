@@ -1,4 +1,4 @@
-// $Id: tag_parse_lyrics3.cpp,v 1.15 2000/06/23 15:51:08 eldamitri Exp $
+// $Id: tag_parse_lyrics3.cpp,v 1.16 2000/06/25 06:21:48 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -37,16 +37,6 @@
 #include <config.h>
 #endif
 
-bool ID3_IsCRLF(const char* begin, const char* end)
-{
-  if (begin > end || (end - begin) < 2)
-  {
-    return false;
-  }
-  const char* cur = begin;
-  return 0x0D == *cur++ && 0x0A == *cur;
-}
-
 bool ID3_IsTimeStamp(const char* begin, const char* end)
 {
   if (begin > end || (end - begin) < 7)
@@ -58,36 +48,6 @@ bool ID3_IsTimeStamp(const char* begin, const char* end)
     '[' == *cur++ && isdigit(*cur++) && isdigit(*cur++) &&
     ':' == *cur++ && isdigit(*cur++) && isdigit(*cur++) &&
     ']' == *cur;
-}
-
-luint ID3_CRLFtoLF(char *buffer, luint size)
-{
-  luint newSize = 0;
-  char *dest = buffer;
-  char *source = buffer;
-  
-  if (NULL == buffer || size == 0)
-  {
-    // TODO: log this
-    return 0;
-    // ID3_THROW(ID3E_NoData);
-  }
-
-  while (source < (buffer + size))
-  {
-    if (ID3_IsCRLF(source, buffer + size))
-    {
-      source++;
-    }
-    else
-    {
-      *dest++ = *source++;
-    }
-  }
-    
-  newSize = dest - buffer;
-    
-  return newSize;
 }
 
 luint ID3_StripTimeStamps(char *buffer, luint size)
