@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: tag_impl.h,v 1.4 2000/10/16 06:59:49 eldamitri Exp $
+// $Id: tag_impl.h,v 1.5 2000/10/16 08:45:57 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,22 +28,17 @@
 #ifndef _ID3LIB_TAG_IMPL_H_
 #define _ID3LIB_TAG_IMPL_H_
 
+#include <list>
 #include <stdio.h>
 #include "tag.h"
 #include "header_tag.h"
 #include "frame.h"
 #include "field.h"
 #include "spec.h"
+#include "strings.h"
 
 class ID3_Reader;
 class ID3_Writer;
-
-struct ID3_Elem
-{
-  virtual ~ID3_Elem() { if (pFrame) { delete pFrame; } }
-  ID3_Elem  *pNext;
-  ID3_Frame *pFrame;
-};
 
 namespace dami
 {
@@ -79,6 +74,10 @@ namespace dami
 
 class ID3_TagImpl
 {
+  typedef std::list<ID3_Frame *> Frames;
+public:
+  typedef Frames::iterator       iterator;
+  typedef Frames::const_iterator const_iterator;
 public:
   ID3_TagImpl(const char *name = NULL);
   ID3_TagImpl(const ID3_Tag &tag);
@@ -119,10 +118,10 @@ public:
   ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, uint32 data) const;
   
   /// Finds frame with given frame id, fld id, and ascii data
-  ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, const char*) const;
+  ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, dami::String) const;
   
   /// Finds frame with given frame id, fld id, and unicode data
-  ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, const unicode_t*) const;
+  ID3_Frame* Find(ID3_FrameID id, ID3_FieldID fld, dami::WString) const;
   
   /** Returns the number of frames present in the tag object.
    ** 
@@ -131,7 +130,7 @@ public:
    ** 
    ** \return The number of frames present in the tag object.
    **/
-  size_t     NumFrames() const { return _num_frames; }
+  size_t     NumFrames() const { return _frames.size(); }
   ID3_Frame* GetFrameNum(index_t) const;
   ID3_Frame* operator[](index_t) const;
   ID3_TagImpl&   operator=( const ID3_Tag & );
@@ -153,7 +152,8 @@ public:
   size_t     PaddingSize(size_t) const;
   
 protected:
-  ID3_Elem*  Find(const ID3_Frame *) const;
+  const_iterator Find(const ID3_Frame *) const;
+  iterator Find(const ID3_Frame *);
   
   void       RenderExtHeader(uchar *);
 
@@ -163,10 +163,9 @@ private:
   ID3_TagHeader _hdr;          // information relevant to the tag header
   bool       _is_padded;       // add padding to tags?
   
-  ID3_Elem*  _frames;          // frames attached to the tag
-  size_t     _num_frames;      // the current number of frames
+  Frames     _frames;
   
-  mutable ID3_Elem*  _cursor;  // which frame in list are we at
+  mutable const_iterator   _cursor;  // which frame in list are we at
   mutable bool       _changed; // has tag changed since last parse or render?
   
   // file-related member variables
