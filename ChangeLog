@@ -1,3 +1,61 @@
+1999-12-12  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* config.win32: 
+	Added definition of MAXPATHLEN.
+
+	* configure.in 
+	(AC_HAVE_HEADERS): Added check for sys/param.h.
+
+	* src/id3/field.cpp 
+	(ID3FD_TermsOfUse): Added for defining USER frame.
+	(ID3FD_LinkedInfo): Added for defining LINK frame.
+	(): Added comments that detail which frames are defined and which 
+	aren't.
+	(ID3_FrameDefs): Added definitions for the following new frames:
+	ID3FID_LINKEDINFO, ID3FID_BEATSPERMINUTE, ID3FID_PLAYLISTDELAY,
+	ID3FID_KEY, ID3FID_SONGLEN, ID3FID_ORIGYEAR, ID3FID_OWNER, ID3FID_SIZE,
+	ID3FID_ISRC, and ID3FID_TERMSOFUSE.  Also sorted the elements of the 
+	FrameDefs array based on the long id field.
+	
+	* src/id3/tag_render.cpp 
+	(RenderV2ToHandle): Cleaned up creation of temp files.  Now ensures
+	temp file will be in same directory as original file, thereby ensuring
+	that the call to rename will not be used across partitions.
+
+	* src/id3/tag_file.cpp 
+	(exists): Add const qualifier to parameter.
+	(Link): Change to reflect new __sFileName type.
+
+	* src/id3/tag.cpp 
+	(SetupTag, ~ID3_Tag): Slight changes to reflect new __sFileName type.
+
+	* src/id3/misc_support.cpp 
+	(ID3_AddComment): Fixed bug that wasn't adding specified comment 
+	description to comment.
+
+	* src/id3/field_string_ascii.cpp 
+	(Get): Potential memory leaks plugged (thanks MusicMatch).
+	(RenderASCIIString): Bugfix for coversion from unicode to ascii string
+	(thanks MusicMatch).  Some code cleanup.
+
+	* src/examples/demo_tag.cpp: 
+	Added new option for adding a comment description to a comment.
+
+	* src/examples/demo_convert.cpp 
+	(main): Minor code cleanup.
+
+	* include/id3/tag.h 
+	(): Include sys/param.h (if available) to define MAXPATHLEN.
+	(class ID3_Tag): Made private methods protected.  Changed __sFileName
+	from a char * to a char array of size MAXPATHLEN+1.
+
+	* include/id3/globals.h
+	(ID3_FrameID): Added constants for the following newly supported
+ 	frames: linked information (LINK), BPM (TBPM), playlist delay (TDLY),
+	initial key (TKEY), song length (TLEN), original year (TORY),
+	file owner (TOWN), file size (TSIZ), International Standard
+	Recording Code (TSRC), and terms of use (USER).
+
 1999-12-08  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* include/id3/misc_support.h 
