@@ -1,6 +1,6 @@
-// $Id: tag.h,v 1.14 2000/04/20 03:45:55 eldamitri Exp $
+// $Id: tag.h,v 1.15 2000/04/23 17:37:43 eldamitri Exp $
 
-// id3lib: a C++ library for creating and manipulating id3v1/v2 tags
+// id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
 
 // This library is free software; you can redistribute it and/or modify it
@@ -27,22 +27,10 @@
 #ifndef __ID3LIB_TAG_H__
 #define __ID3LIB_TAG_H__
 
-#if defined HAVE_SYS_PARAM_H
-#include <sys/param.h>
-#endif
-
 #include <stdio.h>
 #include "frame.h"
 #include "header_frame.h"
 #include "header_tag.h"
-
-#ifdef  MAXPATHLEN
-#  define ID3_PATH_LENGTH   (MAXPATHLEN + 1)
-#elif   defined (PATH_MAX)
-#  define ID3_PATH_LENGTH   (PATH_MAX + 1)
-#else   /* !MAXPATHLEN */
-#  define ID3_PATH_LENGTH   (2048 + 1)
-#endif  /* !MAXPATHLEN && !PATH_MAX */
 
 struct ID3_Elem
 {
@@ -52,108 +40,12 @@ struct ID3_Elem
   bool       bTagOwns;
 };
 
-/** The length of an id3v1 tag
- **    
- ** @see ID3V1_Tag
- **/
-const luint LEN_V1         = 128;
-/** The length of the id field in an id3v1 tag
- ** 
- ** @see ID3V1_Tag#sID
- **/
-const luint LEN_V1_ID      =   3;
-/** The length of the title field in an id3v1 tag
- ** 
- ** @see ID3V1_Tag#sTitle
- **/
-const luint LEN_V1_TITLE   =  30;
-/** The length of the artist field in an id3v1 tag
- **
- ** @see ID3V1_Tag#sArtist
- **/
-const luint LEN_V1_ARTIST  =  30;
-/** The length of the album field in an id3v1 tag
- **
- ** @see ID3V1_Tag#sAlbum
- **/
-const luint LEN_V1_ALBUM   =  30;
-/** The length of the year field in an id3v1 tag 
- ** 
- ** @see ID3V1_Tag#sYear
- **/
-const luint LEN_V1_YEAR    =   4;
-/** The length of the comment field in an id3v1 tag
- **
- ** @see ID3V1_Tag#sComment
- **/
-const luint LEN_V1_COMMENT =  30;
-/** The length of the genre field in an id3v1 tag
- ** 
- ** @see ID3V1_Tag#ucGenre
- **/
-const luint LEN_V1_GENRE   =   1;
-
-/** A structure for storing the contents of an id3v1 tag.
- **
- ** @author Dirk Mahoney (dirk@id3.org)
- ** @author Scott Thomas Haug (sth2@cs.wustl.edu)
- ** @version $Id: tag.h,v 1.14 2000/04/20 03:45:55 eldamitri Exp $
- ** @see ID3_Tag
- **/
-struct ID3V1_Tag
-{
-  /// String for storing the "TAG" identifier.
-  char sID     [1 + LEN_V1_ID];
-  /// String for storing the title
-  char sTitle  [1 + LEN_V1_TITLE];
-  /// String for storing the artist
-  char sArtist [1 + LEN_V1_ARTIST];
-  /// String for storing the album
-  char sAlbum  [1 + LEN_V1_ALBUM];
-  /// String for storing the year
-  char sYear   [1 + LEN_V1_YEAR];
-  /// String for storing the comment
-  char sComment[1 + LEN_V1_COMMENT];
-  /// Byte for storing the genre
-  uchar ucGenre;
-};
-
 /** String used for the description field of a comment tag converted from an
  ** id3v1 tag to an id3v2 tag
  **
  ** @see #ID3V1_Tag
  **/
 const char STR_V1_COMMENT_DESC[] = "ID3v1_Comment";
-
-/** Flag used to represent the id3v1 tag
- **
- ** @see ID3_Tag#Update
- ** @see ID3_Tag#Strip
- **/
-enum ID3_TagType
-{
-  /// Represents an empty or non-existant tag
-  NO_TAG        =      0,
-  /// Represents an id3v1 or id3v1.1 tag
-  V1_TAG        = 1 << 0,
-  /// Represents an id3v2 tag
-  V2_TAG        = 1 << 1,
-  /// Represents a Lyrics tag
-  LYRICS_TAG    = 1 << 2
-};
-
-/** Represents both id3 tags: id3v1 and id3v2
- ** 
- ** @see ID3_TagType#V1_TAG
- ** @see ID3_TagType#V2_TAG
- **/
-const luint BOTH_ID3_TAGS = V1_TAG | V2_TAG;
-
-/** Represents all possible types of tags
- ** 
- ** @see ID3_TagType
- **/
-const luint ALL_TAG_TYPES = BOTH_ID3_TAGS | LYRICS_TAG;
 
 /** The representative class of an id3 tag.
  ** 
@@ -198,7 +90,7 @@ const luint ALL_TAG_TYPES = BOTH_ID3_TAGS | LYRICS_TAG;
  ** that id3lib 2.16 supports.
  **
  ** @author Dirk Mahoney
- ** @version $Id: tag.h,v 1.14 2000/04/20 03:45:55 eldamitri Exp $
+ ** @version $Id: tag.h,v 1.15 2000/04/23 17:37:43 eldamitri Exp $
  ** @see ID3_Frame
  ** @see ID3_Field
  ** @see ID3_Err
@@ -607,28 +499,27 @@ public:
   luint      Link(char *fileInfo, bool parseID3v1 = true, 
                   bool parseLyrics3 = true);
 
-  /** Renders the tag and writes it to the attached file; the type of tag 
-   ** rendered can be specified as a parameter.
+  /** Renders the tag and writes it to the attached file; the type of tag
+   ** rendered can be specified as a parameter.  The default is to update only
+   ** the ID3v2 tag.  See the ID3_TagType enumeration for the constants that
+   ** can be used.
    ** 
-   ** Make sure the rendering parameters areset before calling the method.
-   ** See <a href="#Link">Link</a> for an example of this method in use.
+   ** Make sure the rendering parameters are set before calling the method.
+   ** See the Link dcoumentation for an example of this method in use.
    ** 
-   ** @param ulTagFlag Flag which indicates which tag to update.  Possibilities
-   **                  are V1_TAG, V2_TAG, and BOTH_ID3_TAGS.
+   ** \sa ID3_TagType
+   ** \sa Link
+   ** \param tt The type of tag to update.
    **/
-  luint      Update(const luint ulTagFlag = V2_TAG);
+  luint      Update(const luint tt = (luint) ID3TT_ID3V2);
 
-  /** Strips the tag(s) from the attached file; the type of tag stripped
-   ** (either V1_TAG, V2_TAG, or BOTH_ID3_TAGS) can be specified as a
-   ** parameter.
+  /** Strips the tag(s) from the attached file. The type of tag stripped
+   ** can be specified as a parameter.  The default is to strip all tag types.
    ** 
-   ** @param ulTagFlag Flag which indicates which tag to strip.  Possibilities
-   **                  are V1_TAG, V2_TAG, and BOTH_ID3_TAGS.
-   ** @see V1_TAG
-   ** @see V2_TAG
-   ** @see BOTH_ID3_TAGS
+   ** \param tt The type of tag to strip
+   ** \sa ID3_TagType@see
    **/
-  luint      Strip(const luint ulTagFlag = BOTH_ID3_TAGS);
+  luint      Strip(const luint tt = (luint) ID3TT_ALL);
 
   /** Returns a pointer to the next ID3_Frame with the given ID3_FrameID;
    ** returns NULL if no such frame found.
@@ -818,7 +709,7 @@ private:
   bool      __bHasV1Tag;       // does the file have an ID3v1 tag attached?
   bool      __bParseID3v1;     // do we parse the ID3v1 tag?
   bool      __bParseLyrics3;   // do we parse the Lyrics3 tag?
-  char      __sFileName[ID3_PATH_LENGTH]; // name of the file we are linked to
+  char      *__sFileName;      // name of the file we are linked to
   static luint s_ulInstances;  // how many ID3_Tag objects are floating around in this app?
 };
 
