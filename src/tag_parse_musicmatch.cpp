@@ -1,4 +1,4 @@
-// $Id: tag_parse_musicmatch.cpp,v 1.1 2000/06/25 06:14:36 eldamitri Exp $
+// $Id: tag_parse_musicmatch.cpp,v 1.2 2000/07/01 07:48:50 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -101,19 +101,20 @@ ID3_Frame* MM_ParseTextField(FILE* handle, ID3_FrameID id, const char* desc = ""
   return frame;
 }
 
-void ID3_Tag::ParseMusicMatch()
+size_t ID3_Tag::ParseMusicMatch(FILE* handle)
 {
-  if (NULL == __file_handle)
+  size_t tag_bytes = 0;
+  if (NULL == handle)
   {
     // TODO: log this
-    return;
+    return tag_bytes;
     // ID3_THROW(ID3E_NoData);
   }
   
   char id_buffer[48];
   
-  fseek(__file_handle, -48, SEEK_END);
-  fread(id_buffer, 1, 48, __file_handle);
+  fseek(handle, -48, SEEK_CUR);
+  fread(id_buffer, 1, 48, handle);
 
   // first check for an ID3v1 tag
   if (memcmp(id_buffer, "Brava Software Inc.             ", 32) == 0)
@@ -122,36 +123,37 @@ void ID3_Tag::ParseMusicMatch()
     char img_ext[5];
     img_ext[4] = '\0';
     
-    fseek(__file_handle, -68, SEEK_CUR);
-    fread(offset_buffer, 1, 20, __file_handle);
+    long tag_end = ftell(handle);
+    long tag_beg = tag_end;
+
+    fseek(handle, -68, SEEK_CUR);
+    fread(offset_buffer, 1, 20, handle);
 
     char buff[5];
     buff[4] = 0;
     
-    fseek(__file_handle, 0, SEEK_END);
-    long tag_end = ftell(__file_handle);
-    long tag_beg = tag_end;
           
     for (int i = 0; i < 5; i++)
     {
       size_t offset = MM_ParseNum(&offset_buffer[i*4], 4);
-      fseek(__file_handle, offset - 1, SEEK_SET);
+
+      fseek(handle, offset - 1 + __starting_bytes, SEEK_SET);
 
       if (0 == i)
       {
-        tag_beg = ftell(__file_handle);
-        fseek(__file_handle, -256, SEEK_CUR);
+        tag_beg = ftell(handle);
+        fseek(handle, -256, SEEK_CUR);
         char sync[8];
-        fread(sync, sizeof(char), 8, __file_handle);
+        fread(sync, sizeof(char), 8, handle);
         if (memcmp(sync, "18273645", 8) == 0)
         {
-          fseek(__file_handle, -8, SEEK_CUR);
-          tag_beg = ftell(__file_handle);
-          fseek(__file_handle, offset - 1, SEEK_SET);
+          fseek(handle, -8, SEEK_CUR);
+          tag_beg = ftell(handle);
+          fseek(handle, offset - 1 + __starting_bytes, SEEK_SET);
         }
       }
       
-      fread(buff, 1, 4, __file_handle);
+      fread(buff, 1, 4, handle);
       if (memcmp(buff, "\0\0\0\0", 4) == 0)
       {
         continue;
@@ -169,7 +171,7 @@ void ID3_Tag::ParseMusicMatch()
         {
           size_t img_size = MM_ParseNum(buff, 4);
           uchar* img_data = new uchar[img_size];
-          fread(img_data, sizeof(uchar), img_size, __file_handle);
+          fread(img_data, sizeof(uchar), img_size, handle);
           ID3_Frame* frame = new ID3_Frame(ID3FID_PICTURE);
           if (frame)
           {
@@ -194,35 +196,33 @@ void ID3_Tag::ParseMusicMatch()
         case 4:
         {
           ID3_Frame* frame;
-          fseek(__file_handle, offset - 1, SEEK_SET);
+          fseek(handle, offset - 1 + __starting_bytes, SEEK_SET);
           
-          FILE* fh = __file_handle;
-
-          this->AttachFrame(MM_ParseTextField(fh, ID3FID_TITLE));
-          this->AttachFrame(MM_ParseTextField(fh, ID3FID_ALBUM));
-          this->AttachFrame(MM_ParseTextField(fh, ID3FID_LEADARTIST));
-          this->AttachFrame(MM_ParseTextField(fh, ID3FID_CONTENTTYPE));
-          this->AttachFrame(MM_ParseTextField(fh, ID3FID_COMMENT, 
+          this->AttachFrame(MM_ParseTextField(handle, ID3FID_TITLE));
+          this->AttachFrame(MM_ParseTextField(handle, ID3FID_ALBUM));
+          this->AttachFrame(MM_ParseTextField(handle, ID3FID_LEADARTIST));
+          this->AttachFrame(MM_ParseTextField(handle, ID3FID_CONTENTTYPE));
+          this->AttachFrame(MM_ParseTextField(handle, ID3FID_COMMENT, 
                                               "MusicMatch_Tempo"));
-          this->AttachFrame(MM_ParseTextField(fh, ID3FID_COMMENT, 
+          this->AttachFrame(MM_ParseTextField(handle, ID3FID_COMMENT, 
                                               "MusicMatch_Mood"));
-          this->AttachFrame(MM_ParseTextField(fh, ID3FID_COMMENT, 
+          this->AttachFrame(MM_ParseTextField(handle, ID3FID_COMMENT, 
                                               "MusicMatch_Situation"));
-          this->AttachFrame(MM_ParseTextField(fh, ID3FID_COMMENT, 
+          this->AttachFrame(MM_ParseTextField(handle, ID3FID_COMMENT, 
                                               "MusicMatch_Preference"));
-          this->AttachFrame(MM_ParseTextField(fh, ID3FID_SONGLEN));
+          this->AttachFrame(MM_ParseTextField(handle, ID3FID_SONGLEN));
 
           // 12 bytes?
-          fseek(fh, 12, SEEK_CUR);
+          fseek(handle, 12, SEEK_CUR);
 
-          this->AttachFrame(MM_ParseTextField(fh, ID3FID_COMMENT, 
+          this->AttachFrame(MM_ParseTextField(handle, ID3FID_COMMENT, 
                                               "MusicMatch_Path"));
-          this->AttachFrame(MM_ParseTextField(fh, ID3FID_COMMENT, 
+          this->AttachFrame(MM_ParseTextField(handle, ID3FID_COMMENT, 
                                               "MusicMatch_Serial"));
 
           // 2 bytes for track
           char trk_bytes[2];
-          fread(trk_bytes, sizeof(char), 2, fh);
+          fread(trk_bytes, sizeof(char), 2, handle);
           size_t trk_num = MM_ParseNum(trk_bytes, 2);
           if (trk_num > 0)
           {
@@ -236,13 +236,13 @@ void ID3_Tag::ParseMusicMatch()
             }
           }
 
-          this->AttachFrame(MM_ParseTextField(fh, ID3FID_COMMENT, 
+          this->AttachFrame(MM_ParseTextField(handle, ID3FID_COMMENT, 
                                               "MusicMatch_Notes"));
-          this->AttachFrame(MM_ParseTextField(fh, ID3FID_COMMENT, 
+          this->AttachFrame(MM_ParseTextField(handle, ID3FID_COMMENT, 
                                               "MusicMatch_Bio"));
-          this->AttachFrame(MM_ParseTextField(fh, ID3FID_UNSYNCEDLYRICS));
-          this->AttachFrame(MM_ParseTextField(fh, ID3FID_WWWARTIST));
-          this->AttachFrame(MM_ParseTextField(fh, ID3FID_WWWCOMMERCIALINFO));
+          this->AttachFrame(MM_ParseTextField(handle, ID3FID_UNSYNCEDLYRICS));
+          this->AttachFrame(MM_ParseTextField(handle, ID3FID_WWWARTIST));
+          this->AttachFrame(MM_ParseTextField(handle, ID3FID_WWWCOMMERCIALINFO));
 
           // email?
           break;
@@ -250,7 +250,8 @@ void ID3_Tag::ParseMusicMatch()
       }
     }
 
-    cout << "*** mm tag size = " << (tag_end - tag_beg) << endl;
-    __ending_bytes += (tag_end - tag_beg);
+    tag_bytes += (tag_end - tag_beg);
   }
+
+  return tag_bytes;
 }
