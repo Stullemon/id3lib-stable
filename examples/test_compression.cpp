@@ -1,10 +1,21 @@
-// $Id: test_compression.cpp,v 1.4 2000/06/23 00:33:45 eldamitri Exp $
+// $Id: test_compression.cpp,v 1.5 2000/10/08 21:27:59 eldamitri Exp $
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include <id3/debug.h>
 
 #include <iostream.h>
 #include <id3/tag.h>
+#include <id3/error.h>
 
 int main( int argc, char *argv[])
 {
+  ID3D_INIT_DOUT();
+  ID3D_INIT_WARNING();
+  ID3D_INIT_NOTICE();
+
   try
   {
     ID3_Tag tag;
@@ -15,8 +26,8 @@ int main( int argc, char *argv[])
     tag.Clear();
 
     frame.SetID(ID3FID_USERTEXT);
-    frame.Field(ID3FN_DESCRIPTION).Set("compression example");
-    frame.Field(ID3FN_TEXT).Set("This sample user text frame came from an ID3v2-3.0 tag.  The frame has the 'compression' bit set in it's frame header.  This is the new method for compressing frames, which supercedes the 2.01 Compressed Data Metaframe.");
+    frame.GetField(ID3FN_DESCRIPTION)->Set("compression example");
+    frame.GetField(ID3FN_TEXT)->Set("This sample user text frame came from an ID3v2-3.0 tag.  The frame has the 'compression' bit set in it's frame header.  This is the new method for compressing frames, which supercedes the 2.01 Compressed Data Metaframe.");
     frame.SetCompression(true);
     tag.AddFrame(frame);
 
