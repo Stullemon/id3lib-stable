@@ -1,4 +1,4 @@
-// $Id: helpers.cpp,v 1.1 2000/10/02 17:03:49 eldamitri Exp $
+// $Id: helpers.cpp,v 1.2 2000/10/09 04:28:18 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -203,6 +203,15 @@ size_t id3::v2::removeYears(ID3_TagImpl& tag)
   return removeFrames(tag, ID3FID_YEAR);
 }
 
+String id3::v2::getV1Comment(const ID3_TagImpl& tag)
+{
+  ID3_Frame* frame;
+  (frame = tag.Find(ID3FID_COMMENT, ID3FN_DESCRIPTION, STR_V1_COMMENT_DESC)) ||
+  (frame = tag.Find(ID3FID_COMMENT, ID3FN_DESCRIPTION, ""                 )) ||
+  (frame = tag.Find(ID3FID_COMMENT));
+  return getString(frame, ID3FN_TEXT);
+}
+
 String id3::v2::getComment(const ID3_TagImpl& tag, String desc)
 {
   ID3_Frame* frame = tag.Find(ID3FID_COMMENT, ID3FN_DESCRIPTION, desc.c_str());
@@ -214,14 +223,15 @@ ID3_Frame* id3::v2::setComment(ID3_TagImpl& tag, String text, String desc,
 {
   ID3_Frame* frame = NULL;
   // See if there is already a comment with this description
-  for (size_t nCount = 0; nCount < tag.NumFrames(); nCount++)
+  for (size_t i = 0; i < tag.NumFrames(); i++)
   {
-    frame = tag.GetFrameNum(nCount);
-    if (frame->GetID() == ID3FID_COMMENT)
+    ID3_Frame* tmpFrame = tag.GetFrameNum(i);
+    if (tmpFrame->GetID() == ID3FID_COMMENT)
     {
-      String tmpDesc = getString(frame, ID3FN_DESCRIPTION);
+      String tmpDesc = getString(tmpFrame, ID3FN_DESCRIPTION);
       if (tmpDesc == desc)
       {
+        frame = tmpFrame;
         break;
       }
     }
@@ -231,9 +241,23 @@ ID3_Frame* id3::v2::setComment(ID3_TagImpl& tag, String text, String desc,
     frame = new ID3_Frame(ID3FID_COMMENT);
     tag.AttachFrame(frame);
   }
-  frame->GetField(ID3FN_LANGUAGE)->Set(lang.c_str());
-  frame->GetField(ID3FN_DESCRIPTION)->Set(desc.c_str());
-  frame->GetField(ID3FN_TEXT)->Set(text.c_str());
+  if (!frame)
+  {
+    ID3D_WARNING( "id3::v2::setComment: ack! no frame" );
+  }
+  else
+  {
+    if (!frame->Contains(ID3FN_LANGUAGE))
+    {
+      ID3D_WARNING( "id3::v2::setComment: no language field!" );
+    }
+    else
+    {
+      frame->GetField(ID3FN_LANGUAGE)->Set(lang.c_str());
+    }
+    frame->GetField(ID3FN_DESCRIPTION)->Set(desc.c_str());
+    frame->GetField(ID3FN_TEXT)->Set(text.c_str());
+  }
 
   return frame;
 }
@@ -249,9 +273,9 @@ size_t id3::v2::removeComments(ID3_TagImpl& tag, String desc)
 {
   size_t numRemoved = 0;
 
-  for (size_t nCount = 0; nCount < tag.NumFrames(); nCount++)
+  for (size_t i = 0; i < tag.NumFrames(); i++)
   {
-    ID3_Frame* frame = tag.GetFrameNum(nCount);
+    ID3_Frame* frame = tag.GetFrameNum(i);
     if (frame->GetID() == ID3FID_COMMENT)
     {
       // See if the description we have matches the description of the 
@@ -352,9 +376,9 @@ ID3_Frame* id3::v2::setLyrics(ID3_TagImpl& tag, String text, String desc,
 {
   ID3_Frame* frame = NULL;
   // See if there is already a comment with this description
-  for (size_t nCount = 0; nCount < tag.NumFrames(); nCount++)
+  for (size_t i = 0; i < tag.NumFrames(); i++)
   {
-    frame = tag.GetFrameNum(nCount);
+    frame = tag.GetFrameNum(i);
     if (frame->GetID() == ID3FID_COMMENT)
     {
       String tmpDesc = getString(frame, ID3FN_DESCRIPTION);
