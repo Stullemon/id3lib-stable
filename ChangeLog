@@ -1,5 +1,9 @@
 2000-06-20  Scott Haug  <scott@id3.org>
 
+	* src/tag.cpp 
+	(RemoveFrame): Now marks tag as being changed when a frame is removed,
+	which was preventing tags from being updated correctly
+
 	* src/misc_support.cpp:
 	Cleaned up memory leaks from removing frames
 
