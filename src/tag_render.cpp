@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.20 2000/04/09 14:03:18 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.2 2000/04/18 22:14:00 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -450,6 +450,9 @@ luint ID3_Tag::PaddingSize(luint curSize) const
 
 
 // $Log: tag_render.cpp,v $
+// Revision 1.2  2000/04/18 22:14:00  eldamitri
+// Moved tag_render.cpp from src/id3/ to src/
+//
 // Revision 1.20  2000/04/09 14:03:18  eldamitri
 // (RenderV2ToHandle): Changed conditional from '#if defined WIN32' to
 // '#if !defined HAVE_MKSTEMP'.
