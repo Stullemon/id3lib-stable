@@ -1,4 +1,4 @@
-// $Id: demo_tag.cpp,v 1.10 2000/10/10 04:15:08 eldamitri Exp $
+// $Id: demo_tag.cpp,v 1.11 2000/10/13 18:25:53 eldamitri Exp $
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -16,7 +16,7 @@
 
 #include "demo_tag_options.h"
 
-static const char* VERSION_NUMBER = "$Revision: 1.10 $";
+static const char* VERSION_NUMBER = "$Revision: 1.11 $";
 
 void PrintUsage(const char *sName)
 {
@@ -57,30 +57,28 @@ int main( unsigned int argc, char * const argv[])
     exit(1);
   }
 
-  if (args.v1tag_given)
-  {
-    ulFlag = ID3TT_ID3V1;
-  }
-
-  if (args.v2tag_given)
-  {
-    ulFlag = ID3TT_ID3V2;
-  }
-
 #if defined ID3_ENABLE_DEBUG
-  if (args.warning_given)
+  if (args.warning_flag)
   {
-    cout << "warnings turned on" << endl;
     ID3D_INIT_WARNING();
     ID3D_WARNING ( "warnings turned on" );
   }
-  if (args.notice_given)
+  if (args.notice_flag)
   {
-    cout << "notices turned on" << endl;
     ID3D_INIT_NOTICE();
     ID3D_NOTICE ( "notices turned on" );
   }
 #endif
+
+  if (args.v1tag_flag)
+  {
+    ulFlag = ID3TT_ID3V1;
+  }
+
+  if (args.v2tag_flag)
+  {
+    ulFlag = ID3TT_ID3V2;
+  }
 
   const char
     *sArtist  = "",

@@ -1,4 +1,4 @@
-// $Id: demo_convert.cpp,v 1.10 2000/10/10 04:15:07 eldamitri Exp $
+// $Id: demo_convert.cpp,v 1.11 2000/10/13 18:25:53 eldamitri Exp $
 //
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -23,7 +23,7 @@
 #include <id3/error.h>
 #include "demo_convert_options.h"
 
-static const char* VERSION_NUMBER = "$Revision: 1.10 $";
+static const char* VERSION_NUMBER = "$Revision: 1.11 $";
 
 void PrintUsage(const char *sName)
 {
@@ -93,12 +93,25 @@ int main( unsigned int argc, char * const argv[])
     exit(1);
   }
 
-  if (args.v1tag_given)
+#if defined ID3_ENABLE_DEBUG
+  if (args.warning_flag)
+  {
+    ID3D_INIT_WARNING();
+    ID3D_WARNING ( "warnings turned on" );
+  }
+  if (args.notice_flag)
+  {
+    ID3D_INIT_NOTICE();
+    ID3D_NOTICE ( "notices turned on" );
+  }
+#endif
+
+  if (args.v1tag_flag)
   {
     ulFlag = ID3TT_ID3V1;
   }
 
-  if (args.v2tag_given)
+  if (args.v2tag_flag)
   {
     ulFlag = ID3TT_ID3V2;
   }
@@ -124,13 +137,13 @@ int main( unsigned int argc, char * const argv[])
       
       myTag.Clear();
       myTag.Link(filename, ID3TT_ALL);
-      myTag.SetPadding(args.padding_given);
+      myTag.SetPadding(args.padding_flag);
       
       cout << "attempting ";
       DisplayTags(cout, ulFlag);
       luint nTags;
       
-      if (args.warning_given)
+      if (args.strip_flag)
       {
         nTags = myTag.Strip(ulFlag);
         cout << ", stripped ";

@@ -14,7 +14,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.20 2000/10/10 04:15:07 eldamitri Exp $
+// $Id: demo_info.cpp,v 1.21 2000/10/13 18:25:53 eldamitri Exp $
 
 
 #ifdef HAVE_CONFIG_H
@@ -35,7 +35,7 @@
 
 using namespace dami;
 
-static String VERSION_NUMBER = "$Revision: 1.20 $";
+static String VERSION_NUMBER = "$Revision: 1.21 $";
 
 void PrintUsage(const char *sName)
 {
@@ -325,19 +325,18 @@ int main( unsigned int argc, char * const argv[])
   }
 
 #if defined ID3_ENABLE_DEBUG
-  if (args.warning_given)
+  if (args.warning_flag)
   {
-    cout << "warnings turned on" << endl;
     ID3D_INIT_WARNING();
     ID3D_WARNING ( "warnings turned on" );
   }
-  if (args.notice_given)
+  if (args.notice_flag)
   {
-    cout << "notices turned on" << endl;
     ID3D_INIT_NOTICE();
     ID3D_NOTICE ( "notices turned on" );
   }
 #endif
+
 
   const char* filename = NULL;
   for (size_t i = 0; i < args.inputs_num; ++i)
