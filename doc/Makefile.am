@@ -37,4 +37,5 @@ docs: Doxyfile index.html id3lib.css
 	cd $(srcdir) && doxygen Doxyfile
 
 dist-hook: docs
-	@cp -R $(srcdir)/html $(srcdir)/latex $(distdir)
+	@mkdir $(distdir)/html
+	@cp -R $(srcdir)/html/*.{html,gif,css} $(distdir)/html
