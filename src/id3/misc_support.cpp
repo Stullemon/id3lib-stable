@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.7 1999/11/19 18:53:16 scott Exp $
+// $Id: misc_support.cpp,v 1.8 1999/11/25 18:52:40 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -102,7 +102,7 @@ bool ID3_AddArtist(ID3_Tag *tag, char *text)
 
     artistFrame->SetID(ID3FID_LEADARTIST);
     artistFrame->Field(ID3FN_TEXT) = text;
-    tag->AddFrame(artistFrame, true);
+    tag->AddNewFrame(artistFrame);
   }
   
   return bReturn;
@@ -135,7 +135,7 @@ bool ID3_AddAlbum(ID3_Tag *tag, char *text)
 
     albumFrame->SetID(ID3FID_ALBUM);
     albumFrame->Field(ID3FN_TEXT) = text;
-    tag->AddFrame(albumFrame, true);
+    tag->AddNewFrame(albumFrame);
 
     bReturn = true;
   }
@@ -170,7 +170,7 @@ bool ID3_AddTitle(ID3_Tag *tag, char *text)
 
     titleFrame->SetID(ID3FID_TITLE);
     titleFrame->Field(ID3FN_TEXT) = text;
-    tag->AddFrame(titleFrame, true);
+    tag->AddNewFrame(titleFrame);
 
     bReturn = true;
   }
@@ -205,7 +205,7 @@ bool ID3_AddYear(ID3_Tag *tag, char *text)
 
     yearFrame->SetID(ID3FID_YEAR);
     yearFrame->Field(ID3FN_TEXT) = text;
-    tag->AddFrame(yearFrame, true);
+    tag->AddNewFrame(yearFrame);
 
     bReturn = true;
   }
@@ -261,7 +261,7 @@ bool ID3_AddComment(ID3_Tag *tag, char *sComment)
       frame->Field(ID3FN_LANGUAGE) = "eng";
       frame->Field(ID3FN_DESCRIPTION) = STR_V1_COMMENT_DESC;
       frame->Field(ID3FN_TEXT) = sComment;
-      tag->AddFrame(frame, true);
+      tag->AddNewFrame(frame);
     }
   }
   return bReturn;
@@ -318,7 +318,7 @@ bool ID3_AddTrack(ID3_Tag *tag, uchar ucTrack, uchar ucTotal)
 
     trackFrame->SetID(ID3FID_TRACKNUM);
     trackFrame->Field(ID3FN_TEXT) = sTrack;
-    tag->AddFrame(trackFrame, true);
+    tag->AddNewFrame(trackFrame);
 
     delete [] sTrack;
     
@@ -382,7 +382,7 @@ bool ID3_AddGenre(ID3_Tag *tag, luint ucGenre)
 
     pFrame->SetID(ID3FID_CONTENTTYPE);
     pFrame->Field(ID3FN_TEXT) = sGenre;
-    tag->AddFrame(pFrame, true);
+    tag->AddNewFrame(pFrame);
 
     bReturn = true;
   }
@@ -418,7 +418,7 @@ bool ID3_AddLyrics(ID3_Tag *tag, char *text)
     lyricsFrame->SetID(ID3FID_UNSYNCEDLYRICS);
     lyricsFrame->Field(ID3FN_LANGUAGE) = "eng";
     lyricsFrame->Field(ID3FN_TEXT) = text;
-    tag->AddFrame(lyricsFrame, true);
+    tag->AddNewFrame(lyricsFrame);
     
     bReturn = true;
   }
@@ -427,6 +427,9 @@ bool ID3_AddLyrics(ID3_Tag *tag, char *text)
 }
 
 // $Log: misc_support.cpp,v $
+// Revision 1.8  1999/11/25 18:52:40  scott
+// * misc_support.cpp: Replaced every call to AddFrame with AddNewFrame.
+//
 // Revision 1.7  1999/11/19 18:53:16  scott
 // (ID3_ASCIItoUnicode): Updated interface to make parameters const.
 // Replaced content of the code with call to mbstowcs, a function defined
