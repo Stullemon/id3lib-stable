@@ -1,4 +1,5 @@
-// $Id: tag.h,v 1.46 2000/10/03 02:40:24 eldamitri Exp $
+// -*- C++ -*-
+// $Id: tag.h,v 1.47 2000/10/09 01:56:35 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -32,6 +33,7 @@
 #include "spec.h"
 
 class ID3_Reader;
+class ID3_Writer;
 class ID3_TagImpl;
 
 class ID3_Tag : public ID3_Speccable
@@ -46,19 +48,26 @@ public:
   bool       HasChanged() const;
   size_t     Size() const;
   
-  bool       SetUnsync(bool bSync);
-  bool       SetExtendedHeader(bool bExt);
-  bool       SetPadding(bool bPad);
+  bool       SetUnsync(bool);
+  bool       SetExtendedHeader(bool);
+  bool       SetExperimental(bool);
   
+  bool       GetUnsync() const;
+  bool       GetExtendedHeader() const;
+  bool       GetExperimental() const;
+
+  bool       SetPadding(bool);
+
   void       AddFrame(const ID3_Frame&);
   void       AddFrame(const ID3_Frame*);
   void       AttachFrame(ID3_Frame*);
   ID3_Frame* RemoveFrame(const ID3_Frame *);
   
-  bool       Parse(ID3_Reader& reader);
   size_t     Parse(const uchar*, size_t);
   size_t     Parse(const uchar header[ID3_TAGHEADERSIZE], const uchar *buffer);
+  bool       Parse(ID3_Reader& reader);
   size_t     Render(uchar*, ID3_TagType = ID3TT_ID3V2) const;
+  size_t     Render(ID3_Writer&, ID3_TagType = ID3TT_ID3V2) const;
   
   size_t     Link(const char *fileInfo, flags_t = (flags_t) ID3TT_ALL);
   flags_t    Update(flags_t = (flags_t) ID3TT_ALL);
@@ -93,8 +102,6 @@ public:
 
   ID3_Frame* operator[](index_t) const;
   ID3_Tag&   operator=( const ID3_Tag & );
-  
-  bool       GetUnsync() const;
   
   bool       HasTagType(uint16 tt) const;
   ID3_V2Spec GetSpec() const;
