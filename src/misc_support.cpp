@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.28 2000/10/16 08:50:22 eldamitri Exp $
+// $Id: misc_support.cpp,v 1.29 2000/10/21 22:18:15 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -906,7 +906,7 @@ ID3_Frame *ID3_GetSyncLyrics(const ID3_Tag *tag, const char *lang,
   size = dami::min(size, frmExist->GetField(ID3FN_DATA)->Size());
 
   // get the lyrics data
-  pData = frmExist->GetField (ID3FN_DATA)->GetBinary();
+  pData = frmExist->GetField (ID3FN_DATA)->GetRawBinary();
 
   // return the frame pointer for further uses
   return frmExist;
