@@ -1,5 +1,53 @@
 2000-04-07  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
+	* configure.in: 
+	Updated to version 3.7.0, per Kamran's (MusicMatch) suggestion.  Other
+	minor updates.
+
+	* Makefile.am: 
+	Updated for config.h.win32.
+
+	* prj/id3lib.dsp
+	* prj/id3lib.dsw
+	* zlib/prj/zlib.dsp:
+	Updated for Visual C++ 6.0.
+	
+	* src/id3/tag_render.cpp:
+	Changed new ANSI-standard C++ include headers to old-style headers.
+	(RenderV2ToHandle): Added conditional code for rendering in windows.
+
+	* src/id3/tag_file.cpp: 
+	Changed new ANSI-standard C++ include headers to old-style headers.
+	Fixed minor problems for windows.
+
+	* src/id3/misc_support.cpp: 
+	Changed new ANSI-standard C++ include headers to old-style headers.
+	(ID3_GetString): Removed variable name to prevent warning in windows.
+
+	* src/id3/frame.cpp
+	* src/id3/field.cpp: 
+	Changed new ANSI-standard C++ include headers to old-style headers.
+	Fixed return bug in operator=.
+
+	* src/id3/dll_wrapper.cpp: 
+	Changed new ANSI-standard C++ include headers to old-style headers.
+	Updated ID3_VerInfo to represent major, minor, and patch versions.
+
+	* src/id3/tag_parse_v1.cpp
+	* src/id3/tag_parse_lyrics3.cpp
+	* src/id3/tag_parse.cpp
+	* src/id3/header_tag.cpp
+	* src/id3/header_frame.cpp
+	* src/id3/header.cpp
+	* src/id3/frame_render.cpp
+	* src/id3/field_string_unicode.cpp
+	* src/id3/field_string_ascii.cpp
+	* src/id3/error.cpp
+	* include/id3/tag.h
+	* include/id3/int28.h
+	* include/id3/field.h: 
+	Changed new ANSI-standard C++ include headers to old-style headers.
+
 	* include/id3/tag.h (class ID3_Tag): 
 	Added HasV1Tag, HasV2Tag, and HasLyrics (thanks John Adcock).
 
