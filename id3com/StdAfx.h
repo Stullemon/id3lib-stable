@@ -50,6 +50,19 @@
 //something, but do not change the name of _Module
 extern CComModule _Module;
 #include <atlcom.h>
+#include <atlctl.h>
+#include <comdef.h>
+
+#include <string>
+#include <vector>
+#include <list>
+#include <map>
+
+#ifdef UNICODE
+#define tstring std::wstring
+#else
+#define tstring std::string
+#endif
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.

@@ -32,12 +32,15 @@
 //
 // 05 Jan 2000   John Adcock           Original Release    
 // 26 Apr 2000   John Adcock           Got working with id3lib 3.7.3
+// 18 Aug 2000   Philip Oldaker        Added Picture Functionality
 //
 /////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
 #include "ID3COM.h"
 #include "ID3Field.h"
+#include "ID3Frame.h"
+#import "paintax.dll"
 
 /////////////////////////////////////////////////////////////////////////////
 // CID3Field
@@ -56,6 +59,93 @@ CID3Field::~CID3Field()
 	}
 	m_Field = NULL;
 }
+
+
+///////////////////////////////////////////////////////
+// Added Philip Oldaker 12-Aug 2000
+///////////////////////////////////////////////////////
+STDMETHODIMP CID3Field::GetPicture(ID3_Frame *pFrame,ID3_Field *pField,IDispatch **ppVal)
+{
+	HRESULT hr=S_OK;
+	try
+	{
+		// Get mime type
+		size_t nText = pField->Size();
+		unicode_t *sText = new unicode_t[nText + 1];
+		sText[nText] = '\0';
+		pFrame->Field(ID3FN_MIMETYPE).Get(sText,nText,1);
+		PAINTAXLib::IPictureDecoderPtr PicDec(__uuidof(PAINTAXLib::PictureDecoder));
+		IDispatchPtr pDisp;
+		// Get data
+		const BYTE *pBuf = pField->GetBinary();
+		size_t nSize = pField->Size();
+		if (pBuf == NULL || nSize == 0)
+		{
+			return OleCreatePictureIndirect(NULL,IID_IPictureDisp,TRUE,(LPVOID*)ppVal);
+		}
+		// Linked image?
+		if (wcscmp(sText,ID3_PICTURE_LINK_W) == 0)
+		{			
+			// just try and load it
+			pDisp = PicDec->LoadPicture(_bstr_t((LPCTSTR)pBuf));
+		}
+		else
+		{
+			// supported image?
+			if (PicDec->ValidImage((BYTE*)pBuf,nSize))
+			{
+				// try to load from memory 
+				pDisp = PicDec->LoadMemPicture((BYTE*)pBuf,nSize);
+			}
+			else
+			{
+				// not supported so create temp file and try again
+				_bstr_t bsExt(PicDec->GetExtFromImage((BYTE*)pBuf,nSize));
+				if (lstrlen((LPCTSTR)bsExt) > 0)
+				{
+					tstring sTempFile(m_MimeTypes.GetTempFileName((LPCTSTR)bsExt));
+					if (sTempFile.length())
+					{
+						pField->ToFile(sTempFile.c_str());
+						pDisp = PicDec->LoadPicture(sTempFile.c_str());
+						// I hope it won't needed again
+						DeleteFile(sTempFile.c_str());
+					}
+				}
+			}
+		}
+		if (pDisp != NULL)
+		{	
+			// make sure we have an IPictureDisp interface
+			IPictureDisp *pDispPict=NULL;
+			hr = pDisp->QueryInterface(IID_IPictureDisp,(LPVOID*)&pDispPict);
+			if (SUCCEEDED(hr))
+			{
+				*ppVal = pDispPict;
+			}
+		}
+		delete []sText;
+	}
+	catch (ID3_Error &err)
+	{
+		return Error(err.GetErrorType(), IID_IID3ComField, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+	}
+	catch (_com_error &err)
+	{
+		return Error((LPCTSTR)err.Description(), IID_IID3ComField, err.Error());
+	}
+	catch (...)
+	{
+		return Error(IDS_UNEXPECTED_ERROR, IID_IID3ComField, E_UNEXPECTED);
+	}
+	// return an empty picture if no error and no picture
+	if (hr == S_OK && *ppVal == NULL)
+		return OleCreatePictureIndirect(NULL,IID_IPictureDisp,TRUE,(LPVOID*)ppVal);
+	return hr;
+}
+///////////////////////////////////////////////////////
+// End Added Philip Oldaker 12-Aug 2000
+///////////////////////////////////////////////////////
 
 IID3ComField* CID3Field::CreateObject(IID3ComFrame* FrameParent, ID3_Field* Field)
 {
@@ -103,13 +193,13 @@ STDMETHODIMP CID3Field::get_Text(long ItemNum, BSTR *pVal)
 		delete [] sText;
 		return S_OK;
 	}
-	catch (ID3_Error err)
+	catch (ID3_Error &err)
 	{
-		return AtlReportError(CLSID_ID3ComField, err.GetErrorType(), IID_IID3ComField, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return Error(err.GetErrorType(), IID_IID3ComField, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3ComField, "An unexpected error has occurred", IID_IID3ComField, E_UNEXPECTED);
+		return Error(IDS_UNEXPECTED_ERROR, IID_IID3ComField, E_UNEXPECTED);
 	}
 }
 
@@ -120,13 +210,13 @@ STDMETHODIMP CID3Field::put_Text(long ItemNum, BSTR newVal)
 		m_Field->Set(newVal);
 		return S_OK;
 	}
-	catch (ID3_Error err)
+	catch (ID3_Error &err)
 	{
-		return AtlReportError(CLSID_ID3ComField, err.GetErrorType(), IID_IID3ComField, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return Error(err.GetErrorType(), IID_IID3ComField, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3ComField, "An unexpected error has occurred", IID_IID3ComField, E_UNEXPECTED);
+		return Error(IDS_UNEXPECTED_ERROR, IID_IID3ComField, E_UNEXPECTED);
 	}
 }
 
@@ -137,13 +227,13 @@ STDMETHODIMP CID3Field::get_Long(long *pVal)
 		*pVal = m_Field->Get();
 		return S_OK;
 	}
-	catch (ID3_Error err)
+	catch (ID3_Error &err)
 	{
-		return AtlReportError(CLSID_ID3ComField, err.GetErrorType(), IID_IID3ComField, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return Error(err.GetErrorType(), IID_IID3ComField, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3ComField, "An unexpected error has occurred", IID_IID3ComField, E_UNEXPECTED);
+		return Error(IDS_UNEXPECTED_ERROR, IID_IID3ComField, E_UNEXPECTED);
 	}
 }
 
@@ -154,13 +244,13 @@ STDMETHODIMP CID3Field::put_Long(long newVal)
 		m_Field->Set(newVal);
 		return S_OK;
 	}
-	catch (ID3_Error err)
+	catch (ID3_Error &err)
 	{
-		return AtlReportError(CLSID_ID3ComField, err.GetErrorType(), IID_IID3ComField, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return Error(err.GetErrorType(), IID_IID3ComField, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3ComField, "An unexpected error has occurred", IID_IID3ComField, E_UNEXPECTED);
+		return Error(IDS_UNEXPECTED_ERROR, IID_IID3ComField, E_UNEXPECTED);
 	}
 }
 
@@ -171,13 +261,13 @@ STDMETHODIMP CID3Field::Clear()
 		m_Field->Clear();
 		return S_OK;
 	}
-	catch (ID3_Error err)
+	catch (ID3_Error &err)
 	{
-		return AtlReportError(CLSID_ID3ComField, err.GetErrorType(), IID_IID3ComField, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return Error(err.GetErrorType(), IID_IID3ComField, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3ComField, "An unexpected error has occurred", IID_IID3ComField, E_UNEXPECTED);
+		return Error(IDS_UNEXPECTED_ERROR, IID_IID3ComField, E_UNEXPECTED);
 	}
 }
 
@@ -189,13 +279,13 @@ STDMETHODIMP CID3Field::CopyDataToFile(BSTR FileName)
 		m_Field->ToFile(OLE2A(FileName));
 		return S_OK;
 	}
-	catch (ID3_Error err)
+	catch (ID3_Error &err)
 	{
-		return AtlReportError(CLSID_ID3ComField, err.GetErrorType(), IID_IID3ComField, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return Error(err.GetErrorType(), IID_IID3ComField, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3ComField, "An unexpected error has occurred", IID_IID3ComField, E_UNEXPECTED);
+		return Error(IDS_UNEXPECTED_ERROR, IID_IID3ComField, E_UNEXPECTED);
 	}
 }
 
@@ -207,13 +297,13 @@ STDMETHODIMP CID3Field::CopyDataFromFile(BSTR FileName)
 		m_Field->FromFile(OLE2A(FileName));
 		return S_OK;
 	}
-	catch (ID3_Error err)
+	catch (ID3_Error &err)
 	{
-		return AtlReportError(CLSID_ID3ComField, err.GetErrorType(), IID_IID3ComField, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return Error(err.GetErrorType(), IID_IID3ComField, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3ComField, "An unexpected error has occurred", IID_IID3ComField, E_UNEXPECTED);
+		return Error(IDS_UNEXPECTED_ERROR, IID_IID3ComField, E_UNEXPECTED);
 	}
 }
 
@@ -224,12 +314,141 @@ STDMETHODIMP CID3Field::get_NumTextItems(long *pVal)
 		*pVal = m_Field->GetNumTextItems();
 		return S_OK;
 	}
-	catch (ID3_Error err)
+	catch (ID3_Error &err)
 	{
-		return AtlReportError(CLSID_ID3ComField, err.GetErrorType(), IID_IID3ComField, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+		return Error(err.GetErrorType(), IID_IID3ComField, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
 	}
 	catch (...)
 	{
-		return AtlReportError(CLSID_ID3ComField, "An unexpected error has occurred", IID_IID3ComField, E_UNEXPECTED);
+		return Error(IDS_UNEXPECTED_ERROR, IID_IID3ComField, E_UNEXPECTED);
 	}
 }
+
+///////////////////////////////////////////////////////
+// Added Philip Oldaker 12-Aug 2000
+///////////////////////////////////////////////////////
+STDMETHODIMP CID3Field::get_Picture(IDispatch **ppVal)
+{
+	// TODO: Add your implementation code here
+	if (ppVal == NULL)
+		return E_POINTER;
+	HRESULT hr=S_OK;
+	*ppVal = NULL;
+	try
+	{
+		ID3_Frame *pFrame = ((CID3Frame*)m_FrameParent)->GetID3Frame();		
+		hr = GetPicture(pFrame,m_Field,ppVal);
+	}
+	catch (ID3_Error &err)
+	{
+		return Error(err.GetErrorType(), IID_IID3ComField, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+	}
+	catch (_com_error &err)
+	{
+		return Error((LPCTSTR)err.Description(), IID_IID3ComField, err.Error());
+	}
+	catch (...)
+	{
+		return Error(IDS_UNEXPECTED_ERROR, IID_IID3ComField, E_UNEXPECTED);
+	}
+	return hr;
+}
+
+STDMETHODIMP CID3Field::put_Picture(IDispatch *newVal)
+{
+	// TODO: Add your implementation code here
+	if (newVal == NULL)
+		return E_POINTER;
+	HRESULT hr=S_OK;
+	try
+	{
+		IPicture *pPict=NULL;
+		hr = newVal->QueryInterface(IID_IPicture,(LPVOID*)&pPict);
+		if (SUCCEEDED(hr))
+		{
+			LPSTREAM lpStream = NULL;
+			hr = CreateStreamOnHGlobal(NULL, TRUE, &lpStream);
+			if (SUCCEEDED(hr))
+			{
+				LONG nSize=0;
+				hr = pPict->SaveAsFile(lpStream,FALSE,&nSize);
+				if (SUCCEEDED(hr))
+				{
+					HGLOBAL hGlobal=NULL;
+					GetHGlobalFromStream(lpStream,&hGlobal);
+					if (hGlobal)
+					{
+						m_Field->Set((const uchar*)GlobalLock(hGlobal),nSize);
+						GlobalUnlock(hGlobal);
+					}
+				}
+				lpStream->Release();
+			}
+			pPict->Release();
+		}
+	}
+	catch (ID3_Error &err)
+	{
+		return Error(err.GetErrorType(), IID_IID3ComField, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+	}
+	catch (...)
+	{
+		return Error(IDS_UNEXPECTED_ERROR, IID_IID3ComField, E_UNEXPECTED);
+	}
+	return hr;
+}
+
+STDMETHODIMP CID3Field::get_Binary(BSTR *pVal)
+{
+	// TODO: Add your implementation code here
+	if (pVal == NULL)
+		return E_POINTER;
+	try
+	{
+		*pVal = NULL;
+		const uchar *pData = m_Field->GetBinary();
+		if (pData == NULL)
+			return E_FAIL;
+		ID3_Frame *pFrame = ((CID3Frame*)m_FrameParent)->GetID3Frame();		
+		if (pFrame->GetID() == ID3FID_PICTURE)
+		{
+			*pVal = _bstr_t((LPCTSTR)pData).copy();			
+		}
+		else
+		{
+			*pVal = SysAllocStringByteLen((const char *)pData,m_Field->Size());
+		}
+	}
+	catch (ID3_Error &err)
+	{
+		return Error(err.GetErrorType(), IID_IID3ComField, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+	}
+	catch (...)
+	{
+		return Error(IDS_UNEXPECTED_ERROR, IID_IID3ComField, E_UNEXPECTED);
+	}
+	return S_OK;
+}
+
+STDMETHODIMP CID3Field::put_Binary(BSTR newVal)
+{
+	// TODO: Add your implementation code here
+	try
+	{
+		size_t Size = SysStringByteLen(newVal);
+		m_Field->Set((const uchar *)newVal,Size);
+	}
+	catch (ID3_Error &err)
+	{
+		return Error(err.GetErrorType(), IID_IID3ComField, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+	}
+	catch (...)
+	{
+		return Error(IDS_UNEXPECTED_ERROR, IID_IID3ComField, E_UNEXPECTED);
+	}
+	return S_OK;
+}
+///////////////////////////////////////////////////////
+// End Added Philip Oldaker 12-Aug 2000
+///////////////////////////////////////////////////////
+

@@ -31,6 +31,7 @@
 // Date          Developer             Changes
 //
 // 05 Jan 2000   John Adcock           Original Release    
+// 18 Aug 2000   Philip Oldaker        Added Picture Functionality
 //
 /////////////////////////////////////////////////////////////////////////////
 
@@ -52,7 +53,10 @@ class ATL_NO_VTABLE CID3Frame :
 public:
 	CID3Frame();
 	~CID3Frame();
-	
+	ID3_Frame *GetID3Frame()
+	{
+		return m_Frame;
+	}
 	static IID3ComFrame* CreateObject(IID3ComTag* TagParent, ID3_Frame* Frame);
 
 DECLARE_REGISTRY_RESOURCEID(IDR_ID3FRAME)

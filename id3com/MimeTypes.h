@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Copyright (c) 2000 John Adcock.  All rights reserved.
+// Copyright (c) 2000 Philip Oldaker.  All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 //
 // This library is free software; you can redistribute it and/or modify it
@@ -24,25 +24,59 @@
 // http://download.sourceforge.net/id3lib/
 //
 /////////////////////////////////////////////////////////////////////////////
-// stdafx.cpp : source file that includes just the standard includes
+// MimeTypes.h
 /////////////////////////////////////////////////////////////////////////////
 // Change Log
 //
 // Date          Developer             Changes
 //
-// 05 Jan 2000   John Adcock           Original Release    
 // 18 Aug 2000   Philip Oldaker        Added Picture Functionality
 //
 /////////////////////////////////////////////////////////////////////////////
 
-//  stdafx.pch will be the pre-compiled header
-//  stdafx.obj will contain the pre-compiled type information
+#ifndef __MIMETYPES_H__
+#define __MIMETYPES_H__
 
-#include "stdafx.h"
+#define ID3_PICTURE_LINK _T("-->")
+#define ID3_PICTURE_LINK_W L"-->"
 
-#ifdef _ATL_STATIC_REGISTRY
-#include <statreg.h>
-#include <statreg.cpp>
-#endif
+typedef std::map<tstring,tstring> mapMIMETypes;
 
-#include <atlimpl.cpp>
+struct ID3_PicTypeDef
+{
+  eID3PictureTypes  ePT;
+  LPCTSTR pszDescription;
+};
+
+extern ID3_PicTypeDef ID3PicTypeImpl[];
+
+////////////////////////////////////////////////
+// CMimeTypes
+////////////////////////////////////////////////
+class CMimeTypes
+{
+public:
+	CMimeTypes();
+	virtual ~CMimeTypes();
+
+	void Load();
+	tstring GetExtFromMimeType(LPCTSTR pszMime);
+	tstring GetMimeTypeFromFileName(LPCTSTR pszFileName);
+	tstring GetTempFileName(LPCTSTR pszExt);
+public:
+protected:
+private:
+	mapMIMETypes m_mapMIMETypes;
+};
+
+inline CMimeTypes::CMimeTypes()
+{
+
+}
+
+inline CMimeTypes::~CMimeTypes()
+{
+
+}
+
+#endif //__MIMETYPES_H__

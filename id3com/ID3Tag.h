@@ -32,6 +32,7 @@
 //
 // 05 Jan 2000   John Adcock           Original Release    
 // 26 Apr 2000   John Adcock           Got working with id3lib 3.7.3
+// 18 Aug 2000   Philip Oldaker        Added Picture Functionality
 //
 /////////////////////////////////////////////////////////////////////////////
 
@@ -40,6 +41,8 @@
 
 #include "resource.h"       // main symbols
 #include <id3/tag.h>
+#include "MimeTypes.h"
+#include "ID3COM.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CID3Tag
@@ -68,6 +71,14 @@ END_COM_MAP()
 
 // IID3ComTag
 public:
+	STDMETHOD(RemoveFrameByNum)(/*[in]*/ long FrameNum);
+	STDMETHOD(GetMimeTypeFromFileName)(/*[in]*/ BSTR val,/*[out,retval]*/ BSTR *pVal);
+	STDMETHOD(RemoveFrame)(/*[in]*/ eID3FrameTypes FrameID);
+	STDMETHOD(GetStringFromPictureType)(eID3PictureTypes PicType,BSTR *pVal);
+	STDMETHOD(GetPictureTypeFromString)(BSTR val, eID3PictureTypes *pPicType);
+	STDMETHOD(get_ValidPictureTypes)(/*[out, retval]*/ ITextCollection **ppTextColl);
+	STDMETHOD(get_AlbumCover)(/*[out, retval]*/ IDispatch* *pVal);
+	STDMETHOD(AddPicture)(BSTR url,eID3PictureTypes PicType,BSTR descr,VARIANT_BOOL link);
 	STDMETHOD(get_VersionString)(/*[out, retval]*/ BSTR *pVal);
 	STDMETHOD(put_UnSync)(/*[in]*/ VARIANT_BOOL newVal);
 	STDMETHOD(put_Padding)(/*[in]*/ VARIANT_BOOL newVal);
@@ -112,6 +123,7 @@ public:
 	STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** pRetVal);
 protected:
 	ID3_Tag* m_ID3Tag;
+	CMimeTypes m_MimeTypes;
 };
 
 #endif //__ID3TAG_H_

@@ -1,8 +1,8 @@
 Type=Exe
-Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#..\..\..\..\..\WINNT\System32\stdole2.tlb#OLE Automation
-Reference=*\G{AEBA98B0-C36C-11D3-841B-0008C782A257}#1.0#0#..\Release\id3com.dll#ID3libCOM 1.0 Type Library
-Form=frmID3Test.frm
-Startup="frmID3Test"
+Reference=*\G{00020430-0000-0000-C000-000000000046}#2.0#0#..\..\..\..\..\..\WINDOWS\System32\stdole2.tlb#OLE Automation
+Reference=*\G{AEBA98B0-C36C-11D3-841B-0008C782A257}#1.0#0#..\..\..\..\..\..\PROGRA~1\MICROS~4\MYPROJ~1\ID3LIB~1.12\id3com\Release\id3com.dll#ID3libCOM 1.0 Type Library
+Module=frmID3Test; frmID3Test.frm
+Startup="Sub Main"
 ExeName32="ID3Test.exe"
 Command32=""
 Name="ID3Test"

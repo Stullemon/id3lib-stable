@@ -21,6 +21,7 @@
 // Date          Developer             Changes
 //
 // 05 Jan 2000   John Adcock           Original Release    
+// 18 Aug 2000   Philip Oldaker        Added Picture Functionality
 //
 /////////////////////////////////////////////////////////////////////////////
 
@@ -29,6 +30,37 @@
 
 import "oaidl.idl";
 import "ocidl.idl";
+	
+	typedef 
+	[
+		uuid(11B46BE0-752A-11d4-9521-006097579962), 		
+		helpstring("ID3 Picture Types")
+	]
+	enum 
+	{
+		ID3_PICTURE_OTHER,			
+		ID3_PICTURE_FILE_ICON,		
+		ID3_PICTURE_OTHER_FILE_ICON,	
+		ID3_PICTURE_COVER_FRONT,		
+		ID3_PICTURE_COVER_BACK,		
+		ID3_PICTURE_LEAFLET_PAGE,	
+		ID3_PICTURE_MEDIA,			
+		ID3_PICTURE_LEAD_ARTIST,		
+		ID3_PICTURE_ARTIST,			
+		ID3_PICTURE_CONDUCTOR,		
+		ID3_PICTURE_BAND,			
+		ID3_PICTURE_COMPOSER,		
+		ID3_PICTURE_LYRICIST,		
+		ID3_PICTURE_REC_LOCATION,	
+		ID3_PICTURE_DUR_RECORDING,	
+		ID3_PICTURE_DUR_PERFORMANCE,	
+		ID3_PICTURE_MOVIE,			
+		ID3_PICTURE_FISH_NONSENSE,	
+		ID3_PICTURE_ILLUSTRATION,	
+		ID3_PICTURE_BAND_LOGO,		
+		ID3_PICTURE_PUBLISHER_LOGO,
+		ID3_PICTURE_LASTPICTUREID
+	} eID3PictureTypes;
 
 	typedef 
 	[
@@ -180,14 +212,18 @@ import "ocidl.idl";
 	]
 	interface IID3ComField : IDispatch
 	{
-		[propget, id(1), helpstring("property Text")] HRESULT Text([in] long ItemNum, [out, retval] BSTR *pVal);
-		[propput, id(1), helpstring("property Text")] HRESULT Text([in] long ItemNum, [in] BSTR newVal);
-		[propget, id(2), helpstring("property Long")] HRESULT Long([out, retval] long *pVal);
-		[propput, id(2), helpstring("property Long")] HRESULT Long([in] long newVal);
-		[id(3), helpstring("method Clear")] HRESULT Clear();
-		[id(4), helpstring("method CopyDataToFile")] HRESULT CopyDataToFile(BSTR FileName);
-		[id(5), helpstring("method CopyDataFromFile")] HRESULT CopyDataFromFile(BSTR FileName);
-		[propget, id(6), helpstring("property NumTextItems")] HRESULT NumTextItems([out, retval] long *pVal);
+		[propget, id(0), helpstring("property Text")] HRESULT Text([in] long ItemNum, [out, retval] BSTR *pVal);
+		[propput, id(0), helpstring("property Text")] HRESULT Text([in] long ItemNum, [in] BSTR newVal);
+		[propget, id(1), helpstring("property Long")] HRESULT Long([out, retval] long *pVal);
+		[propput, id(1), helpstring("property Long")] HRESULT Long([in] long newVal);
+		[propget, id(2), helpstring("property Picture")] HRESULT Picture([out, retval] IDispatch* *pVal);
+		[propput, id(2), helpstring("property Picture")] HRESULT Picture([in] IDispatch* newVal);
+		[id(4), helpstring("method Clear")] HRESULT Clear();
+		[id(5), helpstring("method CopyDataToFile")] HRESULT CopyDataToFile(BSTR FileName);
+		[id(6), helpstring("method CopyDataFromFile")] HRESULT CopyDataFromFile(BSTR FileName);
+		[propget, id(7), helpstring("property NumTextItems")] HRESULT NumTextItems([out, retval] long *pVal);
+		[propget, id(8), helpstring("property Binary")] HRESULT Binary([out, retval] BSTR *pVal);
+		[propput, id(8), helpstring("property Binary")] HRESULT Binary([in] BSTR newVal);
 	};
 
 	[
@@ -207,7 +243,21 @@ import "ocidl.idl";
  		[propget, id(5), helpstring("property Compressed")] HRESULT Compressed([out, retval] VARIANT_BOOL *pVal);
  		[propput, id(5), helpstring("property Compressed")] HRESULT Compressed([in] VARIANT_BOOL newVal);
 	};
+	[
+		object,
+		uuid(372EEDD8-CF9D-4B34-BDE1-D841DB2E8C50),
+		dual,
+		helpstring("ITextCollection Interface"),
+		pointer_default(unique)
+	]
+	interface ITextCollection : IDispatch
+	{
+        [propget] HRESULT Count([out, retval] long* pnCount);
 
+        [id(DISPID_VALUE), propget] HRESULT Item([in] long n, [out, retval] BSTR *pText);
+        
+        [id(DISPID_NEWENUM), propget] HRESULT _NewEnum([out, retval] IUnknown** ppEnum);
+	};
 	[
 		object,
 		uuid(AEBA98BC-C36C-11D3-841B-0008C782A257),
@@ -258,6 +308,14 @@ import "ocidl.idl";
  		[propput, id(27), helpstring("property Padding")] HRESULT Padding([in] VARIANT_BOOL newVal);
  		[propput, id(28), helpstring("property UnSync")] HRESULT UnSync([in] VARIANT_BOOL newVal);
 		[propget, id(29), helpstring("property VersionString")] HRESULT VersionString([out, retval] BSTR *pVal);
+		[propget, id(30), helpstring("property AlbumCover")] HRESULT AlbumCover([out, retval] IDispatch* *pVal);
+		[id(31), helpstring("Add Picture")] HRESULT AddPicture([in] BSTR url,[in] eID3PictureTypes PicType,[in,defaultvalue("")] BSTR descr,[in,defaultvalue(0)] VARIANT_BOOL link);
+		[propget, id(32), helpstring("ValidPictureTypes")] HRESULT ValidPictureTypes([out, retval] ITextCollection* *pTextColl);
+		[id(33), helpstring("GetPictureTypeFromString")] HRESULT GetPictureTypeFromString([in] BSTR val, [out,retval] eID3PictureTypes *pPicType);
+		[id(34), helpstring("GetStringFromPictureType")] HRESULT GetStringFromPictureType([in] eID3PictureTypes PicType,[out,retval] BSTR *pVal);
+		[id(35), helpstring("method RemoveFrame")] HRESULT RemoveFrame([in] eID3FrameTypes FrameID);
+		[id(36), helpstring("method GetMimeTypeFromFileName")] HRESULT GetMimeTypeFromFileName([in] BSTR val,[out,retval] BSTR *pVal);
+		[id(37), helpstring("method RemoveFrameByNum")] HRESULT RemoveFrameByNum([in] long FrameNum);
 		[propget, id(DISPID_NEWENUM), restricted] HRESULT _NewEnum([out, retval] IUnknown** pRetVal);
 	};
 [
@@ -295,5 +353,13 @@ library ID3COM
 	coclass ID3ComField
 	{
 		[default] interface IID3ComField;
+	};
+	[
+		uuid(62DCE31B-881E-48F4-A099-E0171A411826),
+		helpstring("TextCollection Class")
+	]
+	coclass TextCollection
+	{
+		[default] interface ITextCollection;
 	};
 };

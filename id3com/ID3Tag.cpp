@@ -32,6 +32,7 @@
 //
 // 05 Jan 2000   John Adcock           Original Release    
 // 26 Apr 2000   John Adcock           Got working with id3lib 3.7.3
+// 18 Aug 2000   Philip Oldaker        Added Picture Functionality
 //
 /////////////////////////////////////////////////////////////////////////////
 
@@ -40,10 +41,11 @@
 #include "ID3Tag.h"
 #include "config.h"
 #include "ID3Frame.h"
+#include "ID3Field.h"
 #include "EnumFields.h"
 #include "misc_support.h"
 #include "math.h"
-
+#include "TextCollection.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CID3Tag
@@ -977,7 +979,7 @@ STDMETHODIMP CID3Tag::get_VersionString(BSTR *pVal)
 	{
 		// this buffer needs to be overly large
 		// for some unexplained reason
-		// if the size is small you get
+		// if the size is small you get what?
 		char Buffer[1024];
 		sprintf(Buffer, "id3com %d.%d.%d Compiled %s %s", __ID3LIB_MAJOR_VERSION,
 														__ID3LIB_MINOR_VERSION,
@@ -996,3 +998,235 @@ STDMETHODIMP CID3Tag::get_VersionString(BSTR *pVal)
 		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
 	}
 }
+
+///////////////////////////////////////////////////////
+// Added Philip Oldaker 12-Aug 2000
+///////////////////////////////////////////////////////
+STDMETHODIMP CID3Tag::get_AlbumCover(IDispatch **ppVal)
+{
+	// TODO: Add your implementation code here
+	if (ppVal == NULL)
+		return E_POINTER;
+	HRESULT hr=S_OK;
+	*ppVal = NULL;
+	try
+	{
+		ID3_Frame *pFrame = m_ID3Tag->Find(ID3FID_PICTURE);
+		// no data then return an empty picture
+		if (pFrame == NULL || !pFrame->Contains(ID3FN_DATA) || pFrame->Field(ID3FN_PICTURETYPE).Get() != ID3_PICTURE_COVER_FRONT)
+		{
+			return OleCreatePictureIndirect(NULL,IID_IPictureDisp,TRUE,(LPVOID*)ppVal);
+		}
+		CComObject<CID3Field> *pField = new CComObject<CID3Field>;
+		hr = pField->GetPicture(pFrame,&pFrame->Field(ID3FN_DATA),ppVal);
+		delete pField;
+	}
+	catch (ID3_Error &err)
+	{
+		return Error(err.GetErrorType(), IID_IID3ComField, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+	}
+	catch (...)
+	{
+		return Error(IDS_UNEXPECTED_ERROR, IID_IID3ComField, E_UNEXPECTED);
+	}
+	return hr;
+}
+
+STDMETHODIMP CID3Tag::AddPicture(BSTR url,eID3PictureTypes PicType,BSTR descr,VARIANT_BOOL link)
+{
+	// TODO: Add your implementation code here
+	HRESULT hr=S_OK;
+	ID3_Frame *pFrame = new ID3_Frame((enum ID3_FrameID)ID3_PICTURE);
+	try
+	{
+		_bstr_t bsURL(url,true);
+		_bstr_t bsDescr(descr,true);
+		pFrame->SetID(ID3FID_PICTURE);
+		pFrame->Field(ID3FN_PICTURETYPE).Set((int)PicType);
+		// set description
+		if (bsDescr.length())
+			pFrame->Field(ID3FN_DESCRIPTION).Set((LPCTSTR)bsDescr);
+		// Linked?
+		if (link == VARIANT_TRUE) 
+		{					
+			pFrame->Field(ID3FN_MIMETYPE).Set(ID3_PICTURE_LINK);
+			// Include null terminator
+			pFrame->Field(ID3FN_DATA).Set((const uchar*)(LPCTSTR)bsURL,lstrlen((LPCTSTR)bsURL)+sizeof(TCHAR));
+		}
+		else
+		{
+			// Set mime type
+			pFrame->Field(ID3FN_MIMETYPE).Set(m_MimeTypes.GetMimeTypeFromFileName((LPCTSTR)bsURL).c_str());
+			// Check if valid file
+			DWORD dwRet = GetFileAttributes((LPCTSTR)bsURL);
+			if (dwRet != 0xFFFFFFFF)
+			{
+				// directorys not allowed
+				if (dwRet & FILE_ATTRIBUTE_DIRECTORY)
+				{
+					return Error(IDS_ERROR_BAD_FILENAME, IID_IID3ComField, E_UNEXPECTED);
+				}
+				else
+				{
+					// should be a valid file
+					// It would be nice if FromFile returned false or raised an exception if something went wrong
+					pFrame->Field(ID3FN_DATA).FromFile((LPCTSTR)bsURL);
+				}
+			}
+			else
+			{
+				// Could be an Internet URL
+				IPicture *pPict=NULL;
+				HRESULT hr = OleLoadPicturePath(url, NULL, 0, 0, IID_IPicture, (void**)&pPict);
+				if (SUCCEEDED(hr))
+				{
+					LPSTREAM lpStream = NULL;
+					hr = CreateStreamOnHGlobal(NULL, TRUE, &lpStream);
+					if (SUCCEEDED(hr))
+					{
+						LONG nSize=0;
+						hr = pPict->SaveAsFile(lpStream,FALSE,&nSize);
+						if (SUCCEEDED(hr))
+						{
+							HGLOBAL hGlobal=NULL;
+							GetHGlobalFromStream(lpStream,&hGlobal);
+							if (hGlobal)
+							{
+								pFrame->Field(ID3FN_DATA).Set((const uchar*)GlobalLock(hGlobal),nSize);
+								GlobalUnlock(hGlobal);
+							}
+						}
+						lpStream->Release();
+					}
+					pPict->Release();
+				}
+			}
+		}
+	}
+	catch (ID3_Error &err)
+	{
+		return Error(err.GetErrorType(), IID_IID3ComField, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+	}
+	catch (...)
+	{
+		return Error(IDS_UNEXPECTED_ERROR, IID_IID3ComField, E_UNEXPECTED);
+	}
+	if (hr != S_OK)
+		return Error(IDS_ERROR_BAD_URL, IID_IID3ComField, hr);
+	m_ID3Tag->AttachFrame(pFrame);
+	return hr;
+}
+
+STDMETHODIMP CID3Tag::get_ValidPictureTypes(ITextCollection **ppTextColl)
+{
+	// TODO: Add your implementation code here
+	HRESULT hr = S_OK;
+	if (ppTextColl == NULL)
+		return E_POINTER;
+	*ppTextColl = NULL;
+	CComObject<CTextCollection> *pPicTypes;
+	hr = CComObject<CTextCollection>::CreateInstance(&pPicTypes);
+	if (FAILED(hr))
+		return hr;
+	for(int i=0; i < ID3_PICTURE_LASTPICTUREID; i++)
+	{
+		hr = pPicTypes->AddText((LPCTSTR)ID3PicTypeImpl[i].pszDescription);
+	}
+	pPicTypes->AddRef();
+	*ppTextColl = pPicTypes;	
+	return hr;
+}
+
+STDMETHODIMP CID3Tag::GetPictureTypeFromString(BSTR val, eID3PictureTypes *pPicType)
+{
+	// TODO: Add your implementation code here
+	_bstr_t bsVal(val,true);
+	*pPicType = ID3_PICTURE_OTHER;
+	HRESULT hr = E_INVALIDARG;
+	for(int i=0; i < ID3_PICTURE_LASTPICTUREID;i++)
+	{
+		if (lstrcmp(ID3PicTypeImpl[i].pszDescription,(LPCTSTR)bsVal) == 0)
+		{
+			*pPicType = (eID3PictureTypes)i;
+			hr = S_OK;
+			break;
+		}
+	}
+	return hr;
+}
+
+STDMETHODIMP CID3Tag::GetStringFromPictureType(eID3PictureTypes PicType,BSTR *pVal)
+{
+	// TODO: Add your implementation code here
+	if (PicType >= ID3_PICTURE_LASTPICTUREID)
+		return E_INVALIDARG;
+	*pVal = _bstr_t(ID3PicTypeImpl[(int)PicType].pszDescription).copy();
+	return S_OK;
+}
+
+STDMETHODIMP CID3Tag::RemoveFrame(eID3FrameTypes FrameID)
+{
+	// TODO: Add your implementation code here
+	HRESULT hr=S_OK;
+	try
+	{
+		ID3_Frame* pFrame = m_ID3Tag->Find((enum ID3_FrameID)FrameID);
+		if (pFrame)
+		{
+			/* pTag is an ID3_Tag */
+			delete m_ID3Tag->RemoveFrame(pFrame);
+		}
+		else
+			hr = E_POINTER;
+	}
+	catch (ID3_Error &err)
+	{
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+	}
+	catch (...)
+	{
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
+	}
+	return hr;
+}
+
+STDMETHODIMP CID3Tag::GetMimeTypeFromFileName(BSTR val, BSTR *pVal)
+{
+	// TODO: Add your implementation code here
+	if (pVal == NULL)
+		return E_POINTER;
+	tstring sMimeType = m_MimeTypes.GetMimeTypeFromFileName((LPCTSTR)_bstr_t(val,true));
+	*pVal = _bstr_t((LPCTSTR)sMimeType.c_str()).copy();
+	return S_OK;
+}
+
+STDMETHODIMP CID3Tag::RemoveFrameByNum(long FrameNum)
+{
+	// TODO: Add your implementation code here
+	HRESULT hr=S_OK;
+	try
+	{
+		ID3_Frame* pFrame = m_ID3Tag->GetFrameNum(FrameNum);
+		if(pFrame)
+		{
+			/* pTag is an ID3_Tag */
+			delete m_ID3Tag->RemoveFrame(pFrame);			
+		}
+		else
+			hr = E_POINTER;
+	}
+	catch (ID3_Error &err)
+	{
+		return AtlReportError(CLSID_ID3ComTag, err.GetErrorType(), IID_IID3ComTag, CUSTOM_CTL_SCODE(1000 + err.GetErrorID()));
+	}
+	catch (...)
+	{
+		return AtlReportError(CLSID_ID3ComTag, "An unexpected error has occurred", IID_IID3ComTag, E_UNEXPECTED);
+	}
+
+	return hr;
+}
+///////////////////////////////////////////////////////
+// End Added Philip Oldaker 12-Aug 2000
+///////////////////////////////////////////////////////
+

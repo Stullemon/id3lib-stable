@@ -32,6 +32,7 @@
 //
 // 05 Jan 2000   John Adcock           Original Release    
 // 26 Apr 2000   John Adcock           Got working with id3lib 3.7.3
+// 18 Aug 2000   Philip Oldaker        Added Picture Functionality
 //
 /////////////////////////////////////////////////////////////////////////////
 
@@ -48,12 +49,14 @@
 #include "ID3Tag.h"
 #include "ID3Frame.h"
 #include "ID3Field.h"
+#include "TextCollection.h"
 
 
 CComModule _Module;
 
 BEGIN_OBJECT_MAP(ObjectMap)
 OBJECT_ENTRY(CLSID_ID3ComTag, CID3Tag)
+OBJECT_ENTRY(CLSID_TextCollection, CTextCollection)
 END_OBJECT_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

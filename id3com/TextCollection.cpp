@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Copyright (c) 2000 John Adcock.  All rights reserved.
+// Copyright (c) 2000 Philip Oldaker.  All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 //
 // This library is free software; you can redistribute it and/or modify it
@@ -24,25 +24,24 @@
 // http://download.sourceforge.net/id3lib/
 //
 /////////////////////////////////////////////////////////////////////////////
-// stdafx.cpp : source file that includes just the standard includes
+// TextCollection.cpp :
 /////////////////////////////////////////////////////////////////////////////
 // Change Log
 //
 // Date          Developer             Changes
 //
-// 05 Jan 2000   John Adcock           Original Release    
 // 18 Aug 2000   Philip Oldaker        Added Picture Functionality
 //
 /////////////////////////////////////////////////////////////////////////////
 
-//  stdafx.pch will be the pre-compiled header
-//  stdafx.obj will contain the pre-compiled type information
-
+// TextCollection.cpp : Implementation of CTextCollection
 #include "stdafx.h"
+#include "ID3COM.h"
+#include "TextCollection.h"
 
-#ifdef _ATL_STATIC_REGISTRY
-#include <statreg.h>
-#include <statreg.cpp>
-#endif
+/////////////////////////////////////////////////////////////////////////////
+// CTextCollection
 
-#include <atlimpl.cpp>
+CTextCollection::CTextCollection()
+{
+}

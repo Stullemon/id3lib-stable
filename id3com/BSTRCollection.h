@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Copyright (c) 2000 John Adcock.  All rights reserved.
+// Copyright (c) 2000 Philip Oldaker.  All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 //
 // This library is free software; you can redistribute it and/or modify it
@@ -24,76 +24,91 @@
 // http://download.sourceforge.net/id3lib/
 //
 /////////////////////////////////////////////////////////////////////////////
-// ID3Field.h : Declaration of the CID3Field
+// BSTRCollection.h : Declaration of the CTextCollection
 /////////////////////////////////////////////////////////////////////////////
 // Change Log
 //
 // Date          Developer             Changes
 //
-// 05 Jan 2000   John Adcock           Original Release    
-// 26 Apr 2000   John Adcock           Got working with id3lib 3.7.3
 // 18 Aug 2000   Philip Oldaker        Added Picture Functionality
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef __ID3FIELD_H_
-#define __ID3FIELD_H_
+
+#ifndef __BSTRCOLLECTION_H_
+#define __BSTRCOLLECTION_H_
 
 #include "resource.h"       // main symbols
-#include <id3/tag.h>
-#include <id3.h>
-#include "MimeTypes.h"
 
-/////////////////////////////////////////////////////////////////////////////
-// CID3Field
-class ATL_NO_VTABLE CID3Field : 
-	public CComObjectRootEx<CComSingleThreadModel>,
-    public CComCoClass<CID3Field, &CLSID_ID3ComField>,
-	public ISupportErrorInfo,
-	public IDispatchImpl<IID3ComField, &IID_IID3ComField, &LIBID_ID3COM>
-{
-public:
-	CID3Field();
-	~CID3Field();
-	ID3_Field *GetID3Field()
-	{
-		return m_Field;
-	}
-
-	static IID3ComField* CreateObject(IID3ComFrame* FrameParent, ID3_Field* Field);
-
-DECLARE_REGISTRY_RESOURCEID(IDR_ID3FIELD)
-
-DECLARE_PROTECT_FINAL_CONSTRUCT()
-
-BEGIN_COM_MAP(CID3Field)
-	COM_INTERFACE_ENTRY(IID3ComField)
-	COM_INTERFACE_ENTRY(IDispatch)
-	COM_INTERFACE_ENTRY(ISupportErrorInfo)
-END_COM_MAP()
-
-// ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
-
-	STDMETHOD(GetPicture)(ID3_Frame *pFrame,ID3_Field *pField,IDispatch **ppVal);
-// IID3ComField
-public:
-	STDMETHOD(get_Binary)(/*[out, retval]*/ BSTR *pVal);
-	STDMETHOD(put_Binary)(/*[in]*/ BSTR newVal);
-	STDMETHOD(get_NumTextItems)(/*[out, retval]*/ long *pVal);
-	STDMETHOD(CopyDataFromFile)(BSTR FileName);
-	STDMETHOD(CopyDataToFile)(BSTR FileName);
-	STDMETHOD(Clear)();
-	STDMETHOD(get_Long)(/*[out, retval]*/ long *pVal);
-	STDMETHOD(put_Long)(/*[in]*/ long newVal);
-	STDMETHOD(get_Text)(/*[in]*/ long ItemNum, /*[out, retval]*/ BSTR *pVal);
-	STDMETHOD(put_Text)(/*[in]*/ long ItemNum, /*[in]*/ BSTR newVal);
-	STDMETHOD(get_Picture)(/*[out, retval]*/ IDispatch* *pPVal);
-	STDMETHOD(put_Picture)(/*[in]*/ IDispatch* newVal);
-protected:
-	CMimeTypes m_MimeTypes;
-	ID3_Field* m_Field;
-	IID3ComFrame* m_FrameParent;
+struct _CopyVariantFromAdaptBstr {
+	static HRESULT copy(VARIANT* p1, CAdapt<CComBSTR>* p2) {
+    p1->vt = VT_BSTR;
+    p1->bstrVal = p2->m_T.Copy();
+    return (p1->bstrVal ? S_OK : E_OUTOFMEMORY);
+  }
+	
+  static void init(VARIANT* p)    { VariantInit(p); }
+  static void destroy(VARIANT* p) { VariantClear(p); }
 };
 
-#endif //__ID3FIELD_H_
+struct _CopyBstrFromAdaptBstr {
+	static HRESULT copy(BSTR* p1, CAdapt<CComBSTR>* p2) {
+    *p1 = SysAllocString(p2->m_T);
+    return (p1 ? S_OK : E_OUTOFMEMORY);
+  }
+	
+  static void init(BSTR* p)    { }
+  static void destroy(BSTR* p) { SysFreeString(*p); }
+};
+
+
+/////////////////////////////////////////////////////////////////////////////
+// CBSTRCollection
+template <class TCPPCLASS,const CLSID *TCLASSID,typename TI,const IID *piid>
+class ATL_NO_VTABLE CBSTRCollectionImpl :
+	public CComObjectRootEx<CComSingleThreadModel>,
+	public CComCoClass<TCPPCLASS, TCLASSID>,
+	public ISupportErrorInfo,
+	public IObjectSafetyImpl<TCPPCLASS, INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
+	public ICollectionOnSTLImpl<IDispatchImpl<TI, piid>,
+							std::vector< CAdapt< CComBSTR > >,
+							BSTR,
+							_CopyBstrFromAdaptBstr,
+							CComEnumOnSTL<IEnumVARIANT, &IID_IEnumVARIANT, VARIANT,
+							_CopyVariantFromAdaptBstr,
+							std::vector< CAdapt< CComBSTR > > > >
+{
+public:
+	CBSTRCollectionImpl()
+	{
+	}
+
+BEGIN_COM_MAP(TCPPCLASS)
+	COM_INTERFACE_ENTRY(IObjectSafety)
+END_COM_MAP()
+
+	STDMETHODIMP AddText(LPCTSTR pszText)
+	{
+		CComBSTR bstr(pszText);
+		m_coll.push_back(bstr);
+		return S_OK;
+	}
+// ISupportsErrorInfo
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid)
+	{
+		static const IID* arr[] = 
+		{
+			piid
+		};
+		for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+		{
+			if (InlineIsEqualGUID(*arr[i],riid))
+				return S_OK;
+		}
+		return S_FALSE;
+	}
+// IBSTRCollection
+public:
+};
+
+#endif //__BSTRCOLLECTION_H_

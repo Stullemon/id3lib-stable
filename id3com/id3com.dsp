@@ -146,13 +146,25 @@ SOURCE=.\ID3Tag.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\MimeTypes.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\StdAfx.cpp
 # ADD CPP /Yc"stdafx.h"
+# End Source File
+# Begin Source File
+
+SOURCE=.\TextCollection.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=.\BSTRCollection.h
+# End Source File
 # Begin Source File
 
 SOURCE=.\EnumFields.h
@@ -171,16 +183,36 @@ SOURCE=.\ID3Tag.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\MimeTypes.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Resource.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\StdAfx.h
 # End Source File
+# Begin Source File
+
+SOURCE=.\TextCollection.h
+# End Source File
 # End Group
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
+# Begin Source File
+
+SOURCE=.\ID3ComFieldLong.rgs
+# End Source File
+# Begin Source File
+
+SOURCE=.\ID3ComFieldPicture.rgs
+# End Source File
+# Begin Source File
+
+SOURCE=.\ID3ComFieldText.rgs
+# End Source File
 # Begin Source File
 
 SOURCE=.\ID3Field.rgs
@@ -192,6 +224,10 @@ SOURCE=.\ID3Frame.rgs
 # Begin Source File
 
 SOURCE=.\ID3Tag.rgs
+# End Source File
+# Begin Source File
+
+SOURCE=.\TextCollection.rgs
 # End Source File
 # End Group
 # Begin Group "id3lib"

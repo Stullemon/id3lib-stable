@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
-// Copyright (c) 2000 John Adcock.  All rights reserved.
+// Copyright (c) 2000 Philip Oldaker.  All rights reserved.
 /////////////////////////////////////////////////////////////////////////////
 //
 // This library is free software; you can redistribute it and/or modify it
@@ -24,25 +24,41 @@
 // http://download.sourceforge.net/id3lib/
 //
 /////////////////////////////////////////////////////////////////////////////
-// stdafx.cpp : source file that includes just the standard includes
+// TextCollection.h : Declaration of the CTextCollection
 /////////////////////////////////////////////////////////////////////////////
 // Change Log
 //
 // Date          Developer             Changes
 //
-// 05 Jan 2000   John Adcock           Original Release    
 // 18 Aug 2000   Philip Oldaker        Added Picture Functionality
 //
 /////////////////////////////////////////////////////////////////////////////
 
-//  stdafx.pch will be the pre-compiled header
-//  stdafx.obj will contain the pre-compiled type information
+#ifndef __TEXTCOLLECTION_H_
+#define __TEXTCOLLECTION_H_
 
-#include "stdafx.h"
+#include "resource.h"       // main symbols
+#include "BSTRCollection.h"
 
-#ifdef _ATL_STATIC_REGISTRY
-#include <statreg.h>
-#include <statreg.cpp>
-#endif
+/////////////////////////////////////////////////////////////////////////////
+// CTextCollection
+class CTextCollection : public CBSTRCollectionImpl<CTextCollection,&CLSID_TextCollection,ITextCollection,&IID_ITextCollection>
+{
+public:
+	CTextCollection();
 
-#include <atlimpl.cpp>
+DECLARE_REGISTRY_RESOURCEID(IDR_TEXTCOLLECTION)
+
+DECLARE_PROTECT_FINAL_CONSTRUCT()
+
+BEGIN_COM_MAP(CTextCollection)
+	COM_INTERFACE_ENTRY(ITextCollection)
+	COM_INTERFACE_ENTRY(IDispatch)
+	COM_INTERFACE_ENTRY(ISupportErrorInfo)
+END_COM_MAP()
+
+// ITextCollection
+public:
+};
+
+#endif //__TEXTCOLLECTION_H_
