@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.8 2000/05/01 13:05:07 eldamitri Exp $
+// $Id: tag.cpp,v 1.9 2000/05/01 16:36:57 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -86,7 +86,7 @@
  ** 'CDM' frames from the unreleased ID3v2 2.01 draft specification.
  **
  ** \author Dirk Mahoney
- ** \version $Id: tag.cpp,v 1.8 2000/05/01 13:05:07 eldamitri Exp $
+ ** \version $Id: tag.cpp,v 1.9 2000/05/01 16:36:57 eldamitri Exp $
  ** \sa ID3_Frame
  ** \sa ID3_Field
  ** \sa ID3_Err
@@ -166,7 +166,6 @@ void ID3_Tag::SetupTag(char *fileInfo)
   __pFindCursor     = NULL;
   __fFileHandle     = NULL;
   __bSyncOn         = false;
-  __bCompression    = true;
   __bPadding        = true;
   __bExtendedHeader = true;
   __bFileWritable   = false;
@@ -450,8 +449,8 @@ void ID3_Tag::RemoveFromList(ID3_Elem *which, ID3_Elem **list)
    **
    ** Setting a field, changed the ID of an attached frame, setting or grouping
    ** or encryption IDs, and clearing a frame or field all constitute a change
-   ** to the tag, as do calls to the SetUnsync(), SetExtendedHeader(), 
-   ** SetPadding(), and SetCompression() methods.
+   ** to the tag, as do calls to the SetUnsync(), SetExtendedHeader(), and
+   ** SetPadding() methods.
    
    ** \code
    **   if (myTag.HasChanged())
@@ -556,40 +555,6 @@ void ID3_Tag::SetExtendedHeader(bool ext)
   }
     
   __bExtendedHeader = ext;
-  
-  return ;
-}
-
-
-/** Turns compression on or off, dependant on the value of the boolean
- ** parameter.
- ** 
- ** Under id3v2 revesion 3, there is support for the compression of data in
- ** tags.  The current standard defines compression on a frame-by-frame basis
- ** using the zlib data compression standard.  Using this call, you tell the
- ** object whether to attempt to compress frames or not.  If a frame doesn't
- ** compress well, it will not be compressed, regardless of this setting.
- ** This method takes a single boolean parameter.  By default, id3lib will
- ** attempt to compress all the frames in a tag.
- ** 
- ** \code
- **   myTag.SetCompression(true);
- ** \endcode
- ** 
- ** When creating tags for a version of id3v2 in which compression isn't
- ** defined, the tags are simply rendered without compression to ensure
- ** compliance to the relevant version of the standard.
- ** 
- ** \param bComp Whether to render the tag's frames in a compressed format.
- **/
-void ID3_Tag::SetCompression(bool comp)
-{
-  if (__bCompression != comp)
-  {
-    __bHasChanged = true;
-  }
-    
-  __bCompression = comp;
   
   return ;
 }
