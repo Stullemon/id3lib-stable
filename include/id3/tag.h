@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.18 2000/04/26 15:54:05 eldamitri Exp $
+// $Id: tag.h,v 1.19 2000/04/28 16:24:27 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -44,58 +44,11 @@ struct ID3_Elem
 /** String used for the description field of a comment tag converted from an
  ** id3v1 tag to an id3v2 tag
  **
- ** @see #ID3V1_Tag
+ ** \sa #ID3V1_Tag
  **/
-const char STR_V1_COMMENT_DESC[] = "ID3v1_Comment";
+//const char STR_V1_COMMENT_DESC[] = "ID3v1_Comment";
+const char STR_V1_COMMENT_DESC[] = "";
 
-/** The representative class of an id3 tag.
- ** 
- ** This is the 'container' class for everything else.  It is through an
- ** ID3_Tag that most of the productive stuff happens.  Let's look at what's
- ** required to start using ID3v2 tags.
- ** 
- ** \code
- **   #include <id3/tag.h>
- ** \endcode
- ** 
- ** This simple \c #include does it all.  In order to read an
- ** existing tag, do the following:
- **
- ** \code
- **   ID3_Tag myTag;
- **   myTag.Link("something.mp3");
- ** \endcode
- ** 
- ** That is all there is to it.  Now all you have to do is use the 
- ** <a href="#Find">Find</a> method to locate the frames you are interested in
- ** is the following:
- ** 
- ** \code
- **   ID3_Frame *myFrame;
- **   if (myTag.Find(ID3FID_TITLE) == myFrame)
- **   {
- **     char title[1024];
- **     myFrame->Field(ID3FN_TEXT).Get(title, 1024);
- **     cout << "Title: " << title << endl;
- **   }
- ** \endcode
- ** 
- ** This code snippet locates the TITLE frame and copies the contents of the
- ** text field into a buffer and displays the buffer.  Not difficult, eh?
- **
- ** When using the <a href="#Link">Link</a> method of an ID3_Tag object, you
- ** automatically gain access to any ID3v1/1.1, ID3v2, and Lyrics3 v2.0 tags
- ** present in the file.  The class will automaticaly parse and convert any of
- ** these foreign tag formats into ID3v2 tags.  Also, id3lib will correctly
- ** parse any correctly formatted 'CDM' frames from the unreleased 2.01 draft
- ** that id3lib 2.16 supports.
- **
- ** @author Dirk Mahoney
- ** @version $Id: tag.h,v 1.18 2000/04/26 15:54:05 eldamitri Exp $
- ** @see ID3_Frame
- ** @see ID3_Field
- ** @see ID3_Err
- **/
 class ID3_Tag : public ID3_Speccable
 {
 public:
