@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.7 2000/05/03 03:02:56 eldamitri Exp $
+// $Id: tag_file.cpp,v 1.8 2000/05/03 04:20:20 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -186,48 +186,48 @@ luint ID3_Tag::Link(char *fileInfo, bool parseID3v1, bool parseLyrics3)
   return this->Link(fileInfo, tt);
 }
 
-  /** Attaches a file to the tag, parses the file, and adds any tag information
-   ** found in the file to the tag.
-   ** 
-   ** Use this method if you created your ID3_Tag object without supplying a
-   ** parameter to the constructor (maybe you created an array of ID3_Tag
-   ** pointers).  This is the preferred method of interacting with files, since
-   ** id3lib can automatically do things like parse foreign tag formats and
-   ** handle padding when linked to a file.  When a tag is linked to a file,
-   ** you do not need to use the <a href="#Size">Size</a>, <a
-   ** href="#Render">Render</a>, or <a href="#Parse">Parse</a> methods or the
-   ** <code>ID3_IsTagHeader</code> function---id3lib will take care of those
-   ** details for you.  The single parameter is a pointer to a file name.
-   ** 
-   ** Link returns a 'luint' which is the byte position within the file that
-   ** the audio starts (i.e., where the id3v2 tag ends).
-   ** 
-   ** \code
-   **   ID3_Tag *myTag;
-   **   if (myTag = new ID3_Tag)
-   **   {
-   **     myTag->Link("mysong.mp3");
-   **     
-   **     // do whatever we want with the tag
-   **     // ...
-   **   
-   **     // setup all our rendering parameters
-   **     myTag->SetUnsync(false);
-   **     myTag->SetExtendedHeader(true);
-   **     myTag->SetCompression(true);
-   **     myTag->SetPadding(true);
-   **     
-   **     // write any changes to the file
-   **     myTag->Update()
-   **     
-   **     // free the tag
-   **     delete myTag;
-   **   }
-   ** \endcode
-   ** 
-   ** @see ID3_IsTagHeader
-   ** @param fileInfo The filename of the file to link to.
-   **/
+/** Attaches a file to the tag, parses the file, and adds any tag information
+ ** found in the file to the tag.
+ ** 
+ ** Use this method if you created your ID3_Tag object without supplying a
+ ** parameter to the constructor (maybe you created an array of ID3_Tag
+ ** pointers).  This is the preferred method of interacting with files, since
+ ** id3lib can automatically do things like parse foreign tag formats and
+ ** handle padding when linked to a file.  When a tag is linked to a file,
+ ** you do not need to use the <a href="#Size">Size</a>, <a
+ ** href="#Render">Render</a>, or <a href="#Parse">Parse</a> methods or the
+ ** <code>ID3_IsTagHeader</code> function---id3lib will take care of those
+ ** details for you.  The single parameter is a pointer to a file name.
+ ** 
+ ** Link returns a 'luint' which is the byte position within the file that
+ ** the audio starts (i.e., where the id3v2 tag ends).
+ ** 
+ ** \code
+ **   ID3_Tag *myTag;
+ **   if (myTag = new ID3_Tag)
+ **   {
+ **     myTag->Link("mysong.mp3");
+ **     
+ **     // do whatever we want with the tag
+ **     // ...
+ **   
+ **     // setup all our rendering parameters
+ **     myTag->SetUnsync(false);
+ **     myTag->SetExtendedHeader(true);
+ **     myTag->SetCompression(true);
+ **     myTag->SetPadding(true);
+ **     
+ **     // write any changes to the file
+ **     myTag->Update()
+ **     
+ **     // free the tag
+ **     delete myTag;
+ **   }
+ ** \endcode
+ ** 
+ ** @see ID3_IsTagHeader
+ ** @param fileInfo The filename of the file to link to.
+ **/
 luint ID3_Tag::Link(char *fileInfo, const luint tag_types)
 {
   luint posn = 0;
@@ -263,24 +263,26 @@ luint ID3_Tag::Link(char *fileInfo, const luint tag_types)
     __orig_tag_size += ID3_TAGHEADERSIZE;
   }
 
+  // the file size represents the file size _without_ the beginning ID3v2 tag
+  // info
   __file_size -= __orig_tag_size;
   posn = __orig_tag_size;
   
   return posn;
 }
 
-  /** Renders the tag and writes it to the attached file; the type of tag
-   ** rendered can be specified as a parameter.  The default is to update only
-   ** the ID3v2 tag.  See the ID3_TagType enumeration for the constants that
-   ** can be used.
-   ** 
-   ** Make sure the rendering parameters are set before calling the method.
-   ** See the Link dcoumentation for an example of this method in use.
-   ** 
-   ** \sa ID3_TagType
-   ** \sa Link
-   ** \param tt The type of tag to update.
-   **/
+/** Renders the tag and writes it to the attached file; the type of tag
+ ** rendered can be specified as a parameter.  The default is to update only
+ ** the ID3v2 tag.  See the ID3_TagType enumeration for the constants that
+ ** can be used.
+ ** 
+ ** Make sure the rendering parameters are set before calling the method.
+ ** See the Link dcoumentation for an example of this method in use.
+ ** 
+ ** \sa ID3_TagType
+ ** \sa Link
+ ** \param tt The type of tag to update.
+ **/
 luint ID3_Tag::Update(const luint ulTagFlag)
 {
   OpenFileForWriting();
@@ -302,21 +304,21 @@ luint ID3_Tag::Update(const luint ulTagFlag)
   return ulTags;
 }
 
-  /** Strips the tag(s) from the attached file. The type of tag stripped
-   ** can be specified as a parameter.  The default is to strip all tag types.
-   ** 
-   ** \param tt The type of tag to strip
-   ** \sa ID3_TagType@see
-   **/
+/** Strips the tag(s) from the attached file. The type of tag stripped
+ ** can be specified as a parameter.  The default is to strip all tag types.
+ ** 
+ ** \param tt The type of tag to strip
+ ** \sa ID3_TagType@see
+ **/
 luint ID3_Tag::Strip(const luint ulTagFlag)
 {
   luint ulTags = ID3TT_NONE;
-
+  
   if (!(ulTagFlag & ID3TT_ID3V1) && !(ulTagFlag & ID3TT_ID3V2))
   {
     return ulTags;
   }
-
+  
   // First remove the v2 tag, if requested
   if (ulTagFlag & ID3TT_ID3V2)
   {
@@ -367,7 +369,7 @@ luint ID3_Tag::Strip(const luint ulTagFlag)
       // Now that we've read, mark the current spot as the next spot for
       // reading
       nNextRead = ftell(__file_handle);
-
+      
       if (nBytesRead > 0)
       {
         // Move to the next write position
@@ -383,8 +385,7 @@ luint ID3_Tag::Strip(const luint ulTagFlag)
         nNextWrite = ftell(__file_handle);
         nBytesCopied += nBytesWritten;
       }
-
-
+      
       if (nBytesCopied == nBytesToCopy)
       {
         break;
@@ -394,20 +395,32 @@ luint ID3_Tag::Strip(const luint ulTagFlag)
         break;
       }
     }
-
+    
     CloseFile();
   }
   
   size_t nNewFileSize = __file_size;
+
   if ((__extra_bytes > 0) && (ulTagFlag & ID3TT_ID3V1))
   {
+    // if we're stripping the ID3v1 tag, be sure to reduce the file size by
+    // those bytes
     nNewFileSize -= __extra_bytes;
     ulTags |= ID3TT_ID3V1;
   }
-  if (ulTagFlag & ID3TT_ID3V2 && (__orig_tag_size > 0))
+  
+  if ((ulTagFlag & ID3TT_ID3V2) && (__orig_tag_size > 0))
   {
-    nNewFileSize -= __orig_tag_size;
+    // If we're stripping the ID3v2 tag, there's no need to adjust the new
+    // file size, since it doesn't account for the ID3v2 tag size
     ulTags |= ID3TT_ID3V2;
+  }
+  else
+  {
+    // add the original ID3v2 tag size since we don't want to delete it, and
+    // the new file size represents the file size _not_ counting the ID3v2
+    // tag
+    nNewFileSize += __orig_tag_size;
   }
   if (ulTags && (truncate(__file_name, nNewFileSize) == -1))
   {
