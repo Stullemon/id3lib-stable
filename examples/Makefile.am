@@ -60,4 +60,7 @@ EXTRA_DIST =            \
   221-compressed.tag    \
   230-compressed.tag    \
   230-picture.tag       \
-  230-unicode.tag
+  230-unicode.tag       \
+  230-syncedlyrics.tag  \
+  thatspot.tag          \
+  ozzy.tag              
