@@ -23,7 +23,8 @@ EXTRA_DIST =            \
   id3v2.ico             \
   id3v2.png             \
   index.html            \
-  index.html.in
+  index.html.in         \
+  musicmatch.txt
 
 Doxyfile: $(srcdir)/Doxyfile.in  $(top_builddir)/config.status
 	cd $(top_builddir) \
