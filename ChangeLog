@@ -1,5 +1,20 @@
 1999-12-02  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
+	* configure.in
+	(id3lib_patch): Upped to 2 for new release 3.6.2
+	(AC_OUTPUT): Added Makefiles for prj and zlib and its subdirs
+
+	* Makefile.am
+	(SUBDIRS): Added prj and zlib
+
+	* prj/Makefile.am
+	* zlib/Makefile.am
+	* zlib/include/Makefile.am
+	* zlib/lib/Makefile.am
+	* zlib/prj/Makefile.am
+	* zlib/src/Makefile.am:
+	Added for distribution purposes.
+
 	* zlib/include/deflate.h
 	* zlib/include/infblock.h
 	* zlib/include/infcodes.h
