@@ -1,4 +1,4 @@
-/* $Id: id3.h,v 1.15 2000/10/24 07:00:08 eldamitri Exp $
+/* $Id: id3.h,v 1.16 2001/08/07 11:58:23 shadrack Exp $
  * 
  * id3lib: a software library for creating and manipulating id3v1/v2 tags
  * Copyright 1999, 2000  Scott Thomas Haug
@@ -40,6 +40,7 @@ extern "C"
   typedef struct { char _dummy; } ID3TagConstIterator;
   typedef struct { char _dummy; } ID3Frame;
   typedef struct { char _dummy; } ID3Field;
+  typedef struct { char _dummy; } ID3FrameInfo;
 
   /* tag wrappers */
   ID3_C_EXPORT ID3Tag     *ID3Tag_New                  (void);
@@ -101,6 +102,16 @@ extern "C"
   ID3_C_EXPORT void        ID3Field_GetBINARY          (const ID3Field *field, uchar *buffer, size_t buffLength);
   ID3_C_EXPORT void        ID3Field_FromFile           (ID3Field *field, const char *fileName);
   ID3_C_EXPORT void        ID3Field_ToFile             (const ID3Field *field, const char *fileName);
+
+  /* field-info wrappers */
+  ID3_C_EXPORT char        *ID3FrameInfo_ShortName     (ID3_FrameID frameid);
+  ID3_C_EXPORT char        *ID3FrameInfo_LongName      (ID3_FrameID frameid);
+  ID3_C_EXPORT const char  *ID3FrameInfo_Description   (ID3_FrameID frameid);
+  ID3_C_EXPORT int         ID3FrameInfo_MaxFrameID     (void);
+  ID3_C_EXPORT int         ID3FrameInfo_NumFields      (ID3_FrameID frameid);
+  ID3_C_EXPORT ID3_FieldType ID3FrameInfo_FieldType    (ID3_FrameID frameid, int fieldnum);
+  ID3_C_EXPORT size_t      ID3FrameInfo_FieldSize      (ID3_FrameID frameid, int fieldnum);
+  ID3_C_EXPORT flags_t     ID3FrameInfo_FieldFlags      (ID3_FrameID frameid, int fieldnum);
 
   /* Deprecated */
   ID3_C_EXPORT void        ID3Tag_SetCompression       (ID3Tag *tag, bool comp);

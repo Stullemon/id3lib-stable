@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.39 2001/08/04 00:05:34 thefrogprince Exp $
+// $Id: tag.cpp,v 1.40 2001/08/07 11:58:23 shadrack Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -110,7 +110,7 @@ using namespace dami;
  **   // use an std::auto_ptr here to handle object cleanup automatically
  **   ID3_Tag::Iterator* iter = myTag.createIterator();
  **   ID3_Frame* myFrame = NULL;
- **   while (NULL != (myFrame = iter->GetNext())
+ **   while (NULL != (myFrame = iter->GetNext()))
  **   {
  **     // do something with myFrame
  **   }
@@ -154,7 +154,7 @@ using namespace dami;
  **
  ** \code
  **   // use an std::auto_ptr here to handle object cleanup automatically
- **   ID3_Frame::Iterator* iter = myFrame->createIterator();
+ **   ID3_Frame::Iterator* iter = myFrame->CreateIterator();
  **   ID3_Field* myField = NULL;
  **   while (NULL != (myField = iter->GetNext())
  **   {
@@ -174,15 +174,12 @@ using namespace dami;
  **   }
  ** \endcode
  **
- ** This documentation currently does not include a list of all possible field
- ** types, nor does it include all possible frame types and the fields they 
- ** contain.  The source code is the best resource for that information.
- **
- ** \todo List all field and frame types.
+ ** Note: The ID3_FrameInfo class provides information about the frame types known
+ ** to id3lib.
  **
  ** The ID3_Field represents a single piece of data within an ID3v2 frame.  As
  ** mentioned, an ID3_Field can represent three possible types of
- ** data: integers, binary data, and test strings.  The type of a particular
+ ** data: integers, binary data, and text strings.  The type of a particular
  ** field object is immutable; it is determined at the time of its construction
  ** (almost always when a frame is constructed) and can't be changed.  If in
  ** doubt, the field type can be accessed through its GetType() method.
@@ -280,7 +277,7 @@ using namespace dami;
  ** formatted 'CDM' frames from the unreleased ID3v2 2.01 draft specification.
  **
  ** \author Dirk Mahoney
- ** \version $Id: tag.cpp,v 1.39 2001/08/04 00:05:34 thefrogprince Exp $
+ ** \version $Id: tag.cpp,v 1.40 2001/08/07 11:58:23 shadrack Exp $
  ** \sa ID3_Frame
  ** \sa ID3_Field
  ** \sa ID3_Err
