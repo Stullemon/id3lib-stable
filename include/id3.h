@@ -1,4 +1,4 @@
-/* $Id: id3.h,v 1.6 2000/04/27 02:36:10 eldamitri Exp $
+/* $Id: id3.h,v 1.7 2000/04/27 02:37:42 eldamitri Exp $
  * 
  * id3lib: a software library for creating and manipulating id3v1/v2 tags
  * Copyright 1999, 2000  Scott Thomas Haug
@@ -38,8 +38,6 @@ extern "C"
   typedef struct { char __dummy; } ID3Tag;
   typedef struct { char __dummy; } ID3Frame;
   typedef struct { char __dummy; } ID3Field;
-
-  /*#ifndef __DLL*/
 
   /* tag wrappers */
   ID3_C_EXPORT ID3Tag     *ID3Tag_New                  (void);
@@ -92,8 +90,6 @@ extern "C"
   ID3_C_EXPORT void        ID3Field_GetBINARY          (ID3Field *field, uchar *buffer, luint buffLength);
   ID3_C_EXPORT void        ID3Field_FromFile           (ID3Field *field, char *fileName);
   ID3_C_EXPORT void        ID3Field_ToFile             (ID3Field *field, char *fileName);
-
-  /*#endif / * __DLL */
 
 #ifdef __cplusplus
 }
