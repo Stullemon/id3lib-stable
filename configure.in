@@ -1,4 +1,4 @@
-# $Id: configure.in,v 1.7 1999/11/30 14:25:49 scott Exp $
+# $Id: configure.in,v 1.8 1999/11/30 20:01:36 scott Exp $
 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -19,7 +19,7 @@ id3lib_patch=0
 
 id3lib_release=$id3lib_version.$id3lib_revision.$id3lib_patch
 id3lib_name=id3lib
-id3lib_date=$Date: 1999/11/30 14:25:49 $
+id3lib_date="$Date: 1999/11/30 20:01:36 $UNDEFINED"
 
 AM_INIT_AUTOMAKE($id3lib_name,$id3lib_release)
 lt_ver=`expr $id3lib_version + $id3lib_revision`
@@ -82,42 +82,30 @@ dnl Provides a --with-warnings option to the configure script that turns on
 dnl compiler warnings.  Must be used AFTER configuring ALL compilers.
 LF_SET_WARNINGS
 
-dnl Define size-specific types int8, uint8, int16, uint16, int32, uint32
-SH_SIZE_SPECIFIC_TYPES
-
 dnl ACCONFIG TEMPLATE
 dnl 
-dnl /* id3lib defines some preprocessor symbols that applications are free to
-dnl  * use.  They are used to identify the version and date of the id3lib that
-dnl  * is currently being used.
+dnl /* config.h defines these preprocesser symbols to be used by id3lib for
+dnl  * determining internal versioning information.  The intent is that these
+dnl  * macros will be made available int the library via functions or static
+dnl  * methods.
 dnl  */
-dnl /* Defines the name of id3lib */
-dnl #undef ID3LIB_NAME
 dnl /* Defines which version of id3lib is being used (int) */
 dnl #undef ID3LIB_VERSION
 dnl /* Defines which revision of id3lib is being used (int) */
 dnl #undef ID3LIB_REVISION
 dnl /* Defines which patch of id3lib is being used (int) */
 dnl #undef ID3LIB_PATCH
-dnl /* Defines which release of id3lib is being used (string) */
-dnl #undef ID3LIB_RELEASE
 dnl /* The date of this id3lib release */
 dnl #undef ID3LIB_DATE
 dnl /* The identifying string of this id3lib */
-dnl #undef ID3LIB_IDSTRING
-dnl /* For example...
-dnl  * 
-dnl  * cout << "Using " << ID3LIB_IDSTRING << endl;
-dnl  */
+dnl #undef ID3LIB_FULLNAME
 dnl END ACCONFIG
 
-AC_DEFINE_UNQUOTED(ID3LIB_NAME,    "$id3lib_name")
-AC_DEFINE_UNQUOTED(ID3LIB_VERSION, ($id3lib_version))
-AC_DEFINE_UNQUOTED(ID3LIB_REVISION,($id3lib_revision))
-AC_DEFINE_UNQUOTED(ID3LIB_PATCH,   ($id3lib_patch))
-AC_DEFINE_UNQUOTED(ID3LIB_RELEASE, "$id3lib_release")
-AC_DEFINE_UNQUOTED(ID3LIB_DATE,    "$id3lib_date")
-AC_DEFINE_UNQUOTED(ID3LIB_IDSTRING,"$id3lib_name-$id3lib_release $id3lib_date")
+AC_DEFINE_UNQUOTED(ID3LIB_VERSION,  ($id3lib_version))
+AC_DEFINE_UNQUOTED(ID3LIB_REVISION, ($id3lib_revision))
+AC_DEFINE_UNQUOTED(ID3LIB_PATCH,    ($id3lib_patch))
+AC_DEFINE_UNQUOTED(ID3LIB_DATE,     "$id3lib_date")
+AC_DEFINE_UNQUOTED(ID3LIB_FULLNAME, "$id3lib_name-$id3lib_release")
 
 AC_OUTPUT(                      \
   Makefile                      \
@@ -133,6 +121,14 @@ AC_OUTPUT(                      \
 )
 
 # $Log: configure.in,v $
+# Revision 1.8  1999/11/30 20:01:36  scott
+# * configure.in:
+# Minor modifications.  Removed call to SH_SIZE_SPECIFIC_TYPES---these
+# types are now defined in src/id3/sized_types.h.  Removed ID3LIB_NAME
+# macro (same as PACKAGE).  Removed ID3LIB_RELEASE macro (same as
+# VERSION).  Renamed ID3LIB_IDSTRING to ID3LIB_FULLNAME and removed
+# the date part of it.
+#
 # Revision 1.7  1999/11/30 14:25:49  scott
 # Generalized versioning mechanism so it only has to be changed in this
 # file to be propagated throughout rest of source code.  Used a hack to
