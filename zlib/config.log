@@ -56,4 +56,3 @@ configure:1814: checking how to run the C preprocessor
 configure:1894: checking for ANSI C header files
 configure:2001: checking for unistd.h
 configure:2001: checking for errno.h
-configure:2011: gcc -E  conftest.c >/dev/null 2>conftest.out

@@ -31,7 +31,7 @@
  * or static methods.
  */
 #define _ID3LIB_NAME "id3lib"
-#define _ID3LIB_DATE ": 2000/09/15 00:03:02 "
+#define _ID3LIB_DATE ": 2000/09/27 09:07:47 "
 #define _ID3LIB_VERSION "3.7.13"
 #define _ID3LIB_FULLNAME "id3lib-3.7.13"
 #define _ID3LIB_MAJOR_VERSION 3
