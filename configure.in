@@ -1,4 +1,4 @@
-# $Id: configure.in,v 1.50 2000/10/29 08:15:12 eldamitri Exp $
+# $Id: configure.in,v 1.51 2000/11/07 09:27:44 eldamitri Exp $
 
 # Copyright 1999, 2000 Scott Thomas Haug <eldamitri@users.sourceforge.net>
 #  
@@ -112,7 +112,6 @@ AC_PROG_CC
 AC_PROG_CXX
 AC_ISC_POSIX
 AC_PROG_CXXCPP
-AC_PROG_RANLIB
 AC_PROG_INSTALL
 
 dnl for executable extensions
