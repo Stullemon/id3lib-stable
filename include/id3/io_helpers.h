@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: io_helpers.h,v 1.2 2000/10/14 21:23:37 eldamitri Exp $
+// $Id: io_helpers.h,v 1.3 2000/10/21 07:06:34 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -68,6 +68,10 @@ namespace dami
     String      readTrailingSpaces(ID3_Reader&, size_t);
     uint32      readUInt28(ID3_Reader&);
 
+    size_t      writeString(ID3_Writer&, String);
+    size_t      writeText(ID3_Writer&, String);
+    size_t      writeUnicodeString(ID3_Writer&, String);
+    size_t      writeUnicodeText(ID3_Writer&, String);
     size_t      writeBENumber(ID3_Writer&, uint32 val, size_t);
     size_t      writeTrailingSpaces(ID3_Writer&, String, size_t);
     size_t      writeUInt28(ID3_Writer&, uint32);
