@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.8 2000/05/03 04:20:20 eldamitri Exp $
+// $Id: tag_file.cpp,v 1.9 2000/05/06 05:42:13 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -172,7 +172,7 @@ bool ID3_Tag::CloseFile(void)
   return bReturn;
 }
 
-luint ID3_Tag::Link(char *fileInfo, bool parseID3v1, bool parseLyrics3)
+luint ID3_Tag::Link(const char *fileInfo, bool parseID3v1, bool parseLyrics3)
 {
   luint tt = ID3TT_NONE;
   if (parseID3v1)
@@ -228,7 +228,7 @@ luint ID3_Tag::Link(char *fileInfo, bool parseID3v1, bool parseLyrics3)
  ** @see ID3_IsTagHeader
  ** @param fileInfo The filename of the file to link to.
  **/
-luint ID3_Tag::Link(char *fileInfo, const luint tag_types)
+luint ID3_Tag::Link(const char *fileInfo, const luint tag_types)
 {
   luint posn = 0;
   
