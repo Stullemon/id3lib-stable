@@ -1,5 +1,13 @@
 2000-04-10  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
+	* include/id3/error.h
+	* include/id3/field.h
+	* include/id3/frame.h
+	* include/id3/globals.h
+	* include/id3/tag.h
+	* include/id3/version.h:
+	Updated comments for use with doxygen.
+
 	* src/id3/tag_parse.cpp 
 	(ProcessBinaries): Removed name of caught error since it isn't used.
 
