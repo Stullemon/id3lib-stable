@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.10 2000/05/06 21:17:53 eldamitri Exp $
+// $Id: tag_file.cpp,v 1.11 2000/05/11 12:49:23 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -25,7 +25,6 @@
 // http://download.sourceforge.net/id3lib/
 
 #include <string.h>
-#include <iostream.h>
 #include <stdio.h>
 #include "tag.h"
 
@@ -319,6 +318,7 @@ luint ID3_Tag::Strip(const luint ulTagFlag)
   if (ulTagFlag & ID3TT_ID3V2)
   {
     OpenFileForWriting();
+    __file_size -= __orig_tag_size;
 
     // We will remove the id3v2 tag in place: since it comes at the beginning
     // of the file, we'll effectively move all the data that comes after the
@@ -374,8 +374,8 @@ luint ID3_Tag::Strip(const luint ulTagFlag)
         if (nBytesRead > nBytesWritten)
         {
           // TODO: log this
-          cerr << "--- attempted to write " << nBytesRead << " bytes, "
-               << "only wrote " << nBytesWritten << endl;
+          //cerr << "--- attempted to write " << nBytesRead << " bytes, "
+          //     << "only wrote " << nBytesWritten << endl;
         }
         // Marke the current spot as the next write position
         nNextWrite = ftell(__file_handle);
