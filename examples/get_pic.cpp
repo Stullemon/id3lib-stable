@@ -1,9 +1,10 @@
-// $Id: get_pic.cpp,v 1.3 2000/08/27 22:59:34 eldamitri Exp $
+// $Id: get_pic.cpp,v 1.4 2000/10/08 21:28:19 eldamitri Exp $
 
 #include <iostream.h>
 #include <stdlib.h>
 
 #include <id3/tag.h>
+#include <id3/error.h>
 #include <id3/misc_support.h>
 
 int main( int argc, char *argv[])
