@@ -1,4 +1,4 @@
-// $Id: tag_parse_musicmatch.cpp,v 1.6 2000/09/05 06:54:37 eldamitri Exp $
+// $Id: tag_parse_musicmatch.cpp,v 1.7 2000/09/08 05:51:49 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -214,7 +214,7 @@ size_t ParseMusicMatch(ID3_Tag& tag, fstream& file)
   }
 
   // now check to see that our tag size is reasonable
-  if (tag_end < tag_size)
+  if (static_cast<size_t>(tag_end) < tag_size)
   {
     // Ack!  The tag size doesn't jive with the tag's ending position in
     // the file.  Bail!
@@ -267,7 +267,7 @@ size_t ParseMusicMatch(ID3_Tag& tag, fstream& file)
   {
     // no image binary.  don't do anything.
   }
-  else if (offsets[0] + 4 + nImgSize > offsets[2])
+  else if (offsets[0] + 4 + nImgSize > static_cast<size_t>(offsets[2]))
   {
     // Ack!  The image size given extends beyond the next offset!  This is 
     // not good...  log?
