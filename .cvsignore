@@ -7,4 +7,5 @@ config.h.win32
 config.log
 config.status
 id3lib.spec
+rename.pl
 stamp-h
