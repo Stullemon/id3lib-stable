@@ -1,4 +1,4 @@
-// $Id: frame_parse.cpp,v 1.2 2000/04/18 22:11:30 eldamitri Exp $
+// $Id: frame_parse.cpp,v 1.3 2000/04/26 03:42:52 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,6 +24,7 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
+#include <iostream.h>
 #include <zlib.h>
 #include "frame.h"
 
@@ -38,7 +39,7 @@ void ID3_Frame::Parse(uchar *buffer, luint size)
   
   for (i = 0; i < __ulNumFields; i++)
   {
-    __apFields[i]->SetVersion(__FrmHdr.GetVersion(), __FrmHdr.GetRevision());
+    __apFields[i]->SetSpec(__FrmHdr.GetSpec());
     posn += __apFields[i]->Parse(buffer, posn, size);
     
     // if we just parsed a TEXTENC field, we'd better tell the rest of the
@@ -56,6 +57,15 @@ void ID3_Frame::Parse(uchar *buffer, luint size)
 }
 
 // $Log: frame_parse.cpp,v $
+// Revision 1.3  2000/04/26 03:42:52  eldamitri
+// - Replaced version/revision uchar combination with ID3_V2Spec enums
+// - Deprecated {Get,Set}Version, GetRevision for {Get,Set}Spec
+// - ID3_VerCtl enumeration deprecated in favor of using two ID3_V2Spec
+//   enums to denote field scope
+// - Replaced ID3v2_VERSION, ID3v2_REVISION constants with ID3V2_LATEST
+//   enum
+// - Use ID3V2_UNKNOWN enum rather than 0 for version, revision
+//
 // Revision 1.2  2000/04/18 22:11:30  eldamitri
 // Moved frame_parse.cpp from src/id3/ to src/
 //

@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.5 2000/04/24 14:49:10 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.6 2000/04/26 03:42:52 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -78,9 +78,9 @@ luint ID3_Tag::Render(uchar *buffer)
   ID3_Elem *cur = __pFrameList;
   ID3_TagHeader header;
     
-  SetVersion(ID3v2_VERSION, ID3v2_REVISION);
+  this->SetSpec(ID3V2_LATEST);
     
-  header.SetVersion(__ucVersion, __ucRevision);
+  header.SetSpec(this->GetSpec());
   bytesUsed += header.Size();
     
   // set up the encryption and grouping IDs
@@ -95,7 +95,7 @@ luint ID3_Tag::Render(uchar *buffer)
       {
         cur->pFrame->__FrmHdr.AddFlags(ID3FL_COMPRESSION);
       }
-      cur->pFrame->SetVersion(__ucVersion, __ucRevision);
+      cur->pFrame->SetSpec(this->GetSpec());
       bytesUsed += cur->pFrame->Render(&buffer[bytesUsed]);
     }
       
@@ -178,14 +178,14 @@ luint ID3_Tag::Size(void) const
   ID3_Elem *cur = __pFrameList;
   ID3_TagHeader header;
   
-  header.SetVersion(__ucVersion, __ucRevision);
+  header.SetSpec(this->GetSpec());
   bytesUsed += header.Size();
   
   while (cur)
   {
     if (cur->pFrame)
     {
-      cur->pFrame->SetVersion(__ucVersion, __ucRevision);
+      cur->pFrame->SetSpec(this->GetSpec());
       bytesUsed += cur->pFrame->Size();
     }
     
@@ -206,7 +206,7 @@ luint ID3_Tag::Size(void) const
 
 void ID3_Tag::RenderExtHeader(uchar *buffer)
 {
-  if (__ucVersion == 3 && __ucRevision == 0)
+  if (this->GetSpec() == ID3V2_3_0)
   {
   }
   
@@ -516,6 +516,15 @@ luint ID3_Tag::PaddingSize(luint curSize) const
 
 
 // $Log: tag_render.cpp,v $
+// Revision 1.6  2000/04/26 03:42:52  eldamitri
+// - Replaced version/revision uchar combination with ID3_V2Spec enums
+// - Deprecated {Get,Set}Version, GetRevision for {Get,Set}Spec
+// - ID3_VerCtl enumeration deprecated in favor of using two ID3_V2Spec
+//   enums to denote field scope
+// - Replaced ID3v2_VERSION, ID3v2_REVISION constants with ID3V2_LATEST
+//   enum
+// - Use ID3V2_UNKNOWN enum rather than 0 for version, revision
+//
 // Revision 1.5  2000/04/24 14:49:10  eldamitri
 // Added comments originally in include/id3/tag.h
 //

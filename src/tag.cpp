@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.4 2000/04/24 14:48:34 eldamitri Exp $
+// $Id: tag.cpp,v 1.5 2000/04/26 03:42:52 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -43,7 +43,6 @@
 #endif  /* !MAXPATHLEN && !PATH_MAX */
 
 luint ID3_Tag::s_ulInstances = 0;
-
 
 /** Copies a frame to the tag.  The frame parameter can thus safely be deleted
  ** or allowed to go out of scope.
@@ -112,8 +111,7 @@ ID3_Tag::ID3_Tag(const ID3_Tag &tag)
 void ID3_Tag::SetupTag(char *fileInfo)
 {
   __sFileName       = new char[ID3_PATH_LENGTH];
-  __ucVersion       = ID3v2_VERSION;
-  __ucRevision      = ID3v2_REVISION;
+  __spec            = ID3V2_LATEST;
   __pFrameList      = NULL;
   __pBinaryList     = NULL;
   __pFindCursor     = NULL;
@@ -140,7 +138,6 @@ void ID3_Tag::SetupTag(char *fileInfo)
   return ;
 }
 
-
 ID3_Tag::~ID3_Tag(void)
 {
   CloseFile();
@@ -157,7 +154,6 @@ ID3_Tag::~ID3_Tag(void)
   delete [] __sFileName;
   
 }
-
 
   /** Clears the object and disassociates it from any files.
    **
@@ -448,20 +444,16 @@ bool ID3_Tag::HasChanged(void) const
   return changed;
 }
 
-
-void ID3_Tag::SetVersion(uchar ver, uchar rev)
+void ID3_Tag::SetSpec(ID3_V2Spec spec)
 {
-  if (__ucVersion != ver || __ucRevision != rev)
-  {
-    __bHasChanged = true;
-  }
-    
-  __ucVersion = ver;
-  __ucRevision = rev;
-  
-  return ;
+  __bHasChanged = __bHasChanged || (spec != __spec);
+  __spec = spec;
 }
 
+ID3_V2Spec ID3_Tag::GetSpec() const
+{
+  return __spec;
+}
 
   /** Turns unsynchronization on or off, dependant on the value of the boolean
    ** parameter.
@@ -634,6 +626,15 @@ ID3_Tag::operator=( const ID3_Tag &rTag )
 }
 
 // $Log: tag.cpp,v $
+// Revision 1.5  2000/04/26 03:42:52  eldamitri
+// - Replaced version/revision uchar combination with ID3_V2Spec enums
+// - Deprecated {Get,Set}Version, GetRevision for {Get,Set}Spec
+// - ID3_VerCtl enumeration deprecated in favor of using two ID3_V2Spec
+//   enums to denote field scope
+// - Replaced ID3v2_VERSION, ID3v2_REVISION constants with ID3V2_LATEST
+//   enum
+// - Use ID3V2_UNKNOWN enum rather than 0 for version, revision
+//
 // Revision 1.4  2000/04/24 14:48:34  eldamitri
 // - Added comments originally in include/id3/tag.h
 // - (operator<<): Made frame parameter constant

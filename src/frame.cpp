@@ -1,4 +1,4 @@
-// $Id: frame.cpp,v 1.3 2000/04/24 14:48:11 eldamitri Exp $
+// $Id: frame.cpp,v 1.4 2000/04/26 03:42:52 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -160,9 +160,8 @@ void ID3_Frame::InitFields(const ID3_FrameDef *info)
     __apFields[i]->__eName        = info->aeFieldDefs[i].eID;
     __apFields[i]->__eType        = info->aeFieldDefs[i].eType;
     __apFields[i]->__ulFixedLength = info->aeFieldDefs[i].ulFixedLength;
-    __apFields[i]->__ucIOVersion  = info->aeFieldDefs[i].ucVersion;
-    __apFields[i]->__ucIORevision = info->aeFieldDefs[i].ucRevision;
-    __apFields[i]->__eControl     = info->aeFieldDefs[i].eControl;
+    __apFields[i]->__eSpecBegin   = info->aeFieldDefs[i].eSpecBegin;
+    __apFields[i]->__eSpecEnd     = info->aeFieldDefs[i].eSpecEnd;
     __apFields[i]->__ulFlags      = info->aeFieldDefs[i].ulFlags;
             
     // tell the frame that this field is present
@@ -190,14 +189,11 @@ ID3_FrameID ID3_Frame::GetID(void) const
 }
 
 
-void ID3_Frame::SetVersion(uchar ver, uchar rev)
+void ID3_Frame::SetSpec(ID3_V2Spec spec)
 {
-  if (__FrmHdr.GetVersion() != ver || __FrmHdr.GetRevision() != rev)
-  {
-    __bHasChanged = true;
-  }
+  __bHasChanged = __bHasChanged || (__FrmHdr.GetSpec() != spec);
   
-  __FrmHdr.SetVersion(ver, rev);
+  __FrmHdr.SetSpec(spec);
 }
 
 lsint ID3_Frame::FindField(ID3_FieldID fieldName) const
@@ -312,7 +308,7 @@ luint ID3_Frame::Size(void)
   
   for (luint i = 0; i < __ulNumFields; i++)
   {
-    __apFields[i]->SetVersion(__FrmHdr.GetVersion(), __FrmHdr.GetRevision());
+    __apFields[i]->SetSpec(__FrmHdr.GetSpec());
     bytesUsed += __apFields[i]->BinSize();
   }
   
@@ -354,6 +350,15 @@ ID3_Frame::operator=( const ID3_Frame &rFrame )
 }
 
 // $Log: frame.cpp,v $
+// Revision 1.4  2000/04/26 03:42:52  eldamitri
+// - Replaced version/revision uchar combination with ID3_V2Spec enums
+// - Deprecated {Get,Set}Version, GetRevision for {Get,Set}Spec
+// - ID3_VerCtl enumeration deprecated in favor of using two ID3_V2Spec
+//   enums to denote field scope
+// - Replaced ID3v2_VERSION, ID3v2_REVISION constants with ID3V2_LATEST
+//   enum
+// - Use ID3V2_UNKNOWN enum rather than 0 for version, revision
+//
 // Revision 1.3  2000/04/24 14:48:11  eldamitri
 // (ID3_Frame): Added copy constructor implementation
 //

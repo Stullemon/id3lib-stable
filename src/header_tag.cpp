@@ -1,4 +1,4 @@
-// $Id: header_tag.cpp,v 1.2 2000/04/18 22:12:16 eldamitri Exp $
+// $Id: header_tag.cpp,v 1.3 2000/04/26 03:42:52 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -44,7 +44,7 @@ lsint ID3_IsTagHeader(uchar header[ID3_TAGHEADERSIZE])
   lsint tagSize = -1;
   
   if ((memcmp(ID3_TAGID, header, ID3_TAGIDSIZE) == 0) &&
-      (header[ID3_TAGIDSIZE] <= ID3v2_VERSION))
+      (header[ID3_TAGIDSIZE] <= ID3_V2SpecToVer(ID3V2_LATEST)))
   {
     int28 temp = &header[6];
     tagSize = temp.get();
@@ -74,8 +74,8 @@ size_t ID3_TagHeader::Render(uchar *buffer)
   memcpy(&buffer[bytesUsed], (uchar *) ID3_TAGID, strlen(ID3_TAGID));
   bytesUsed += strlen(ID3_TAGID);
   
-  buffer[bytesUsed++] = __ucVersion;
-  buffer[bytesUsed++] = __ucRevision;
+  buffer[bytesUsed++] = ID3_V2SpecToVer(this->GetSpec());
+  buffer[bytesUsed++] = ID3_V2SpecToRev(this->GetSpec());
   
   // do the automatic flags
   if (__pInfo->bSetExpBit)
@@ -120,6 +120,15 @@ ID3_TagHeader& ID3_TagHeader::operator=(const ID3_TagHeader& hdr)
 }
 
 // $Log: header_tag.cpp,v $
+// Revision 1.3  2000/04/26 03:42:52  eldamitri
+// - Replaced version/revision uchar combination with ID3_V2Spec enums
+// - Deprecated {Get,Set}Version, GetRevision for {Get,Set}Spec
+// - ID3_VerCtl enumeration deprecated in favor of using two ID3_V2Spec
+//   enums to denote field scope
+// - Replaced ID3v2_VERSION, ID3v2_REVISION constants with ID3V2_LATEST
+//   enum
+// - Use ID3V2_UNKNOWN enum rather than 0 for version, revision
+//
 // Revision 1.2  2000/04/18 22:12:16  eldamitri
 // Moved header_tag.cpp from src/id3/ to src/
 //

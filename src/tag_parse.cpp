@@ -1,4 +1,4 @@
-// $Id: tag_parse.cpp,v 1.3 2000/04/24 14:49:00 eldamitri Exp $
+// $Id: tag_parse.cpp,v 1.4 2000/04/26 03:42:52 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -100,7 +100,7 @@ void ID3_Tag::ExpandBinaries(uchar *buffer, luint size)
   // TODO: 6 is a magic number!  Find a suitable constant
   while (posn < (size - 6) && buffer[posn] != 0)
   {
-    frHeader.SetVersion(__ucVersion, __ucRevision);
+    frHeader.SetSpec(this->GetSpec());
     
     posn += frHeader.Parse(&buffer[posn]);
     // firstly, let's check to see if we are parsing a CDM.
@@ -112,7 +112,7 @@ void ID3_Tag::ExpandBinaries(uchar *buffer, luint size)
     }
     else
     {
-      //If so, let's expand it out now.
+      // If so, let's expand it out now.
       // if the method was zlib
       if ('z' == buffer[posn])
       {
@@ -136,8 +136,6 @@ void ID3_Tag::ExpandBinaries(uchar *buffer, luint size)
       }
     }
   }
-  
-  return ;
 }
 
 void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
@@ -145,7 +143,7 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
   ID3_FrameHeader frHeader;
   ID3_Elem *cur = __pBinaryList;
 
-  frHeader.SetVersion(__ucVersion, __ucRevision);
+  frHeader.SetSpec(this->GetSpec());
   
   while (cur != NULL && cur->acBinary)
   {
@@ -160,6 +158,7 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
     bool bReadOnly = false;
     
     posn = frHeader.Parse(cur->acBinary);
+    frHeader.SetSpec(this->GetSpec());
     
     if (frHeader.GetFlags() & ID3FL_COMPRESSION)
     {
@@ -205,14 +204,12 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
                    frHeader.GetDataSize() - extras);
       }
       
-      frame = new ID3_Frame;
+      frame = new ID3_Frame(frHeader);
       if (NULL == frame)
       {
         ID3_THROW(ID3E_NoMemory);
       }
         
-      frame->SetID(id);
-      
       try 
       {
         if (NULL == expBin)
@@ -337,22 +334,21 @@ void ID3_Tag::Parse(uchar header[ID3_TAGHEADERSIZE], uchar *buffer)
   luint tagSize = 0;
   int28 temp = &header[6];
   luint posn = 0;
-  uchar prevVer = __ucVersion;
-  uchar prevRev = __ucRevision;
+  ID3_V2Spec prev_spec = this->GetSpec();
   
   Clear();
   
   tagSize = temp.get();
-  SetVersion(header[3], header[4]);
+  this->SetSpec(ID3_VerRevToV2Spec(header[3], header[4]));
   
   if (header[5] & ID3HF_UNSYNC)
   {
     tagSize = ReSync(buffer, tagSize);
   }
     
-  // okay, if we are 2.01, then let's skip over the extended header for now
+  // okay, if we are ID3v2.2.1, then let's skip over the extended header for now
   // because I am lazy
-  if (2 == __ucVersion && 1 == __ucRevision)
+  if (this->GetSpec() == ID3V2_2_1)
   {
     if (header[5] & ID3HF_EXTENDEDHEADER)
     {
@@ -363,7 +359,7 @@ void ID3_Tag::Parse(uchar header[ID3_TAGHEADERSIZE], uchar *buffer)
     
   // okay, if we are 3.00, then let's actually parse the extended header (for
   // now, we skip it because we are lazy)
-  if (3 == __ucVersion && 0 == __ucRevision)
+  if (this->GetSpec() == ID3V2_3_0)
   {
     if (header[5] & ID3HF_EXTENDEDHEADER)
     {
@@ -394,7 +390,7 @@ void ID3_Tag::Parse(uchar header[ID3_TAGHEADERSIZE], uchar *buffer)
   ProcessBinaries();
   
   // reset the version parameters which were in effect before the parse
-  SetVersion(prevVer, prevRev);
+  SetSpec(prev_spec);
   
   // set the flag which says that the tag hasn't changed
   __bHasChanged = false;
@@ -430,9 +426,7 @@ luint ID3_Tag::ParseFromHandle(void)
     lsint tagSize = ID3_IsTagHeader(header);
     if (tagSize > 0)
     {
-      uchar * bin;
-      
-      bin = new uchar[tagSize];
+      uchar* bin = new uchar[tagSize];
       if (NULL == bin)
       {
         ID3_THROW(ID3E_NoMemory);
@@ -466,6 +460,15 @@ luint ID3_Tag::ParseFromHandle(void)
 }
 
 // $Log: tag_parse.cpp,v $
+// Revision 1.4  2000/04/26 03:42:52  eldamitri
+// - Replaced version/revision uchar combination with ID3_V2Spec enums
+// - Deprecated {Get,Set}Version, GetRevision for {Get,Set}Spec
+// - ID3_VerCtl enumeration deprecated in favor of using two ID3_V2Spec
+//   enums to denote field scope
+// - Replaced ID3v2_VERSION, ID3v2_REVISION constants with ID3V2_LATEST
+//   enum
+// - Use ID3V2_UNKNOWN enum rather than 0 for version, revision
+//
 // Revision 1.3  2000/04/24 14:49:00  eldamitri
 // - Added comments originally in include/id3/tag.h
 // - (ParseFromHandle): Conditionally parses tag types based on
