@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.11 2000/04/12 16:31:14 eldamitri Exp $
+# $Id: Makefile.am,v 1.12 2000/04/18 05:16:55 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -14,19 +14,26 @@
 AUTOMAKE_OPTIONS = 1.4
 
 EXTRA_DIST =                    \
-        reconf                  \
+	HISTORY                 \
         config.h.win32          \
-        config.h.win32.in 
+        config.h.win32.in       \
+	id3lib.spec             \
+        id3lib.spec.in          \
+        reconf
 SUBDIRS = . m4 doc src include prj zlib id3com libprj
 
 INCLUDES = @ID3LIB_DEBUG_FLAGS@
 
 config.h.win32: $(top_builddir)/config.status $(top_srcdir)/config.h.win32.in 
-	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status 
+	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+id3lib.spec: $(top_builddir)/config.status $(top_srcdir)/id3lib.spec.in 
+	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
 
 .PHONY: release snapshot
 
-release: config.h.win32
+release: config.h.win32 id3lib.spec
 	rm -rf .deps */.deps
 	$(MAKE) distcheck
 	GZIP=$(GZIP_ENV) $(TAR) zxf $(distdir).tar.gz
@@ -44,6 +51,11 @@ snapshot: config.h.win32
 	rm -rf $$ss_distdir
 
 # $Log: Makefile.am,v $
+# Revision 1.12  2000/04/18 05:16:55  eldamitri
+# (EXTRA_DIST): Added HISTORY and id3lib.spec[.in]
+# (id3lib.spec): Added rule for generating from id3lib.spec.in
+# (release): Now depends on id3lib.spec
+#
 # Revision 1.11  2000/04/12 16:31:14  eldamitri
 # (SUBDIRS): Added id3com and libprj
 #
