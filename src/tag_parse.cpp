@@ -1,4 +1,4 @@
-// $Id: tag_parse.cpp,v 1.21 2000/07/01 07:48:35 eldamitri Exp $
+// $Id: tag_parse.cpp,v 1.22 2000/07/04 22:18:13 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -170,7 +170,7 @@ size_t ID3_Tag::Parse(const uchar header[ID3_TagHeader::SIZE],
   return hdr_size + __hdr.GetDataSize();
 }
 
-size_t ID3_Tag::ParseID3v2(FILE* handle)
+size_t ParseID3v2(ID3_Tag& tag, FILE* handle)
 {
   size_t size = 0;
 
@@ -198,7 +198,7 @@ size_t ID3_Tag::ParseID3v2(FILE* handle)
       //               "ID3_Tag::ParseFromHandle: Ack! Couldn't read");
     }
     
-    size += this->Parse(header, bin);
+    size += tag.Parse(header, bin);
     
     delete[] bin;
   }
@@ -206,9 +206,14 @@ size_t ID3_Tag::ParseID3v2(FILE* handle)
   return size;
 }
 
-void ID3_Tag::ParseFromHandle(FILE* handle)
+size_t ParseMusicMatch(ID3_Tag&, FILE*);
+size_t ParseLyrics3(ID3_Tag&, FILE*);
+size_t ParseLyrics3v2(ID3_Tag&, FILE*);
+size_t ParseID3v1(ID3_Tag&, FILE*);
+
+void ID3_Tag::ParseFile()
 {
-  if (NULL == handle)
+  if (NULL == __file_handle)
   {
     // log this...
     return;
@@ -218,33 +223,33 @@ void ID3_Tag::ParseFromHandle(FILE* handle)
   __file_tags.clear();
 
   size_t bytes = 0;
-  __starting_bytes = 0;
+  __prepended_bytes = 0;
   do
   {
-    fseek(handle, __starting_bytes, SEEK_SET);
+    fseek(__file_handle, __prepended_bytes, SEEK_SET);
     bytes = 0;
     // Parse tags at the beginning of the file first...
     if (__tags_to_parse.test(ID3TT_ID3V2))
     {
-      bytes = ParseID3v2(handle);
+      bytes = ParseID3v2(*this, __file_handle);
       if (bytes)
       {
         // say we have v2 tags
         __file_tags.add(ID3TT_ID3V2);
       }
     }
-    __starting_bytes += bytes;
+    __prepended_bytes += bytes;
   } while (bytes);
   
-  __ending_bytes = 0;
+  __appended_bytes = 0;
   do
   {
     bytes = 0;
     // ...then the tags at the end
     if (!bytes && __tags_to_parse.test(ID3TT_MUSICMATCH))
     {
-      fseek(handle, 0 - __ending_bytes, SEEK_END);
-      bytes = ParseMusicMatch(handle);
+      fseek(__file_handle, 0 - __appended_bytes, SEEK_END);
+      bytes = ParseMusicMatch(*this, __file_handle);
       if (bytes)
       {
         __file_tags.add(ID3TT_MUSICMATCH);
@@ -252,8 +257,8 @@ void ID3_Tag::ParseFromHandle(FILE* handle)
     }
     if (!bytes && __tags_to_parse.test(ID3TT_LYRICS3))
     {
-      fseek(handle, 0 - __ending_bytes, SEEK_END);
-      bytes = ParseLyrics3(handle);
+      fseek(__file_handle, 0 - __appended_bytes, SEEK_END);
+      bytes = ParseLyrics3(*this, __file_handle);
       if (bytes)
       {
         __file_tags.add(ID3TT_LYRICS3);
@@ -261,8 +266,8 @@ void ID3_Tag::ParseFromHandle(FILE* handle)
     }
     if (!bytes && __tags_to_parse.test(ID3TT_LYRICS3V2))
     {
-      fseek(handle, 0 - __ending_bytes, SEEK_END);
-      bytes = ParseLyrics3v2(handle);
+      fseek(__file_handle, 0 - __appended_bytes, SEEK_END);
+      bytes = ParseLyrics3v2(*this, __file_handle);
       if (bytes)
       {
         __file_tags.add(ID3TT_LYRICS3V2);
@@ -270,13 +275,13 @@ void ID3_Tag::ParseFromHandle(FILE* handle)
     }
     if (!bytes && __tags_to_parse.test(ID3TT_ID3V1))
     {
-      fseek(handle, 0 - __ending_bytes, SEEK_END);
-      bytes = ParseID3v1(handle);
+      fseek(__file_handle, 0 - __appended_bytes, SEEK_END);
+      bytes = ParseID3v1(*this, __file_handle);
       if (bytes)
       {
         __file_tags.add(ID3TT_ID3V1);
       }
     }
-    __ending_bytes += bytes;
+    __appended_bytes += bytes;
   } while (bytes);
 }
