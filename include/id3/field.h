@@ -1,4 +1,4 @@
-// $Id: field.h,v 1.19 2000/05/03 03:02:39 eldamitri Exp $
+// $Id: field.h,v 1.20 2000/05/03 14:09:05 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -109,7 +109,7 @@ struct ID3_FrameDef
  ** if you only plan to generate 3.0 tags.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: field.h,v 1.19 2000/05/03 03:02:39 eldamitri Exp $
+ ** @version $Id: field.h,v 1.20 2000/05/03 14:09:05 eldamitri Exp $
  ** \sa ID3_Tag
  ** \sa ID3_Frame
  ** \sa ID3_Err 
@@ -380,8 +380,6 @@ protected:
   size_t ParseBinary(const uchar *buffer, luint posn, size_t nSize);
   
 };
-
-const char *ID3_GetFrameDescription(const ID3_FrameID id);
 
 // Ack! Not for public use
 ID3_FrameDef *ID3_FindFrameDef(const ID3_FrameID id);
