@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.8 1999/12/01 18:00:59 scott Exp $
+// $Id: tag.cpp,v 1.9 1999/12/09 03:32:28 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -44,6 +44,13 @@ ID3_Tag::ID3_Tag(char *name)
   s_ulInstances++;
 }
 
+ID3_Tag::ID3_Tag(const ID3_Tag &tag)
+{
+  SetupTag(NULL);
+  *this = tag;
+
+  s_ulInstances++;
+}
 
 void ID3_Tag::SetupTag(char *fileInfo)
 {
@@ -68,7 +75,9 @@ void ID3_Tag::SetupTag(char *fileInfo)
   Clear();
   
   if (NULL != fileInfo)
+  {
     Link(fileInfo);
+  }
     
   return ;
 }
@@ -76,16 +85,20 @@ void ID3_Tag::SetupTag(char *fileInfo)
 
 ID3_Tag::~ID3_Tag(void)
 {
-  if (NULL != __sFileName)
-    delete [] __sFileName;
   CloseFile();
+  if (NULL != __sFileName)
+  {
+    delete [] __sFileName;
+  }
     
   Clear();
   
   s_ulInstances--;
   
   if (s_ulInstances == 0)
-  {}
+  {
+    // Do something here!
+  }
   
 }
 
@@ -113,21 +126,18 @@ void ID3_Tag::Clear(void)
 
 void ID3_Tag::DeleteElem(ID3_Elem *cur)
 {
-  if (cur)
+  if (NULL != cur && cur->bTagOwns)
   {
-    if (cur->bTagOwns)
+    if (cur->pFrame)
     {
-      if (cur->pFrame)
-      {
-        delete cur->pFrame;
-        cur->pFrame = NULL;
-      }
+      delete cur->pFrame;
+      cur->pFrame = NULL;
+    }
       
-      if (cur->acBinary)
-      {
-        delete [] cur->acBinary;
-        cur->acBinary = NULL;
-      }
+    if (cur->acBinary)
+    {
+      delete [] cur->acBinary;
+      cur->acBinary = NULL;
     }
     
     __pFindCursor = NULL;
@@ -171,11 +181,15 @@ void ID3_Tag::AddFrame(ID3_Frame *newFrame, bool freeWhenDone)
   ID3_Elem *elem;
   
   if (NULL == newFrame)
+  {
     ID3_THROW(ID3E_NoData);
+  }
 
   elem = new ID3_Elem;
   if (NULL == elem)
+  {
     ID3_THROW(ID3E_NoMemory);
+  }
 
   elem->pNext = __pFrameList;
   elem->pFrame = newFrame;
@@ -201,7 +215,9 @@ void ID3_Tag::AddFrames(ID3_Frame *frames, luint numFrames, bool freeWhenDone)
   lsint i;
   
   for (i = numFrames - 1; i >= 0; i--)
+  {
     AddFrame(&frames[i], freeWhenDone);
+  }
     
   return ;
 }
@@ -211,7 +227,9 @@ void ID3_Tag::RemoveFrame(ID3_Frame *frame)
 {
   ID3_Elem *elem = Find(frame);
   if (NULL != elem)
+  {
     RemoveFromList(elem, &__pFrameList);
+  }
     
   return ;
 }
@@ -237,7 +255,9 @@ void ID3_Tag::RemoveFromList(ID3_Elem *which, ID3_Elem **list)
         break;
       }
       else
+      {
         cur = cur->pNext;
+      }
     }
   }
   
@@ -256,12 +276,18 @@ bool ID3_Tag::HasChanged(void) const
     while (cur)
     {
       if (cur->pFrame)
+      {
         changed = cur->pFrame->HasChanged();
+      }
         
       if (changed)
+      {
         break;
+      }
       else
+      {
         cur = cur->pNext;
+      }
     }
   }
   
@@ -272,7 +298,9 @@ bool ID3_Tag::HasChanged(void) const
 void ID3_Tag::SetVersion(uchar ver, uchar rev)
 {
   if (__ucVersion != ver || __ucRevision != rev)
+  {
     __bHasChanged = true;
+  }
     
   __ucVersion = ver;
   __ucRevision = rev;
@@ -284,7 +312,9 @@ void ID3_Tag::SetVersion(uchar ver, uchar rev)
 void ID3_Tag::SetUnsync(bool newSync)
 {
   if (__bSyncOn != newSync)
+  {
     __bHasChanged = true;
+  }
     
   __bSyncOn = newSync;
   
@@ -295,7 +325,9 @@ void ID3_Tag::SetUnsync(bool newSync)
 void ID3_Tag::SetExtendedHeader(bool ext)
 {
   if (__bExtendedHeader != ext)
+  {
     __bHasChanged = true;
+  }
     
   __bExtendedHeader = ext;
   
@@ -306,7 +338,9 @@ void ID3_Tag::SetExtendedHeader(bool ext)
 void ID3_Tag::SetCompression(bool comp)
 {
   if (__bCompression != comp)
+  {
     __bHasChanged = true;
+  }
     
   __bCompression = comp;
   
@@ -335,7 +369,30 @@ luint ID3_Tag::NumFrames(void) const
   return numFrames;
 }
 
+ID3_Tag &
+ID3_Tag::operator=( const ID3_Tag &rTag )
+{
+  if (this != &rTag)
+  {
+    Clear();
+    size_t nFrames = rTag.NumFrames();
+    for (size_t nIndex = 0; nIndex < nFrames; nIndex++)
+    {
+      ID3_Frame *newFrame = new ID3_Frame;
+      // Copy the frames in reverse order so that they appear in the same order
+      // as the original tag when rendered.
+      *newFrame = *(rTag[nFrames - nIndex - 1]);
+      AddNewFrame(newFrame);
+    }
+  }
+  return *this;
+}
+
 // $Log: tag.cpp,v $
+// Revision 1.9  1999/12/09 03:32:28  scott
+// (ID3_Tag): Added copy constructor implementation.
+// (operator=): Added implementation.
+//
 // Revision 1.8  1999/12/01 18:00:59  scott
 // Changed all of the #include <id3/*> to #include "*" to help ensure that
 // the sources are searched for in the right places (and to make compiling under
