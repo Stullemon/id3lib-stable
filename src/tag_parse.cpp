@@ -1,4 +1,4 @@
-// $Id: tag_parse.cpp,v 1.35 2000/10/15 06:39:26 eldamitri Exp $
+// $Id: tag_parse.cpp,v 1.36 2000/10/15 16:09:49 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -172,18 +172,31 @@ bool id3::v2::parse(ID3_TagImpl& tag, ID3_Reader& reader)
   }
   else
   {
+    // The buffer has been unsynced.  It will have to be resynced to be 
+    // readable.  This has to be done a character at a time.  
+    //
+    // The original reader may be reading in characters from a file.  Doing
+    // this a character at a time is quite slow.  To improve performance, read
+    // in the entire buffer into a string, then create an UnsyncedReader from
+    // the string.
+    //
+    // It might be better to implement a BufferedReader so that the details
+    // of this can be abstracted away behind a class
     tag.SetUnsync(true);
-    io::UnsyncedReader ur(wr);
-    String str;
-    str.reserve(ur.getEnd() - ur.getCur());
-    while (!ur.atEnd())
-    {
-      str += (char) ur.readChar();
-    }
-    io::StringReader sr(str);
+    BString raw = io::readAllBinary(wr);
+    io::BStringReader bsr(raw);
+    io::UnsyncedReader ur(bsr);
     ID3D_NOTICE( "ID3_TagImpl::Parse(ID3_Reader&): unsync beg = " << ur.getBeg() );
     ID3D_NOTICE( "ID3_TagImpl::Parse(ID3_Reader&): unsync cur = " << ur.getCur() );
     ID3D_NOTICE( "ID3_TagImpl::Parse(ID3_Reader&): unsync end = " << ur.getEnd() );
+
+    // Now read the UnsyncedReader into another string, and parse the frames
+    // from the string.  This is done so that 1. the unsynced reader is 
+    // unsynced exactly once, removing the possibility of multiple unsyncings
+    // of the same string, and 2) so that calls to readChars aren't done a 
+    // character at a time for every call
+    BString synced = io::readAllBinary(ur);
+    io::BStringReader sr(synced);
     parseFrames(tag, sr);
   }
 
