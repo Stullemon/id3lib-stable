@@ -9,9 +9,9 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 INCLUDES = -I$(top_srcdir)/include
-LDADD = $(top_builddir)/src/id3/libid3.la
+LDADD = $(top_builddir)/src/libid3.la
 
-check_PROGRAMS     = id3info id3convert id3tag
+bin_PROGRAMS       = id3info id3convert id3tag
 id3info_SOURCES    = demo_info.cpp
 id3convert_SOURCES = demo_convert.cpp
 id3tag_SOURCES     = demo_tag.cpp
@@ -24,5 +24,4 @@ EXTRA_DIST =            \
   221-compressed.tag    \
   230-compressed.tag    \
   230-picture.tag       \
-  230-unicode.tag       \
-  readme.txt
+  230-unicode.tag
