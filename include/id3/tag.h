@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.2 1999/12/02 22:45:28 scott Exp $
+// $Id: tag.h,v 1.3 1999/12/09 02:45:59 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -15,7 +15,6 @@
 #ifndef ID3LIB_TAG_H
 #define ID3LIB_TAG_H
 
-#include <wchar.h>
 #include <stdio.h>
 #include "types.h"
 #include "frame.h"
@@ -79,7 +78,7 @@ const luint LEN_V1_GENRE   =   1;
 
     @author Dirk Mahoney (dirk@id3.org)
     @author Scott Thomas Haug (sth2@cs.wustl.edu)
-    @version $Id: tag.h,v 1.2 1999/12/02 22:45:28 scott Exp $
+    @version $Id: tag.h,v 1.3 1999/12/09 02:45:59 scott Exp $
     @see ID3_Tag
 */
 struct ID3V1_Tag
@@ -178,7 +177,7 @@ const luint ALL_TAG_TYPES = BOTH_ID3_TAGS | LYRICS_TAG;
      that id3lib 2.16 supports.
 
      @author Dirk Mahoney
-     @version $Id: tag.h,v 1.2 1999/12/02 22:45:28 scott Exp $
+     @version $Id: tag.h,v 1.3 1999/12/09 02:45:59 scott Exp $
      @see ID3_Frame
      @see ID3_Field
      @see ID3_Err
@@ -196,8 +195,14 @@ public:
       <a href="#Update"><code>Update</code></a> method on the tag (if you
       choose to <code>Update</code> at all).
 
-      @param name The filename of the mp3 file to link to */
+      @param name The filename of the mp3 file to link to
+  */
   ID3_Tag(char *name = NULL);
+  /** Standard copy constructor.
+
+      @param tag What is copied into this tag
+  */
+  ID3_Tag(const ID3_Tag &tag);
   ~ID3_Tag(void);
   
   /** Clears the object and disassociates it from any files.
@@ -746,6 +751,8 @@ public:
   */
   ID3_Frame *operator[](luint nIndex) const;
   
+  ID3_Tag &operator=( const ID3_Tag &rTag );
+
 private:
   void      AddFrame(ID3_Frame *pNewFrame, bool bFreeWhenDone);
   void      AddFrames(ID3_Frame *newFrames, luint nFrames, bool freeWhenDone);
@@ -774,11 +781,11 @@ private:
   void      UnSync(uchar *destData, luint destSize, uchar *sourceData, luint sourceSize);
   luint     ReSync(uchar *binarySourceData, luint sourceSize);
 
-  uchar     __ucVersion;      // what version tag?
-  uchar     __ucRevision;     // what revision tag?
-  ID3_Elem *__pFrameList; // the list of known frames currently attached to this tag
-  ID3_Elem *__pBinaryList;// the list of yet-to-be-parsed frames currently attached to this tag
-  ID3_Elem *__pFindCursor;// on which element in the frameList are we currently positioned?
+  uchar     __ucVersion;       // what version tag?
+  uchar     __ucRevision;      // what revision tag?
+  ID3_Elem *__pFrameList;      // the list of known frames currently attached to this tag
+  ID3_Elem *__pBinaryList;     // the list of yet-to-be-parsed frames currently attached to this tag
+  ID3_Elem *__pFindCursor;     // on which element in the frameList are we currently positioned?
   bool      __bSyncOn;         // should we unsync this tag when rendering?
   bool      __bCompression;    // should we compress frames when rendering?
   bool      __bPadding;        // add padding to tags?
@@ -798,6 +805,10 @@ private:
 #endif
 
 // $Log: tag.h,v $
+// Revision 1.3  1999/12/09 02:45:59  scott
+// (class ID3_Tag): Added copy constructor and operator= method
+// declarations.
+//
 // Revision 1.2  1999/12/02 22:45:28  scott
 // Changed all of the #include <id3/*> to #include "*" to help ensure that
 // the sources are searched for in the right places.
