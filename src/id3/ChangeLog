@@ -1,3 +1,38 @@
+1999-12-01  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* Makefile.am
+	(INCLUDES): Now points to new, toplevel include directory.
+	(the_headers, id3includedir, id3include_HEADERS): Removed.  Headers are
+ 	no longer in this directory.
+
+	* dll_wrapper.cpp
+	* error.cpp
+	* field.cpp
+	* field_binary.cpp
+	* field_integer.cpp
+	* field_string_ascii.cpp
+	* field_string_unicode.cpp
+	* frame.cpp
+	* frame_parse.cpp
+	* frame_render.cpp
+	* header.cpp
+	* header_frame.cpp
+	* header_tag.cpp
+	* int28.cpp
+	* misc_support.cpp
+	* tag.cpp
+	* tag_file.cpp
+	* tag_find.cpp
+	* tag_parse.cpp
+	* tag_parse_lyrics3.cpp
+	* tag_parse_v1.cpp
+	* tag_render.cpp
+	* tag_sync.cpp
+	* version.cpp:
+	Changed all of the #include <id3/*> to #include "*" to help ensure that
+	the sources are searched for in the right places (and to make compiling
+ 	under windows easier).
+
 1999-11-30  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* version.cpp: 
