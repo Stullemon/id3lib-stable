@@ -1,4 +1,4 @@
-# $Id: configure.in,v 1.59 2002/06/30 16:24:41 t1mpy Exp $
+# $Id: configure.in,v 1.60 2002/07/17 15:42:32 t1mpy Exp $
 
 # Copyright 1999, 2000 Scott Thomas Haug <eldamitri@users.sourceforge.net>
 #  
@@ -89,7 +89,7 @@ AM_INIT_AUTOMAKE($PACKAGE,$VERSION)
 AC_ISC_POSIX
 
 dnl Initialize libtool
-AC_PROG_LIBTOOL
+AM_PROG_LIBTOOL
 
 dnl Initialize maintainer mode
 AM_MAINTAINER_MODE
@@ -307,6 +307,8 @@ AC_OUTPUT(                      \
   m4/Makefile                   \
   include/Makefile              \
   include/id3/Makefile          \
+  id3com/Makefile               \
+  id3com/Sample/Makefile        \
   src/Makefile                  \
   examples/Makefile             \
   prj/Makefile			\
