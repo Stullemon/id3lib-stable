@@ -1,4 +1,4 @@
-/* $Id: globals.h,v 1.9 2000/04/20 03:38:45 eldamitri Exp $
+/* $Id: globals.h,v 1.10 2000/04/21 05:45:42 eldamitri Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags Copyright
  * 1999, 2000 Scott Thomas Haug
@@ -41,12 +41,14 @@
  */
 #ifdef NATIVE_WIN32
 #  ifdef ID3LIB_COMPILATION
-#    define ID3_EXTERN __declspec(dllexport)
+#    define ID3_C_VAR __declspec(dllexport)
 #  else /* !ID3LIB_COMPILATION */
-#    define ID3_EXTERN extern __declspec(dllimport)
+#    define ID3_C_VAR extern __declspec(dllimport)
 #  endif /* !ID3LIB_COMPILATION */
+#  define ID3_C_EXPORT ID3_C_VAR
 #else /* !NATIVE_WIN32 */
-#  define ID3_EXTERN extern
+#  define ID3_C_VAR extern
+#  define ID3_C_EXPORT
 #endif /* !NATIVE_WIN32 */
 
 #ifndef __cplusplus
@@ -57,14 +59,18 @@ typedef int bool;
 
 #endif /* __cplusplus */
 
-ID3_EXTERN const char * const ID3LIB_NAME;
-ID3_EXTERN const char * const ID3LIB_RELEASE;
-ID3_EXTERN const char * const ID3LIB_FULL_NAME;
-ID3_EXTERN const int          ID3LIB_MAJOR_VERSION;
-ID3_EXTERN const int          ID3LIB_MINOR_VERSION;
-ID3_EXTERN const int          ID3LIB_PATCH_VERSION;
-ID3_EXTERN const int          ID3LIB_INTERFACE_AGE;
-ID3_EXTERN const int          ID3LIB_BINARY_AGE;
+ID3_C_VAR const char * const ID3LIB_NAME;
+ID3_C_VAR const char * const ID3LIB_RELEASE;
+ID3_C_VAR const char * const ID3LIB_FULL_NAME;
+ID3_C_VAR const int          ID3LIB_MAJOR_VERSION;
+ID3_C_VAR const int          ID3LIB_MINOR_VERSION;
+ID3_C_VAR const int          ID3LIB_PATCH_VERSION;
+ID3_C_VAR const int          ID3LIB_INTERFACE_AGE;
+ID3_C_VAR const int          ID3LIB_BINARY_AGE;
+
+#define ID3_TAGID               "ID3"
+#define ID3_TAGIDSIZE           (3)
+#define ID3_TAGHEADERSIZE       (10)
 
 typedef       unsigned char   uchar;
 typedef short   signed int    ssint;
@@ -76,18 +82,31 @@ typedef long  unsigned int *  bitset;
 typedef uint16                unicode_t;
 const unicode_t NULL_UNICODE = (unicode_t) '\0';
 
+#ifdef __cplusplus
+#  define ID3_ENUM_DECL(EnumName) enum EnumName
+#else
+#  define ID3_ENUM_DECL(EnumName) enum __ ## EnumName
+#endif
+
+#ifdef __cplusplus
+#  define ID3_ENUM_TYPE(EnumName)
+#else
+#  define ID3_ENUM_TYPE(EnumName) typedef enum __ ## EnumName EnumName;
+#endif
+
 /**
  ** Enumeration of the types of text encodings: ascii or unicode
  **/
-enum ID3_TextEnc
+ID3_ENUM_DECL(ID3_TextEnc)
 {
   ID3TE_ASCII = 0,
   ID3TE_UNICODE
 };
+ID3_ENUM_TYPE(ID3_TextEnc)
 
 /** Enumeration of the various id3 specifications
  **/
-enum ID3_SpecVersion
+ID3_ENUM_DECL(ID3_SpecVersion)
 {
   ID3V1_0 = 0,
   ID3V1_1,
@@ -96,13 +115,14 @@ enum ID3_SpecVersion
   ID3V2_3_0,
   ID3_LASTVERSION
 };
+ID3_ENUM_TYPE(ID3_SpecVersion)
 
 const ID3_SpecVersion ID3_LATEST_SPEC = ID3V2_3_0;
 
 /**
  ** Enumeration of the different types of fields in a frame.
  **/
-enum ID3_FieldID
+ID3_ENUM_DECL(ID3_FieldID)
 {
   ID3FN_NOFIELD = 0,    /**< No field */
   ID3FN_TEXTENC,        /**< Text encoding (unicode or ASCII) */
@@ -128,11 +148,12 @@ enum ID3_FieldID
   ID3FN_PEAKVOLLEFT,    /**< Peak volume on the left channel */
   ID3FN_LASTFIELDID     /**< Last field placeholder */
 };
+ID3_ENUM_TYPE(ID3_FieldID)
 
 /**
  ** Enumeration of the different types of frames recognized by id3lib
  **/
-enum ID3_FrameID
+ID3_ENUM_DECL(ID3_FrameID)
 {
   /* ???? */ ID3FID_NOFRAME = 0,       /**< No known frame */
   /* AENC */ ID3FID_AUDIOCRYPTO,       /**< Audio encryption */
@@ -211,6 +232,7 @@ enum ID3_FrameID
   /* WXXX */ ID3FID_WWWUSER,           /**< User defined URL link */
   /*      */ ID3FID_METACRYPTO         /**< Encrypted meta frame (id3v2.2.x) */
 };
+ID3_ENUM_TYPE(ID3_FrameID)
 
 #define BS_SIZE (sizeof(luint)*8)
 #define BS_SET(v,x)   ((v)[(x) / BS_SIZE] |=  (1 << ((x) % BS_SIZE)))
