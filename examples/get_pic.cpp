@@ -1,4 +1,4 @@
-// $Id: get_pic.cpp,v 1.1 2000/05/28 22:03:11 eldamitri Exp $
+// $Id: get_pic.cpp,v 1.2 2000/05/29 02:52:37 eldamitri Exp $
 
 #include <iostream.h>
 #include <getopt.h>
@@ -11,7 +11,6 @@ int main( int argc, char *argv[])
 {
   try
   {
-    cerr << "*** argc = " << argc << endl;
     if (argc != 3)
     {
       cout << "Usage: get_pic <tagfile> <picfilename>" << endl;
@@ -22,8 +21,9 @@ int main( int argc, char *argv[])
     const ID3_Frame* frame = tag.Find(ID3FID_PICTURE);
     if (frame && frame->Contains(ID3FN_DATA))
     {
-      cout << "*** extracting picture to file \"" << argv[2] << "\"" << endl;
+      cout << "*** extracting picture to file \"" << argv[2] << "\"...";
       frame->Field(ID3FN_DATA).ToFile(argv[2]);
+      cout << " done!" << endl;
     }
     else
     {
