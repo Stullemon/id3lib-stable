@@ -1,4 +1,4 @@
-<!-- $Id: index.html.in,v 1.6 2000/05/05 03:13:46 eldamitri Exp $ -->
+<!-- $Id: index.html.in,v 1.7 2000/05/08 13:54:17 eldamitri Exp $ -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
@@ -141,9 +141,17 @@
                 href="http://www.gnu.org">GNU</a>/<a
                 href="http://www.linux.org">Linux</a> operating system but has
               been compiled and tested on other Unix-like OS's as well as
-              Windows NT.  id3lib aspires to provide interfaces for multiple
-              programming languages, and currently supports both C and C++.
-              
+              Windows NT. 
+            </dd>
+            
+            <dt><b>Multi-language</b></dt>
+            <dd>
+
+              id3lib aspires to provide interfaces for multiple programming
+              languages, and currently fully supports both C and C++.  A COM
+              wrapper (id3com) is also supplied allowing VB, VBA, VBScript and
+              other COM-enabled languages to use the library.
+
             </dd>
           </dl>
           
