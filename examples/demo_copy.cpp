@@ -1,4 +1,4 @@
-// $Id: demo_copy.cpp,v 1.1 2000/06/23 03:53:56 eldamitri Exp $
+// $Id: demo_copy.cpp,v 1.2 2000/08/27 22:58:17 eldamitri Exp $
 //
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -14,11 +14,11 @@
 
 #include <iostream.h>
 #include <id3/tag.h>
-#include <getopt.h>
+#include <popt.h>
 
-#define VERSION_NUMBER "$Revision: 1.1 $"
+static const char* VERSION_NUMBER = "$Revision: 1.2 $";
 
-void PrintUsage(char *sName)
+void PrintUsage(const char *sName)
 {
   cout << "Usage: " << sName << " [OPTION]... SOURCE DEST" << endl;
   cout << "Copy the tag(s) from SOURCE to DEST." << endl;
@@ -30,7 +30,7 @@ void PrintUsage(char *sName)
   cout << endl;
 }
 
-void PrintVersion(char *sName)
+void PrintVersion(const char *sName)
 {
   size_t nIndex;
   cout << sName << " ";
@@ -76,63 +76,61 @@ void DisplayTags(ostream &os, luint nTags)
   }
 }
 
-int main( unsigned int argc, char *argv[])
+int main( unsigned int argc, const char *argv[])
 {
+  const char* appname = argv[0];
+  int ret = 0;
   int ulFlag = ID3TT_ID3;
-  int iOpt;
-  bool bError = false;
-  bool bStrip = false;
-  bool bPadding = false;
-  while (true)
+  bool bVersion = false;
+  bool bHelp = false;
+  static struct poptOption options[] =
   {
-    int option_index = 0;
-    int iLongOpt = 0;
-    static struct option long_options[] = 
-    { 
-      { "v1tag",   no_argument, &iLongOpt, '1' },
-      { "v2tag",   no_argument, &iLongOpt, '2' },
-      { "version", no_argument, &iLongOpt, 'v' },
-      { "help",    no_argument, &iLongOpt, 'h' },
-      { 0, 0, 0, 0 }
-    };
-    iOpt = getopt_long (argc, argv, "12vh", long_options, &option_index);
-
-    if (iOpt == -1)
-      break;
-
-    if (iOpt == 0) iOpt = iLongOpt;
-
-    switch (iOpt)
-    {
-      case '1': ulFlag = ID3TT_ID3V1;        break;
-      case '2': ulFlag = ID3TT_ID3V2;        break;
-      case 'v': PrintVersion(argv[0]);  exit (0);
-      case 'h': PrintUsage(argv[0]);    exit (0);
-      case '?': bError = true;          break;
-      default:
-        cout << "?? getopt returned character code " << iOpt << " ??" << endl;
-    }
-  }
-  if (bError)
+    { "v1tag",   '1', POPT_ARG_NONE, NULL,      ID3TT_ID3V1 },
+    { "v2tag",   '2', POPT_ARG_NONE, NULL,      ID3TT_ID3V2 },
+    { "version", 'v', POPT_ARG_NONE, &bVersion, 0 },
+    { "help",    'h', POPT_ARG_NONE, &bHelp,    0 },
+    { NULL,      0,   0,             NULL,      0 }
+  };
+  poptContext con = poptGetContext(NULL, argc, argv, options, 0);
+  int rc = 0;
+  while ((rc = poptGetNextOpt(con)) > 0)
   {
-    cout << "Try `" << argv[0] << " --help' for more information." << endl;
+    ulFlag = rc;
   }
-  else 
-    for (size_t nIndex = optind; nIndex < argc; nIndex++)
+  if (rc < -1)
+  {
+    cerr << poptBadOption(con, POPT_BADOPTION_NOALIAS) << ": "
+         << poptStrerror(rc) << endl;
+    
+    cout << "Try `" << appname << " --help' for more information." << endl;
+    ret = -rc;
+  }
+  else if (bHelp)
+  {
+    PrintVersion(appname);
+    PrintUsage(appname);
+  }
+  else if (bVersion)
+  {
+    PrintVersion(appname);
+  }
+  else
+  {
+    const char* filename = NULL;
+    while((filename = poptGetArg(con)) != NULL)
     {
       try
       {
         ID3_Tag myTag;
 
-        cout << "Parsing " << argv[nIndex] << ": ";
+        cout << "Parsing " << filename << ": ";
 
         myTag.Clear();
-        myTag.Link(argv[nIndex], ID3TT_ALL);
+        myTag.Link(filename, ID3TT_ALL);
 
-        nIndex++;
-        cout << "done.  Copying to " << argv[nIndex] << ": ";
+        cout << "done.  Copying to " << filename << ": ";
         
-        myTag.Link(argv[nIndex], ID3TT_NONE);
+        myTag.Link(filename, ID3TT_NONE);
         myTag.Update(ulFlag);
         
         cout << "done" << endl;
@@ -144,11 +142,14 @@ int main( unsigned int argc, char *argv[])
         cout << endl;
         cout << err.GetErrorFile() << " (" << err.GetErrorLine() << "): "
              << err.GetErrorType() << ": " << err.GetErrorDesc() << endl;
-        exit(1);
+        ret = 1;
+        break;
       }
     }
+  }
 
-  return 0;
+  poptFreeContext(con);
+  return ret;
 }
 
 

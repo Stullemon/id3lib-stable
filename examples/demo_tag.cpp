@@ -1,15 +1,15 @@
-// $Id: demo_tag.cpp,v 1.6 2000/05/29 02:19:43 eldamitri Exp $
+// $Id: demo_tag.cpp,v 1.7 2000/08/27 22:58:17 eldamitri Exp $
 
 #include <iostream.h>
-#include <getopt.h>
+#include <popt.h>
 #include <stdlib.h>
 
 #include <id3/tag.h>
 #include <id3/misc_support.h>
 
-#define VERSION_NUMBER "$Revision: 1.6 $"
+static const char* VERSION_NUMBER = "$Revision: 1.7 $";
 
-void PrintUsage(char *sName)
+void PrintUsage(const char *sName)
 {
   cout << "Usage: " << sName << " [OPTION]... [FILE]..." << endl;
   cout << "Tags an mp3 file with id3v1 and/or id3v2 tags." << endl;
@@ -35,7 +35,7 @@ void PrintUsage(char *sName)
        << "render them." << endl;
 }
 
-void PrintVersion(char *sName)
+void PrintVersion(const char *sName)
 {
   size_t nIndex;
   cout << sName << " ";
@@ -65,81 +65,68 @@ void DisplayTags(ostream &os, luint nTags)
     os << "v2";
 }
 
-int main( unsigned int argc, char *argv[])
+int main( unsigned int argc, const char *argv[])
 {
+  const char* appname = argv[0];
+  int ret = 0;
   int ulFlag = ID3TT_ID3;
-  int iOpt;
-  bool bError = false;
-  char
+  bool 
+    bVersion = false,
+    bHelp = false;
+  const char
     *sArtist  = NULL,
     *sAlbum   = NULL,
     *sSong    = NULL,
-    *sGenre   = NULL,
     *sYear    = NULL,
     *sComment = NULL,
-    *sDesc    = NULL,
-    *sTrack   = NULL,
-    *sTotal   = NULL;
-  size_t 
+    *sDesc    = "";
+  int
     nTrack    = 0,
     nTotal    = 0,
-    nGenre    = 0;
-  while (true)
+    nGenre    = 0xFF;
+  static struct poptOption options[] =
   {
-    int option_index = 0;
-    int iLongOpt = 0;
-    static struct option long_options[] = 
-    { 
-      { "v1tag",   no_argument,       &iLongOpt, '1' },
-      { "v2tag",   no_argument,       &iLongOpt, '2' },
-      { "version", no_argument,       &iLongOpt, 'v' },
-      { "help",    no_argument,       &iLongOpt, 'h' },
-      { "artist",  required_argument, &iLongOpt, 'a' },
-      { "album",   required_argument, &iLongOpt, 'A' },
-      { "song",    required_argument, &iLongOpt, 's' },
-      { "genre",   required_argument, &iLongOpt, 'g' },
-      { "year",    required_argument, &iLongOpt, 'y' },
-      { "comment", required_argument, &iLongOpt, 'c' },
-      { "desc",    required_argument, &iLongOpt, 'C' },
-      { "track",   required_argument, &iLongOpt, 't' },
-      { "total",   required_argument, &iLongOpt, 'T' },
-      { 0, 0, 0, 0 }
-    };
-    iOpt = getopt_long (argc, argv, "12vha:A:s:g:y:c:t:T:C:",
-                        long_options, &option_index);
-
-    if (iOpt == -1)
-      break;
-
-    if (iOpt == 0) iOpt = iLongOpt;
-
-    switch (iOpt)
-    {
-      case '1': ulFlag   = ID3TT_ID3V1;      break;
-      case '2': ulFlag   = ID3TT_ID3V2;      break;
-      case 'a': sArtist  = optarg;      break;
-      case 'A': sAlbum   = optarg;      break;
-      case 's': sSong    = optarg;      break;
-      case 'g': sGenre   = optarg;      break;
-      case 'y': sYear    = optarg;      break;
-      case 'c': sComment = optarg;      break;
-      case 'C': sDesc    = optarg;      break;
-      case 't': sTrack   = optarg;      break;
-      case 'T': sTotal   = optarg;      break;
-      case '?': bError   = true;        break;
-      case 'v': PrintVersion(argv[0]);  exit (0);
-      case 'h': PrintUsage(argv[0]);    exit (0);
-      default:
-        cout << "?? getopt returned character code " << iOpt << " ??" << endl;
-    }
+    { "v1tag",   '1', POPT_ARG_NONE,   NULL,      1 },
+    { "v2tag",   '2', POPT_ARG_NONE,   NULL,      2 },
+    { "artist",  'a', POPT_ARG_STRING, &sArtist,  0 },
+    { "album",   'A', POPT_ARG_STRING, &sAlbum,   0 },
+    { "song",    's', POPT_ARG_STRING, &sSong,    0 },
+    { "genre",   'g', POPT_ARG_INT,    &nGenre,   0 },
+    { "year",    'y', POPT_ARG_STRING, &sYear,    0 },
+    { "comment", 'c', POPT_ARG_STRING, &sComment, 0 },
+    { "desc",    'C', POPT_ARG_STRING, &sDesc,    0 },
+    { "track",   't', POPT_ARG_INT,    &nTrack,   0 },
+    { "total",   'T', POPT_ARG_STRING, &sComment, 0 },
+    { "version", 'v', POPT_ARG_NONE,   &bVersion, 0 },
+    { "help",    'h', POPT_ARG_NONE,   &bHelp,    0 },
+    { NULL,      0,   0,               NULL,      0 }
+  };
+  poptContext con = poptGetContext(NULL, argc, argv, options, 0);
+  int rc = 0;
+  while ((rc = poptGetNextOpt(con)) > 0)
+  {
+    ulFlag = rc;
   }
-  if (bError)
+  if (rc < -1)
   {
-    cout << "Try `" << argv[0] << " --help' for more information." << endl;
+    cerr << poptBadOption(con, POPT_BADOPTION_NOALIAS) << ": "
+         << poptStrerror(rc) << endl;
+    
+    cout << "Try `" << appname << " --help' for more information." << endl;
+    ret = -rc;
   }
-  else 
+
+  else if (bHelp)
   {
-    char *sEmpty = "";
+    PrintVersion(appname);
+    PrintUsage(appname);
+  }
+  else if (bVersion)
+  {
+    PrintVersion(appname);
+  }
+  else
+  {
     if (sArtist)
     {
       cout << "+++ Artist  = " << sArtist << endl;
@@ -159,47 +146,35 @@ int main( unsigned int argc, char *argv[])
     if (sComment)
     {
       cout << "+++ Comment = " << sComment << endl;
-      if (!sDesc)
-      {
-        sDesc = sEmpty;
-      }
       cout << "+++ Comment Description" << endl;
       cout << "            = " << sDesc << endl;
     }
-    if (sGenre)
+    if (nGenre > 0 && nGenre < 0xFF)
     {
-      nGenre = atoi(sGenre);
       cout << "+++ Genre   = " << nGenre << endl;
     }
-    if (sTrack)
+    if (nTrack)
     {
-      nTrack = atoi(sTrack);
-      if (nTrack > 0)
-      {
-        cout << "+++ Track   = " << nTrack;
-      }
+      cout << "+++ Track   = " << nTrack;
     }
-    if (sTotal)
+    if (nTotal)
     {
-      nTotal = atoi(sTotal);
-      if (nTrack > 0 && nTotal > 0)
-      {
-        cout << "+++ Total   = " << sTotal << endl;
-      }
+      cout << "+++ Total   = " << nTotal << endl;
     }
-    for (size_t nIndex = optind; nIndex < argc; nIndex++)
+    const char* filename = NULL;
+    while((filename = poptGetArg(con)) != NULL)
     {
       try
       {
         ID3_Tag myTag;
-
-        cout << "Tagging " << argv[nIndex] << ": ";
-
-        myTag.Link(argv[nIndex]);
-
+        
+        cout << "Tagging " << filename << ": ";
+        
+        myTag.Link(filename);
+        
         cout << "attempting ";
         DisplayTags(cout, ulFlag);
-
+        
         if (sArtist)
         {
           ID3_AddArtist(&myTag, sArtist, true);
@@ -230,9 +205,9 @@ int main( unsigned int argc, char *argv[])
         }
         luint nTags = myTag.Update(ulFlag);
         cout << ", tagged ";
-
+        
         DisplayTags(cout, nTags);
-
+        
         cout << endl;
       }
       
@@ -245,5 +220,6 @@ int main( unsigned int argc, char *argv[])
     }
   }
 
-  return 0;
+  poptFreeContext(con);
+  return ret;
 }

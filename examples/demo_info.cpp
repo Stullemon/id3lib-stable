@@ -14,13 +14,15 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.13 2000/06/25 17:18:43 eldamitri Exp $
+// $Id: demo_info.cpp,v 1.14 2000/08/27 22:58:17 eldamitri Exp $
 
 #include <iostream.h>
 #include <id3/tag.h>
 #include <id3/utils.h>
 #include <id3/misc_support.h>
-#include <getopt.h>
+#include <popt.h>
+
+static const char* VERSION_NUMBER = "$Revision: 1.14 $";
 
 void PrintUsage(const char *sName)
 {
@@ -35,7 +37,7 @@ void PrintUsage(const char *sName)
 
 void PrintVersion(const char *sName)
 {
-  cout << sName << " 1.0" << endl;
+  cout << sName << " " << VERSION_NUMBER << endl;
   cout << "Displays ID3 Tag Information - Written by Scott Thomas Haug" << endl;
   cout << "Uses " << ID3LIB_FULL_NAME << endl << endl;
 }
@@ -302,78 +304,52 @@ void PrintInformation(const ID3_Tag &myTag)
   }
 }
 
-int main( unsigned int argc, char *argv[])
+int main( unsigned int argc, const char *argv[])
 {
-
-  int iOpt;
-  bool bError = false, bTestAssignment = false;
-  while (true)
+  const char* appname = argv[0];
+  int ret = 0;
+  bool 
+    bAssign = false, 
+    bVersion = false, 
+    bHelp = false;
+  static struct poptOption options[] =
   {
-    int option_index = 0;
-    int iLongOpt = 0;
-    static struct option long_options[] = 
-    { 
-      { "version", no_argument, &iLongOpt, 'v' },
-      { "help",    no_argument, &iLongOpt, 'h' },
-      { 0, 0, 0, 0 }
-    };
-    iOpt = getopt_long (argc, argv, "vha", long_options, &option_index);
-
-    if (iOpt == -1)
-    {
-      break;
-    }
-
-    if (iOpt == 0)
-    {
-      iOpt = iLongOpt;
-    }
-
-    switch (iOpt)
-    {
-      case 'v':
-      {
-        PrintVersion(argv[0]);
-        exit (0);
-        break;
-      }
-      case 'h':
-      {
-        PrintUsage(argv[0]);
-        exit (0);
-        break;
-      }
-      case 'a':
-      {
-        bTestAssignment = true;
-        break;
-      }
-      case '?':
-      {
-        bError = true;
-        break;
-      }
-      default:
-      {
-        cout << "?? getopt returned character code " << iOpt << " ??" << endl;
-      }
-    }
+    { "version", 'v', POPT_ARG_NONE, &bVersion, 0 },
+    { "help",    'h', POPT_ARG_NONE, &bHelp,    0 },
+    { "assign",  'a', POPT_ARG_NONE, &bAssign,  0 },
+    { NULL,      0,   0,             NULL,      0 }
+  };
+  poptContext con = poptGetContext(NULL, argc, argv, options, 0);
+  int rc = poptGetNextOpt(con);
+  if (rc < -1)
+  {
+    cerr << poptBadOption(con, POPT_BADOPTION_NOALIAS) << ": "
+         << poptStrerror(rc) << endl;
+    
+    cout << "Try `" << appname << " --help' for more information." << endl;
+    ret = -rc;
   }
-  if (bError)
+  else if (bHelp)
   {
-    cout << "Try `" << argv[0] << " --help' for more information." << endl;
+    PrintVersion(appname);
+    PrintUsage(appname);
+  }
+  else if (bVersion)
+  {
+    PrintVersion(appname);
   }
   else
   {
-    for (size_t nIndex = optind; nIndex < argc; nIndex++)
+    const char* filename = NULL;
+    while((filename = poptGetArg(con)) != NULL)
     {
       try
       {
         ID3_Tag myTag;
-
-        myTag.Link(argv[nIndex], ID3TT_ALL);
-        cout << endl << "*** Tag information for " << argv[nIndex] << endl;
-        if (!bTestAssignment)
+      
+        myTag.Link(filename, ID3TT_ALL);
+        cout << endl << "*** Tag information for " << filename << endl;
+        if (!bAssign)
         {
           PrintInformation(myTag);
         }
@@ -392,5 +368,6 @@ int main( unsigned int argc, char *argv[])
     }
   }
 
-  return 0;
+  poptFreeContext(con);
+  return ret;
 }
