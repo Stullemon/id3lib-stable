@@ -1,4 +1,4 @@
-// $Id: header_tag.h,v 1.12 2000/05/09 13:36:02 eldamitri Exp $
+// $Id: header_tag.h,v 1.13 2000/05/12 04:24:55 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -58,6 +58,13 @@ public:
     return changed;
   }
   bool GetUnsync() const { return __flags.test(UNSYNC); }
+  bool SetExtended(bool b)
+  {
+    bool changed = __flags.set(EXTENDED, b);
+    __changed = __changed || changed;
+    return changed;
+  }
+  bool GetExtended() const { return __flags.test(EXTENDED); }
 
   // id3v2 tag header signature:  $49 44 33 MM mm GG ss ss ss ss
   // MM = major version (will never be 0xFF)
