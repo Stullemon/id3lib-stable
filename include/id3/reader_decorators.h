@@ -1,4 +1,5 @@
-// $Id: reader_decorators.h,v 1.4 2000/10/03 01:18:20 eldamitri Exp $
+// -*- C++ -*-
+// $Id: reader_decorators.h,v 1.5 2000/10/09 01:55:51 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -52,15 +53,15 @@ namespace dami
       
       virtual int_type readChar() { return _reader.readChar(); }
       virtual int_type peekChar() { return _reader.peekChar(); }
-      virtual streamsize readChars(uchar buf[], streamsize len)
+      virtual size_type readChars(char_type buf[], size_type len)
       { return _reader.readChars(buf, len); }
-      virtual streamsize readChars(char buf[], streamsize len)
+      virtual size_type readChars(char buf[], size_type len)
       { return this->readChars((uchar*) buf, len); }
 
-      virtual streamsize skipChars(streamsize len) 
+      virtual size_type skipChars(size_type len) 
       { return _reader.skipChars(len); }
 
-      virtual streamsize remainingChars() { return _reader.remainingChars(); }
+      virtual size_type remainingChars() { return _reader.remainingChars(); }
       //virtual bool atEnd() { return _reader.atEnd(); }
     };
 
@@ -101,7 +102,7 @@ namespace dami
       {
       }
   
-      WindowedReader(ID3_Reader& reader, streamsize size) 
+      WindowedReader(ID3_Reader& reader, size_type size) 
       : SUPER(reader),
       _beg(reader.getBeg()),
       _end(reader.getEnd())
@@ -109,7 +110,7 @@ namespace dami
         this->setWindow(this->getCur(), size);
       }
   
-      WindowedReader(ID3_Reader& reader, pos_type beg, streamsize size) 
+      WindowedReader(ID3_Reader& reader, pos_type beg, size_type size) 
       : SUPER(reader),
       _beg(reader.getBeg()),
       _end(reader.getEnd())
@@ -122,7 +123,7 @@ namespace dami
         this->setCur(this->getEnd());
       }
   
-      void setWindow(pos_type beg, streamsize size)
+      void setWindow(pos_type beg, size_type size)
       {
         ID3D_NOTICE( "WindowedReader::setWindow() [beg, size] = [" << 
                      this->getBeg() << ", " << size << "]" );
@@ -214,6 +215,12 @@ namespace dami
         {
           ch = SUPER::readChar();
         }
+        else
+        {
+          ID3D_WARNING( "io::WindowedReader::readChar: not in window, " << 
+                        "pos = " << this->getCur() << ", window = [" << 
+                        this->getBeg() << ", " << this->getEnd() << "]");
+        }
         return ch;
       }
 
@@ -227,26 +234,31 @@ namespace dami
         return ch;
       }
 
-      streamsize readChars(char_type buf[], streamsize len)
+      size_type readChars(char_type buf[], size_type len)
       {
         pos_type cur = this->getCur();
-        streamsize size = 0;
+        size_type size = 0;
         if (this->inWindow(cur))
         {
-          size = SUPER::readChars(buf, dami::min<streamsize>(len, _end - cur));
+          size = SUPER::readChars(buf, min<size_type>(len, _end - cur));
         }
         return size;
       }
 
-      streamsize remainingChars()
+      size_type remainingChars()
       {
         pos_type cur = this->getCur();
         ID3D_NOTICE( "WindowedReader::remainingChars(): cur = " << cur );
-        streamsize size = this->skipChars(this->getEnd() - cur);
+        size_type size = this->skipChars(this->getEnd() - cur);
         ID3D_NOTICE( "WindowedReader::remainingChars(): size = " << size );
         this->setCur(cur);
         return size;
       };
+
+      bool atEnd()
+      {
+        return this->getCur() >= _end;
+      }
     };
 
     class CharReader : public IdentityReader
@@ -257,7 +269,7 @@ namespace dami
       CharReader(ID3_Reader& reader) : SUPER(reader) { }
       virtual ~CharReader() { ; }
     
-      streamsize skipChars(streamsize len)
+      size_type skipChars(size_type len)
       {
         ID3D_NOTICE( "CharReader::skipChars(): len = " << len );
         return this->readChars(NULL, len);
@@ -268,9 +280,9 @@ namespace dami
        * might have been unsynced, this function copies the characters one at a
        * time.
        */
-      streamsize readChars(char_type buf[], streamsize len)
+      size_type readChars(char_type buf[], size_type len)
       {
-        size_t numChars = 0;
+        size_type numChars = 0;
         ID3D_NOTICE( "CharReader::readChars(): len = " << len );
         for (; numChars < len; ++numChars)
         {
@@ -288,11 +300,11 @@ namespace dami
         return numChars;
       }
 
-      streamsize remainingChars()
+      size_type remainingChars()
       {
         pos_type cur = this->getCur();
         ID3D_NOTICE( "CharReader::remainingChars(): cur = " << cur );
-        streamsize size = this->skipChars(this->getEnd() - cur);
+        size_type size = this->skipChars(this->getEnd() - cur);
         ID3D_NOTICE( "CharReader::remainingChars(): size = " << size );
         this->setCur(cur);
         return size;
@@ -347,19 +359,34 @@ namespace dami
       }
     };
 
-    class NumberReader : public IdentityReader
+    class TrailingSpacesReader : public IdentityReader
     {
       typedef IdentityReader SUPER;
      public:
-      NumberReader(ID3_Reader& reader) : SUPER(reader) { ; }
-      virtual ~NumberReader() { ; }
 
-      uint32 readNumber(const size_t numChars)
+      TrailingSpacesReader(ID3_Reader& reader) : SUPER(reader) { }
+      String readString(size_type len);
+    };
+
+    class BinaryNumberReader : public IdentityReader
+    {
+      typedef IdentityReader SUPER;
+     public:
+      BinaryNumberReader(ID3_Reader& reader) : SUPER(reader) { ; }
+      virtual ~BinaryNumberReader() { ; }
+
+      uint32 readNumber(size_type numChars)
       {
-        uchar bytes[numChars];
+        uint32 val = 0;
+        char_type bytes[numChars];
         this->readChars(bytes, numChars);
-      
-        return dami::parseNumber(bytes, numChars);
+        
+        for (size_type i = 0; i < numChars; i++)
+        {
+          val *= 256; // 2^8
+          val += static_cast<uint32>(bytes[i]);
+        }
+        return val;
       }
     };
 
@@ -414,13 +441,13 @@ namespace dami
         return str;
       }
 
-      String readText(size_t numChars)
+      String readText(size_type numChars)
       {
         String str;
         if (this->getEncoding() == ID3TE_ASCII)
         {
           str.reserve(numChars);
-          for (size_t i = 0; i < numChars; ++i)
+          for (size_type i = 0; i < numChars; ++i)
           {
             if (this->atEnd())
             {
@@ -433,7 +460,7 @@ namespace dami
         else if (this->getEncoding() == ID3TE_UNICODE)
         {
           str.reserve(numChars * 2);
-          for (size_t i = 0; i < numChars; ++i)
+          for (size_type i = 0; i < numChars; ++i)
           {
             if (this->atEnd())
             {
@@ -460,20 +487,85 @@ namespace dami
       BinaryReader(ID3_Reader& reader) : SUPER(reader) { ; }
       virtual ~BinaryReader() { ; }
 
-      BString getBinary()
+      BString readBinary()
       {
         // parse the remaining bytes in this reader.  give it the largest
         // possible value for number of bytes, even though the actual number
         // of bytes might be less
-        return this->getBinary(this->getEnd() - this->getCur());
+        return this->readBinary(this->getEnd() - this->getCur());
       }
 
-      BString getBinary(size_t numChars)
+      BString readBinary(size_type numChars)
       {
-        char raw[numChars];
-        size_t actualSize = this->readChars(raw, numChars);
-        BString binary(raw, actualSize);
+        char_type raw[numChars];
+        size_type actualSize = this->readChars(raw, numChars);
+        BString binary(reinterpret_cast<char*>(raw), actualSize);
         return binary;
+      }
+    };
+    class StringReader : public ID3_Reader
+    {
+      pos_type _cur;
+      const String&  _string;
+     public:
+      StringReader(const String& string) : _string(string), _cur(0) { ; }
+      virtual ~StringReader() { ; }
+
+      virtual void close() { ; }
+      virtual int_type peekChar() 
+      { 
+        if (!this->atEnd())
+        {
+          return _string[_cur];
+        }
+        return END_OF_READER;
+      }
+    
+      /** Read up to \c len chars into buf and advance the internal position
+       ** accordingly.  Returns the number of characters read into buf.
+       **/
+      virtual size_type readChars(char_type buf[], size_type len)
+      {
+        size_type size = min(len, _string.size() - _cur);
+        _string.copy((char *)buf, size, _cur);
+        _cur += size;
+        return size;
+      }
+      
+      virtual pos_type getCur() 
+      { 
+        return _cur;
+      }
+      
+      virtual pos_type getBeg()
+      {
+        return 0;
+      }
+      
+      virtual pos_type getEnd()
+      {
+        return _string.size();
+      }
+      
+      /** Set the value of the internal position for reading.
+       **/
+      virtual pos_type setCur(pos_type pos)
+      {
+        pos_type end = this->getEnd();
+        _cur = (pos < end) ? pos : end;
+        return _cur;
+      }
+
+      virtual bool atEnd()
+      {
+        return _cur >= _string.size();
+      }
+
+      virtual size_type skipChars(size_type len)
+      {
+        size_type size = min(len, _string.size() - _cur);
+        _cur += size;
+        return size;
       }
     };
   };
