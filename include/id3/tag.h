@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.38 2000/07/07 23:05:20 eldamitri Exp $
+// $Id: tag.h,v 1.39 2000/07/11 04:00:21 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -147,7 +147,6 @@ private:
   
   // file-related member variables
   char*      __file_name;       // name of the file we are linked to
-  FILE*      __file_handle;     // a handle to the file we are linked to
   size_t     __file_size;       // the size of the file (without any tag(s))
   size_t     __prepended_bytes; // number of tag bytes at start of file
   size_t     __appended_bytes;  // number of tag bytes at end of file
