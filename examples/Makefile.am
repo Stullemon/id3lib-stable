@@ -43,7 +43,7 @@ check_PROGRAMS          = \
   testunicode             \
   testcompression         \
   testremove              \
-  testreader              \
+  testio                  \
   get_pic                 \
   findstr                 \
   findeng
@@ -56,7 +56,7 @@ testpic_SOURCES         = test_pic.cpp
 testunicode_SOURCES     = test_unicode.cpp
 testcompression_SOURCES = test_compression.cpp
 testremove_SOURCES      = test_remove.cpp
-testreader_SOURCES      = test_reader.cpp
+testio_SOURCES          = test_io.cpp
 get_pic_SOURCES         = get_pic.cpp
 findeng_SOURCES         = findeng.cpp
 findstr_SOURCES         = findstr.cpp
