@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.45 2000/10/01 00:03:43 eldamitri Exp $
+// $Id: tag.h,v 1.46 2000/10/03 02:40:24 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -27,32 +27,16 @@
 #ifndef _ID3LIB_TAG_H_
 #define _ID3LIB_TAG_H_
 
-#include <stdio.h>
-#include "header_tag.h"
 #include "frame.h"
 #include "field.h"
 #include "spec.h"
-#include "error.h"
 
 class ID3_Reader;
-
-struct ID3_Elem
-{
-  virtual ~ID3_Elem() { if (pFrame) { delete pFrame; } }
-  ID3_Elem  *pNext;
-  ID3_Frame *pFrame;
-};
-
-/** String used for the description field of a comment tag converted from an
- ** id3v1 tag to an id3v2 tag
- **
- ** \sa #ID3V1_Tag
- **/
-const char STR_V1_COMMENT_DESC[] = "ID3v1 Comment";
-//const char STR_V1_COMMENT_DESC[] = "";
+class ID3_TagImpl;
 
 class ID3_Tag : public ID3_Speccable
 {
+  ID3_TagImpl* _impl;
 public:
   ID3_Tag(const char *name = NULL);
   ID3_Tag(const ID3_Tag &tag);
@@ -80,10 +64,10 @@ public:
   flags_t    Update(flags_t = (flags_t) ID3TT_ALL);
   flags_t    Strip(flags_t = (flags_t) ID3TT_ALL);
   
-  size_t     GetPrependedBytes() const { return _prepended_bytes; }
-  size_t     GetAppendedBytes() const { return _appended_bytes; }
-  size_t     GetFileSize() const { return _file_size; }
-  const char* GetFileName() const { return _file_name; }
+  size_t     GetPrependedBytes() const;
+  size_t     GetAppendedBytes() const;
+  size_t     GetFileSize() const;
+  const char* GetFileName() const;
   
   /// Finds frame with given frame id
   ID3_Frame* Find(ID3_FrameID id) const;
@@ -104,67 +88,39 @@ public:
    ** 
    ** \return The number of frames present in the tag object.
    **/
-  size_t     NumFrames() const { return _num_frames; }
+  size_t     NumFrames() const;
   ID3_Frame* GetFrameNum(index_t) const;
+
   ID3_Frame* operator[](index_t) const;
   ID3_Tag&   operator=( const ID3_Tag & );
   
-  bool       GetUnsync() const { return _hdr.GetUnsync(); }
+  bool       GetUnsync() const;
   
-  bool       HasTagType(uint16 tt) const { return _file_tags.test(tt); }
+  bool       HasTagType(uint16 tt) const;
   ID3_V2Spec GetSpec() const;
-  
-  static size_t IsV2Tag(const uchar*);
-  
-  /* Deprecated! */
-  void       AddNewFrame(ID3_Frame* f) { this->AttachFrame(f); }
-  size_t     Link(const char *fileInfo, bool parseID3v1, bool parseLyrics3);
-  void       SetCompression(bool) { ; }
-  void       AddFrames(const ID3_Frame *, size_t);
-  bool       HasLyrics() const { return this->HasTagType(ID3TT_LYRICS); }
-  bool       HasV2Tag()  const { return this->HasTagType(ID3TT_ID3V2); }
-  bool       HasV1Tag()  const { return this->HasTagType(ID3TT_ID3V1); }
-  
-protected:
   bool       SetSpec(ID3_V2Spec);
   
-  ID3_Elem*  Find(const ID3_Frame *) const;
-  size_t     PaddingSize(size_t) const;
+  static size_t IsV2Tag(const uchar*);
+  static size_t IsV2Tag(ID3_Reader&);
   
-  void       RenderExtHeader(uchar *);
-
-  void       ParseFile();
-  size_t     RenderV2(uchar*) const;
-  
-private:
-  ID3_TagHeader _hdr;          // information relevant to the tag header
-  bool       _is_padded;       // add padding to tags?
-  
-  ID3_Elem*  _frames;          // frames attached to the tag
-  size_t     _num_frames;      // the current number of frames
-  
-  mutable ID3_Elem*  _cursor;  // which frame in list are we at
-  mutable bool       _changed; // has tag changed since last parse or render?
-  
-  // file-related member variables
-  char*      _file_name;       // name of the file we are linked to
-  size_t     _file_size;       // the size of the file (without any tag(s))
-  size_t     _prepended_bytes; // number of tag bytes at start of file
-  size_t     _appended_bytes;  // number of tag bytes at end of file
-  bool       _is_file_writable;// is the associated file (via Link) writable?
-  ID3_Flags  _tags_to_parse;   // which tag types should attempt to be parsed
-  ID3_Flags  _file_tags;       // which tag types does the file contain
+  /* Deprecated! */
+  void       AddNewFrame(ID3_Frame* f);
+  size_t     Link(const char *fileInfo, bool parseID3v1, bool parseLyrics3);
+  void       SetCompression(bool);
+  void       AddFrames(const ID3_Frame *, size_t);
+  bool       HasLyrics() const;
+  bool       HasV2Tag()  const;
+  bool       HasV1Tag()  const;
+  //@{
+  /// Copies
+  ID3_Tag& operator<<(const ID3_Frame &);
+  /// Attaches a pointer to a frame
+  ID3_Tag& operator<<(const ID3_Frame *);
+  //@}
 };
-
-//@{
-/// Copies
-ID3_Tag& operator<<(ID3_Tag&, const ID3_Frame &);
-/// Attaches a pointer to a frame
-ID3_Tag& operator<<(ID3_Tag&, const ID3_Frame *);
-//@}
-size_t     ID3_GetDataSize(const ID3_Tag&);
 
 // deprecated!
 int32 ID3_IsTagHeader(const uchar header[ID3_TAGHEADERSIZE]);
+
 
 #endif /* _ID3LIB_TAG_H_ */
