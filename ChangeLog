@@ -1,3 +1,48 @@
+2000-06-20  Scott Haug  <scott@id3.org>
+
+	* src/misc_support.cpp:
+	Cleaned up memory leaks from removing frames
+
+2000-06-14  Scott Haug  <scott@id3.org>
+
+	* src/header_frame.cpp 
+	(SetUnknownFrame): Minor bugfixes in copying frame text id and 
+	description
+
+	* src/frame_parse.cpp: 
+	* src/frame.cpp: 
+	Minor updates
+
+	* src/field.cpp 
+	(ID3FD_Unimplemented): Added { ID3FN_NOFIELD } entry to mark the end
+	(ID3_FindFrameDef): Removed const qualifer from parameter
+
+	* src/uint28.cpp: 
+	* include/id3/uint28.h 
+	- Added new documentation
+	- Made constructors 'explicit'
+	- Defined new class constants BITSUSED, MINVAL, and MAXVAL
+	- New implementation for default constructor
+	- Destructor is now virtual
+	- Assigning a uint32 that is greater than the largest possible value
+	  maximizes the internal value, rather than masking it
+	- Implementation of operator=(const char*) moved to Parse(const char *)
+	- Render now returns number of characters rendered
+	- Removed unnecessary inclusion of string.h
+	- Cleaned up implementation of Parse(), Render(), operator<<, and 
+	  operator>>
+
+	* include/id3/frame.h 
+	(class ID3_Frame): Added decl and def for GetTextID()
+
+	* include/id3/field.h 
+	Made FieldDef pointer const in FrameDef struct, and removed const from
+	FindFrameDef param
+
+	* examples/demo_info.cpp 
+	(PrintInformation): Changed output to disply 4-char id and description
+	in parentheses.
+
 2000-06-06  Scott Haug  <scott@id3.org>
 
 	* src/tag.cpp: 
