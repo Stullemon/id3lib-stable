@@ -1,3 +1,54 @@
+2000-09-21  Scott Haug  <scott@id3.org>
+
+	* doc/index.html.in: 
+	Added empeg to list of projects
+
+	* include/id3/field_def.h: 
+	Minor fix for typo
+
+	* src/tag_render.cpp 
+	(RenderV1): remove throwing of memory exception
+	(RenderV2): remove throwing of memory exception
+
+	* src/tag_find.cpp 
+	(Find): remove throwing of memory exception
+
+	* src/header_frame.cpp: 
+	Added inclusion of frame_def.h, field_def.h, and field_impl.h
+
+	* src/frame.cpp 
+	(_ClearFields): dynamic cast field pointer to fieldImpl so it can be
+	deleted
+	(_InitFields): create a FieldImpl rather than a Field
+
+	* src/field_string_unicode.cpp 
+	* src/field_string_ascii.cpp 
+	* src/field_integer.cpp 
+	* src/field_binary.cpp
+	* src/field.cpp: 
+	Now an implementation of ID3_FieldImpl instead of ID3_Field
+
+	* include/id3/tag.h: 
+	Added inclusion of error.h for convenience
+
+	* include/id3/header_frame.h: 
+	Added a forward declaration for FrameDef, since it was removed from
+	field.h.
+
+	* include/id3/header.h 
+	(class ID3_Header): Bug fix in initializing the constructor
+
+	* include/id3/frame_def.h 
+	* include/id3/field_impl.h 
+	* include/id3/field_def.h: 
+	Initial release.
+
+	* include/id3/field.h: 
+	- Made into an abstract base class so that the implementation can be
+	  altered without affecting interface
+	- ID3_FieldDef and ID3_FrameDef now defined in separate files
+	- Added GetText() and GetUnicodeText() methods
+
 2000-09-14  Scott Haug  <scott@id3.org>
 
 	* Makefile.am: 
