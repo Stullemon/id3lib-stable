@@ -1,3 +1,35 @@
+2000-06-23  John Adcock  <johnadcock@hotmail.com>
+
+	* libprj/id3lib.dsp
+	Debug lib now id3libD.lib
+
+	* libprj/.cvsignore
+	added MSVC temp files
+
+	* prj/id3lib.dsp
+	changed for zlib build
+
+	* prj/.cvsignore
+	added MSVC temp files
+
+	* zlib/prj/.cvsignore
+	added MSVC temp files
+
+	* zlib/prj/zlib.dsp
+	Debug lib now zlibD.lib
+
+	* zlib/prj/.cvsignore
+	added MSVC temp files
+
+	* id3com/id3com.dsp
+	Added extra header files and changed for zlib build
+
+	* id3com/.cvsignore
+	added id3com.aps
+
+	* zlib/.cvsignore
+	added zlibD.lib
+
 2000-06-23  Scott Haug  <scott@id3.org>
 
 	* examples/test_remove.cpp 
