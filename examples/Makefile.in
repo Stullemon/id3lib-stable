@@ -108,7 +108,8 @@ INCLUDES = -I$(top_srcdir)/include
 @ID3_NEEDZLIB_FALSE@LDADD = $(top_builddir)/src/libid3.la
 
 bin_PROGRAMS = id3info id3convert id3tag
-check_PROGRAMS = id3simple testpic testunicode testcompression get_pic
+check_PROGRAMS =    id3simple                 testpic                   testunicode               testcompression           get_pic                   findeng
+
 id3info_SOURCES = demo_info.cpp
 id3convert_SOURCES = demo_convert.cpp
 id3tag_SOURCES = demo_tag.cpp
@@ -117,6 +118,7 @@ testpic_SOURCES = test_pic.cpp
 testunicode_SOURCES = test_unicode.cpp
 testcompression_SOURCES = test_compression.cpp
 get_pic_SOURCES = get_pic.cpp
+findeng_SOURCES = findeng.cpp
 
 EXTRA_DIST =    composer.jpg            demo_main.cpp           221-compressed.tag      230-compressed.tag      230-picture.tag         230-unicode.tag
 
@@ -189,6 +191,13 @@ get_pic_LDADD = $(LDADD)
 @ID3_NEEDZLIB_FALSE@get_pic_DEPENDENCIES =  \
 @ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la
 get_pic_LDFLAGS = 
+findeng_OBJECTS =  findeng.o
+findeng_LDADD = $(LDADD)
+@ID3_NEEDZLIB_TRUE@findeng_DEPENDENCIES =  $(top_builddir)/src/libid3.la \
+@ID3_NEEDZLIB_TRUE@$(top_builddir)/zlib/src/libz.la
+@ID3_NEEDZLIB_FALSE@findeng_DEPENDENCIES =  \
+@ID3_NEEDZLIB_FALSE@$(top_builddir)/src/libid3.la
+findeng_LDFLAGS = 
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -207,10 +216,10 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = gtar
 GZIP_ENV = --best
 DEP_FILES =  .deps/demo_convert.P .deps/demo_info.P .deps/demo_simple.P \
-.deps/demo_tag.P .deps/get_pic.P .deps/test_compression.P \
-.deps/test_pic.P .deps/test_unicode.P
-SOURCES = $(id3info_SOURCES) $(id3convert_SOURCES) $(id3tag_SOURCES) $(id3simple_SOURCES) $(testpic_SOURCES) $(testunicode_SOURCES) $(testcompression_SOURCES) $(get_pic_SOURCES)
-OBJECTS = $(id3info_OBJECTS) $(id3convert_OBJECTS) $(id3tag_OBJECTS) $(id3simple_OBJECTS) $(testpic_OBJECTS) $(testunicode_OBJECTS) $(testcompression_OBJECTS) $(get_pic_OBJECTS)
+.deps/demo_tag.P .deps/findeng.P .deps/get_pic.P \
+.deps/test_compression.P .deps/test_pic.P .deps/test_unicode.P
+SOURCES = $(id3info_SOURCES) $(id3convert_SOURCES) $(id3tag_SOURCES) $(id3simple_SOURCES) $(testpic_SOURCES) $(testunicode_SOURCES) $(testcompression_SOURCES) $(get_pic_SOURCES) $(findeng_SOURCES)
+OBJECTS = $(id3info_OBJECTS) $(id3convert_OBJECTS) $(id3tag_OBJECTS) $(id3simple_OBJECTS) $(testpic_OBJECTS) $(testunicode_OBJECTS) $(testcompression_OBJECTS) $(get_pic_OBJECTS) $(findeng_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -320,6 +329,10 @@ testcompression: $(testcompression_OBJECTS) $(testcompression_DEPENDENCIES)
 get_pic: $(get_pic_OBJECTS) $(get_pic_DEPENDENCIES)
 	@rm -f get_pic
 	$(CXXLINK) $(get_pic_LDFLAGS) $(get_pic_OBJECTS) $(get_pic_LDADD) $(LIBS)
+
+findeng: $(findeng_OBJECTS) $(findeng_DEPENDENCIES)
+	@rm -f findeng
+	$(CXXLINK) $(findeng_LDFLAGS) $(findeng_OBJECTS) $(findeng_LDADD) $(LIBS)
 .cpp.o:
 	$(CXXCOMPILE) -c $<
 .cpp.lo:
