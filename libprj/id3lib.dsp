@@ -121,6 +121,10 @@ SOURCE=..\src\frame_render.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\globals.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\header.cpp
 # End Source File
 # Begin Source File
@@ -171,10 +175,6 @@ SOURCE=..\src\tag_render.cpp
 
 SOURCE=..\src\tag_sync.cpp
 # End Source File
-# Begin Source File
-
-SOURCE=..\src\version.cpp
-# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -185,15 +185,11 @@ SOURCE=..\config.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\include\id3\dll.h
+SOURCE=..\include\id3.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\include\id3\error.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\include\id3\externals.h
 # End Source File
 # Begin Source File
 
@@ -234,14 +230,6 @@ SOURCE=..\include\id3\sized_types.h
 # Begin Source File
 
 SOURCE=..\include\id3\tag.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\include\id3\types.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\include\id3\version.h
 # End Source File
 # End Group
 # End Target
