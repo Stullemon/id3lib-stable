@@ -1,4 +1,4 @@
-// $Id: error.h,v 1.9 1999/11/29 19:26:18 scott Exp $
+// $Id: error.h,v 1.1 1999/12/01 17:15:59 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -138,6 +138,9 @@ private:
 #endif
 
 // $Log: error.h,v $
+// Revision 1.1  1999/12/01 17:15:59  scott
+// moved from src/id3 to include/id3
+//
 // Revision 1.9  1999/11/29 19:26:18  scott
 // Updated the leading license information of the file to reflect new maintainer.
 //

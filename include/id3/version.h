@@ -1,4 +1,4 @@
-// $Id: version.h,v 1.8 1999/11/30 20:16:35 scott Exp $
+// $Id: version.h,v 1.1 1999/12/01 17:16:12 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -38,6 +38,9 @@ unsigned short ID3_Patch(void);
 #endif
 
 // $Log: version.h,v $
+// Revision 1.1  1999/12/01 17:16:12  scott
+// moved from src/id3 to include/id3
+//
 // Revision 1.8  1999/11/30 20:16:35  scott
 // Changed from preprocessor macros to functions.  Now changes to top
 // level configure.in with regards to version info will be reflected in

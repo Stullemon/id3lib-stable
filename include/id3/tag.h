@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.10 1999/11/29 19:26:18 scott Exp $
+// $Id: tag.h,v 1.1 1999/12/01 17:16:10 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -79,7 +79,7 @@ const luint LEN_V1_GENRE   =   1;
 
     @author Dirk Mahoney (dirk@id3.org)
     @author Scott Thomas Haug (sth2@cs.wustl.edu)
-    @version $Id: tag.h,v 1.10 1999/11/29 19:26:18 scott Exp $
+    @version $Id: tag.h,v 1.1 1999/12/01 17:16:10 scott Exp $
     @see ID3_Tag
 */
 struct ID3V1_Tag
@@ -178,7 +178,7 @@ const luint ALL_TAG_TYPES = BOTH_ID3_TAGS | LYRICS_TAG;
      that id3lib 2.16 supports.
 
      @author Dirk Mahoney
-     @version $Id: tag.h,v 1.10 1999/11/29 19:26:18 scott Exp $
+     @version $Id: tag.h,v 1.1 1999/12/01 17:16:10 scott Exp $
      @see ID3_Frame
      @see ID3_Field
      @see ID3_Err
@@ -798,6 +798,9 @@ private:
 #endif
 
 // $Log: tag.h,v $
+// Revision 1.1  1999/12/01 17:16:10  scott
+// moved from src/id3 to include/id3
+//
 // Revision 1.10  1999/11/29 19:26:18  scott
 // Updated the leading license information of the file to reflect new maintainer.
 //

@@ -1,4 +1,4 @@
-// $Id: globals.h,v 1.4 1999/11/30 20:09:57 scott Exp $
+// $Id: globals.h,v 1.1 1999/12/01 17:16:03 scott Exp $
 //
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.

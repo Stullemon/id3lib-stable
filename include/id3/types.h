@@ -1,4 +1,4 @@
-// $Id: types.h,v 1.7 1999/11/30 20:14:22 scott Exp $
+// $Id: types.h,v 1.1 1999/12/01 17:16:11 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -55,6 +55,9 @@ inline lsint MAX(lsint x, lsint y)
 #endif
 
 // $Log: types.h,v $
+// Revision 1.1  1999/12/01 17:16:11  scott
+// moved from src/id3 to include/id3
+//
 // Revision 1.7  1999/11/30 20:14:22  scott
 // Removed include for wchar.h
 //
