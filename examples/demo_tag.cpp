@@ -1,4 +1,4 @@
-// $Id: demo_tag.cpp,v 1.5 2000/05/23 15:45:58 eldamitri Exp $
+// $Id: demo_tag.cpp,v 1.6 2000/05/29 02:19:43 eldamitri Exp $
 
 #include <iostream.h>
 #include <getopt.h>
@@ -7,7 +7,7 @@
 #include <id3/tag.h>
 #include <id3/misc_support.h>
 
-#define VERSION_NUMBER "$Revision: 1.5 $"
+#define VERSION_NUMBER "$Revision: 1.6 $"
 
 void PrintUsage(char *sName)
 {
@@ -65,7 +65,7 @@ void DisplayTags(ostream &os, luint nTags)
     os << "v2";
 }
 
-int main( int argc, char *argv[])
+int main( unsigned int argc, char *argv[])
 {
   int ulFlag = ID3TT_ID3;
   int iOpt;

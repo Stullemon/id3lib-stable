@@ -14,7 +14,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.10 2000/05/10 14:45:24 eldamitri Exp $
+// $Id: demo_info.cpp,v 1.11 2000/05/29 02:19:43 eldamitri Exp $
 
 #include <iostream.h>
 #include <id3/tag.h>
@@ -300,7 +300,7 @@ void PrintInformation(const ID3_Tag &myTag)
   }
 }
 
-int main( int argc, char *argv[])
+int main( unsigned int argc, char *argv[])
 {
 
   int iOpt;

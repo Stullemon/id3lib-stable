@@ -1,4 +1,4 @@
-// $Id: demo_convert.cpp,v 1.4 2000/04/23 17:36:26 eldamitri Exp $
+// $Id: demo_convert.cpp,v 1.5 2000/05/29 02:19:43 eldamitri Exp $
 //
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -16,7 +16,7 @@
 #include <id3/tag.h>
 #include <getopt.h>
 
-#define VERSION_NUMBER "$Revision: 1.4 $"
+#define VERSION_NUMBER "$Revision: 1.5 $"
 
 void PrintUsage(char *sName)
 {
@@ -84,7 +84,7 @@ void DisplayTags(ostream &os, luint nTags)
   }
 }
 
-int main( int argc, char *argv[])
+int main( unsigned int argc, char *argv[])
 {
   int ulFlag = ID3TT_ID3;
   int iOpt;
