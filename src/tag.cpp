@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.34 2000/10/24 05:55:08 eldamitri Exp $
+// $Id: tag.cpp,v 1.35 2000/10/24 07:00:09 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -82,7 +82,7 @@ using namespace dami;
  ** formatted 'CDM' frames from the unreleased ID3v2 2.01 draft specification.
  **
  ** \author Dirk Mahoney
- ** \version $Id: tag.cpp,v 1.34 2000/10/24 05:55:08 eldamitri Exp $
+ ** \version $Id: tag.cpp,v 1.35 2000/10/24 07:00:09 eldamitri Exp $
  ** \sa ID3_Frame
  ** \sa ID3_Field
  ** \sa ID3_Err
@@ -669,10 +669,30 @@ size_t ID3_Tag::NumFrames() const
  ** @param nIndex The index of the frame that is to be retrieved
  ** @return A pointer to the requested frame, or NULL if no such frame.
  **/
-ID3_Frame* ID3_Tag::GetFrameNum(index_t index) const
+/*
+ID3_Frame* ID3_Tag::GetFrameNum(index_t num) const
 {
-  return _impl->GetFrameNum(index);
+  const size_t numFrames = this->NumFrames();
+  if (num >= numFrames)
+  {
+    return NULL;
+  }
+
+  ID3_Frame* frame = NULL;
+  index_t curNum = 0;
+  // search from the cursor to the end
+  for (ID3_TagImpl::const_iterator cur = _impl->begin(); cur != _impl->end(); ++cur)
+  {
+    if (curNum++ == num)
+    {
+      frame = *cur;
+      break;
+    }
+  }
+  
+  return frame;
 }
+*/
 
 /** Returns a pointer to the frame with the given index; returns NULL if
  ** there is no such frame at that index.
@@ -682,10 +702,12 @@ ID3_Frame* ID3_Tag::GetFrameNum(index_t index) const
  ** @return A pointer to the requested frame, or NULL if no such frame. 
  ** @see #GetFrameNum
  **/
+/*
 ID3_Frame* ID3_Tag::operator[](index_t index) const
 {
   return this->GetFrameNum(index);
 }
+*/
 
 ID3_Tag& ID3_Tag::operator=( const ID3_Tag &rTag )
 {

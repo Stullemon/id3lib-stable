@@ -1,4 +1,4 @@
-/* $Id: id3.h,v 1.14 2000/10/24 05:55:08 eldamitri Exp $
+/* $Id: id3.h,v 1.15 2000/10/24 07:00:08 eldamitri Exp $
  * 
  * id3lib: a software library for creating and manipulating id3v1/v2 tags
  * Copyright 1999, 2000  Scott Thomas Haug
@@ -62,7 +62,6 @@ extern "C"
   ID3_C_EXPORT ID3Frame   *ID3Tag_FindFrameWithINT     (const ID3Tag *tag, ID3_FrameID id, ID3_FieldID fld, uint32 data);
   ID3_C_EXPORT ID3Frame   *ID3Tag_FindFrameWithASCII   (const ID3Tag *tag, ID3_FrameID id, ID3_FieldID fld, const char *data);
   ID3_C_EXPORT ID3Frame   *ID3Tag_FindFrameWithUNICODE (const ID3Tag *tag, ID3_FrameID id, ID3_FieldID fld, const unicode_t *data);
-  ID3_C_EXPORT ID3Frame   *ID3Tag_GetFrameNum          (const ID3Tag *tag, index_t num);
   ID3_C_EXPORT size_t      ID3Tag_NumFrames            (const ID3Tag *tag);
   ID3_C_EXPORT bool        ID3Tag_HasTagType           (const ID3Tag *tag, ID3_TagType);
   ID3_C_EXPORT ID3TagIterator* ID3Tag_CreateIterator   (ID3Tag *tag);

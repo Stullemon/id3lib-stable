@@ -1,4 +1,4 @@
-// $Id: frame_impl.cpp,v 1.7 2000/10/23 07:42:13 eldamitri Exp $
+// $Id: frame_impl.cpp,v 1.8 2000/10/24 07:00:09 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -169,16 +169,6 @@ size_t ID3_FrameImpl::NumFields() const
   return _fields.size();
 }
 
-ID3_Field* ID3_FrameImpl::GetFieldNum(index_t index) const
-{
-  ID3_Field* field = NULL;
-  if (index < this->NumFields())
-  {
-    field = _fields[index];
-  }
-  return field;
-}
-
 size_t ID3_FrameImpl::Size()
 {
   size_t bytesUsed = _hdr.Size();
@@ -234,16 +224,18 @@ ID3_FrameImpl::operator=( const ID3_Frame &rFrame )
 {
   ID3_FrameID eID = rFrame.GetID();
   this->SetID(eID);
-  for (size_t nIndex = 0; nIndex < this->NumFields(); nIndex++)
+  ID3_Frame::ConstIterator* ri = rFrame.CreateIterator();
+  iterator li = this->begin();
+  while (li != this->end())
   {
-    ID3_Field
-      *thisFld = this->GetFieldNum(nIndex),
-      *thatFld = rFrame.GetFieldNum(nIndex);
+    ID3_Field* thisFld = *li++;
+    const ID3_Field* thatFld = ri->GetNext();
     if (thisFld != NULL && thatFld != NULL)
     {
       *thisFld = *thatFld;
     }
   }
+  delete ri;
   this->SetEncryptionID(rFrame.GetEncryptionID());
   this->SetGroupingID(rFrame.GetGroupingID());
   this->SetCompression(rFrame.GetCompression());

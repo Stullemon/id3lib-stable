@@ -1,4 +1,4 @@
-// $Id: frame.cpp,v 1.31 2000/10/23 07:42:13 eldamitri Exp $
+// $Id: frame.cpp,v 1.32 2000/10/24 07:00:08 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -42,7 +42,7 @@
  ** text frame.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: frame.cpp,v 1.31 2000/10/23 07:42:13 eldamitri Exp $
+ ** @version $Id: frame.cpp,v 1.32 2000/10/24 07:00:08 eldamitri Exp $
  ** @see ID3_Tag
  ** @see ID3_Field
  ** @see ID3_Err
@@ -153,10 +153,12 @@ size_t ID3_Frame::NumFields() const
   return _impl->NumFields();
 }
 
+/*
 ID3_Field* ID3_Frame::GetFieldNum(index_t index) const
 {
   return _impl->GetFieldNum(index);
 }
+*/
 
 size_t ID3_Frame::Size()
 {
@@ -256,3 +258,61 @@ uchar ID3_Frame::GetGroupingID() const
   return _impl->GetGroupingID();
 }
 
+namespace
+{
+  class IteratorImpl : public ID3_Frame::Iterator
+  {
+    ID3_FrameImpl::iterator _cur;
+    ID3_FrameImpl::iterator _end;
+  public:
+    IteratorImpl(ID3_FrameImpl& frame)
+      : _cur(frame.begin()), _end(frame.end())
+    {
+    }
+
+    ID3_Field* GetNext() 
+    { 
+      ID3_Field* next = NULL;
+      while (next == NULL && _cur != _end)
+      {
+        next = *_cur;
+        ++_cur;
+      }
+      return next;
+    }
+  };
+
+  
+  class ConstIteratorImpl : public ID3_Frame::ConstIterator
+  {
+    ID3_FrameImpl::const_iterator _cur;
+    ID3_FrameImpl::const_iterator _end;
+  public:
+    ConstIteratorImpl(ID3_FrameImpl& frame)
+      : _cur(frame.begin()), _end(frame.end())
+    {
+    }
+    const ID3_Field* GetNext() 
+    { 
+      ID3_Field* next = NULL;
+      while (next == NULL && _cur != _end)
+      {
+        next = *_cur;
+        ++_cur;
+      }
+      return next;
+    }
+  };
+}
+
+ID3_Frame::Iterator* 
+ID3_Frame::CreateIterator()
+{
+  return new IteratorImpl(*_impl);
+}
+
+ID3_Frame::ConstIterator* 
+ID3_Frame::CreateIterator() const
+{
+  return new ConstIteratorImpl(*_impl);
+}
