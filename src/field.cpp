@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.46 2002/07/31 13:45:18 t1mpy Exp $
+// $Id: field.cpp,v 1.47 2002/11/03 00:41:27 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -31,6 +31,7 @@
 #include "field_def.h"
 #include "frame_def.h"
 #include "readers.h"
+#include <assert.h>
 
 using namespace dami;
 
@@ -53,7 +54,7 @@ static ID3_FieldDef ID3FD_Unimplemented[] =
 const ID3_FieldDef* ID3_FieldDef::DEFAULT = ID3FD_Unimplemented;
 
 static ID3_FieldDef ID3FD_URL[] =
-{ 
+{
   {
     ID3FN_URL,                          // FIELD NAME
     ID3FTY_TEXTSTRING,                  // FIELD TYPE
@@ -65,11 +66,11 @@ static ID3_FieldDef ID3FD_URL[] =
   },
   { ID3FN_NOFIELD }
 };
-  
+
 static ID3_FieldDef ID3FD_UserURL[] =
 {
   {
-    ID3FN_TEXTENC,                      // FIELD NAME        
+    ID3FN_TEXTENC,                      // FIELD NAME
     ID3FTY_INTEGER,                     // FIELD TYPE
     1,                                  // FIXED LEN
     ID3V2_EARLIEST,                     // INITIAL SPEC
@@ -97,7 +98,7 @@ static ID3_FieldDef ID3FD_UserURL[] =
   },
   { ID3FN_NOFIELD }
 };
-  
+
 static ID3_FieldDef ID3FD_Text[] =
 {
   {
@@ -120,8 +121,8 @@ static ID3_FieldDef ID3FD_Text[] =
   },
   { ID3FN_NOFIELD }
 };
-  
-  
+
+
 static ID3_FieldDef ID3FD_UserText[] =
 {
   {
@@ -153,8 +154,8 @@ static ID3_FieldDef ID3FD_UserText[] =
   },
   { ID3FN_NOFIELD }
 };
-  
-  
+
+
 static ID3_FieldDef ID3FD_GeneralText[] =
 {
   {
@@ -327,7 +328,7 @@ static ID3_FieldDef ID3FD_Picture[] =
   },
   { ID3FN_NOFIELD }
 };
-  
+
 static ID3_FieldDef ID3FD_GEO[] =
 {
   {
@@ -377,7 +378,7 @@ static ID3_FieldDef ID3FD_GEO[] =
   },
   { ID3FN_NOFIELD }
 };
-  
+
 static ID3_FieldDef ID3FD_UFI[] =
 {
   {
@@ -400,7 +401,7 @@ static ID3_FieldDef ID3FD_UFI[] =
   },
   { ID3FN_NOFIELD }
 };
-  
+
 static ID3_FieldDef ID3FD_PlayCounter[] =
 {
   {
@@ -414,7 +415,7 @@ static ID3_FieldDef ID3FD_PlayCounter[] =
   },
   { ID3FN_NOFIELD }
 };
-  
+
 static ID3_FieldDef ID3FD_Popularimeter[] =
 {
   {
@@ -469,8 +470,8 @@ static ID3_FieldDef ID3FD_Private[] =
   },
   { ID3FN_NOFIELD }
 };
-  
-  
+
+
 static ID3_FieldDef ID3FD_Registration[] =
 {
   {
@@ -502,7 +503,7 @@ static ID3_FieldDef ID3FD_Registration[] =
   },
   { ID3FN_NOFIELD }
 };
-  
+
 static ID3_FieldDef ID3FD_InvolvedPeople[] =
 {
   {
@@ -539,7 +540,7 @@ static ID3_FieldDef ID3FD_CDM[] =
   }
 };
 
-static ID3_FieldDef ID3FD_SyncLyrics[] = 
+static ID3_FieldDef ID3FD_SyncLyrics[] =
 {
   {
     ID3FN_TEXTENC,                      // FIELD NAME
@@ -824,32 +825,32 @@ static  ID3_FrameDef ID3_FrameDefs[] =
   {ID3FID_METACOMPRESSION,   "CDM", ""    , false, false, ID3FD_CDM,           "Compressed data meta frame"},
   {ID3FID_NOFRAME}
 };
-  
+
 /** \class ID3_Field field.h id3/field.h
  ** \brief The representative class of an ID3v2 field.
- ** 
+ **
  ** As a general rule, you need never create an object of this type.  id3lib
  ** uses them internally as part of the id3_frame class.  You must know how to
  ** interact with these objects, though, and that's what this section is about.
- ** 
+ **
  ** The ID3_Field contains many overloaded methods to provide these facilities
  ** for four different data types: integers, ASCII strings, Unicode strings,
  ** and binary data.
- ** 
+ **
  ** An integer field supports the Get(), Set(uint32), and operator=(uint32)
  ** methods.
- ** 
+ **
  ** Both types of strings support the GetNumTextItems() method.
- ** 
- ** An ASCII string field supports the Get(char*, size_t, size_t)), 
+ **
+ ** An ASCII string field supports the Get(char*, size_t, size_t)),
  ** Set(const char*), Add(const char*), and operator=(const char*) methods.
- ** 
+ **
  ** A Unicode field also supports Get(unicode_t*, size_t, size_t),
- ** Set(const unicode_t*), Add(const unicode_t*), and 
+ ** Set(const unicode_t*), Add(const unicode_t*), and
  ** operator=(const unicode_t*).  Without elaborating, the Unicode
  ** methods behave exactly the same as their ASCII counterparts, taking
  ** \c unicode_t pointers in place of \c char pointers.
- ** 
+ **
  ** All strings in id3lib are handled internally as Unicode.  This means that
  ** when you set a field with an ASCII source type, it will be converted and
  ** stored internally as a Unicode string.  id3lib will handle all necessary
@@ -859,12 +860,12 @@ static  ID3_FrameDef ID3_FrameDefs[] =
  ** function as expected.  The same holds true in reverse.  Of course, when
  ** converting from Unicode to ASCII, you will experience problems when the
  ** Unicode string contains characters that don't map to ISO-8859-1.
- ** 
+ **
  ** A binary field supports the Get(uchar*, size_t), Set(const uchar*, size_t),
  ** FromFile(const char*), and ToFile(const char*) methods.  The binary field
  ** holds miscellaneous data that can't easily be described any other way, such
  ** as a JPEG image.
- ** 
+ **
  ** As a general implementation note, you should be prepared to support all
  ** fields in an id3lib frame, even if all fields in the id3lib version of the
  ** frame aren't present in the id3v2 version.  This is because of frames like
@@ -874,12 +875,12 @@ static  ID3_FrameDef ID3_FrameDefs[] =
  ** generate the correct id3v2 frame for the id3v2 version you wish to support.
  ** Alternatively, just support the fields you know will be used in, say, 3.0
  ** if you only plan to generate 3.0 tags.
- ** 
+ **
  ** @author Dirk Mahoney
- ** @version $Id: field.cpp,v 1.46 2002/07/31 13:45:18 t1mpy Exp $
+ ** @version $Id: field.cpp,v 1.47 2002/11/03 00:41:27 t1mpy Exp $
  ** \sa ID3_Tag
  ** \sa ID3_Frame
- ** \sa ID3_Err 
+ ** \sa ID3_Err
  **/
 
 ID3_FieldImpl::ID3_FieldImpl()
@@ -915,7 +916,7 @@ ID3_FieldImpl::~ID3_FieldImpl()
 }
 
 /** Clears any data and frees any memory associated with the field
- ** 
+ **
  ** \sa ID3_Tag::Clear()
  ** \sa ID3_Frame::Clear()
  **/
@@ -959,7 +960,7 @@ void ID3_FieldImpl::Clear()
     }
   }
   _changed    = true;
-  
+
   return ;
 }
 
@@ -971,7 +972,7 @@ ID3_FieldImpl::HasChanged() const
 
 /** \fn size_t ID3_Field::Size() const
  ** \brief Returns the size of a field.
- ** 
+ **
  ** The value returned is dependent on the type of the field.  For ASCII
  ** strings, this returns the number of characters in the field, not including
  ** any NULL-terminator.  The same holds true for Unicode---it returns the
@@ -979,11 +980,11 @@ ID3_FieldImpl::HasChanged() const
  ** the Unicode BOM, which isn't put in a Unicode string obtained by the
  ** Get(unicode_t*, size_t, size_t) method anyway.  For binary and
  ** integer fields, this returns the number of bytes in the field.
- ** 
+ **
  ** \code
  **   size_t howBig = myFrame.GetField(ID3FN_DATA)->Size();
  ** \endcode
- ** 
+ **
  ** \return The size of the field, either in bytes (for binary or integer
  **         fields) or characters (for strings).
  **/
@@ -1049,13 +1050,13 @@ bool ID3_FieldImpl::Parse(ID3_Reader& reader)
       success = this->ParseInteger(reader);
       break;
     }
-        
+
     case ID3FTY_BINARY:
     {
       success = this->ParseBinary(reader);
       break;
     }
-        
+
     case ID3FTY_TEXTSTRING:
     {
       success = this->ParseText(reader);
@@ -1075,7 +1076,7 @@ ID3_FrameDef* ID3_FindFrameDef(ID3_FrameID id)
 {
   ID3_FrameDef  *info   = NULL;
 
-  for (size_t cur = 0; ID3_FrameDefs[cur].eID != ID3FID_NOFRAME; cur++)
+  for (size_t cur = 0; ID3_FrameDefs[cur].eID != ID3FID_NOFRAME; ++cur)
   {
     if (ID3_FrameDefs[cur].eID == id)
     {
@@ -1083,7 +1084,7 @@ ID3_FrameDef* ID3_FindFrameDef(ID3_FrameID id)
       break;
     }
   }
-    
+
   return info;
 }
 
@@ -1091,44 +1092,45 @@ ID3_FrameID
 ID3_FindFrameID(const char *id)
 {
   ID3_FrameID fid = ID3FID_NOFRAME;
-  
-  for (size_t cur = 0; ID3_FrameDefs[cur].eID != ID3FID_NOFRAME; cur++)
+  const int slen = strlen(id);
+
+  for (size_t cur = 0; ID3_FrameDefs[cur].eID != ID3FID_NOFRAME; ++cur)
   {
     if (((strcmp(ID3_FrameDefs[cur].sShortTextID, id) == 0) &&
-         strlen(id) == 3) ||
+         slen == 3) ||
         ((strcmp(ID3_FrameDefs[cur].sLongTextID,  id) == 0) &&
-         strlen(id) == 4))
+         slen == 4))
     {
       fid = ID3_FrameDefs[cur].eID;
       break;
     }
   }
-  
+
   return fid;
 }
 
 void ID3_FieldImpl::Render(ID3_Writer& writer) const
 {
-  switch (this->GetType()) 
+  switch (this->GetType())
   {
     case ID3FTY_INTEGER:
     {
       RenderInteger(writer);
       break;
     }
-        
+
     case ID3FTY_BINARY:
     {
       RenderBinary(writer);
       break;
     }
-        
+
     case ID3FTY_TEXTSTRING:
     {
       RenderText(writer);
       break;
     }
-        
+
     default:
     {
       ID3D_WARNING ( "ID3D_FieldImpl::Render(): unknown field type" );
@@ -1185,7 +1187,7 @@ bool ID3_FieldImpl::SetEncoding(ID3_TextEnc enc)
 
 /** \class ID3_FrameInfo field.h id3/field.h
  ** \brief Provides information about the frame and field types supported by id3lib
- ** 
+ **
  ** You normally only need (at most) one instance of the ID3_FrameInfo.  It
  ** has no member data -- only methods which provide information about the
  ** frame types (and their component fields) supported by id3lib as defined
@@ -1194,17 +1196,17 @@ bool ID3_FieldImpl::SetEncoding(ID3_TextEnc enc)
  ** Usage is straightforward.  The following function uses ID3_FrameInfo
  ** to display a summary of all the frames known to id3lib:
  ** \code
- ** 
+ **
  ** void ShowKnownFrameInfo {
  **   ID3_FrameInfo myFrameInfo;
  **   for (int cur = ID3FID_NOFRAME+1; cur <= myFrameInfo.MaxFrameID(); cur ++)
- **   { 
+ **   {
  **     cout << "Short ID: " << myFrameInfo.ShortName(ID3_FrameID(cur)) <<
  **     " Long ID: " << myFrameInfo.LongName(ID3_FrameID(cur)) <<
  **     " Desription: " << myFrameInfo.Description(ID3_FrameID(cur)) << endl;
  **   }
- ** } 
- ** \endcode 
+ ** }
+ ** \endcode
  **
  ** Functions are also provided to glean more information about the individual
  ** fields which make up any given frame type.  The following for() loop,
@@ -1233,30 +1235,33 @@ bool ID3_FieldImpl::SetEncoding(ID3_TextEnc enc)
  ** \endcode
  **
  ** @author Cedric Tefft
- ** @version $Id: field.cpp,v 1.46 2002/07/31 13:45:18 t1mpy Exp $
+ ** @version $Id: field.cpp,v 1.47 2002/11/03 00:41:27 t1mpy Exp $
  **/
 
 
-char *ID3_FrameInfo::ShortName(ID3_FrameID frameid)
+char *ID3_FrameInfo::ShortName(ID3_FrameID frameID)
 {
-  if(frameid < ID3FID_LASTFRAMEID)
-    return ID3_FrameDefs[frameid-1].sShortTextID;
+  ID3_FrameDef *pFD = ID3_FindFrameDef(frameID);
+  if (pFD!=NULL)
+    return pFD->sShortTextID;
   else
     return NULL;
 }
 
-char *ID3_FrameInfo::LongName(ID3_FrameID frameid)
+char *ID3_FrameInfo::LongName(ID3_FrameID frameID)
 {
-  if(frameid < ID3FID_LASTFRAMEID)
-    return ID3_FrameDefs[frameid-1].sLongTextID;
+  ID3_FrameDef *pFD = ID3_FindFrameDef(frameID);
+  if (pFD!=NULL)
+    return pFD->sLongTextID;
   else
     return NULL;
 }
 
-const char *ID3_FrameInfo::Description(ID3_FrameID frameid)
+const char *ID3_FrameInfo::Description(ID3_FrameID frameID)
 {
-  if(frameid < ID3FID_LASTFRAMEID)
-    return ID3_FrameDefs[frameid-1].sDescription;
+  ID3_FrameDef *pFD = ID3_FindFrameDef(frameID);
+  if (pFD!=NULL)
+    return pFD->sDescription;
   else
     return NULL;
 }
@@ -1266,29 +1271,44 @@ int ID3_FrameInfo::MaxFrameID()
   return ID3FID_LASTFRAMEID-1;
 }
 
-int ID3_FrameInfo::NumFields(ID3_FrameID frameid)
+int ID3_FrameInfo::NumFields(ID3_FrameID frameID)
 {
   int fieldnum=0;
-
-  while (ID3_FrameDefs[frameid-1].aeFieldDefs[fieldnum]._id != ID3FN_NOFIELD)
+  ID3_FrameDef *pFD = ID3_FindFrameDef(frameID);
+  if (pFD!=NULL)
   {
-    fieldnum++;
+    while (pFD->aeFieldDefs[fieldnum]._id != ID3FN_NOFIELD)
+    {
+      ++fieldnum;
+    }
   }
   return fieldnum;
 }
 
-ID3_FieldType ID3_FrameInfo::FieldType(ID3_FrameID frameid, int fieldnum)
+ID3_FieldType ID3_FrameInfo::FieldType(ID3_FrameID frameID, int fieldnum)
 {
-  return (ID3_FrameDefs[frameid-1].aeFieldDefs[fieldnum]._type);
+  ID3_FrameDef *pFD = ID3_FindFrameDef(frameID);
+  if (pFD!=NULL)
+    return (pFD->aeFieldDefs[fieldnum]._type);
+  else
+    return ID3FTY_NONE;
 }
 
-size_t ID3_FrameInfo::FieldSize(ID3_FrameID frameid, int fieldnum)
+size_t ID3_FrameInfo::FieldSize(ID3_FrameID frameID, int fieldnum)
 {
-  return (ID3_FrameDefs[frameid-1].aeFieldDefs[fieldnum]._fixed_size);
+  ID3_FrameDef *pFD = ID3_FindFrameDef(frameID);
+  if (pFD!=NULL)
+    return (pFD->aeFieldDefs[fieldnum]._fixed_size);
+  else
+    return 0;
 }
 
-flags_t ID3_FrameInfo::FieldFlags(ID3_FrameID frameid, int fieldnum)
+flags_t ID3_FrameInfo::FieldFlags(ID3_FrameID frameID, int fieldnum)
 {
-  return (ID3_FrameDefs[frameid-1].aeFieldDefs[fieldnum]._flags);
+  ID3_FrameDef *pFD = ID3_FindFrameDef(frameID);
+  if (pFD!=NULL)
+    return (pFD->aeFieldDefs[fieldnum]._flags);
+  else
+    return 0;
 }
 
