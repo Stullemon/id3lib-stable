@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.32 2002/07/02 22:12:25 t1mpy Exp $
+// $Id: field_string_unicode.cpp,v 1.33 2003/03/02 14:23:58 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -39,18 +39,18 @@ using namespace dami;
  **/
 
 /** \brief Copies the supplied unicode string to the field.
- ** 
+ **
  ** Performs similarly as the ASCII Set() method, taking a unicode_t string
  ** as a parameter rather than an ascii string.
- ** 
+ **
  ** \param string The unicode string to set this field to.
  ** \sa Add(const unicode_t*)
  **/
 size_t ID3_FieldImpl::Set(const unicode_t* data)
 {
   size_t size = 0;
-  if (this->GetType() == ID3FTY_TEXTSTRING && 
-      this->GetEncoding() == ID3TE_UNICODE)
+  if (this->GetType() == ID3FTY_TEXTSTRING &&
+      this->GetEncoding() == ID3TE_UNICODE && data)
   {
     String text((const char*) data, ucslen(data) * 2);
     size = this->SetText_i(text);
@@ -61,7 +61,7 @@ size_t ID3_FieldImpl::Set(const unicode_t* data)
 size_t ID3_FieldImpl::Add(const unicode_t* data)
 {
   size_t size = 0;
-  if (this->GetType() == ID3FTY_TEXTSTRING && 
+  if (this->GetType() == ID3FTY_TEXTSTRING &&
       this->GetEncoding() == ID3TE_UNICODE)
   {
     String text((const char*) data, ucslen(data) * 2);
@@ -73,17 +73,17 @@ size_t ID3_FieldImpl::Add(const unicode_t* data)
 /** Copies the contents of the field into the supplied buffer, up to the
  ** number of characters specified; for fields with multiple entries, the
  ** optional third parameter indicates which of the fields to retrieve.
- ** 
+ **
  ** Performs similarly as the ASCII Get(char *, size_t, size_t) method, taking
  ** a unicode_t string as a parameter rather than an ascii string.  The
  ** maxChars parameter still represents the maximum number of characters, not
  ** bytes.
- **   
+ **
  ** \code
  **   unicode_t myBuffer[1024];
  **   size_t charsUsed = myFrame.GetField(ID3FN_UNICODE)->Get(buffer, 1024);
- ** \endcode 
- **   
+ ** \endcode
+ **
  ** \param buffer   Where the field's data is copied to
  ** \param maxChars The maximum number of characters to copy to the buffer.
  ** \param itemNum  For fields with multiple items (such as the involved
@@ -93,7 +93,7 @@ size_t ID3_FieldImpl::Add(const unicode_t* data)
 size_t ID3_FieldImpl::Get(unicode_t *buffer, size_t maxLength) const
 {
   size_t length = 0;
-  if (this->GetType() == ID3FTY_TEXTSTRING && 
+  if (this->GetType() == ID3FTY_TEXTSTRING &&
       this->GetEncoding() == ID3TE_UNICODE &&
       buffer != NULL && maxLength > 0)
   {
@@ -111,7 +111,7 @@ size_t ID3_FieldImpl::Get(unicode_t *buffer, size_t maxLength) const
 const unicode_t* ID3_FieldImpl::GetRawUnicodeText() const
 {
   const unicode_t* text = NULL;
-  if (this->GetType() == ID3FTY_TEXTSTRING && 
+  if (this->GetType() == ID3FTY_TEXTSTRING &&
       this->GetEncoding() == ID3TE_UNICODE)
   {
     text = (unicode_t *)_text.data();
@@ -122,7 +122,7 @@ const unicode_t* ID3_FieldImpl::GetRawUnicodeText() const
 const unicode_t* ID3_FieldImpl::GetRawUnicodeTextItem(size_t index) const
 {
   const unicode_t* text = NULL;
-  if (this->GetType() == ID3FTY_TEXTSTRING && 
+  if (this->GetType() == ID3FTY_TEXTSTRING &&
       this->GetEncoding() == ID3TE_UNICODE &&
       index < this->GetNumTextItems())
   {
@@ -140,7 +140,7 @@ size_t ID3_FieldImpl::Get(unicode_t *buffer, size_t maxLength, size_t itemNum) c
 {
   size_t length = 0;
   size_t total_items = this->GetNumTextItems();
-  if (this->GetType() == ID3FTY_TEXTSTRING && 
+  if (this->GetType() == ID3FTY_TEXTSTRING &&
       this->GetEncoding() == ID3TE_UNICODE &&
       buffer != NULL && maxLength > 0 && itemNum < total_items)
   {

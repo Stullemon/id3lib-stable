@@ -1,4 +1,4 @@
-// $Id: field_string_ascii.cpp,v 1.28 2002/07/02 22:12:19 t1mpy Exp $
+// $Id: field_string_ascii.cpp,v 1.29 2003/03/02 14:23:58 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -45,7 +45,7 @@ using namespace dami;
 size_t ID3_FieldImpl::Set(const char* data)
 {
   size_t len = 0;
-  if (this->GetType() == ID3FTY_TEXTSTRING)
+  if ((this->GetType() == ID3FTY_TEXTSTRING) && data)
   {
     String str(data);
     len = this->SetText_i(str);
@@ -58,36 +58,36 @@ size_t ID3_FieldImpl::Set(const char* data)
 /** Copies the contents of the field into the supplied buffer, up to the
  ** number of characters specified; for fields with multiple entries, the
  ** optional third parameter indicates which of the fields to retrieve.
- ** 
+ **
  ** The third parameter is useful when using text lists (see Add(const char*)
  ** for more details).  The default value for this third parameter is 1,
  ** which returns the entire string if the field contains only one item.
- ** 
+ **
  ** It returns the number of characters (not bytes necessarily, and not
  ** including any NULL terminator) of the supplied buffer that are now used.
- ** 
+ **
  ** \code
  **   char myBuffer[1024];
  **   size_t charsUsed = myFrame.GetField(ID3FN_TEXT)->Get(buffer, 1024);
  ** \endcode
- ** 
+ **
  ** It fills the buffer with as much data from the field as is present in the
  ** field, or as large as the buffer, whichever is smaller.
- ** 
+ **
  ** \code
  **   char myBuffer[1024];
  **   size_t charsUsed = myFrame.GetField(ID3FN_TEXT)->Get(buffer, 1024, 3);
  ** \endcode
- ** 
+ **
  ** This fills the buffer with up to the first 1024 characters from the third
  ** element of the text list.
- ** 
+ **
  ** \sa Add(const char*)
  **/
 size_t ID3_FieldImpl::Get(char* buffer, size_t maxLength) const
 {
   size_t size = 0;
-  if (this->GetType() == ID3FTY_TEXTSTRING && 
+  if (this->GetType() == ID3FTY_TEXTSTRING &&
       this->GetEncoding() == ID3TE_ASCII &&
       buffer != NULL && maxLength > 0)
   {
@@ -109,7 +109,7 @@ size_t ID3_FieldImpl::Get(char* buf, size_t maxLen, size_t index) const
   if (this->GetType() == ID3FTY_TEXTSTRING &&
       this->GetEncoding() == ID3TE_ASCII &&
       buf != NULL && maxLen > 0)
-  {  
+  {
     String data = this->GetTextItem(index);
     size = dami::min(maxLen, data.size());
     ::memcpy(buf, data.data(), size);
@@ -199,15 +199,15 @@ size_t ID3_FieldImpl::SetText(String data)
 
 /** For fields which support this feature, adds a string to the list of
  ** strings currently in the field.
- ** 
+ **
  ** This is useful for using id3v2 frames such as the involved people list,
  ** composer, and part of setp.  You can use the GetNumTextItems() method to
  ** find out how many such items are in a list.
- ** 
+ **
  ** \code
  **   myFrame.GetField(ID3FN_TEXT)->Add("this is a test");
  ** \endcode
- ** 
+ **
  ** \param string The string to add to the field
  **/
 size_t ID3_FieldImpl::AddText_i(String data)
@@ -261,7 +261,7 @@ size_t ID3_FieldImpl::Add(const char* data)
 const char* ID3_FieldImpl::GetRawText() const
 {
   const char* text = NULL;
-  if (this->GetType() == ID3FTY_TEXTSTRING && 
+  if (this->GetType() == ID3FTY_TEXTSTRING &&
       this->GetEncoding() == ID3TE_ASCII)
   {
     text = _text.c_str();
@@ -272,7 +272,7 @@ const char* ID3_FieldImpl::GetRawText() const
 const char* ID3_FieldImpl::GetRawTextItem(size_t index) const
 {
   const char* text = NULL;
-  if (this->GetType() == ID3FTY_TEXTSTRING && 
+  if (this->GetType() == ID3FTY_TEXTSTRING &&
       this->GetEncoding() == ID3TE_ASCII &&
       index < this->GetNumTextItems())
   {
@@ -344,7 +344,7 @@ bool ID3_FieldImpl::ParseText(ID3_Reader& reader)
   else if (_flags & ID3FF_LIST)
   {
     ID3D_NOTICE( "ID3_Field::ParseText(): text list" );
-    // lists are always the last field in a frame.  parse all remaining 
+    // lists are always the last field in a frame.  parse all remaining
     // characters in the reader
     while (!reader.atEnd())
     {
@@ -364,11 +364,11 @@ bool ID3_FieldImpl::ParseText(ID3_Reader& reader)
   {
     ID3D_NOTICE( "ID3_Field::ParseText(): last field string" );
     String text = readEncodedText(reader, reader.remainingBytes(), enc);
-    // not null terminated.  
+    // not null terminated.
     this->AddText(text);
     ID3D_NOTICE( "ID3_Field::ParseText(): last field string = " << text );
   }
-  
+
   _changed = false;
   return true;
 }
@@ -376,7 +376,7 @@ bool ID3_FieldImpl::ParseText(ID3_Reader& reader)
 void ID3_FieldImpl::RenderText(ID3_Writer& writer) const
 {
   ID3_TextEnc enc = this->GetEncoding();
-  
+
   if (_flags & ID3FF_CSTR)
   {
     writeEncodedString(writer, _text, enc);
@@ -389,11 +389,11 @@ void ID3_FieldImpl::RenderText(ID3_Writer& writer) const
 };
 
 /** Returns the number of items in a text list.
- ** 
+ **
  ** \code
  **   size_t numItems = myFrame.GetField(ID3FN_UNICODE)->GetNumItems();
  ** \endcode
- ** 
+ **
  ** \return The number of items in a text list.
  **/
 size_t ID3_FieldImpl::GetNumTextItems() const
