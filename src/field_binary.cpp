@@ -1,4 +1,4 @@
-// $Id: field_binary.cpp,v 1.22 2000/10/15 05:44:27 eldamitri Exp $
+// $Id: field_binary.cpp,v 1.23 2000/10/21 15:33:57 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -40,33 +40,67 @@
 
 using namespace dami;
 
+size_t ID3_FieldImpl::Set(const uchar* data, size_t len)
+{
+  size_t size = 0;
+  if (this->GetType() == ID3FTY_BINARY)
+  {
+    BString str(data, len);
+    size = min(len, this->SetBinary(str));
+  }
+  return size;
+}
+
 /** Copies the supplied unicode string to the field.
  ** 
  ** Again, like the string types, the binary Set() function copies the data
  ** so you may dispose of the source data after a call to this method.
  **/
-size_t 
-ID3_FieldImpl::Set(const uchar *newData, //< data to assign to this field.
-                   size_t newSize          //< number of bytes to be copied
-                   )
+size_t ID3_FieldImpl::SetBinary(BString data) //< data to assign to this field.
 {
+  size_t size = 0;
   if (this->GetType() == ID3FTY_BINARY)
   {
     this->Clear();
-    
-    if (newSize > 0 && newData != NULL)
+    size_t fixed = _fixed_size;
+    size = data.size();
+    if (fixed == 0)
     {
-      size_t fixed = this->Size();
-      if (fixed == 0)
-      {
-        _bytes = newSize;
-        _binary = new uchar[_bytes];
-      }
-      ::memcpy(_binary, newData, min(_bytes, newSize));
+      _binary = data;
     }
+    else
+    {
+      _binary.assign(data, 0, min(size, fixed));
+      if (size < fixed)
+      {
+        _binary.append(fixed - size, '\0');
+      }
+    }
+    size = _binary.size();
     _changed = true;
   }
-  return min(_bytes, newSize);
+  return size;
+}
+
+BString ID3_FieldImpl::GetBinary() const
+{
+  BString data;
+  if (this->GetType() == ID3FTY_BINARY)
+  {
+    data = _binary;
+  }
+  return data;
+}
+
+
+const uchar* ID3_FieldImpl::GetRawBinary() const
+{
+  const uchar* data = NULL;
+  if (this->GetType() == ID3FTY_BINARY)
+  {
+    data = _binary.data();
+  }
+  return data;
 }
 
 
@@ -88,9 +122,9 @@ size_t ID3_FieldImpl::Get(uchar *buffer,    //< Destination of retrieved string
   if (this->GetType() == ID3FTY_BINARY)
   {
     bytes = min(max_bytes, this->Size());
-    if (NULL != buffer && NULL != _binary && bytes > 0)
+    if (NULL != buffer && bytes > 0)
     {
-      ::memcpy(buffer, _binary, bytes);
+      ::memcpy(buffer, _binary.data(), bytes);
     }
   }
   return bytes;
@@ -148,12 +182,12 @@ void ID3_FieldImpl::ToFile(const char *info //< Destination filename
   }
     
   size_t size = this->Size();
-  if ((_binary != NULL) && (size > 0))
+  if (size > 0)
   {
     FILE* temp_file = ::fopen(info, "wb");
     if (temp_file != NULL)
     {
-      ::fwrite(_binary, 1, size, temp_file);
+      ::fwrite(_binary.data(), 1, size, temp_file);
       ::fclose(temp_file);
     }
   }
@@ -166,14 +200,12 @@ bool ID3_FieldImpl::ParseBinary(ID3_Reader& reader)
 {
   // copy the remaining bytes, unless we're fixed length, in which case copy
   // the minimum of the remaining bytes vs. the fixed length
-  BString binary = io::readAllBinary(reader);
-  this->Set(binary.data(), binary.size());
-  _changed = false;
+  _binary = io::readAllBinary(reader);
   return true;
 }
 
 void ID3_FieldImpl::RenderBinary(ID3_Writer& writer) const
 {
-  writer.writeChars(_binary, this->BinSize());
+  writer.writeChars(this->GetRawBinary(), this->Size());
 }
 
