@@ -1,4 +1,4 @@
-// $Id: helpers.cpp,v 1.5 2000/10/16 08:50:22 eldamitri Exp $
+// $Id: helpers.cpp,v 1.6 2000/10/21 22:10:28 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -54,7 +54,7 @@ String id3::v2::getString(const ID3_Frame* frame, ID3_FieldID fldName)
   ID3_TextEnc enc = fp->GetEncoding();
   fp->SetEncoding(ID3TE_ASCII);
   
-  String text(fp->GetText(), fp->Size());
+  String text(fp->GetRawText(), fp->Size());
   
   fp->SetEncoding(enc);
   return text;
@@ -74,7 +74,7 @@ String id3::v2::getStringAtIndex(const ID3_Frame* frame, ID3_FieldID fldName,
     ID3_TextEnc enc = fp->GetEncoding();
     fp->SetEncoding(ID3TE_ASCII);
 
-    text = fp->GetTextItem(nIndex);
+    text = fp->GetRawTextItem(nIndex);
     
     fp->SetEncoding(enc);
   }
@@ -438,7 +438,7 @@ ID3_Frame* id3::v2::setSyncLyrics(ID3_TagImpl& tag, BString data,
   return frame;
 }
 
-BString getSyncLyrics(const ID3_TagImpl& tag, String lang, String desc)
+BString id3::v2::getSyncLyrics(const ID3_TagImpl& tag, String lang, String desc)
 {
   // check if a SYLT frame of this language or descriptor exists
   ID3_Frame* frame = NULL;
@@ -448,6 +448,6 @@ BString getSyncLyrics(const ID3_TagImpl& tag, String lang, String desc)
   
   // get the lyrics size
   ID3_Field* fld = frame->GetField(ID3FN_DATA);
-  return BString(reinterpret_cast<const BString::value_type *>(fld->GetBinary()), fld->Size());
+  return BString(reinterpret_cast<const BString::value_type *>(fld->GetRawBinary()), fld->Size());
 }
 
