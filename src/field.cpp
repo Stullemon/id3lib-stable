@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.13 2000/05/03 14:09:14 eldamitri Exp $
+// $Id: field.cpp,v 1.14 2000/05/04 20:51:53 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -226,15 +226,6 @@ static ID3_FieldDef ID3FD_TermsOfUse[] =
 
 static ID3_FieldDef ID3FD_LinkedInfo[] =
 {
-  {
-    ID3FN_DATA,                         // FIELD NAME
-    ID3FTY_INTEGER,                     // FIELD TYPE
-    3,                                  // FIXED LEN
-    ID3V2_EARLIEST,                     // INITIAL SPEC
-    ID3V2_2_1,                          // ENDING SPEC
-    ID3FF_NONE,                         // FLAGS
-    ID3FN_NOFIELD                       // LINKED FIELD
-  },
   {
     ID3FN_ID,                           // FIELD NAME
     ID3FTY_ASCIISTRING,                 // FIELD TYPE
@@ -544,6 +535,66 @@ static ID3_FieldDef ID3FD_CDM[] =
   }
 };
 
+static ID3_FieldDef ID3FD_SyncLyrics[] = 
+{
+  {
+    ID3FN_TEXTENC,                      // FIELD NAME
+    ID3FTY_INTEGER,                     // FIELD TYPE
+    1,                                  // FIXED LEN
+    ID3V2_EARLIEST,                     // INITIAL SPEC
+    ID3V2_LATEST,                       // ENDING SPEC
+    ID3FF_NONE,                         // FLAGS
+    ID3FN_NOFIELD                       // LINKED FIELD
+  },
+  {
+    ID3FN_LANGUAGE,                     // FIELD NAME
+    ID3FTY_ASCIISTRING,                 // FIELD TYPE
+    3,                                  // FIXED LEN
+    ID3V2_EARLIEST,                     // INITIAL SPEC
+    ID3V2_LATEST,                       // ENDING SPEC
+    ID3FF_NONE,                         // FLAGS
+    ID3FN_NOFIELD                       // LINKED FIELD
+  },
+  {
+    ID3FN_TIMESTAMPFORMAT,              // FIELD NAME
+    ID3FTY_INTEGER,                     // FIELD TYPE
+    1,                                  // FIXED LEN
+    ID3V2_EARLIEST,                     // INITIAL SPEC
+    ID3V2_LATEST,                       // ENDING SPEC
+    ID3FF_NONE,                         // FLAGS
+    ID3FN_NOFIELD                       // LINKED FIELD
+  },
+  {
+    ID3FN_CONTENTTYPE,                  // FIELD NAME
+    ID3FTY_INTEGER,                     // FIELD TYPE
+    1,                                  // FIXED LEN
+    ID3V2_EARLIEST,                     // INITIAL SPEC
+    ID3V2_LATEST,                       // ENDING SPEC
+    ID3FF_NONE,                         // FLAGS
+    ID3FN_NOFIELD                       // LINKED FIELD
+  },
+  {
+    ID3FN_DESCRIPTION,                  // FIELD NAME
+    ID3FTY_ASCIISTRING,                 // FIELD TYPE
+    0,                                  // FIXED LEN
+    ID3V2_EARLIEST,                     // INITIAL SPEC
+    ID3V2_LATEST,                       // ENDING SPEC
+    ID3FF_NULL | ID3FF_ADJUSTENC,       // FLAGS
+    ID3FN_NOFIELD                       // LINKED FIELD
+  },
+  {
+    ID3FN_DATA,                         // FIELD NAME
+    ID3FTY_BINARY,                      // FIELD TYPE
+    0,                                  // FIXED LEN
+    ID3V2_EARLIEST,                     // INITIAL SPEC
+    ID3V2_LATEST,                       // ENDING SPEC
+    ID3FF_NONE,                         // FLAGS
+    ID3FN_NOFIELD                       // LINKED FIELD
+  },
+  { ID3FN_NOFIELD }
+};
+
+
 /*
  * Currently unused
  */
@@ -619,6 +670,7 @@ static ID3_FieldDef ID3FD_Volume[] =
 // PCNT  CNT  ID3FID_PLAYCOUNTER       Play counter
 // POPM  POP  ID3FID_POPULARIMETER     Popularimeter
 // PRIV       ID3FID_PRIVATE           Private frame
+// SYLT  SLT  ID3FID_SYNCEDLYRICS      Synchronized lyric/text
 // TALB  TAL  ID3FID_ALBUM             Album/Movie/Show title
 // TBPM  TBP  ID3FID_BPM               BPM (beats per minute)
 // TCOM  TCM  ID3FID_COMPOSER          Composer
@@ -684,7 +736,6 @@ static ID3_FieldDef ID3FD_Volume[] =
 // RBUF  BUF  ID3FID_BUFFERSIZE        Recommended buffer size
 // RVAD  RVA  ID3FID_VOLUMEADJ         Relative volume adjustment
 // RVRB  REV  ID3FID_REVERB            Reverb
-// SYLT  SLT  ID3FID_SYNCEDLYRICS      Synchronized lyric/text
 // SYTC  STC  ID3FID_SYNCEDTEMPO       Synchronized tempo codes
 //       CRM  ID3FID_METACRYPTO        Encrypted meta frame
 static  ID3_FrameDef ID3_FrameDefs[] =
@@ -712,7 +763,7 @@ static  ID3_FrameDef ID3_FrameDefs[] =
   {ID3FID_BUFFERSIZE,        "BUF", "RBUF", 0, false, false, NULL, ID3FD_Unimplemented, "Recommended buffer size"},
   {ID3FID_VOLUMEADJ,         "RVA", "RVAD", 0, false, true,  NULL, ID3FD_Unimplemented, "Relative volume adjustment"},
   {ID3FID_REVERB,            "REV", "RVRB", 0, false, false, NULL, ID3FD_Unimplemented, "Reverb"},
-  {ID3FID_SYNCEDLYRICS,      "SLT", "SYLT", 0, false, true,  NULL, ID3FD_Unimplemented, "Synchronized lyric/text"},
+  {ID3FID_SYNCEDLYRICS,      "SLT", "SYLT", 0, false, false, NULL, ID3FD_SyncLyrics,	"Synchronized lyric/text"},
   {ID3FID_SYNCEDTEMPO,       "STC", "SYTC", 0, false, true,  NULL, ID3FD_Unimplemented, "Synchronized tempo codes"},
   {ID3FID_ALBUM,             "TAL", "TALB", 0, false, false, NULL, ID3FD_Text,          "Album/Movie/Show title"},
   {ID3FID_BPM,               "TBP", "TBPM", 0, false, false, NULL, ID3FD_Text,          "BPM (beats per minute)"},
