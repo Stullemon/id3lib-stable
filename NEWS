@@ -1,4 +1,18 @@
-$Id: NEWS,v 1.12 2000/05/04 01:44:01 eldamitri Exp $
+$Id: NEWS,v 1.13 2000/05/10 16:33:53 eldamitri Exp $
+
+2000-05-10 Version 3.7.7
+
+* As part of the major rewrite of underlying codebase started with previous
+  release, this release features near-complete reimplementation of most of the 
+  ID3v2 parsing code - smaller, faster, and better organized
+* Much imporved Lyrics3 v2 tag support, along with much improved synchronized
+  lyrics (SYLT) support (thanks Severino Delaurenti)
+* Updated id3com to reflect changes to compression strategy introduced in last
+  release (thanks John Adcock)
+* Cleaned up the parameters to several functions/methods with regards to 
+  constness
+* Several new methods to several classes
+* A variety of bugfixes
 
 2000-05-03 Version 3.7.6
 

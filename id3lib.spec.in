@@ -1,4 +1,4 @@
-# $Id: id3lib.spec.in,v 1.11 2000/05/04 01:44:01 eldamitri Exp $
+# $Id: id3lib.spec.in,v 1.12 2000/05/10 16:33:53 eldamitri Exp $
 
 %define name    @PACKAGE@
 %define	version	@VERSION@
@@ -155,6 +155,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed May 10 2000 Scott Haug <scott@id3.org> 3.7.6-1
+- Version 3.7.7
+
 * Wed May 03 2000 Scott Haug <scott@id3.org> 3.7.6-1
 - Version 3.7.6
 

@@ -1,4 +1,4 @@
-$Id: THANKS,v 1.8 2000/05/04 01:44:01 eldamitri Exp $
+$Id: THANKS,v 1.9 2000/05/10 16:33:53 eldamitri Exp $
 
 id3lib THANKS file
 
@@ -29,12 +29,14 @@ current project maintainer if anyone has been missed.
 * Lothar Egger (lothar.egger@chello.at) also assisted in fixing the Windows
   projects, as well as providing assistance for testing the dlls under Windows
 * Severino Delaurenti (id3lib@castlems.com) added functionality for parsing
-  Lyrics3 v1.0 frames.
+  Lyrics3 v1.0 and v2.0 tags, as well as improving synchronized lyric frame 
+  (SYLT) dramatically.
 * The following individuals have assisted by providing bug reports and
   suggestions for fixes:
   - Daryl Pawluk (dpawluk@home.com)
   - John Southerland (jbsouthe@home.com)
   - Sasa Ðolic (sasad@moderngroove.com)
+  - Peter Thorstenson (swede@openlink.com.br)
 
 Dirk Mahoney included the following at the end of his documentation on ID3Lib
 3.05a.  It is included in verbatim here.
