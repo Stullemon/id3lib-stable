@@ -1,4 +1,4 @@
-// $Id: header.h,v 1.4 1999/11/04 04:15:55 scott Exp $
+// $Id: header.h,v 1.5 1999/11/15 20:18:59 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -24,14 +24,14 @@
 
 struct ID3_HeaderInfo
 {
-  uchar version;
-  uchar revision;
-  uchar frameIDBytes;
-  uchar frameSizeBytes;
-  uchar frameFlagsBytes;
-  bool  hasExtHeader;
-  luint extHeaderBytes;
-  bool  setExpBit;
+  uchar ucVersion;
+  uchar ucRevision;
+  uchar ucFrameIDBytes;
+  uchar ucFrameSizeBytes;
+  uchar ucFrameFlagsBytes;
+  bool  bHasExtHeader;
+  luint ulExtHeaderBytes;
+  bool  bSetExpBit;
 };
 
 extern ID3_HeaderInfo ID3_VersionInfo[];
@@ -48,11 +48,11 @@ public:
   virtual luint Render(uchar *buffer) = 0;
   
 protected:
-  uchar version;        // which version?
-  uchar revision;       // which revision?
-  luint dataSize;       // how big is the data?
-  luint flags;          // tag flags
-  ID3_HeaderInfo *info; // the info about this version of the headers
+  uchar __ucVersion;        // which version?
+  uchar __ucRevision;       // which revision?
+  luint __ulDataSize;       // how big is the data?
+  luint __ulFlags;          // tag flags
+  ID3_HeaderInfo *__pInfo;  // the info about this version of the headers
 }
 ;
 
@@ -61,6 +61,9 @@ ID3_HeaderInfo *ID3_LookupHeaderInfo(uchar ver, uchar rev);
 #endif
 
 // $Log: header.h,v $
+// Revision 1.5  1999/11/15 20:18:59  scott
+// Made variable names more descriptive.
+//
 // Revision 1.4  1999/11/04 04:15:55  scott
 // Added cvs Id and Log tags to beginning and end of file, respectively.
 //

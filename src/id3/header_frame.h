@@ -1,4 +1,4 @@
-// $Id: header_frame.h,v 1.4 1999/11/04 04:15:55 scott Exp $
+// $Id: header_frame.h,v 1.5 1999/11/15 20:19:25 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -31,9 +31,9 @@
 
 struct ID3_FrameAttr
 {
-  char  textID[5];
-  luint size;
-  luint flags;
+  char  sTextID[5];
+  luint ulSize;
+  luint ulFlags;
 };
 
 class ID3_FrameHeader : public ID3_Header
@@ -45,13 +45,16 @@ public:
   virtual luint Render(uchar *buffer);
   
 protected:
-  ID3_FrameID   frameID;        // which frame are we the header for?
+  ID3_FrameID   __eFrameID;        // which frame are we the header for?
 }
 ;
 
 #endif
 
 // $Log: header_frame.h,v $
+// Revision 1.5  1999/11/15 20:19:25  scott
+// Made variable names more descriptive.
+//
 // Revision 1.4  1999/11/04 04:15:55  scott
 // Added cvs Id and Log tags to beginning and end of file, respectively.
 //
