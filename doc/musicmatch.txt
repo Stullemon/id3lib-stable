@@ -1,0 +1,327 @@
+$Id: musicmatch.txt,v 1.1 2000/09/05 06:55:42 eldamitri Exp $
+
+              ==================================================
+                 Description of the MusicMatch Tagging Format
+
+                A text file describing the tagging format used
+               by MusicMatch (TM) JukeBox in MP3 digital audio.
+
+                          Written by The VideoRipper
+              ==================================================
+
+1.  INTRODUCTION
+
+    The following document describes the structure of the tagging format used
+    by MusicMatch (TM) Jukebox, prior to version 4.0 of that application.  This
+    program is a so-called "All-In-One" MP3 program and provides a CD-Ripper,
+    WAV-to-MP3 converter, database, and MP3 player.
+
+    As of version 4.0, MusicMatch has deprecated the use of this format in
+    their own Jukebox application, transitioning instead to ID3v2, an open
+    standard for tagging digital audio.  Unfortunately, despite repeated
+    requests, MusicMatch has not provided to the public any documents
+    describing this format, and the MusicMatch player is the only
+    widely-distributed commercial MP3 player that can read and write these
+    tags.
+
+    As such, this text may not be accurate and is surely incomplete, but it
+    covers enough to develop software that can read and/or write tags in this
+    format.  The authors cannot be held responsible for any inaccuracies or any
+    harm caused by using this information.  One can assume that the specifition
+    is unlikely to change, given MusicMatch's own abandonment of the format.
+    It should also be noted that incoporating functionality into applications
+    to write these tags is discouraged, as the format has been officially
+    deprecated my MusicMatch themselves.
+
+2.  DOCUMENT HISTORY
+
+    2000-09-02  Scott Haug  <scott@id3.org>
+
+    1999-06-05  The Videoripper  <videoripper@hotmail.com>
+
+            Updated and added some things.
+
+    1999-03-02  The Videoripper  <videoripper@hotmail.com>
+
+            Added a description of the .mmd database files used with 
+            MusicMatch.  Thanks to Seanhat (seanhat@earthlink.net)
+
+    1999-02-15  The Videoripper  <videoripper@hotmail.com>
+
+            Initial revision.  Greetz, Peter.
+
+3.  Conventions in this document
+
+    Text within "" is a text string exactly as it appears in a tag.  Numbers
+    preceded with $ are hexadecimal and numbers preceded with % are binary. $xx
+    is used to indicate a byte with unknown content. %x is used to indicate a
+    bit with unknown content.
+
+4.  Tag overview
+
+    The MusicMatch Tagging Format was designed to store specific types of audio
+    meta-data inside the audio file itself.  As the format was used exclusively
+    by the MusicMatch Jukebox application, it is used only with MPEG-1/2 layer
+    III files encoded with that program.  However, its tagging format is not
+    inherently exclusive of other audio formats, and could conceivably be
+    used with other types of encodings.
+
+    MusicMatch tags were originally designed to come at the very end of MP3
+    files, after all of the MP3 audio frames.  Starting with Jukebox version
+    3.1, the application became more ID3-friendly and started placing ID3v1
+    tags after the MusicMatch tag as well.  In practice, since very few
+    applications outside of the MusicMatch Jukebox are capable of reading and
+    understanding this format, it is not unusual to find MusicMatch tags
+    "buried" within mp3 files, coming before other types of tagging formats in
+    a file, such as Lyrics3 or ID3v2.4.0.  Such "relocations" are not uncommon,
+    and therefore any software application that intends to find, read, and
+    parse MusicMatch tags should be flexible in this endeavor, despite the
+    apparent intentions of the original specification.
+
+    Although various sections of a MusicMatch tag are fixed in length, other
+    sections are not, and so tag lengths can vary from one file to another.  A
+    valid MusicMatch tag will be at least 8 kilobytes (8192 bytes) in length.
+    Those tags with image data will often be much larger.
+
+    The byte-order in 4-byte pointers and multibyte numbers for MusicMatch tags
+    is least-significant byte (LSB) first, also known as "little endian".  For
+    example, $12345678 is encoded as $78 56 34 12.
+
+    Overall tag structure:
+
+      +-----------------------------+
+      |           Header            |
+      |    (256 bytes, OPTIONAL)    |
+      +-----------------------------+
+      |  Image extension (4 bytes)  |
+      +-----------------------------+
+      |        Image binary         |
+      |  (var. length >= 4 bytes)   |
+      +-----------------------------+
+      |      Unused (4 bytes)       |
+      +-----------------------------+
+      |  Version info (256 bytes)   |
+      +-----------------------------+
+      |       Audio meta-data       |
+      | (var. length >= 7868 bytes) |
+      +-----------------------------+
+      |   Data offsets (20 bytes)   |
+      +-----------------------------+
+      |      Footer (48 bytes)      |
+      +-----------------------------+
+
+    This document will describe the various sections of the tag in the order
+    listed above (that is, in the sequential order that they appear when
+    reading the tag from beginning to end).  However, due to the nature of the
+    tag's format, in practice the tag's sections will often be parsed in the
+    reverse order.  A robust parsing algorithm will be suggested and described
+    later in the document.
+
+4.1  Header
+
+    An optional tag header often precedes the tag data in a MusicMatch tag.
+    Although the rules that determine when this header's presence is required
+    are unknown, the header is usually present in tags created with Jukebox
+    prior to version 2.50, and is usually lacking otherwise.  Luckily, its
+    format is rigid and therefore its presence is easy to determine.  The data
+    in the header are not vital to the correct parsing of the rest of the tag
+    and can thus be discarded.  The header is the only optional section in a
+    MusicMatch tag.  All other sections are required to consider the tag valid.
+
+    The header is always 256 bytes in length.  It begins with three 10-byte
+    sections, and ends with 226 bytes of space ($20) padding.  Each of the
+    first three sections contains an 8-byte ASCII text string followed by two
+    bytes of null padding.
+
+    The first section serves as a sync string: its 8-byte string is always
+    "18273645".
+
+    The second section's 8-byte string is the version of the Xing encoder used
+    to encode the mp3 file.  The last four bytes of this string are usually
+    '0' ($30).  An example of this string is "1.010000".
+
+    The third and final 10-byte section is the version of the MusicMatch
+    Jukebox used to encode the mp3 file.  The last four bytes of this string
+    are usually '0' ($30).  An example of this string is "2.120000".
+
+      Sync string                "18273645"
+      Null padding               $00 00
+      Xing encoder version       <8-byte numerical ASCII string>
+      Null padding               $00 00
+      MusicMatch version         <8-byte numerical ASCII string>
+      Null padding               $00 00
+      Space padding        226 * $20
+
+4.2  Image extension
+
+    MusicMatch tags can contain at most one image.  This first required section
+    is the extension of the image when saved as a file (for example, "jpg" and
+    "bmp").  This section is 4 bytes in length, and the data is padded with
+    spaces ($20) if the extension doesn't use all 4 bytes (in practice, 3-byte
+    extensions are the most prevalent).  Likewise, tags without images have all
+    spaces for this section (4 * $20).
+
+      Picture extension           $xx xx xx $xx
+
+4.3  Image binary
+
+    When an image is present in the tag, the image binary section consists of
+    two fields.  The first field is the size of the image data, in bytes.  The
+    second is the actual image data.
+
+      Image size                  $xx xx xx xx
+      Image data                  <binary data>
+
+    If no image is present, the image binary section consists of exactly four
+    null bytes ($00 00 00 00).
+
+4.4  Unused
+
+This section is never used, to the best of the authors' knowledge.  It is
+always 4 null bytes.
+
+      Null padding               $00 00 00 00
+
+4.5  Version information
+
+   This section of the tag has the exact same format as the header.  
+
+      Sync string                "18273645"
+      Null padding               $00 00
+      Xing encoder version       <8-byte numerical ASCII string>
+      Null padding               $00 00
+      MusicMatch version         <8-byte numerical ASCII string>
+      Null padding               $00 00
+      Space padding        226 * $20
+
+4.6  Audio meta-data
+
+    The audio meta-data is the heart of the MusicMatch tag.  It contains most
+    of the pertinent information found in other tagging formats (song title,
+    album title, artist, etc.) and some that are unique to this format (mood,
+    prefernce, situation).
+
+    In all versions of the MusicMatch format up to and including 3.00, this
+    section is always 7868 bytes in length.  All subsequent versions allowed
+    three possible lengths for this section: 7936, 8004, and 8132 bytes.  The
+    conditions under which a particular length from these three possibilities
+    was used is unknown.
+
+4.6.1  Single-line text fields
+
+    Most of the information in this section is stored as variable-length ASCII
+    text strings.  Each of these strings are preceded by a two-byte size field
+    (again, in LSB order).  Multiple entries in a text field are separated by 
+    a semicolon ($3B).  An empty (and non-existant) text field is preceded by
+    a size field of 0 ($00 00).  
+
+      Song title length          $xx xx
+      Song title                 <ASCII string>
+      Album title length         $xx xx
+      Album title                <ASCII string>
+      Artist name length         $xx xx
+      Artist name                <ASCII string>
+      Genre length               $xx xx
+      Genre                      <ASCII string>
+      Tempo length               $xx xx
+      Tempo                      <ASCII string>
+      Mood length                $xx xx
+      Mood                       <ASCII string>
+      Situation length           $xx xx
+      Situation                  <ASCII string>
+      Preference length          $xx xx
+      Preference                 <ASCII string>
+      Song duration length       $xx xx
+      Song duration              <ASCII string>
+
+    The only field that is neither a string nor a LSB numerical value is the
+    creation date.  It is 8-byte floating-point value.  It can be interpreted
+    as a TDateTime in the Delphi programming language, where the integral 
+    portion is the number of elapsed days since 1899-12-30, and the mantissa 
+    portion represents the fractional portion of that day, where .0 would be 
+    midnight, .5 would be noon, and .99999... would be just before midnight 
+    of the next day.  In practice, this field is typically unused and will be
+    filled with 8 null ($00) bytes.
+
+      Creation date              <8-byte IEEE-64 float>
+      Play counter               $xx xx xx xx
+      Original filename length   $xx xx
+      Original filename          <ASCII string>
+      Serial number length       $xx xx
+      Serial number              <ASCII string>
+      Track number               $xx xx
+
+
+    All line separators use the Windows-standard carriage return ($0D 0A).
+
+      Notes length               $xx xx
+      Notes                      <ASCII string>
+      Artist bio length          $xx xx
+      Artist bio                 <ASCII string>
+      Lyrics length              $xx xx
+      Lyrics                     <ASCII string>
+
+
+
+      Artist URL length          $xx xx
+      Artist URL                 <ASCII string>
+      "Buy CD" URL length        $xx xx
+      "Buy CD" URL               <ASCII string>
+      Artist email length        $xx xx
+      Artist email               <ASCII string>
+ 
+    These fields are then followed by 16 null ($00) bytes.  Presumably these
+    were intended for (up to 8) future text fields.
+
+    The remainder of this section is padded with '-' ($2D) characters.
+
+Field 13:
+This is the album serial number fetched from the online CDDB when a track is 
+ripped with MusicMatch.
+
+Fields 15-17:
+These fields are only stored in the copy of the record tagged to the mp3 file.
+
+Fields 21-28 :
+These are most likely reserved for future expansion. For now, I have made the 
+assumption that they are null strings.
+
+All numeric fields and the String length bytes are stored least significant 
+byte first.
+
+For MusicMatch to use a database file, it must be in the same folder MusicMatch
+is installed in.
+
+I'm still trying to perfect the routines for read/write of the Float variable 
+used in filed 10. If anybody has a routine for doing float to 64bit in VB email
+me.
+
+seanhat@earthlink.net
+4.7  Data offsets
+
+    This section of the tag gives
+
+      Image extension offset     $xx xx xx xx
+      Image binary offset        $xx xx xx xx  
+      Unused offset              $xx xx xx xx
+      Version info offset        $xx xx xx xx
+      Audio meta-data offset     $xx xx xx xx
+
+4.8  Footer
+
+    Unlike the header, the footer is a required section of any MusicMatch tag,
+    and checking for its existance is an easy way to determine if a file has a
+    MusicMatch tag.  It is always 48 bytes in length.  The first 19 bytes is
+    the company name "Brava Software Inc." (Note: it seems that the company
+    name has officially changed to MusicMatch, as "Brava Software" is not
+    mentioned anywhere on their website), followed by 13 bytes of space ($20)
+    padding.  The next 4 bytes is the tag version as a numerical ASCII string
+    (e.g., "3.05"), and should match the version string found in the Version
+    section and the (optional) header.  This is followed by 12 bytes of space
+    ($20) padding.
+
+      Signature                  "Brava Software Inc."
+      Space padding         13 * $20
+      Tag version                <4-byte numerical ASCII string>
+      Space padding         12 * $20
+
