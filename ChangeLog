@@ -1,3 +1,14 @@
+2000-04-12  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* configure.in
+	(AC_OUTPUT): Add id3com/Makefile and libprj/Makefile
+
+	* Makefile.am
+	(SUBDIRS): Added id3com and libprj
+
+	* id3com/Makefile.am
+	(EXTRA_DIST): Removed files.txt
+
 2000-04-10  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* include/id3/error.h
