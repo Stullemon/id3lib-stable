@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.23 2000/05/03 14:05:28 eldamitri Exp $
+// $Id: tag.h,v 1.24 2000/05/05 03:15:04 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -53,7 +53,7 @@ class ID3_Tag : public ID3_Speccable
 public:
   ID3_Tag(char *name = NULL);
   ID3_Tag(const ID3_Tag &tag);
-  ~ID3_Tag();
+  virtual ~ID3_Tag();
   
   void       Clear();
   bool       HasChanged() const;
