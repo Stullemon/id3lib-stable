@@ -409,10 +409,9 @@ bool Mp3Info::Parse(ID3_Reader& reader, size_t mp3size)
 
   if (_mp3_header_output->crc == MP3CRC_OK)
   {
-    char crc[CRCSIZE + 1]; //+1 to hold the 0 char
     char audiodata[38 + 1]; //+1 to hold the 0 char
     uint16 crc16;
-    uint16 *crc16tmp;
+    uint16 crcstored;
 
     _mp3_header_output->crc = MP3CRC_MISMATCH; //as a starting point, we assume the worst
 
@@ -427,18 +426,11 @@ bool Mp3Info::Parse(ID3_Reader& reader, size_t mp3size)
     end = beg + CRCSIZE;
 
     reader.setCur(beg);
+    crcstored = (uint16)io::readBENumber(reader, CRCSIZE);
 
-    reader.readChars(crc, CRCSIZE);
-
-    crc[2] = crc[0];
-    crc[0] = crc[1];
-    crc[1] = crc[2];
-    crc[2] = '\0';
-
-    crc16tmp = reinterpret_cast<uint16 *>(crc);
     // a mismatch doesn't mean the file is unusable
     // it has just some bits in the wrong place
-    if (*crc16tmp == crc16)
+    if (crcstored == crc16)
       _mp3_header_output->crc = MP3CRC_OK;
   }
   if (_mp3_header_output->framesize > 0 && mp3size >= _mp3_header_output->framesize) // this means bitrate is not none too
