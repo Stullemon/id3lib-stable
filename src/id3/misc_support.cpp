@@ -1,18 +1,16 @@
-// $Id: misc_support.cpp,v 1.8 1999/11/25 18:52:40 scott Exp $
+// $Id: misc_support.cpp,v 1.9 1999/11/29 18:56:37 scott Exp $
 
-//  The authors have released ID3Lib as Public Domain (PD) and claim no
-//  copyright, patent or other intellectual property protection in this work.
-//  This means that it may be modified, redistributed and used in commercial
-//  and non-commercial software and hardware without restrictions.  ID3Lib is
-//  distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either
-//  express or implied.
-//
-//  The ID3Lib authors encourage improvements and optimisations to be sent to
-//  the ID3Lib coordinator, currently Dirk Mahoney (dirk@id3.org).  Approved
-//  submissions may be altered, and will be included and released under these
-//  terms.
-//
-//  Mon Nov 23 18:34:01 1998
+// The authors have released ID3Lib as Public Domain (PD) and claim no
+// copyright, patent or other intellectual property protection in this work.
+// This means that it may be modified, redistributed and used in commercial
+// and non-commercial software and hardware without restrictions.  ID3Lib is
+// distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either
+// express or implied.
+// 
+// The ID3Lib authors encourage improvements and optimisations to be sent to
+// the ID3Lib coordinator, currently Dirk Mahoney (dirk@id3.org).  Approved
+// submissions may be altered, and will be included and released under these
+// terms.
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
@@ -22,28 +20,103 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+#if !defined SIZE_SPECIFIC_TYPES
+#include <wchar.h>
+#endif
+
 // converts an ASCII string into a Unicode one
 
-void ID3_ASCIItoUnicode(wchar_t *unicode, const char *ascii, const luint len)
+void mbstoucs(unicode_t *unicode, const char *ascii, const luint len)
 {
+#if !defined SIZE_SPECIFIC_TYPES
   mbstowcs(unicode, ascii, len);
-  //if (NULL != ascii && NULL != unicode)
-  //for (luint i = 0; i < len; i++)
-  //unicode[i] = (wchar_t) ascii[i] & 0xFF;
-      
-  return ;
+#else
+  if (NULL != ascii && NULL != unicode)
+    for (luint i = 0; i < len; i++)
+      unicode[i] = ascii[i] & 0xFF;
+#endif /* !defined SIZE_SPECIFIC_TYPES */
 }
 
 // converts a Unicode string into ASCII
 
-void ID3_UnicodeToASCII(char *ascii, const wchar_t *unicode, const luint len)
+void ucstombs(char *ascii, const unicode_t *unicode, const luint len)
 {
+#if !defined SIZE_SPECIFIC_TYPES
   wcstombs(ascii, unicode, len);
-  //if (NULL != unicode && NULL != ascii)
-  //for (luint i = 0; i < len; i++)
-  //ascii[i] = unicode[i] & 0xFF;
-      
-  return ;
+#else
+  if (NULL != unicode && NULL != ascii)
+    for (luint i = 0; i < len; i++)
+      ascii[i] = unicode[i] & 0x00FF;
+#endif /* !defined SIZE_SPECIFIC_TYPES */
+}
+
+size_t ucslen(const unicode_t *unicode)
+{
+#if !defined SIZE_SPECIFIC_TYPES
+  return wcslen(unicode, ascii, len);
+#else
+  if (NULL != unicode)
+    for (size_t size = 0; true; size++)
+      if (NULL_UNICODE == unicode[size])
+        return size;
+#endif /* !defined SIZE_SPECIFIC_TYPES */
+}
+
+void ucscpy(unicode_t *dest, const unicode_t *src)
+{
+#if !defined SIZE_SPECIFIC_TYPES
+  wcscpy(dest, src);
+#else
+  if (NULL != dest && NULL != src)
+  {
+    size_t nIndex;
+    for (nIndex = 0; NULL_UNICODE != src[nIndex]; nIndex++)
+      dest[nIndex] = src[nIndex];
+    dest[nIndex] = NULL_UNICODE;
+  }
+#endif /* !defined SIZE_SPECIFIC_TYPES */
+}
+
+void ucsncpy(unicode_t *dest, const unicode_t *src, size_t len)
+{
+#if !defined SIZE_SPECIFIC_TYPES
+  wcsncpy(dest, src, len);
+#else
+  if (NULL != dest && NULL != src)
+  {
+    size_t nIndex;
+    for (nIndex = 0; nIndex < len && NULL_UNICODE != src[nIndex]; nIndex++)
+      dest[nIndex] = src[nIndex];
+    for (; nIndex < len; nIndex++)
+      dest[nIndex] = NULL_UNICODE;
+  }
+#endif /* !defined SIZE_SPECIFIC_TYPES */
+}
+
+int ucscmp(const unicode_t *s1, const unicode_t *s2)
+{
+#if !defined SIZE_SPECIFIC_TYPES
+  wcscmp(s1, s2);
+#else
+  return ucsncmp(s1, s2, (size_t) -1);
+#endif /* !defined SIZE_SPECIFIC_TYPES */
+}
+
+int ucsncmp(const unicode_t *s1, const unicode_t *s2, size_t len)
+{
+#if !defined SIZE_SPECIFIC_TYPES
+  wcsncmp(s1, s2, len);
+#else
+  if (NULL == s1 && NULL == s2) return 0;
+  if (NULL == s1)               return 1;
+  if (NULL == s2)               return -1;
+  for (size_t nIndex = 0; true; nIndex++)
+    if ((NULL_UNICODE == s1[nIndex]) ||
+        (NULL_UNICODE == s2[nIndex]) ||
+        (s1[nIndex]   != s2[nIndex]) ||
+        (nIndex + 1   == len))
+      return s2[nIndex] - s1[nIndex];
+#endif /* !defined SIZE_SPECIFIC_TYPES */
 }
 
 char *ID3_GetString(const ID3_Frame *frame, const ID3_FieldID fldName)
@@ -427,6 +500,18 @@ bool ID3_AddLyrics(ID3_Tag *tag, char *text)
 }
 
 // $Log: misc_support.cpp,v $
+// Revision 1.9  1999/11/29 18:56:37  scott
+// (): Made includsion of wchar.h dependant on SIZE_SPECIFIC_TYPES.
+// Put in compile-time checks to compile differently based on the
+// definition of unicode_t.
+// (mbstoucs): Renamed from ID3_ASCIItoUnicode.
+// (ucstombs): Renamed from ID3_UnicodeToASCII.
+// (ucslen): Added.  Returns the length of a unicode character string.
+// (ucscpy): Added.  Copies one unicode string to another.
+// (ucsncpy): Added.  Copies n chars from one unicode string to another.
+// (ucscmp): Added.  Compares two unicode strings.
+// (ucsncmp): Added.  Compares the first n chars of two unicode strings.
+//
 // Revision 1.8  1999/11/25 18:52:40  scott
 // * misc_support.cpp: Replaced every call to AddFrame with AddNewFrame.
 //
