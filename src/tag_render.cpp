@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.34 2000/10/15 06:39:26 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.35 2000/10/15 07:06:26 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -139,7 +139,7 @@ void id3::v2::render(ID3_Writer& writer, const ID3_TagImpl& tag)
 
   for (size_t i = 0; i < nPadding; ++i)
   {
-    if (writer.writeChar('\0') == END_OF_WRITER)
+    if (writer.writeChar('\0') == ID3_Writer::END_OF_WRITER)
     {
       break;
     }
