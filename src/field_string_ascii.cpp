@@ -1,4 +1,4 @@
-// $Id: field_string_ascii.cpp,v 1.16 2000/09/21 22:52:56 eldamitri Exp $
+// $Id: field_string_ascii.cpp,v 1.17 2000/09/27 08:25:41 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -26,12 +26,15 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include "field_impl.h"
-#include "utils.h"
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include "debug.h"
+#include "field_impl.h"
+#include "utils.h"
+#include "reader_decorators.h"
 
 /** \fn ID3_Field& ID3_Field::operator=(const char* data)
  ** \brief Shortcut for the Set operator.
@@ -54,7 +57,7 @@ size_t ID3_FieldImpl::Set_i(const char* string, size_t size)
     _chars = size;
     _ascii = new char[_chars];
   }
-  ::memcpy(_ascii, string, MIN(_chars, size));
+  ::memcpy(_ascii, string, id3::min(_chars, size));
   if (size < _chars)
   {
     ::memset(_ascii + size, '\0', _chars - size);
@@ -70,7 +73,7 @@ size_t ID3_FieldImpl::Set_i(const char* string, size_t size)
     _num_items = 1;
   }
 
-  return MIN(_chars, size);
+  return id3::min(_chars, size);
 }
 
 size_t ID3_FieldImpl::Set(const char *string)
@@ -84,7 +87,7 @@ size_t ID3_FieldImpl::Set(const char *string)
     }
     else
     {
-      len = this->Set_i(string, strlen(string));
+      len = this->Set_i(string, ::strlen(string));
     }
   }
   return len;
@@ -211,7 +214,7 @@ size_t ID3_FieldImpl::Get(char* buffer, size_t maxLength) const
       buffer != NULL && maxLength > 0)
   {
     size_t size = this->Size();
-    length = MIN(maxLength, size);
+    length = id3::min(maxLength, size);
     ::memcpy(buffer, _ascii, length);
     if (length < maxLength)
     {
@@ -281,78 +284,53 @@ size_t ID3_FieldImpl::Get(char* buffer,     ///< Where to copy the data
   return length;
 }
 
-
-
-size_t 
-ID3_FieldImpl::ParseASCIIString(const uchar *buffer, size_t nSize)
+void ID3_FieldImpl::ParseASCIIString(ID3_Reader& reader)
 {
-  size_t nChars = 0;
-  const char* ascii = (const char*) buffer;
+  ID3D_NOTICE( "ID3_Frame::ParseText(): reader.getBeg() = " << reader.getBeg() );
+  ID3D_NOTICE( "ID3_Frame::ParseText(): reader.getCur() = " << reader.getCur() );
+  ID3D_NOTICE( "ID3_Frame::ParseText(): reader.getEnd() = " << reader.getEnd() );
   this->Clear();
+  id3::TextReader tr(reader);
   
-  if (this->Size() > 0)
+  size_t fixed_size = this->Size();
+  if (fixed_size)
   {
     // The string is of fixed length
-    nChars = this->Size();
+    id3::string ascii = tr.readText(fixed_size);
+    this->Set_i(ascii.data(), ascii.size());
+    ID3D_NOTICE( "ID3_Frame::ParseText(): fixed size string = " << ascii );
   }
-  else if (!(_flags & ID3FF_CSTR) || (_flags & ID3FF_LIST))
-  {
-    // If the string isn't null-terminated or if it is null divided, we're
-    // assured this is the last field of of the frame, and we can claim the
-    // remaining bytes for ourselves
-    nChars = nSize;
-  }
-  else
-  {
-    // it would be nice to use strlen to find nChars, but the buffer might
-    // be invalid, so there might not be a null byte to mark the end of the
-    // string
-    while (nChars < nSize && ascii[nChars] != '\0')
-    {
-      nChars++;
-    }
-  }
-
-  if (0 == nChars)
-  {
-    nChars = this->Set_i(static_cast<const char *>(NULL), 0);
-  }
-  // This check needs to come before the check for ID3FF_CSTR
   else if (_flags & ID3FF_LIST)
   {
-    const char* cur = ascii;
-    const char* end = cur + nChars;
-    while (cur < end)
+    // lists are always the last field in a frame.  parse all remaining 
+    // characters in the reader
+    while (tr.peekChar() != ID3_Reader::END_OF_READER)
     {
-      size_t length = strlen(cur);
-      // sanity check!
-      if (length + cur > end)
-      {
-        length = end - cur;
-      }
-      cur += this->Add_i(cur, length) + 1;
+      id3::string ascii = tr.readText();
+      this->Add_i(ascii.data(), ascii.size());
+      ID3D_NOTICE( "ID3_Frame::ParseText(): adding string = " << ascii );
     }
-    nChars = cur - ascii;
+  }
+  else if (_flags & ID3FF_CSTR)
+  {
+    id3::string ascii = tr.readText();
+    this->Set_i(ascii.data(), ascii.size());
+    ID3D_NOTICE( "ID3_Frame::ParseText(): null terminated string = " << ascii );
   }
   else
   {
-    // Sanity check our indices and sizes before we start copying memory
-    if (nChars > nSize)
+    id3::string ascii;
+    // not null terminated.  
+    const size_t BUFSIZ = 1024;
+    while (tr.peekChar() != ID3_Reader::END_OF_READER)
     {
-      nChars = nSize;
+      ascii += tr.readText(BUFSIZ);
     }
-
-    nChars = this->Set_i(ascii, nChars);
+    this->Add_i(ascii.data(), ascii.size());
+    ID3D_NOTICE( "ID3_Frame::ParseText(): last field string = " << ascii );
   }
   
-  if (_flags & ID3FF_CSTR)
-  {
-    nChars++;
-  }
-    
   _changed = false;
-  
-  return MIN(nChars, nSize);
 }
 
 size_t ID3_FieldImpl::RenderString(uchar *buffer) const
