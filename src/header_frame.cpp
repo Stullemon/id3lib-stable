@@ -1,4 +1,4 @@
-// $Id: header_frame.cpp,v 1.16 2000/04/10 20:58:14 eldamitri Exp $
+// $Id: header_frame.cpp,v 1.2 2000/04/18 22:12:06 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -232,6 +232,9 @@ void ID3_FrameHeader::Clear()
 }
 
 // $Log: header_frame.cpp,v $
+// Revision 1.2  2000/04/18 22:12:06  eldamitri
+// Moved header_frame.cpp from src/id3/ to src/
+//
 // Revision 1.16  2000/04/10 20:58:14  eldamitri
 // (operator=): Fixed bug - now returns *this.
 //
