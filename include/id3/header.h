@@ -1,4 +1,4 @@
-// $Id: header.h,v 1.17 2000/09/27 07:56:32 eldamitri Exp $
+// $Id: header.h,v 1.18 2000/09/30 22:06:52 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -29,6 +29,7 @@
 
 #include "spec.h"
 #include "flags.h"
+#include "reader.h"
 
 class ID3_Reader;
 
@@ -82,7 +83,8 @@ public:
   virtual size_t     Size() const = 0;
   
   virtual size_t     Render(uchar* buffer) const = 0;
-  virtual size_t     Parse(const uchar*, size_t) = 0;
+  //virtual size_t     Parse(const uchar*, size_t) = 0;
+  virtual bool       Parse(ID3_Reader&) = 0;
 
   ID3_Header &operator=( const ID3_Header &rhs)
   { 
