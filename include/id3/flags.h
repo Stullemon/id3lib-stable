@@ -1,4 +1,4 @@
-// $Id: flags.h,v 1.1 2000/05/02 16:54:25 eldamitri Exp $
+// $Id: flags.h,v 1.2 2000/05/12 04:31:20 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -32,7 +32,7 @@
 class ID3_Flags
 {
 public:
-  typedef uint16 TYPE;
+  typedef flags_t TYPE;
 
   ID3_Flags() : __f(0) { ; }
   virtual ~ID3_Flags() { ; }
