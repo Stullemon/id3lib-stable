@@ -1,4 +1,4 @@
-// $Id: tag_sync.cpp,v 1.4 2000/05/11 16:05:03 eldamitri Exp $
+// $Id: tag_sync.cpp,v 1.5 2000/05/12 03:40:09 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -33,7 +33,7 @@
 // To be used when reading an ID3v2-tag
 // Transforms all FF 00 sequences into FF
 
-luint ID3_ReSync(uchar *data, luint size)
+size_t ID3_ReSync(uchar *data, size_t size)
 {
   uchar *src, *dest;
   for (src = dest = data; src < data + size - 1; src++, dest++)
@@ -66,7 +66,7 @@ bool ID3_ShouldUnsync(const uchar *cur, const uchar *start, const size_t size)
 }
 
 // How big will the tag be after we unsync?
-luint ID3_GetUnSyncSize(uchar *pBuffer, luint size)
+size_t ID3_GetUnSyncSize(uchar *pBuffer, size_t size)
 {
   size_t new_size = size;
   
@@ -89,11 +89,13 @@ luint ID3_GetUnSyncSize(uchar *pBuffer, luint size)
 // 11111111 00000000 -> 11111111 00000000 00000000
 // 11111111 <EOF> -> 11111111 00000000 <EOF>
 
-void ID3_UnSync(uchar *dest_data, luint dest_size, 
-                const uchar *src_data, luint src_size)
+void ID3_UnSync(uchar *dest_data, size_t dest_size, 
+                const uchar *src_data, size_t src_size)
 {
+  const uchar *src;
+  uchar *dest;
   // Now do the real transformation
-  for (uchar *src = src_data, *dest = dest_data; 
+  for (src = src_data, dest = dest_data; 
        (src < src_data + src_size) && (dest < dest_data + dest_size);
        src++, dest++)
   {
