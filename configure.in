@@ -1,4 +1,4 @@
-# $Id: configure.in,v 1.27 2000/04/25 00:16:39 eldamitri Exp $
+# $Id: configure.in,v 1.28 2000/04/26 20:30:45 eldamitri Exp $
 
 # Copyright 1999, 2000 Scott Thomas Haug <eldamitri@users.sourceforge.net>
 #  
@@ -72,7 +72,7 @@ VERSION=$ID3LIB_VERSION
 PACKAGE=$ID3LIB_NAME
 
 dnl This is a hack to get the release date using cvs checkin macros
-ID3LIB_DATE="$Date: 2000/04/25 00:16:39 $ID3LIB_UNDEFINED"
+ID3LIB_DATE="$Date: 2000/04/26 20:30:45 $ID3LIB_UNDEFINED"
 ID3LIB_FULLNAME=$ID3LIB_NAME-$ID3LIB_VERSION
 
 AC_SUBST(ID3LIB_DATE)
@@ -204,18 +204,18 @@ AC_OUTPUT(                      \
   include/Makefile              \
   include/id3/Makefile          \
   m4/Makefile                   \
-  prj/Makefile                  \
   src/Makefile                  \
   zlib/Makefile                 \
   zlib/include/Makefile         \
   zlib/lib/Makefile             \
   zlib/prj/Makefile             \
   zlib/src/Makefile             \
-  id3com/Makefile               \
-  libprj/Makefile               \
 )
 
 # $Log: configure.in,v $
+# Revision 1.28  2000/04/26 20:30:45  eldamitri
+# No longer generate Makefiles for windows projects
+#
 # Revision 1.27  2000/04/25 00:16:39  eldamitri
 # Updated for 3.7.3 release
 #
