@@ -1,4 +1,4 @@
-// $Id: tag_parse_lyrics3.cpp,v 1.16 2000/06/25 06:21:48 eldamitri Exp $
+// $Id: tag_parse_lyrics3.cpp,v 1.17 2000/07/01 07:48:43 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -162,19 +162,21 @@ luint ID3_Lyrics3ToSylt(char *buffer, luint size)
   return dest - buffer;
 }
 
-void ID3_Tag::ParseLyrics3()
+size_t ID3_Tag::ParseLyrics3(FILE* handle)
 {
-  if (NULL == __file_handle)
+  size_t tag_bytes = 0;
+  if (NULL == handle)
   {
     // TODO: log this
-    return;
+    return tag_bytes;
     // ID3_THROW(ID3E_NoData);
   }
   
+  long pos = ftell(handle);
   char id_buffer[6 + 9 + 3];
   
-  fseek(__file_handle, -(6 + 9 + 128), SEEK_END);
-  fread(id_buffer, 1, (6 + 9 + 3), __file_handle);
+  fseek(handle, -(6 + 9 + 128), SEEK_CUR);
+  fread(id_buffer, 1, (6 + 9 + 3), handle);
 
   // first check for an ID3v1 tag
   if (memcmp(&id_buffer[6 + 9], "TAG", 3) == 0)
@@ -187,18 +189,19 @@ void ID3_Tag::ParseLyrics3()
       if (__file_size < 128 + 9 + 11)
       {
         // the file size isn't large enough to actually hold lyrics
-        return;
+        return tag_bytes;
       }
 
       // reserve enough space for lyrics3 + id3v1 tag
       const size_t max_lyr_size = 11 + 5100 + 9 + 128;
 
       size_t lyr_buffer_size = MIN(max_lyr_size, __file_size);
+
       // Using binary minus rather than unary minus to avoid compiler warning
-      fseek(__file_handle, 0 - lyr_buffer_size, SEEK_END);
+      fseek(handle, pos - lyr_buffer_size, SEEK_SET);
 
       char lyr_buffer[max_lyr_size];
-      fread(lyr_buffer, 1, lyr_buffer_size, __file_handle);
+      fread(lyr_buffer, 1, lyr_buffer_size, handle);
 
       // search for LYRICSBEGIN
       char* lyr_begin = strstr(lyr_buffer, "LYRICSBEGIN");
@@ -208,11 +211,12 @@ void ID3_Tag::ParseLyrics3()
       {
         // skip past the beginning keyword
         lyr_begin += 11;
+        tag_bytes += 128 + 9 + (lyr_end - lyr_begin);
       }
       else
       {
         // not a lyrics3 tag
-        return;
+        return tag_bytes;
       }
 
       size_t lyr_size = ID3_CRLFtoLF(lyr_begin, MAX(0, lyr_end - lyr_begin));
@@ -222,38 +226,56 @@ void ID3_Tag::ParseLyrics3()
       ID3_Frame *frame = ID3_AddLyrics(this, lyr_begin, 
                                        "Converted from Lyrics3 v1.00");
 
-      // if we got to here we must have some lyrics
-      __file_tags.add(ID3TT_LYRICS);
     }
   
-    else if (memcmp(&id_buffer[6], "LYRICS200", 9) == 0)
+  }
+  return tag_bytes;
+}
+
+size_t ID3_Tag::ParseLyrics3v2(FILE* handle)
+{
+  size_t tag_bytes = 0;
+  if (NULL == handle)
+  {
+    // TODO: log this
+    return tag_bytes;
+    // ID3_THROW(ID3E_NoData);
+  }
+  
+  long pos = ftell(handle);
+  char id_buffer[6 + 9 + 3];
+  
+  fseek(handle, 0 - (6 + 9 + 128), SEEK_CUR);
+  fread(id_buffer, 1, (6 + 9 + 3), handle);
+
+  // first check for an ID3v1 tag
+  if (memcmp(&id_buffer[6 + 9], "TAG", 3) == 0)
+  {
+    if (memcmp(&id_buffer[6], "LYRICS200", 9) == 0)
     {
-      // we have a Lyrics3 v2.00 tag
-      __file_tags.add(ID3TT_LYRICS);
-      
       ID3_Frame *lyr_frame = NULL;
       
       id_buffer[6] = '\0';
       size_t lyr_size = atoi(id_buffer);
       
       // Using binary minus rather than unary minus to avoid compiler warning
-      fseek(__file_handle, 0 - (lyr_size + 6 + 9 + 3), SEEK_CUR);
-      fread(id_buffer, 1, 11, __file_handle);
+      fseek(handle, 0 - (lyr_size + 6 + 9 + 3), SEEK_CUR);
+      fread(id_buffer, 1, 11, handle);
 
       if (memcmp(id_buffer, "LYRICSBEGIN", 11) != 0)
       {
         // not a lyrics v2.00 tag
-        return;
+        return tag_bytes;
       }
 
-      __ending_bytes += lyr_size + 9 + 6;
+      tag_bytes += lyr_size + 9 + 6 + 128;
       lyr_size -= 11;
       char* lyr_buffer = new char[lyr_size];
 
       luint posn = 0;
       bool has_time_stamps = false;
 
-      fread(lyr_buffer, 1, lyr_size, __file_handle);
+      fread(lyr_buffer, 1, lyr_size, handle);
 
       while (posn + 3 + 5 <= lyr_size)
       {
@@ -267,7 +289,7 @@ void ID3_Tag::ParseLyrics3()
         if (posn + 3 + 5 + fld_size > lyr_size)
         {
           // new field doesn't fit in the tag.  bail.
-          return;
+          return tag_bytes;
         }
 
         posn += 3 + 5;
@@ -383,4 +405,5 @@ void ID3_Tag::ParseLyrics3()
       delete [] lyr_buffer;
     }
   }
+  return tag_bytes;
 }
