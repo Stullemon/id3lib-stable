@@ -1,4 +1,5 @@
-// $Id: misc_support.h,v 1.22 2000/09/14 16:16:15 eldamitri Exp $
+// -*- C++ -*-
+// $Id: misc_support.h,v 1.23 2000/10/23 04:32:33 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug

@@ -1,4 +1,5 @@
-// $Id: debug.h,v 1.4 2000/10/14 20:46:38 eldamitri Exp $
+// -*- C++ -*-
+// $Id: debug.h,v 1.5 2000/10/23 04:32:33 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug

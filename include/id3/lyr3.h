@@ -1,4 +1,5 @@
-// $Id: lyr3.h,v 1.1 2000/10/02 17:08:13 eldamitri Exp $
+// -*- C++ -*-
+// $Id: lyr3.h,v 1.2 2000/10/23 04:32:33 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
