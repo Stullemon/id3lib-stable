@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.39 2000/10/09 19:07:17 eldamitri Exp $
+# $Id: Makefile.in,v 1.40 2000/10/10 03:51:44 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
