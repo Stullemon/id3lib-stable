@@ -1,4 +1,4 @@
-// $Id: tag_parse_v1.cpp,v 1.23 2002/07/06 17:04:27 t1mpy Exp $
+// $Id: tag_parse_v1.cpp,v 1.24 2002/07/06 21:28:27 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -23,11 +23,6 @@
 // contributed to id3lib.  See the ChangeLog file for a list of changes to
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
-
-#if defined HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 
 #include "tag_impl.h" //has <stdio.h> "tag.h" "header_tag.h" "frame.h" "field.h" "spec.h" "id3lib_strings.h" "utils.h"
 #include "helpers.h"
@@ -58,10 +53,10 @@ bool id3::v1::parse(ID3_TagImpl& tag, ID3_Reader& reader)
   }
   
   // read the next 128 bytes in;
-  String id = io::readText(reader, ID3_V1_LEN_ID);
+  String field = io::readText(reader, ID3_V1_LEN_ID);
   
   // check to see if it was a tag
-  if (id != "TAG")
+  if (field != "TAG")
   {
     return false;
   }
@@ -77,7 +72,8 @@ bool id3::v1::parse(ID3_TagImpl& tag, ID3_Reader& reader)
 
   ID3D_NOTICE("id3::v1::parse: read bytes: " << reader.getCur() - beg);
   String title = io::readTrailingSpaces(reader, ID3_V1_LEN_TITLE);
-  if (title.size() > 0 && !id3::v2::hasTitle(tag))
+  field = id3::v2::getTitle(tag);
+  if (title.size() > 0 && (field.size() == 0 || field == ""))
   {
     id3::v2::setTitle(tag, title);
   }
@@ -85,7 +81,8 @@ bool id3::v1::parse(ID3_TagImpl& tag, ID3_Reader& reader)
   
   ID3D_NOTICE("id3::v1::parse: read bytes: " << reader.getCur() - beg);
   String artist = io::readTrailingSpaces(reader, ID3_V1_LEN_ARTIST);
-  if (artist.size() > 0 && !id3::v2::hasArtist(tag))
+  field = id3::v2::getArtist(tag);
+  if (artist.size() > 0 && (field.size() == 0 || field == ""))
   {
     id3::v2::setArtist(tag, artist);
   }
@@ -93,7 +90,8 @@ bool id3::v1::parse(ID3_TagImpl& tag, ID3_Reader& reader)
   
   ID3D_NOTICE("id3::v1::parse: read bytes: " << reader.getCur() - beg);
   String album = io::readTrailingSpaces(reader, ID3_V1_LEN_ALBUM);
-  if (album.size() > 0 && !id3::v2::hasAlbum(tag)) 
+  field = id3::v2::getAlbum(tag);
+  if (album.size() > 0 && (field.size() == 0 || field == ""))
   {
     id3::v2::setAlbum(tag, album);
   }
@@ -101,30 +99,37 @@ bool id3::v1::parse(ID3_TagImpl& tag, ID3_Reader& reader)
   
   ID3D_NOTICE("id3::v1::parse: read bytes: " << reader.getCur() - beg);
   String year = io::readTrailingSpaces(reader, ID3_V1_LEN_YEAR);
-  if (year.size() > 0 && !id3::v2::hasYear(tag))
+  field = id3::v2::getYear(tag);
+  if (year.size() > 0 && (field.size() == 0 || field == ""))
   {
     id3::v2::setYear(tag, year);
   }
   ID3D_NOTICE( "id3::v1::parse: year = \"" << year << "\"" );
   
   ID3D_NOTICE("id3::v1::parse: read bytes: " << reader.getCur() - beg);
-  String comment = io::readTrailingSpaces(reader, ID3_V1_LEN_COMMENT);
-  if (comment.length() == ID3_V1_LEN_COMMENT  &&
-      '\0' == comment[ID3_V1_LEN_COMMENT - 2] &&
-      '\0' != comment[ID3_V1_LEN_COMMENT - 1])
+  String comment = io::readTrailingSpaces(reader, ID3_V1_LEN_COMMENT-2);
+  // fixes bug for when tracknumber is 0x20
+  BString trackno = io::readBinary(reader, ID3_V1_LEN_COMMENT-28);
+  if (trackno[0] == '\0')
   {
-    // This is an id3v1.1 tag.  The last byte of the comment is the track
-    // number.  
-    size_t track = comment[ID3_V1_LEN_COMMENT - 1];
-    if (track > 0 && !id3::v2::hasTrack(tag))
-    {
-      id3::v2::setTrack(tag, track, 0);
-    }
-    ID3D_NOTICE( "id3::v1::parse: track = \"" << track << "\"" );
-
-    ID3D_NOTICE( "id3::v1::parse: comment length = \"" << comment.length() << "\"" );
-    io::StringReader sr(comment);
-    comment = io::readTrailingSpaces(sr, ID3_V1_LEN_COMMENT - 2);
+	  if (trackno[1] != '\0')
+	  { //we've got a tracknumber
+        size_t track = trackno[1];
+        field = id3::v2::getTrack(tag);
+		if (field.size() == 0 || field == "00")
+		{
+          id3::v2::setTrack(tag, track, 0);
+		}
+        ID3D_NOTICE( "id3::v1::parse: track = \"" << track << "\"" );
+ 
+        ID3D_NOTICE( "id3::v1::parse: comment length = \"" << comment.length() << "\"" );
+//        io::StringReader sr(comment);
+//        comment = io::readTrailingSpaces(sr, ID3_V1_LEN_COMMENT - 2);
+	  }
+  }
+  else
+  {
+	  comment.append((const unsigned char)trackno.data(), 2);
   }
   ID3D_NOTICE( "id3::v1::parse: comment = \"" << comment << "\"" );
   if (comment.size() > 0)
@@ -135,21 +140,15 @@ bool id3::v1::parse(ID3_TagImpl& tag, ID3_Reader& reader)
   ID3D_NOTICE("id3::v1::parse: read bytes: " << reader.getCur() - beg);
   // the GENRE field/frame
   uchar genre = reader.readChar();
-  ID3_Frame *framegenre = id3::v2::hasGenre(tag);
-  if (framegenre)
+  field = id3::v2::getGenre(tag);
+  if (genre != 0xFF && (field.size() == 0 || field == ""))
   {
-    ID3_Field *fieldgenre = framegenre->GetField(ID3FN_CONTENTTYPE);
-    if (!fieldgenre || fieldgenre->Size() == 0)
-    {
-      if (genre != 0xFF)
-      {
-        id3::v2::setGenre(tag, genre);
-      }
-    }
+    id3::v2::setGenre(tag, genre);
   }
   ID3D_NOTICE( "id3::v1::parse: genre = \"" << (int) genre << "\"" );
 
   ID3D_NOTICE("id3::v1::parse: read bytes: " << reader.getCur() - beg);
   return true;
 }
+
 
