@@ -1,4 +1,4 @@
-// $Id: demo_tag.cpp,v 1.2 1999/12/13 04:44:46 scott Exp $
+// $Id: demo_tag.cpp,v 1.3 1999/12/23 15:56:37 scott Exp $
 //
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -7,13 +7,17 @@
 //  distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either
 //  express or implied.
 
+#if defined HAVE_CONFIG_H
+#include <config.h>
+#endif
+                                                                                
 #include <iostream.h>
 #include <id3/tag.h>
 #include <getopt.h>
 #include <stdlib.h>
 #include <id3/misc_support.h>
 
-#define VERSION_NUMBER "$Revision: 1.2 $"
+#define VERSION_NUMBER "$Revision: 1.3 $"
 
 void PrintUsage(char *sName)
 {
@@ -111,7 +115,7 @@ int main( int argc, char *argv[])
       { "total",   required_argument, &iLongOpt, 'T' },
       { 0, 0, 0, 0 }
     };
-    iOpt = getopt_long (argc, argv, "12vha:A:s:g:y:c:t:T:", 
+    iOpt = getopt_long (argc, argv, "12vha:A:s:g:y:c:t:T:C:",
                         long_options, &option_index);
 
     if (iOpt == -1)
