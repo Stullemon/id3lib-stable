@@ -1,5 +1,4 @@
 Makefile
-acconfig.h
 config.cache
 config.h
 config.h.win32
