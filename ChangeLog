@@ -1,3 +1,12 @@
+2000-07-02  Scott Haug  <scott@id3.org>
+
+	* src/c_wrapper.cpp:
+	* include/id3.h: 
+	New function: ID3Tag_HasTagType(const ID3Tag*, ID3_TagType)
+
+	* include/id3/globals.h: 
+	Minor whitespace changes
+
 2000-07-01  Scott Haug  <scott@id3.org>
 
 	* src/misc_support.cpp 
