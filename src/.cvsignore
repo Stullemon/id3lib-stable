@@ -20,6 +20,7 @@ header_frame.lo
 header_tag.lo
 helpers.lo
 int28.lo
+io.lo
 io_decorators.lo
 io_helpers.lo
 libid3.la
