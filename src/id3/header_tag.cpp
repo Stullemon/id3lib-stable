@@ -1,4 +1,4 @@
-// $Id: header_tag.cpp,v 1.8 1999/12/17 16:13:04 scott Exp $
+// $Id: header_tag.cpp,v 1.9 1999/12/26 15:11:33 scott Exp $
 // 
 // This program is free software; you can distribute it and/or modify it under
 // the terms discussed in the COPYING file, which should have been included
@@ -20,6 +20,7 @@
 #include <memory.h>
 #include "header_tag.h"
 #include "error.h"
+#include "misc_support.h"
 
 // Analyses a buffer to determine if we have a valid ID3v2 tag header.
 // If so, return the number of bytes (starting _after_ the header) to
@@ -33,7 +34,6 @@ lsint ID3_IsTagHeader(uchar header[ID3_TAGHEADERSIZE])
     if (header[3] <= ID3_TAGVERSION)
     {
       int28 temp = &header[6];
-      
       tagSize = temp.get();
     }
     
@@ -43,10 +43,12 @@ lsint ID3_IsTagHeader(uchar header[ID3_TAGHEADERSIZE])
 
 luint ID3_TagHeader::Size(void)
 {
-  luint bytesUsed = ID3_TAGHEADERSIZE;
+  size_t bytesUsed = ID3_TAGHEADERSIZE;
   
   if (__pInfo->bHasExtHeader)
-    bytesUsed += __pInfo->ulExtHeaderBytes + sizeof(luint);
+  {
+    bytesUsed += __pInfo->ulExtHeaderBytes + sizeof(uint32);
+  }
     
   return bytesUsed;
 }
@@ -54,7 +56,7 @@ luint ID3_TagHeader::Size(void)
 
 luint ID3_TagHeader::Render(uchar *buffer)
 {
-  luint bytesUsed = 0;
+  size_t bytesUsed = 0;
   
   memcpy(&buffer[bytesUsed], (uchar *) ID3_TAGID, strlen(ID3_TAGID));
   bytesUsed += strlen(ID3_TAGID);
@@ -64,29 +66,30 @@ luint ID3_TagHeader::Render(uchar *buffer)
   
   // do the automatic flags
   if (__pInfo->bSetExpBit)
+  {
     __ulFlags |= ID3HF_EXPERIMENTAL;
+  }
     
   if (__pInfo->bHasExtHeader)
+  {
     __ulFlags |= ID3HF_EXTENDEDHEADER;
+  }
     
   // set the flags byte in the header
-  buffer[bytesUsed++] = (uchar)(__ulFlags & 0xFF);
+  buffer[bytesUsed++] = (uchar)(__ulFlags & MASK8);
   
   int28 temp = __ulDataSize;
   
-  for (luint i = 0; i < sizeof(luint); i++)
+  for (size_t i = 0; i < sizeof(uint32); i++)
+  {
     buffer[bytesUsed++] = temp[i];
+  }
     
   // now we render the extended header
   if (__pInfo->bHasExtHeader)
   {
-    luint i;
-    
-    for (i = 0; i < sizeof(luint); i++)
-      buffer[bytesUsed + i] = (uchar)((__pInfo->ulExtHeaderBytes >> 
-                                       ((sizeof(luint) - i - 1) * 8)) & 0xFF);
-      
-    bytesUsed += i;
+    RenderNumber(&buffer[bytesUsed], __pInfo->ulExtHeaderBytes);
+    bytesUsed += sizeof(uint32);
   }
   
   bytesUsed = Size();
@@ -95,6 +98,9 @@ luint ID3_TagHeader::Render(uchar *buffer)
 }
 
 // $Log: header_tag.cpp,v $
+// Revision 1.9  1999/12/26 15:11:33  scott
+// (Render): Now uses RenderNumber, defined in misc_support.
+//
 // Revision 1.8  1999/12/17 16:13:04  scott
 // Updated opening comment block.
 //

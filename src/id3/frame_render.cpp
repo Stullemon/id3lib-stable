@@ -1,4 +1,4 @@
-// $Id: frame_render.cpp,v 1.8 1999/12/17 16:13:04 scott Exp $
+// $Id: frame_render.cpp,v 1.9 1999/12/26 15:11:09 scott Exp $
 // 
 // This program is free software; you can distribute it and/or modify it under
 // the terms discussed in the COPYING file, which should have been included
@@ -27,7 +27,9 @@ luint ID3_Frame::Render(uchar *buffer)
   luint bytesUsed = 0;
   
   if (NULL == buffer)
+  {
     ID3_THROW(ID3E_NoBuffer);
+  }
 
   ID3_FrameHeader header;
   ID3_FrameDef *info;
@@ -76,27 +78,29 @@ luint ID3_Frame::Render(uchar *buffer)
       
     newTemp = new uchar[newFrameSize];
     if (NULL == newTemp)
+    {
       ID3_THROW(ID3E_NoMemory);
+    }
 
     if (compress(newTemp, &newFrameSize, &buffer[header.Size() + extras],
                  bytesUsed - extras) != Z_OK)
+    {
       ID3_THROW(ID3E_zlibError);
+    }
 
     // if the compression actually saves space
     if ((newFrameSize + sizeof(luint)) < bytesUsed)
     {
-      luint posn, i;
+      luint posn;
             
       posn = header.Size();
-      extras += sizeof(luint);
+      extras += sizeof(uint32);
             
-      memcpy(&buffer[posn + sizeof(luint)], newTemp, newFrameSize);
-            
-      for (i = 0; i < sizeof(luint); i++)
-        buffer[posn + i] =
-          (uchar)((bytesUsed >> ((sizeof(luint) - i - 1) * 8)) & 0xFF);
+      memcpy(&buffer[posn + sizeof(uint32)], newTemp, newFrameSize);
+        
+      RenderNumber(&buffer[posn], bytesUsed);
               
-      bytesUsed = newFrameSize + sizeof(luint);
+      bytesUsed = newFrameSize + sizeof(uint32);
       didCompress = true;
     }
           
@@ -107,29 +111,42 @@ luint ID3_Frame::Render(uchar *buffer)
     
   // perform any encryption here
   if (strlen(__sEncryptionID))
-  {}
+  {
+  }
     
   // determine which flags need to be set
   info = ID3_FindFrameDef(__FrameID);
   if (NULL == info)
+  {
     ID3_THROW(ID3E_InvalidFrameID);
+  }
 
   flags = 0;
       
   if (info->bTagDiscard)
+  {
     flags |= ID3FL_TAGALTER;
+  }
         
   if (info->bFileDiscard)
+  {
     flags |= ID3FL_FILEALTER;
+  }
         
   if (didCompress)
+  {
     flags |= ID3FL_COMPRESSION;
+  }
         
-  if (strlen(__sEncryptionID))
+  if (strlen(__sEncryptionID) > 0)
+  {
     flags |= ID3FL_ENCRYPTION;
+  }
         
-  if (strlen(__sGroupingID))
+  if (strlen(__sGroupingID) > 0)
+  {
     flags |= ID3FL_GROUPING;
+  }
       
   header.SetFrameID(__FrameID);
   header.SetFlags(flags);
@@ -141,6 +158,9 @@ luint ID3_Frame::Render(uchar *buffer)
 }
 
 // $Log: frame_render.cpp,v $
+// Revision 1.9  1999/12/26 15:11:09  scott
+// (Render): Now uses RenderNumber, defined in misc_support.
+//
 // Revision 1.8  1999/12/17 16:13:04  scott
 // Updated opening comment block.
 //
