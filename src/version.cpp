@@ -1,4 +1,4 @@
-// $Id: version.cpp,v 1.5 2000/04/07 04:40:36 eldamitri Exp $
+// $Id: version.cpp,v 1.2 2000/04/18 22:14:22 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -61,6 +61,9 @@ unsigned short ID3_Patch()
 }
 
 // $Log: version.cpp,v $
+// Revision 1.2  2000/04/18 22:14:22  eldamitri
+// Moved version.cpp from src/id3/ to src/
+//
 // Revision 1.5  2000/04/07 04:40:36  eldamitri
 // Changed the version functions to reflect the name change of release
 // and revision to major and minor.
