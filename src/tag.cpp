@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.26 2000/10/03 04:32:55 eldamitri Exp $
+// $Id: tag.cpp,v 1.27 2000/10/09 04:29:10 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -31,6 +31,7 @@
 #include "tag.h"
 #include "tag_impl.h"
 #include "readers.h"
+#include "writers.h"
 #include "strings.h"
 
 using namespace dami;
@@ -62,7 +63,7 @@ using namespace dami;
  **   if (myTag.Find(ID3FID_TITLE) == myFrame)
  **   {
  **     char title[1024];
- **     myFrame->Field(ID3FN_TEXT).Get(title, 1024);
+ **     myFrame->GetField(ID3FN_TEXT)->Get(title, 1024);
  **     cout << "Title: " << title << endl;
  **   }
  ** \endcode
@@ -77,7 +78,7 @@ using namespace dami;
  ** 'CDM' frames from the unreleased ID3v2 2.01 draft specification.
  **
  ** \author Dirk Mahoney
- ** \version $Id: tag.cpp,v 1.26 2000/10/03 04:32:55 eldamitri Exp $
+ ** \version $Id: tag.cpp,v 1.27 2000/10/09 04:29:10 eldamitri Exp $
  ** \sa ID3_Frame
  ** \sa ID3_Field
  ** \sa ID3_Err
@@ -150,6 +151,36 @@ bool ID3_Tag::HasChanged() const
   return _impl->HasChanged();
 }
 
+/** Returns an over estimate of the number of bytes required to store a
+ ** binary version of a tag. 
+ ** 
+ ** When using <a href="#Render">Render</a> to render a binary tag to a
+ ** memory buffer, first use the result of this call to allocate a buffer of
+ ** unsigned chars.
+ ** 
+ ** \code
+ **   luint tagSize;
+ **   uchar *buffer;
+ **   if (myTag.HasChanged())
+ **   {
+ **     if ((tagSize= myTag.Size()) > 0)
+ **     {
+ **       if (buffer = new uchar[tagSize])
+ **       {
+ **         luint actualSize = myTag.Render(buffer);
+ **         // do something useful with the first
+ **         // 'actualSize' bytes of the buffer,
+ **         // like push it down a socket
+ **         delete [] buffer;
+ **       }
+ **     }
+ **   }
+ ** \endcode
+ **
+ ** @see #Render
+ ** @return The (overestimated) number of bytes required to store a binary
+ **         version of a tag
+ **/
 size_t ID3_Tag::Size() const
 {
   return _impl->Size();
@@ -196,7 +227,7 @@ bool ID3_Tag::SetUnsync(bool b)
  **/
 bool ID3_Tag::SetExtendedHeader(bool ext)
 {
-  return _impl->SetExtendedHeader(ext);
+  return _impl->SetExtended(ext);
 }
 
 /** Turns padding on or off, dependant on the value of the boolean
@@ -231,6 +262,26 @@ bool ID3_Tag::SetExtendedHeader(bool ext)
 bool ID3_Tag::SetPadding(bool pad)
 {
   return _impl->SetPadding(pad);
+}
+
+bool ID3_Tag::SetExperimental(bool exp)
+{
+  return _impl->SetExperimental(exp);
+}
+
+bool ID3_Tag::GetUnsync() const
+{
+  return _impl->GetUnsync();
+}
+
+bool ID3_Tag::GetExtendedHeader() const
+{
+  return _impl->GetExtended();
+}
+
+bool ID3_Tag::GetExperimental() const
+{
+  return _impl->GetExperimental();
 }
 
 void ID3_Tag::AddFrame(const ID3_Frame& frame)
@@ -309,14 +360,14 @@ ID3_Frame* ID3_Tag::RemoveFrame(const ID3_Frame *frame)
 
 bool ID3_Tag::Parse(ID3_Reader& reader)
 {
-  return _impl->Parse(reader);
+  return id3::v2::parse(*_impl, reader);
 }
 
 size_t ID3_Tag::Parse(const uchar* buffer, size_t bytes)
 {
-  ID3_MemoryReader mr(reinterpret_cast<const char *>(buffer), bytes);
+  ID3_MemoryReader mr(buffer, bytes);
   ID3_Reader::pos_type beg = mr.getCur();
-  this->Parse(mr);
+  id3::v2::parse(*_impl, mr);
   return mr.getEnd() - beg;
 }
 
@@ -386,10 +437,44 @@ size_t ID3_Tag::Parse(const uchar header[ID3_TagHeader::SIZE],
  ** \sa Link
  ** \param tt The type of tag to update.
  **/
+/** Renders a binary image of the tag into the supplied buffer.
+ ** 
+ ** See <a href="#Size">Size</a> for an example.  This method returns the
+ ** actual number of the bytes of the buffer used to store the tag.  This
+ ** will be no more than the size of the buffer itself, because
+ ** <a href="#Size">Size</a> over estimates the required buffer size when
+ ** padding is enabled.
+ ** 
+ ** Before calling this method, it is advisable to call <a
+ ** href="#HasChanged">HasChanged</a> first as this will let you know
+ ** whether you should bother rendering the tag.
+ ** 
+ ** @see    ID3_IsTagHeader
+ ** @see    ID3_Tag#HasChanged
+ ** @return The actual number of the bytes of the buffer used to store the
+ **         tag
+ ** @param  buffer The buffer that will contain the rendered tag.
+ **/
 size_t ID3_Tag::Render(uchar* buffer, ID3_TagType tt) const
 {
-  return _impl->Render(buffer, tt);
+  ID3_MemoryWriter mw(buffer, -1);
+  return this->Render(mw, tt);
 }
+
+size_t ID3_Tag::Render(ID3_Writer& writer, ID3_TagType tt) const
+{
+  ID3_Writer::pos_type beg = writer.getCur();
+  if (ID3TT_ID3V2 & tt)
+  {
+    id3::v2::render(writer, *this);
+  }
+  else if (ID3TT_ID3V1 & tt)
+  {
+    id3::v1::render(writer, *this);
+  }
+  return writer.getCur() - beg;
+}
+
 
 /** Attaches a file to the tag, parses the file, and adds any tag information
  ** found in the file to the tag.
@@ -469,6 +554,69 @@ const char* ID3_Tag::GetFileName() const
 }
 
 /// Finds frame with given frame id
+  /** Returns a pointer to the next ID3_Frame with the given ID3_FrameID;
+   ** returns NULL if no such frame found.
+   ** 
+   ** If there are multiple frames in the tag with the same ID (which, for some
+   ** frames, is allowed), then subsequent calls to <a href="#Find">Find</a>
+   ** will return subsequent frame pointers, wrapping if necessary.
+   ** 
+   ** \code
+   **   ID3_Frame *myFrame;
+   **   if (myFrame = myTag.Find(ID3FID_TITLE))
+   **   {
+   **     // do something with the frame, like copy
+   **     // the contents into a buffer, display the
+   **     // contents in a window, etc.
+   **     // ...
+   **   }
+   ** \endcode
+   ** 
+   ** You may optionally supply to more parameters ot this method, being an
+   ** ID3_FieldID and a value of some sort.  Depending on the field name/ID you
+   ** supply, you may supply an integer, a char* or a unicode_t* as the third
+   ** parameter.  If you supply an ID3_FrameID, you must also supply a data
+   ** value to compare against.
+   ** 
+   ** This method will then return the first frame that has a matching frame
+   ** ID, and which has a field with the same name as that which you supplied
+   ** in the second parameter, whose calue matches that which you supplied as
+   ** the third parameter.  For example:
+   ** 
+   ** \code
+   **   ID3_Frame *myFrame;
+   **   if (myFrame = myTag.Find(ID3FID_TITLE, ID3FN_TEXT, "Nirvana"))
+   **   {
+   **     // found it, do something with it.
+   **     // ...
+   **   }
+   ** \endcode
+   **     
+   ** This example will return the first TITLE frame and whose TEXT field is
+   ** 'Nirvana'.  Currently there is no provision for things like 'contains',
+   ** 'greater than', or 'less than'.  If there happens to be more than one of
+   ** these frames, subsequent calls to the <a href="#Find">Find</a> method
+   ** will return subsequent frames and will wrap around to the beginning.
+   ** 
+   ** Another example...
+   ** 
+   ** \code
+   **   ID3_Frame *myFrame;
+   **   if (myFrame = myTag.Find(ID3FID_COMMENT, ID3FN_TEXTENC, ID3TE_UNICODE))
+   **   {
+   **     // found it, do something with it.
+   **     // ...
+   **   }
+   ** \endcode
+   ** 
+   ** This returns the first COMMENT frame that uses Unicode as its text
+   ** encdoing.
+   **  
+   ** @name   Find
+   ** @param  id The ID of the frame that is to be located
+   ** @return A pointer to the first frame found that has the given frame id,
+   **         or NULL if no such frame.
+   **/
 ID3_Frame* ID3_Tag::Find(ID3_FrameID id) const
 {
   return _impl->Find(id);
@@ -516,11 +664,6 @@ ID3_Tag& ID3_Tag::operator=( const ID3_Tag &rTag )
   return *this;
 }
 
-bool ID3_Tag::GetUnsync() const
-{
-  return _impl->GetUnsync();
-}
-
 bool ID3_Tag::HasTagType(uint16 tt) const
 {
   return _impl->HasTagType(16);
@@ -542,8 +685,13 @@ bool ID3_Tag::SetSpec(ID3_V2Spec spec)
  **/
 size_t ID3_Tag::IsV2Tag(const uchar* const data)
 {
-  ID3_MemoryReader mr(reinterpret_cast<const char*>(data), ID3_TagHeader::SIZE);
+  ID3_MemoryReader mr(data, ID3_TagHeader::SIZE);
   return ID3_TagImpl::IsV2Tag(mr);
+}
+
+size_t ID3_Tag::IsV2Tag(ID3_Reader& reader)
+{
+  return ID3_TagImpl::IsV2Tag(reader);
 }
 
 /// Deprecated
@@ -552,9 +700,28 @@ void ID3_Tag::AddNewFrame(ID3_Frame* f)
   _impl->AttachFrame(f);
 }
 
+/** Copies an array of frames to the tag.
+ ** 
+ ** This method copies each frame in an array to the tag.  As in 
+ ** AddFrame, the tag adds a copy of the frame, and it assumes responsiblity
+ ** for freeing the frames' memory when the tag goes out of scope.
+ ** 
+ ** \code
+ **   ID3_Frame myFrames[10];
+ **   myTag.AddFrames(myFrames, 10);
+ ** \endcode
+ ** 
+ ** \sa ID3_Frame
+ ** \sa ID3_Frame#AddFrame
+ ** \param pNewFrames A pointer to an array of frames to be added to the tag.
+ ** \param nFrames The number of frames in the array pNewFrames.
+ **/
 void ID3_Tag::AddFrames(const ID3_Frame *frames, size_t numFrames)
 {
-  _impl->AddFrames(frames, numFrames);
+  for (index_t i = numFrames - 1; i >= 0; i--)
+  {
+    this->AddFrame(frames[i]);
+  }
 }
 
 size_t ID3_Tag::Link(const char *fileInfo, bool parseID3v1, bool parseLyrics3)
