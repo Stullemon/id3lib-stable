@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.12 1999/12/01 18:00:59 scott Exp $
+// $Id: misc_support.cpp,v 1.13 1999/12/01 22:11:50 scott Exp $
 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -44,6 +44,7 @@ size_t ucslen(const unicode_t *unicode)
     for (size_t size = 0; true; size++)
       if (NULL_UNICODE == unicode[size])
         return size;
+  return 0;
 }
 
 void ucscpy(unicode_t *dest, const unicode_t *src)
@@ -468,6 +469,9 @@ bool ID3_AddLyrics(ID3_Tag *tag, char *text)
 }
 
 // $Log: misc_support.cpp,v $
+// Revision 1.13  1999/12/01 22:11:50  scott
+// Now returns 0 when input is NULL.
+//
 // Revision 1.12  1999/12/01 18:00:59  scott
 // Changed all of the #include <id3/*> to #include "*" to help ensure that
 // the sources are searched for in the right places (and to make compiling under
