@@ -1,5 +1,8 @@
 ID3Lib History
 
+The following is a history of id3lib up to version 3.05a.  Please see the
+ChangeLog file for changes since then.
+
 23 Nov 1998     3.05a   - Released 3.05a in which the only change was the 
                           inclusion of a C header file for using the DLL
                           (how forgetful I am!).
