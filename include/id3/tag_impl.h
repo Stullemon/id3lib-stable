@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: tag_impl.h,v 1.3 2000/10/12 22:29:07 eldamitri Exp $
+// $Id: tag_impl.h,v 1.4 2000/10/16 06:59:49 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -77,7 +77,7 @@ namespace dami
   };
 };
 
-class ID3_TagImpl : public ID3_Speccable
+class ID3_TagImpl
 {
 public:
   ID3_TagImpl(const char *name = NULL);
