@@ -1,3 +1,43 @@
+2000-08-27  Scott Haug  <scott@id3.org>
+
+	* examples/get_pic.cpp: 
+	- No longer #include's getopt.h (unused)
+	- return's 1 instead of exit(1)
+
+	* examples/demo_tag.cpp: 
+	* examples/demo_info.cpp: 
+	* examples/demo_copy.cpp: 
+	* examples/demo_convert.cpp: 
+	- Now uses popt instead of getopt for parameter processing
+	- VERSION_NUMBER now a static const char* rather than a macro
+	- PrintUsage, PrintVersion now accept const char* (rather than char*)
+
+	* examples/Makefile.am: 
+	Updated to link in libpopt for parameter processing the examples
+
+	* configure.in:
+	- Added checks for popt, for use in examples for argument parsing
+	- zlib's Makefile's are no longer created; rather, it is listed as a
+	  config subdir
+
+	* Makefile.am 
+	(SUBDIRS): Made inclusion of popt and zlib conditional
+	(DIST_SUBDIRS): Added to keep track of all directories for distribution
+
+2000-08-26  Scott Haug  <scott@id3.org>
+
+	* id3lib.spec.in 
+	(RPM_OPT_FLAGS): Removed stack-boundary for RedHat 6.2 option, updated
+	release number
+	
+
+	* src/tag_parse_lyrics3.cpp 
+	(ParseLyrics3): Fixed compiler warning
+	(ParseLyrics3v2): Fixed compiler warning
+
+	* include/id3/tag.h 
+	(class ID3_Tag): Removed unneccessary method declartions.
+
 2000-09-18  John Adcock  <johnadcock@hotmail.com>
 	* ID3Com/ID3COM.rc
 	* ID3Com/ID3Field.cpp
