@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.9 1999/12/01 18:00:59 scott Exp $
+// $Id: tag_render.cpp,v 1.10 1999/12/01 22:22:52 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -215,7 +215,6 @@ luint ID3_Tag::RenderV1(char *buffer)
 
 void ID3_Tag::RenderV1ToHandle(void)
 {
-  ID3V1_Tag tagV1;
   char sTag[LEN_V1];
   char sID[LEN_V1_ID];
 
@@ -223,7 +222,7 @@ void ID3_Tag::RenderV1ToHandle(void)
 
   // We want to check if there is already an id3v1 tag, so we can write over
   // it.  First, seek to the beginning of any possible id3v1 tag
-  if (fseek(__fFileHandle, -LEN_V1, SEEK_END) != 0)
+  if (fseek(__fFileHandle, 0-LEN_V1, SEEK_END) != 0)
     // TODO:  This is a bad error message.  Make it more descriptive
     ID3_THROW(ID3E_NoData);
 
@@ -236,7 +235,7 @@ void ID3_Tag::RenderV1ToHandle(void)
   // so we should set the file cursor so we can overwrite it with a new tag.
   if (memcmp(sID, "TAG", LEN_V1_ID) == 0)
   {
-    if (fseek(__fFileHandle, -LEN_V1, SEEK_END) != 0)
+    if (fseek(__fFileHandle, 0-LEN_V1, SEEK_END) != 0)
       // TODO:  This is a bad error message.  Make it more descriptive
       ID3_THROW(ID3E_NoData);
   }
@@ -364,6 +363,10 @@ luint ID3_Tag::PaddingSize(luint curSize) const
 
 
 // $Log: tag_render.cpp,v $
+// Revision 1.10  1999/12/01 22:22:52  scott
+// (RenderV1ToHandle): Removed reference to tagV1---not used.  Other
+// minor windows-compatibility fixes.  (thanks elrod)
+//
 // Revision 1.9  1999/12/01 18:00:59  scott
 // Changed all of the #include <id3/*> to #include "*" to help ensure that
 // the sources are searched for in the right places (and to make compiling under
