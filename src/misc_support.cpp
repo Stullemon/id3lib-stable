@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.20 2000/09/14 22:06:39 eldamitri Exp $
+// $Id: misc_support.cpp,v 1.21 2000/09/14 22:35:09 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -41,7 +41,7 @@ char *ID3_GetString(const ID3_Frame *frame, ID3_FieldID fldName)
     try 
     {
       ID3_Field& fld = frame->Field(fldName);
-      ID3_TextEncoding enc = fld.GetEncoding();
+      ID3_TextEnc enc = fld.GetEncoding();
       fld.SetEncoding(ID3TE_ASCII);
       size_t nText = fld.Size();
       text = new char[nText + 1];
