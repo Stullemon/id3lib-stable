@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.29 2000/05/09 13:35:27 eldamitri Exp $
+// $Id: tag.h,v 1.30 2000/05/10 03:36:55 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -132,9 +132,6 @@ protected:
   ID3_V2Spec GetSpec() const;
   void       ClearList(ID3_Elem *);
   void       DeleteElem(ID3_Elem *);
-  void       AddBinary(const uchar *, luint);
-  void       ExpandBinaries(const uchar *, luint);
-  void       ProcessBinaries(ID3_FrameID = ID3FID_NOFRAME, bool = true);
   void       RemoveFromList(ID3_Elem *, ID3_Elem **);
   ID3_Elem*  Find(const ID3_Frame *) const;
   luint      PaddingSize(luint) const;
