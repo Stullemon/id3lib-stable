@@ -1,4 +1,4 @@
-// $Id: frame_impl.cpp,v 1.5 2000/10/15 06:39:26 eldamitri Exp $
+// $Id: frame_impl.cpp,v 1.6 2000/10/21 15:44:59 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -39,12 +39,13 @@
  ** \brief The representative class of an id3v2 frame.
  ** 
  ** id3lib defines frames in a funny way.  Using some nice c++ conventions,
- ** ID3_FrameImpl class objects appear to be quite polymorphic; that is, they can
- ** take on many forms.  The same ID3_FrameImpl class provides the facilities for
- ** the implementation of a complex APIC frame and for a simple text frame.
+ ** ID3_FrameImpl class objects appear to be quite polymorphic; that is, they
+ ** can take on many forms.  The same ID3_FrameImpl class provides the
+ ** facilities for the implementation of a complex APIC frame and for a simple
+ ** text frame.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: frame_impl.cpp,v 1.5 2000/10/15 06:39:26 eldamitri Exp $
+ ** @version $Id: frame_impl.cpp,v 1.6 2000/10/21 15:44:59 eldamitri Exp $
  ** @see ID3_Tag
  ** @see ID3_Field
  ** @see ID3_Err
@@ -62,101 +63,51 @@
  **/
 ID3_FrameImpl::ID3_FrameImpl(ID3_FrameID id)
   : _changed(false),
-    _field_bitset(NULL),
-    _num_fields(0),
-    _fields(NULL),
+    _bitset(),
+    _fields(),
     _encryption_id('\0'),
     _grouping_id('\0')
 {
   this->SetSpec(ID3V2_LATEST);
-  this->_InitFieldBits();
   this->SetID(id);
 }
 
 ID3_FrameImpl::ID3_FrameImpl(const ID3_FrameHeader &hdr)
   : _changed(false),
-    _field_bitset(NULL),
-    _num_fields(0),
-    _fields(NULL),
+    _bitset(),
+    _fields(),
     _hdr(hdr),
     _encryption_id('\0'),
     _grouping_id('\0')
 {
-  this->_InitFieldBits();
   this->_InitFields();
 }
 
 ID3_FrameImpl::ID3_FrameImpl(const ID3_Frame& frame)
   : _changed(false),
-    _field_bitset(NULL),
-    _num_fields(0),
-    _fields(NULL),
+    _bitset(),
+    _fields(),
     _encryption_id('\0'),
     _grouping_id('\0')
 {
-  this->_InitFieldBits();
   *this = frame;
-}
-
-void ID3_FrameImpl::_InitFieldBits()
-{
-  size_t lWordsForFields =
-    (((uint32) ID3FN_LASTFIELDID) - 1) / (sizeof(uint32) * 8);
-  
-  if ((((uint32) ID3FN_LASTFIELDID) - 1) % (sizeof(uint32) * 8) != 0)
-  {
-    lWordsForFields++;
-  }
-   
-  if (_field_bitset != NULL)
-  {
-    delete [] _field_bitset;
-  }
-  _field_bitset = new uint32[lWordsForFields];
-
-  for (index_t i = 0; i < lWordsForFields; i++)
-  {
-    _field_bitset[i] = 0;
-  }
 }
 
 ID3_FrameImpl::~ID3_FrameImpl()
 {
   Clear();
-  
-  if (_field_bitset != NULL)
-  {
-    delete [] _field_bitset;
-  }
 }
 
 bool ID3_FrameImpl::_ClearFields()
 {
-  if (!_num_fields || !_fields)
+  for (iterator fi = _fields.begin(); fi != _fields.end(); ++fi)
   {
-    return false;
-  }
-  for (index_t fi = 0; fi < _num_fields; fi++)
-  {
-    delete (ID3_FieldImpl*)_fields[fi];
-  }
-  
-  delete [] _fields;
-  _fields = NULL;
-    
-  size_t lWordsForFields =
-    (((uint32) ID3FN_LASTFIELDID) - 1) / (sizeof(uint32) * 8);
-  
-  if ((((uint32) ID3FN_LASTFIELDID) - 1) % (sizeof(uint32) * 8) != 0)
-  {
-    lWordsForFields++;
+    delete (ID3_FieldImpl*) *fi;
   }
 
-  for (index_t i = 0; i < lWordsForFields; i++)
-  {
-    _field_bitset[i] = 0;
-  }
-   
+  _fields.clear();
+  _bitset.reset();
+
   _changed = true;
   return true;
 }
@@ -172,8 +123,6 @@ void ID3_FrameImpl::Clear()
   _hdr.Clear();
   _encryption_id   = '\0';
   _grouping_id     = '\0';
-  _num_fields      = 0;
-  _fields          = NULL;
 }
 
 void ID3_FrameImpl::_InitFields()
@@ -182,29 +131,18 @@ void ID3_FrameImpl::_InitFields()
   if (NULL == info)
   {
     // log this
-    _num_fields = 1;
-    _fields = new ID3_Field * [ 1 ];
-    _fields[0] = new ID3_FieldImpl(ID3_FieldDef::DEFAULT[0]);
-    BS_SET(_field_bitset, _fields[0]->GetID());
-    //ID3_THROW(ID3E_InvalidFrameID);
+    ID3_Field* fld = new ID3_FieldImpl(ID3_FieldDef::DEFAULT[0]);
+    _fields.push_back(fld);
+    _bitset.set(fld->GetID());
   }
   else
   {
-    _num_fields = 0;
     
-    while (info->aeFieldDefs[_num_fields]._id != ID3FN_NOFIELD)
+    for (size_t i = 0; info->aeFieldDefs[i]._id != ID3FN_NOFIELD; ++i)
     {
-      _num_fields++;
-    }
-    
-    _fields = new ID3_Field * [_num_fields];
-    
-    for (index_t i = 0; i < _num_fields; i++)
-    {
-      _fields[i] = new ID3_FieldImpl(info->aeFieldDefs[i]);
-      
-      // tell the frame that this field is present
-      BS_SET(_field_bitset, _fields[i]->GetID());
+      ID3_Field* fld = new ID3_FieldImpl(info->aeFieldDefs[i]);
+      _fields.push_back(fld);
+      _bitset.set(fld->GetID());
     }
     
     _changed = true;
@@ -280,13 +218,14 @@ ID3_V2Spec ID3_FrameImpl::GetSpec() const
 ID3_Field* ID3_FrameImpl::GetField(ID3_FieldID fieldName) const
 {
   ID3_Field* field = NULL;
-  if (BS_ISSET(_field_bitset, fieldName))
+  if (this->Contains(fieldName))
   {
-    for (size_t num = 0; num < _num_fields; num++)
+    for (const_iterator fi = _fields.begin(); fi != _fields.end(); ++fi)
     {
-      if (_fields[num]->GetID() == fieldName)
+      if ((*fi)->GetID() == fieldName)
       {
-        field = _fields[num];
+        field = *fi;
+        break;
       }
     }
   }
@@ -295,7 +234,7 @@ ID3_Field* ID3_FrameImpl::GetField(ID3_FieldID fieldName) const
 
 size_t ID3_FrameImpl::NumFields() const
 {
-  return _num_fields;
+  return _fields.size();
 }
 
 ID3_Field* ID3_FrameImpl::GetFieldNum(index_t index) const
@@ -323,7 +262,7 @@ size_t ID3_FrameImpl::Size()
   }
     
   ID3_TextEnc enc = ID3TE_ASCII;
-  for (ID3_Field** fi = _fields; fi != _fields + _num_fields; fi++)
+  for (iterator fi = _fields.begin(); fi != _fields.end(); ++fi)
   {
     if (*fi && (*fi)->InScope(this->GetSpec()))
     {
@@ -347,7 +286,7 @@ bool ID3_FrameImpl::HasChanged() const
 {
   bool changed = _changed;
   
-  for (ID3_Field** fi = _fields; !changed && fi != _fields + _num_fields; fi++)
+  for (const_iterator fi = _fields.begin(); fi != _fields.end(); ++fi)
   {
     if (*fi && (*fi)->InScope(this->GetSpec()))
     {
