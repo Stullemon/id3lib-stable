@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.2 2000/04/18 22:12:39 eldamitri Exp $
+// $Id: misc_support.cpp,v 1.3 2000/04/24 14:48:22 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -220,7 +220,7 @@ bool ID3_AddArtist(ID3_Tag *tag, const char *text, bool bReplace)
       
       artistFrame->SetID(ID3FID_LEADARTIST);
       artistFrame->Field(ID3FN_TEXT) = text;
-      tag->AddNewFrame(artistFrame);
+      tag->AttachFrame(artistFrame);
     }
   }
 
@@ -237,22 +237,22 @@ size_t ID3_RemoveArtists(ID3_Tag *tag)
     return nRemoved;
   }
 
-  while (pFrame = tag->Find(ID3FID_LEADARTIST))
+  while ((pFrame = tag->Find(ID3FID_LEADARTIST)))
   {
     tag->RemoveFrame(pFrame);
     nRemoved++;
   }
-  while (pFrame = tag->Find(ID3FID_BAND))
+  while ((pFrame = tag->Find(ID3FID_BAND)))
   {
     tag->RemoveFrame(pFrame);
     nRemoved++;
   }
-  while (pFrame = tag->Find(ID3FID_CONDUCTOR))
+  while ((pFrame = tag->Find(ID3FID_CONDUCTOR)))
   {
     tag->RemoveFrame(pFrame);
     nRemoved++;
   }
-  while (pFrame = tag->Find(ID3FID_COMPOSER))
+  while ((pFrame = tag->Find(ID3FID_COMPOSER)))
   {
     tag->RemoveFrame(pFrame);
     nRemoved++;
@@ -298,7 +298,7 @@ bool ID3_AddAlbum(ID3_Tag *tag, const char *text, bool bReplace)
       
       albumFrame->SetID(ID3FID_ALBUM);
       albumFrame->Field(ID3FN_TEXT) = text;
-      tag->AddNewFrame(albumFrame);
+      tag->AttachFrame(albumFrame);
       
       bSuccess = true;
     }
@@ -317,7 +317,7 @@ size_t ID3_RemoveAlbums(ID3_Tag *tag)
     return nRemoved;
   }
 
-  while (pFrame = tag->Find(ID3FID_ALBUM))
+  while ((pFrame = tag->Find(ID3FID_ALBUM)))
   {
     tag->RemoveFrame(pFrame);
     nRemoved++;
@@ -363,7 +363,7 @@ bool ID3_AddTitle(ID3_Tag *tag, const char *text, bool bReplace)
       
       titleFrame->SetID(ID3FID_TITLE);
       titleFrame->Field(ID3FN_TEXT) = text;
-      tag->AddNewFrame(titleFrame);
+      tag->AttachFrame(titleFrame);
       
       bSuccess = true;
     }
@@ -382,7 +382,7 @@ size_t ID3_RemoveTitles(ID3_Tag *tag)
     return nRemoved;
   }
 
-  while (pFrame = tag->Find(ID3FID_TITLE))
+  while ((pFrame = tag->Find(ID3FID_TITLE)))
   {
     tag->RemoveFrame(pFrame);
     nRemoved++;
@@ -428,7 +428,7 @@ bool ID3_AddYear(ID3_Tag *tag, const char *text, bool bReplace)
 
       yearFrame->SetID(ID3FID_YEAR);
       yearFrame->Field(ID3FN_TEXT) = text;
-      tag->AddNewFrame(yearFrame);
+      tag->AttachFrame(yearFrame);
 
       bSuccess = true;
     }
@@ -447,7 +447,7 @@ size_t ID3_RemoveYears(ID3_Tag *tag)
     return nRemoved;
   }
 
-  while (pFrame = tag->Find(ID3FID_YEAR))
+  while ((pFrame = tag->Find(ID3FID_YEAR)))
   {
     tag->RemoveFrame(pFrame);
     nRemoved++;
@@ -518,7 +518,7 @@ bool ID3_AddComment(ID3_Tag *tag, const char *sComment,
       frame->Field(ID3FN_LANGUAGE) = "eng";
       frame->Field(ID3FN_DESCRIPTION) = sDescription;
       frame->Field(ID3FN_TEXT) = sComment;
-      tag->AddNewFrame(frame);
+      tag->AttachFrame(frame);
     }
   }
   return bSuccess;
@@ -619,17 +619,17 @@ bool ID3_AddTrack(ID3_Tag *tag, uchar ucTrack, uchar ucTotal, bool bReplace)
       if (0 == ucTotal)
       {
         sTrack = new char[4];
-        sprintf(sTrack, "%lu", ucTrack);
+        sprintf(sTrack, "%lu", (luint) ucTrack);
       }
       else
       {
         sTrack = new char[8];
-        sprintf(sTrack, "%lu/%lu", ucTrack, ucTotal);
+        sprintf(sTrack, "%lu/%lu", (luint) ucTrack, (luint) ucTotal);
       }
 
       trackFrame->SetID(ID3FID_TRACKNUM);
       trackFrame->Field(ID3FN_TEXT) = sTrack;
-      tag->AddNewFrame(trackFrame);
+      tag->AttachFrame(trackFrame);
 
       delete [] sTrack;
     
@@ -650,7 +650,7 @@ size_t ID3_RemoveTracks(ID3_Tag *tag)
     return nRemoved;
   }
 
-  while (pFrame = tag->Find(ID3FID_TRACKNUM))
+  while ((pFrame = tag->Find(ID3FID_TRACKNUM)))
   {
     tag->RemoveFrame(pFrame);
     nRemoved++;
@@ -729,7 +729,7 @@ bool ID3_AddGenre(ID3_Tag *tag, luint ucGenre, bool bReplace)
 
       pFrame->SetID(ID3FID_CONTENTTYPE);
       pFrame->Field(ID3FN_TEXT) = sGenre;
-      tag->AddNewFrame(pFrame);
+      tag->AttachFrame(pFrame);
 
       bSuccess = true;
     }
@@ -748,7 +748,7 @@ size_t ID3_RemoveGenres(ID3_Tag *tag)
     return nRemoved;
   }
 
-  while (pFrame = tag->Find(ID3FID_CONTENTTYPE))
+  while ((pFrame = tag->Find(ID3FID_CONTENTTYPE)))
   {
     tag->RemoveFrame(pFrame);
     nRemoved++;
@@ -795,7 +795,7 @@ bool ID3_AddLyrics(ID3_Tag *tag, const char *text, bool bReplace)
       lyricsFrame->SetID(ID3FID_UNSYNCEDLYRICS);
       lyricsFrame->Field(ID3FN_LANGUAGE) = "eng";
       lyricsFrame->Field(ID3FN_TEXT) = text;
-      tag->AddNewFrame(lyricsFrame);
+      tag->AttachFrame(lyricsFrame);
     
       bSuccess = true;
     }
@@ -814,7 +814,7 @@ size_t ID3_RemoveLyrics(ID3_Tag *tag)
     return nRemoved;
   }
 
-  while (pFrame = tag->Find(ID3FID_UNSYNCEDLYRICS))
+  while ((pFrame = tag->Find(ID3FID_UNSYNCEDLYRICS)))
   {
     tag->RemoveFrame(pFrame);
     nRemoved++;
@@ -824,6 +824,10 @@ size_t ID3_RemoveLyrics(ID3_Tag *tag)
 }
 
 // $Log: misc_support.cpp,v $
+// Revision 1.3  2000/04/24 14:48:22  eldamitri
+// - Calls to AddNewFrame replaced with calls to AttachFrame
+// - Minor changes to prevent warnings w/gcc
+//
 // Revision 1.2  2000/04/18 22:12:39  eldamitri
 // Moved misc_support.cpp from src/id3/ to src/
 //
