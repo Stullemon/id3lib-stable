@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.3 1999/12/09 02:45:59 scott Exp $
+// $Id: tag.h,v 1.4 1999/12/13 04:23:25 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -15,15 +15,16 @@
 #ifndef ID3LIB_TAG_H
 #define ID3LIB_TAG_H
 
+#if defined HAVE_SYS_PARAM_H
+#include <sys/param.h>
+#endif
+
 #include <stdio.h>
 #include "types.h"
 #include "frame.h"
 #include "header_frame.h"
 #include "header_tag.h"
 #include "version.h"
-
-// for file buffers etc
-#define BUFF_SIZE (65536)
 
 struct ID3_Elem
 {
@@ -78,7 +79,7 @@ const luint LEN_V1_GENRE   =   1;
 
     @author Dirk Mahoney (dirk@id3.org)
     @author Scott Thomas Haug (sth2@cs.wustl.edu)
-    @version $Id: tag.h,v 1.3 1999/12/09 02:45:59 scott Exp $
+    @version $Id: tag.h,v 1.4 1999/12/13 04:23:25 scott Exp $
     @see ID3_Tag
 */
 struct ID3V1_Tag
@@ -177,7 +178,7 @@ const luint ALL_TAG_TYPES = BOTH_ID3_TAGS | LYRICS_TAG;
      that id3lib 2.16 supports.
 
      @author Dirk Mahoney
-     @version $Id: tag.h,v 1.3 1999/12/09 02:45:59 scott Exp $
+     @version $Id: tag.h,v 1.4 1999/12/13 04:23:25 scott Exp $
      @see ID3_Frame
      @see ID3_Field
      @see ID3_Err
@@ -753,7 +754,7 @@ public:
   
   ID3_Tag &operator=( const ID3_Tag &rTag );
 
-private:
+protected:
   void      AddFrame(ID3_Frame *pNewFrame, bool bFreeWhenDone);
   void      AddFrames(ID3_Frame *newFrames, luint nFrames, bool freeWhenDone);
   void      SetupTag(char *fileInfo);
@@ -781,6 +782,7 @@ private:
   void      UnSync(uchar *destData, luint destSize, uchar *sourceData, luint sourceSize);
   luint     ReSync(uchar *binarySourceData, luint sourceSize);
 
+private:
   uchar     __ucVersion;       // what version tag?
   uchar     __ucRevision;      // what revision tag?
   ID3_Elem *__pFrameList;      // the list of known frames currently attached to this tag
@@ -793,11 +795,11 @@ private:
   bool      __bHasChanged;     // has the tag changed since the last parse or render?
   bool      __bFileWritable;   // is the associated file (via Link) writable?
   FILE     *__fFileHandle;     // a handle to the file we are linked to
-  char     *__sFileName;       // the name of the file we are linked to
   luint     __ulFileSize;      // the size of the file (without any tag)
   luint     __ulOldTagSize;    // the size of the old tag (if any)
   luint     __ulExtraBytes;    // extra bytes to strip from end of file (ID3v1 and Lyrics3 tags)
   bool      __bHasV1Tag;       // does the file have an ID3v1 tag attached?
+  char      __sFileName[MAXPATHLEN + 1]; // name of the file we are linked to
   static luint s_ulInstances;  // how many ID3_Tag objects are floating around in this app?
 }
 ;
@@ -805,6 +807,11 @@ private:
 #endif
 
 // $Log: tag.h,v $
+// Revision 1.4  1999/12/13 04:23:25  scott
+// (): Include sys/param.h (if available) to define MAXPATHLEN.
+// (class ID3_Tag): Made private methods protected.  Changed __sFileName
+// from a char * to a char array of size MAXPATHLEN+1.
+//
 // Revision 1.3  1999/12/09 02:45:59  scott
 // (class ID3_Tag): Added copy constructor and operator= method
 // declarations.
