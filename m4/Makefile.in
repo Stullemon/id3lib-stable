@@ -102,7 +102,7 @@ RANLIB = @RANLIB@
 VERSION = @VERSION@
 cxxflags_set = @cxxflags_set@
 
-m4macros =    id3_cxx.m4 
+m4macros =    id3_debug.m4            id3_cxx.m4 
 
 
 EXTRA_DIST = $(m4macros) 

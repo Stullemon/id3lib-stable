@@ -27,6 +27,9 @@
 /* And now the rest of the boys */
 #undef CXX_HAS_BUGGY_FOR_LOOPS
 #undef CXX_HAS_NO_BOOL
+#undef ID3_ENABLE_DEBUG
+#undef ID3_DISABLE_ASSERT
+#undef ID3_DISABLE_CHECKS
 
 /* config.h defines these preprocesser symbols to be used by id3lib for
  * determining internal versioning information.  The intent is that these
@@ -141,4 +144,27 @@
 #define false 0
 #endif
    
+#if defined (ID3_ENABLE_DEBUG) && defined (HAVE_LIBCW_SYS_H)
+
+#define DEBUG
+
+#include <libcw/sys.h>
+#include <libcw/debug.h>
+
+#define ID3D_INIT_DOUT()    Debug( libcw_do.on() )
+#define ID3D_INIT_WARNING() Debug( dc::warning.on() )
+#define ID3D_INIT_NOTICE()  Debug( dc::notice.on() )
+#define ID3D_NOTICE(x)      Dout( dc::notice, x )
+#define ID3D_WARNING(x)     Dout( dc::warning, x )
+
+#else
+
+#  define ID3D_INIT_DOUT()
+#  define ID3D_INIT_WARNING()
+#  define ID3D_INIT_NOTICE()
+#  define ID3D_NOTICE(x)
+#  define ID3D_WARNING(x)
+
+#endif /* defined (ID3_ENABLE_DEBUG) && defined (HAVE_LIBCW_SYS_H) */
+dnl
 

@@ -109,6 +109,9 @@ LT_VERSION = $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)
 INCLUDES =    @ID3LIB_DEBUG_FLAGS@ -I$(top_srcdir)/include/id3 -I$(top_srcdir)/include $(zlib_include)
 
 
+noinst_HEADERS =    debug.h                         field_def.h                     field_impl.h                    flags.h                         frame_def.h                     frame_impl.h                    header.h                        header_frame.h                  header_tag.h                    spec.h                        
+
+
 id3lib_sources =    c_wrapper.cpp                   field.cpp                       field_binary.cpp                field_integer.cpp               field_string_ascii.cpp          field_string_unicode.cpp        frame.cpp                       frame_impl.cpp                  frame_parse.cpp                 frame_render.cpp                globals.cpp                     header.cpp                      header_frame.cpp                header_tag.cpp                  helpers.cpp                     io.cpp                          io_decorators.cpp               io_helpers.cpp                  misc_support.cpp                readers.cpp                     spec.cpp                        tag.cpp                         tag_file.cpp                    tag_find.cpp                    tag_impl.cpp                    tag_parse.cpp                   tag_parse_lyrics3.cpp           tag_parse_musicmatch.cpp        tag_parse_v1.cpp                tag_render.cpp                  utils.cpp                       writers.cpp                   
 
 
@@ -144,6 +147,8 @@ CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
+HEADERS =  $(noinst_HEADERS)
+
 DIST_COMMON =  Makefile.am Makefile.in
 
 
@@ -358,7 +363,7 @@ install-am: all-am
 install: install-am
 uninstall-am: uninstall-libLTLIBRARIES
 uninstall: uninstall-am
-all-am: Makefile $(LTLIBRARIES)
+all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
