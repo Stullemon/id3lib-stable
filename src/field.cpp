@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.31 2000/09/21 22:39:58 eldamitri Exp $
+// $Id: field.cpp,v 1.32 2000/09/27 08:20:02 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,15 +24,17 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
+#if defined HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <string.h>
+
 #include "field_impl.h"
 #include "utils.h"
 #include "field_def.h"
 #include "frame_def.h"
-
-#if defined HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "readers.h"
 
 // This is used for unimplemented frames so that their data is preserved when
 // parsing and rendering
@@ -876,7 +878,7 @@ static  ID3_FrameDef ID3_FrameDefs[] =
  ** if you only plan to generate 3.0 tags.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: field.cpp,v 1.31 2000/09/21 22:39:58 eldamitri Exp $
+ ** @version $Id: field.cpp,v 1.32 2000/09/27 08:20:02 eldamitri Exp $
  ** \sa ID3_Tag
  ** \sa ID3_Frame
  ** \sa ID3_Err 
@@ -1113,19 +1115,25 @@ size_t ID3_FieldImpl::Size() const
 
 size_t ID3_FieldImpl::Parse(const uchar *buffer, size_t buffSize)
 {
-  size_t bytesUsed       = 0;
-  
+  id3::MemoryReader mr(reinterpret_cast<const char *>(buffer), buffSize);
+  ID3_Reader::pos_type beg = mr.getCur();
+  this->Parse(mr);
+  return mr.getCur() - beg;
+}
+
+void ID3_FieldImpl::Parse(ID3_Reader& reader)
+{
   switch (this->GetType())
   {
     case ID3FTY_INTEGER:
     {
-      bytesUsed = ParseInteger(buffer, buffSize);
+      this->ParseInteger(reader);
       break;
     }
         
     case ID3FTY_BINARY:
     {
-      bytesUsed = ParseBinary(buffer, buffSize);
+      this->ParseBinary(reader);
       break;
     }
         
@@ -1133,11 +1141,11 @@ size_t ID3_FieldImpl::Parse(const uchar *buffer, size_t buffSize)
     {
       if (this->GetEncoding() == ID3TE_UNICODE)
       {
-        bytesUsed = ParseUnicodeString(buffer, buffSize);
+        this->ParseUnicodeString(reader);
       }
       else
       {
-        bytesUsed = ParseASCIIString(buffer, buffSize);
+        this->ParseASCIIString(reader);
       }
       break;
     }
@@ -1148,8 +1156,6 @@ size_t ID3_FieldImpl::Parse(const uchar *buffer, size_t buffSize)
       break;
     }
   }
-  
-  return bytesUsed;
 }
 
 ID3_FrameDef* ID3_FindFrameDef(ID3_FrameID id)
@@ -1265,14 +1271,14 @@ bool ID3_FieldImpl::SetEncoding(ID3_TextEnc enc)
       {
         unicode_t* unicode = _unicode;
         _ascii = new char[size];
-        ucstombs(_ascii, unicode, size);
+        id3::ucstombs(_ascii, unicode, size);
         delete [] unicode;
       }
       else if (_enc == ID3TE_ASCII && enc == ID3TE_UNICODE)
       {
         char* ascii = _ascii;
         _unicode = new unicode_t[size];
-        mbstoucs(_unicode, ascii, size);
+        id3::mbstoucs(_unicode, ascii, size);
         delete [] ascii;
       }
     }
