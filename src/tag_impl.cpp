@@ -1,4 +1,4 @@
-// $Id: tag_impl.cpp,v 1.11 2002/07/31 13:20:49 t1mpy Exp $
+// $Id: tag_impl.cpp,v 1.12 2002/09/21 16:04:13 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -43,7 +43,7 @@ size_t ID3_TagImpl::IsV2Tag(ID3_Reader& reader)
   String ver = io::readText(reader, 2);
   char flags = reader.readChar();
   String size = io::readText(reader, 4);
-  
+
   if (id == ID3_TagHeader::ID &&
       (uchar) ver [0] < 0xFF   &&      (uchar) ver [1] < 0xFF   &&
       (uchar) size[0] < 0x80   &&      (uchar) size[1] < 0x80   &&
@@ -84,7 +84,7 @@ size_t ID3_TagImpl::IsV2Tag(ID3_Reader& reader)
   {
     // clog << "*** shouldn't get here!" << endl;
   }
-  
+
   return tagSize;
 }
 
@@ -95,9 +95,9 @@ ID3_TagImpl::ID3_TagImpl(const char *name)
     _file_size(0),
     _prepended_bytes(0),
     _appended_bytes(0),
-    _is_file_writable(false)
+    _is_file_writable(false),
+    _mp3_info(NULL) // need to do this before this->Clear()
 {
-  _mp3_info = NULL; // need to do this before this->Clear()
   this->Clear();
   if (name)
   {
@@ -112,7 +112,8 @@ ID3_TagImpl::ID3_TagImpl(const ID3_Tag &tag)
     _file_size(0),
     _prepended_bytes(0),
     _appended_bytes(0),
-    _is_file_writable(false)
+    _is_file_writable(false),
+    _mp3_info(NULL) // need to do this before this->Clear()
 {
   *this = tag;
 }
@@ -135,12 +136,12 @@ void ID3_TagImpl::Clear()
   _frames.clear();
   _cursor = _frames.begin();
   _is_padded = true;
-  
+
   _hdr.Clear();
   _hdr.SetSpec(ID3V2_LATEST);
-  
+
   _tags_to_parse.clear();
-  if (_mp3_info) 
+  if (_mp3_info)
     delete _mp3_info; // Also deletes _mp3_header
 
   _mp3_info = NULL;
@@ -165,7 +166,7 @@ void ID3_TagImpl::AddFrame(const ID3_Frame* frame)
 
 void ID3_TagImpl::AttachFrame(ID3_Frame *frame)
 {
-  
+
   if (NULL == frame)
   {
     // log this
@@ -175,7 +176,7 @@ void ID3_TagImpl::AttachFrame(ID3_Frame *frame)
 
   _frames.push_back(frame);
   _cursor = _frames.begin();
-  
+
   _changed = true;
 }
 
@@ -183,7 +184,7 @@ void ID3_TagImpl::AttachFrame(ID3_Frame *frame)
 ID3_Frame* ID3_TagImpl::RemoveFrame(const ID3_Frame *frame)
 {
   ID3_Frame *frm = NULL;
-  
+
   iterator fi = Find(frame);
   if (fi != _frames.end())
   {
@@ -192,7 +193,7 @@ ID3_Frame* ID3_TagImpl::RemoveFrame(const ID3_Frame *frame)
     _cursor = _frames.begin();
     _changed = true;
   }
-    
+
   return frm;
 }
 
@@ -200,7 +201,7 @@ ID3_Frame* ID3_TagImpl::RemoveFrame(const ID3_Frame *frame)
 bool ID3_TagImpl::HasChanged() const
 {
   bool changed = _changed;
-  
+
   if (! changed)
   {
     for (const_iterator fi = _frames.begin(); fi != _frames.end(); ++fi)
@@ -209,14 +210,14 @@ bool ID3_TagImpl::HasChanged() const
       {
         changed = (*fi)->HasChanged();
       }
-        
+
       if (changed)
       {
         break;
       }
     }
   }
-  
+
   return changed;
 }
 
@@ -294,7 +295,7 @@ bool ID3_TagImpl::SetPadding(bool pad)
   {
     _is_padded = pad;
   }
-  
+
   return changed;
 }
 
