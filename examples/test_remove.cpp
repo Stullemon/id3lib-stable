@@ -1,4 +1,4 @@
-// $Id: test_remove.cpp,v 1.5 2000/07/07 23:01:52 eldamitri Exp $
+// $Id: test_remove.cpp,v 1.6 2000/07/08 21:23:30 eldamitri Exp $
 
 #include <iostream.h>
 #include <id3/tag.h>
@@ -75,6 +75,12 @@ int main( int argc, char *argv[])
       frame.Field(ID3FN_LANGUAGE).Set("eng");
       frame.Field(ID3FN_TEXT).Set("Test comment 2");
       frame.Field(ID3FN_DESCRIPTION).Set("");
+      tag.AddFrame(frame);
+
+      frame.SetID(ID3FID_COMMENT);
+      frame.Field(ID3FN_LANGUAGE).Set("eng");
+      frame.Field(ID3FN_TEXT).Set("ID3v1 comment text?");
+      frame.Field(ID3FN_DESCRIPTION).Set(STR_V1_COMMENT_DESC);
       tag.AddFrame(frame);
 
       tag.SetPadding(false);
