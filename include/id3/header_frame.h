@@ -1,4 +1,4 @@
-// $Id: header_frame.h,v 1.1 1999/12/01 17:16:05 scott Exp $
+// $Id: header_frame.h,v 1.2 1999/12/02 22:45:28 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -15,10 +15,10 @@
 #ifndef ID3LIB_HEADER_FRAME_H
 #define ID3LIB_HEADER_FRAME_H
 
-#include <id3/types.h>
-#include <id3/header.h>
-#include <id3/header_tag.h>
-#include <id3/field.h>
+#include "types.h"
+#include "header.h"
+#include "header_tag.h"
+#include "field.h"
 
 #define ID3FL_TAGALTER    (1 << 15)
 #define ID3FL_FILEALTER   (1 << 14)
@@ -50,6 +50,10 @@ protected:
 #endif
 
 // $Log: header_frame.h,v $
+// Revision 1.2  1999/12/02 22:45:28  scott
+// Changed all of the #include <id3/*> to #include "*" to help ensure that
+// the sources are searched for in the right places.
+//
 // Revision 1.1  1999/12/01 17:16:05  scott
 // moved from src/id3 to include/id3
 //

@@ -1,4 +1,4 @@
-// $Id: field.h,v 1.1 1999/12/01 17:16:01 scott Exp $
+// $Id: field.h,v 1.2 1999/12/02 22:45:28 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -16,8 +16,8 @@
 #define ID3LIB_FIELD_H
 
 #include <wchar.h>
-#include <id3/types.h>
-#include <id3/error.h>
+#include "types.h"
+#include "error.h"
 
 // field flags
 enum ID3_FieldFlags 
@@ -144,7 +144,7 @@ struct ID3_FrameDef
     if you only plan to generate 3.0 tags.
 
     @author Dirk Mahoney
-    @version $Id: field.h,v 1.1 1999/12/01 17:16:01 scott Exp $
+    @version $Id: field.h,v 1.2 1999/12/02 22:45:28 scott Exp $
     @see ID3_Tag
     @see ID3_Frame
     @see ID3_Err */
@@ -416,6 +416,10 @@ ID3_FrameID   ID3_FindFrameID(const char *id);
 #endif
 
 // $Log: field.h,v $
+// Revision 1.2  1999/12/02 22:45:28  scott
+// Changed all of the #include <id3/*> to #include "*" to help ensure that
+// the sources are searched for in the right places.
+//
 // Revision 1.1  1999/12/01 17:16:01  scott
 // moved from src/id3 to include/id3
 //

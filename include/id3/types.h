@@ -1,4 +1,4 @@
-// $Id: types.h,v 1.1 1999/12/01 17:16:11 scott Exp $
+// $Id: types.h,v 1.2 1999/12/02 22:45:28 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -15,7 +15,7 @@
 #ifndef ID3LIB_TYPES_H
 #define ID3LIB_TYPES_H
 
-#include <id3/globals.h>
+#include "globals.h"
 
 #ifdef __DLL
 #define DLLEXPORT       __declspec ( dllexport )
@@ -50,11 +50,15 @@ inline lsint MAX(lsint x, lsint y)
 
 // include other abstract types here because they
 // may depend on the types defined above
-#include <id3/int28.h>
+#include "int28.h"
 
 #endif
 
 // $Log: types.h,v $
+// Revision 1.2  1999/12/02 22:45:28  scott
+// Changed all of the #include <id3/*> to #include "*" to help ensure that
+// the sources are searched for in the right places.
+//
 // Revision 1.1  1999/12/01 17:16:11  scott
 // moved from src/id3 to include/id3
 //

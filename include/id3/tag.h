@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.1 1999/12/01 17:16:10 scott Exp $
+// $Id: tag.h,v 1.2 1999/12/02 22:45:28 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -17,11 +17,11 @@
 
 #include <wchar.h>
 #include <stdio.h>
-#include <id3/types.h>
-#include <id3/frame.h>
-#include <id3/header_frame.h>
-#include <id3/header_tag.h>
-#include <id3/version.h>
+#include "types.h"
+#include "frame.h"
+#include "header_frame.h"
+#include "header_tag.h"
+#include "version.h"
 
 // for file buffers etc
 #define BUFF_SIZE (65536)
@@ -79,7 +79,7 @@ const luint LEN_V1_GENRE   =   1;
 
     @author Dirk Mahoney (dirk@id3.org)
     @author Scott Thomas Haug (sth2@cs.wustl.edu)
-    @version $Id: tag.h,v 1.1 1999/12/01 17:16:10 scott Exp $
+    @version $Id: tag.h,v 1.2 1999/12/02 22:45:28 scott Exp $
     @see ID3_Tag
 */
 struct ID3V1_Tag
@@ -178,7 +178,7 @@ const luint ALL_TAG_TYPES = BOTH_ID3_TAGS | LYRICS_TAG;
      that id3lib 2.16 supports.
 
      @author Dirk Mahoney
-     @version $Id: tag.h,v 1.1 1999/12/01 17:16:10 scott Exp $
+     @version $Id: tag.h,v 1.2 1999/12/02 22:45:28 scott Exp $
      @see ID3_Frame
      @see ID3_Field
      @see ID3_Err
@@ -798,6 +798,10 @@ private:
 #endif
 
 // $Log: tag.h,v $
+// Revision 1.2  1999/12/02 22:45:28  scott
+// Changed all of the #include <id3/*> to #include "*" to help ensure that
+// the sources are searched for in the right places.
+//
 // Revision 1.1  1999/12/01 17:16:10  scott
 // moved from src/id3 to include/id3
 //

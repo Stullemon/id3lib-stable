@@ -1,4 +1,4 @@
-// $Id: error.h,v 1.1 1999/12/01 17:15:59 scott Exp $
+// $Id: error.h,v 1.2 1999/12/02 22:45:28 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -16,7 +16,7 @@
 #ifndef ID3LIB_ERROR_H
 #define ID3LIB_ERROR_H
 
-#include <id3/types.h>
+#include "types.h"
 
 /**
    Predefined id3lib error types.
@@ -138,6 +138,10 @@ private:
 #endif
 
 // $Log: error.h,v $
+// Revision 1.2  1999/12/02 22:45:28  scott
+// Changed all of the #include <id3/*> to #include "*" to help ensure that
+// the sources are searched for in the right places.
+//
 // Revision 1.1  1999/12/01 17:15:59  scott
 // moved from src/id3 to include/id3
 //

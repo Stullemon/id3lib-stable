@@ -1,4 +1,4 @@
-// $Id: dll.h,v 1.1 1999/12/01 17:14:06 scott Exp $
+// $Id: dll.h,v 1.2 1999/12/02 22:45:28 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -16,7 +16,7 @@
 #ifndef ID3LIB_DLLHEADERS_H
 #define ID3LIB_DLLHEADERS_H
 
-#include <id3/globals.h>
+#include "globals.h"
 
 class ID3_Field;
 class ID3_Frame;
@@ -78,6 +78,10 @@ void        ID3Field_ToFile(ID3_Field *field, char *fileName);
 #endif
 
 // $Log: dll.h,v $
+// Revision 1.2  1999/12/02 22:45:28  scott
+// Changed all of the #include <id3/*> to #include "*" to help ensure that
+// the sources are searched for in the right places.
+//
 // Revision 1.1  1999/12/01 17:14:06  scott
 // moved from src/id3 to include/id3
 //

@@ -1,4 +1,4 @@
-// $Id: header.h,v 1.1 1999/12/01 17:16:04 scott Exp $
+// $Id: header.h,v 1.2 1999/12/02 22:45:28 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -15,7 +15,7 @@
 #ifndef ID3LIB_HEADER_H
 #define ID3LIB_HEADER_H
 
-#include <id3/types.h>
+#include "types.h"
 
 #define ID3_TAGVERSION  (3)
 #define ID3_TAGREVISION (0)
@@ -59,6 +59,10 @@ ID3_HeaderInfo *ID3_LookupHeaderInfo(uchar ver, uchar rev);
 #endif
 
 // $Log: header.h,v $
+// Revision 1.2  1999/12/02 22:45:28  scott
+// Changed all of the #include <id3/*> to #include "*" to help ensure that
+// the sources are searched for in the right places.
+//
 // Revision 1.1  1999/12/01 17:16:04  scott
 // moved from src/id3 to include/id3
 //

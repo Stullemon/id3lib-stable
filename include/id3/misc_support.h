@@ -1,4 +1,4 @@
-// $Id: misc_support.h,v 1.2 1999/12/01 22:10:02 scott Exp $
+// $Id: misc_support.h,v 1.3 1999/12/02 22:45:28 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -16,8 +16,8 @@
 #define ID3LIB_MISC_SUPPORT_H
 
 #include <string.h>
-#include <id3/types.h>
-#include <id3/tag.h>
+#include "types.h"
+#include "tag.h"
 
 // in 'id3_misc_support.cpp'
 char *ID3_GetArtist(ID3_Tag *tag);
@@ -54,6 +54,10 @@ void ID3_RemoveTrailingSpaces(char *buffer, luint length);
 #endif
 
 // $Log: misc_support.h,v $
+// Revision 1.3  1999/12/02 22:45:28  scott
+// Changed all of the #include <id3/*> to #include "*" to help ensure that
+// the sources are searched for in the right places.
+//
 // Revision 1.2  1999/12/01 22:10:02  scott
 // Minor declaraction problem (thanks, elrod).
 //

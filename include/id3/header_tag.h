@@ -1,4 +1,4 @@
-// $Id: header_tag.h,v 1.1 1999/12/01 17:16:06 scott Exp $
+// $Id: header_tag.h,v 1.2 1999/12/02 22:45:28 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -15,8 +15,8 @@
 #ifndef ID3LIB_HEADER_TAG_H
 #define ID3LIB_HEADER_TAG_H
 
-#include <id3/types.h>
-#include <id3/header.h>
+#include "types.h"
+#include "header.h"
 
 #define ID3_TAGID               "ID3"
 #define ID3_TAGHEADERSIZE       (10)
@@ -38,6 +38,10 @@ lsint ID3_IsTagHeader(uchar header[ID3_TAGHEADERSIZE]);
 #endif
 
 // $Log: header_tag.h,v $
+// Revision 1.2  1999/12/02 22:45:28  scott
+// Changed all of the #include <id3/*> to #include "*" to help ensure that
+// the sources are searched for in the right places.
+//
 // Revision 1.1  1999/12/01 17:16:06  scott
 // moved from src/id3 to include/id3
 //

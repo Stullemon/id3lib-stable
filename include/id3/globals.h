@@ -1,4 +1,4 @@
-// $Id: globals.h,v 1.1 1999/12/01 17:16:03 scott Exp $
+// $Id: globals.h,v 1.2 1999/12/02 22:45:28 scott Exp $
 //
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -15,7 +15,7 @@
 #ifndef __GLOBALS_H__
 #define __GLOBALS_H__
 
-#include <id3/sized_types.h>
+#include "sized_types.h"
 
 /// Shorthand type definition for unsigned char
 typedef       unsigned char   uchar;

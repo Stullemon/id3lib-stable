@@ -1,4 +1,4 @@
-// $Id: int28.h,v 1.1 1999/12/01 17:16:07 scott Exp $
+// $Id: int28.h,v 1.2 1999/12/02 22:45:28 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -16,7 +16,7 @@
 #define ID3LIB_TYPES_28BITINT_H
 
 #include <iostream.h>
-#include <id3/types.h>
+#include "types.h"
 
 class int28
 {
@@ -42,6 +42,10 @@ istream & operator>>(istream& in, int28& val);
 #endif
 
 // $Log: int28.h,v $
+// Revision 1.2  1999/12/02 22:45:28  scott
+// Changed all of the #include <id3/*> to #include "*" to help ensure that
+// the sources are searched for in the right places.
+//
 // Revision 1.1  1999/12/01 17:16:07  scott
 // moved from src/id3 to include/id3
 //
