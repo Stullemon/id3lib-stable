@@ -1,4 +1,4 @@
-// $Id: frame_render.cpp,v 1.8 2000/05/09 13:17:35 eldamitri Exp $
+// $Id: frame_render.cpp,v 1.9 2000/05/12 21:09:40 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -34,16 +34,19 @@
 #include <config.h>
 #endif
 
-luint ID3_Frame::Render(uchar *buffer)
+// at the moment, Render can't be const, since it resets some variables in
+// the header and the fields.  If compression doesn't actually produce something
+// smaller, it will turn off the compression flag in the header.  
+size_t ID3_Frame::Render(uchar *buffer)
 {
-  luint bytesUsed = 0;
+  size_t bytesUsed = 0;
   
   if (NULL == buffer)
   {
     ID3_THROW(ID3E_NoBuffer);
   }
-
-  luint extras = 0;
+  
+  size_t extras = 0;
   bool didCompress = false;
     
   bytesUsed += __hdr.Size();
@@ -63,14 +66,18 @@ luint ID3_Frame::Render(uchar *buffer)
     extras++;
   }
     
-  // this call is to tell the string fields what they should be rendered/parsed
-  // as (ASCII or Unicode)
-  this->_UpdateStringTypes();
+  ID3_TextEnc enc = ID3TE_ASCII;
     
   for (ID3_Field** fi = __fields; fi != __fields + __num_fields; fi++)
   {
+    if ((*fi)->GetID() == ID3FN_TEXTENC)  
+    {
+      enc = static_cast<ID3_TextEnc>((*fi)->Get());  
+    }
+    
     if (*fi && (*fi)->InScope(this->GetSpec()))
     {
+      (*fi)->SetEncoding(enc);
       bytesUsed += (*fi)->Render(&buffer[bytesUsed]);
     }
   }
@@ -82,7 +89,8 @@ luint ID3_Frame::Render(uchar *buffer)
       
     bytesUsed -= __hdr.Size();
       
-    luint newFrameSize = bytesUsed + (bytesUsed / 10) + 12;
+    // unsigned long needed for compress
+    unsigned long newFrameSize = bytesUsed + (bytesUsed / 10) + 12;
       
     uchar* newTemp = new uchar[newFrameSize];
     if (NULL == newTemp)
@@ -97,11 +105,9 @@ luint ID3_Frame::Render(uchar *buffer)
     }
 
     // if the compression actually saves space
-    if ((newFrameSize + sizeof(luint)) < bytesUsed)
+    if ((newFrameSize + sizeof(uint32)) < bytesUsed)
     {
-      luint posn;
-            
-      posn = __hdr.Size();
+      size_t posn = __hdr.Size();
       extras += sizeof(uint32);
             
       memcpy(&buffer[posn + sizeof(uint32)], newTemp, newFrameSize);
