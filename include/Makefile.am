@@ -11,5 +11,5 @@
 SUBDIRS = id3
 
 id3includedir = $(includedir)
-id3included_HEADERS = id3.h
+id3include_HEADERS = id3.h
 
