@@ -1,18 +1,16 @@
-// $Id: tag_find.cpp,v 1.6 1999/11/19 19:10:14 scott Exp $
-
-//  The authors have released ID3Lib as Public Domain (PD) and claim no
-//  copyright, patent or other intellectual property protection in this work.
-//  This means that it may be modified, redistributed and used in commercial
-//  and non-commercial software and hardware without restrictions.  ID3Lib is
-//  distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either
-//  express or implied.
-//
-//  The ID3Lib authors encourage improvements and optimisations to be sent to
-//  the ID3Lib coordinator, currently Dirk Mahoney (dirk@id3.org).  Approved
-//  submissions may be altered, and will be included and released under these
-//  terms.
-//
-//  Mon Nov 23 18:34:01 1998
+// $Id: tag_find.cpp,v 1.7 1999/11/29 18:47:37 scott Exp $
+// 
+// The authors have released ID3Lib as Public Domain (PD) and claim no
+// copyright, patent or other intellectual property protection in this work.
+// This means that it may be modified, redistributed and used in commercial
+// and non-commercial software and hardware without restrictions.  ID3Lib is
+// distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either
+// express or implied.
+// 
+// The ID3Lib authors encourage improvements and optimisations to be sent to
+// the ID3Lib coordinator, currently Dirk Mahoney (dirk@id3.org).  Approved
+// submissions may be altered, and will be included and released under these
+// terms.
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
@@ -73,13 +71,13 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id)
 ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, char *data)
 {
   ID3_Frame *frame = NULL;
-  wchar_t *temp;
+  unicode_t *temp;
   
-  temp = new wchar_t[strlen(data) + 1];
+  temp = new unicode_t[strlen(data) + 1];
   if (NULL == temp)
     ID3_THROW(ID3E_NoMemory);
 
-  ID3_ASCIItoUnicode(temp, data, strlen(data) + 1);
+  mbstoucs(temp, data, strlen(data) + 1);
     
   frame = Find(id, fld, temp);
     
@@ -88,7 +86,7 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, char *data)
   return frame;
 }
 
-ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, wchar_t *data)
+ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, unicode_t *data)
 {
   ID3_Frame *frame = NULL;
   
@@ -111,18 +109,18 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, wchar_t *data)
     for (ID3_Elem *cur = pStart; cur != pFinish; cur = cur->pNext)
     {
       if ((cur->pFrame != NULL) && (cur->pFrame->GetID() == id) &&
-          (data != NULL) && wcslen(data) > 0 && 
+          (data != NULL) && ucslen(data) > 0 && 
           BS_ISSET(cur->pFrame->__auiFieldBits, fld))
       {
         luint ulSize = cur->pFrame->Field(fld).BinSize();
-        wchar_t *wsBuffer = new wchar_t[ulSize];
+        unicode_t *wsBuffer = new unicode_t[ulSize];
           
         if (NULL == wsBuffer)
           ID3_THROW(ID3E_NoMemory);
           
         cur->pFrame->Field(fld).Get(wsBuffer, ulSize);
           
-        bool bInFrame = (wcscmp(wsBuffer, data) == 0);
+        bool bInFrame = (ucscmp(wsBuffer, data) == 0);
           
         delete [] wsBuffer;
 
@@ -198,6 +196,12 @@ ID3_Frame *ID3_Tag::operator[](luint num) const
 }
 
 // $Log: tag_find.cpp,v $
+// Revision 1.7  1999/11/29 18:47:37  scott
+// (): Updated methods to use unicode_t instead of wchar_t.  unicode_t is
+// defined in globals.h.  The type unicode_t is more likely to be two
+// bytes on every platform.  Updated calls to unicode methods to more
+// general methods defined in misc_support.cpp.
+//
 // Revision 1.6  1999/11/19 19:10:14  scott
 // * tag_find.cpp (Find): Add const qualifier.
 //
