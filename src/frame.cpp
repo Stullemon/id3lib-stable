@@ -1,4 +1,4 @@
-// $Id: frame.cpp,v 1.19 2000/05/29 15:59:50 eldamitri Exp $
+// $Id: frame.cpp,v 1.20 2000/06/06 12:22:49 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -31,6 +31,31 @@
 #include <config.h>
 #endif
 
+/** \class ID3_Frame
+ ** \brief The representative class of an id3v2 frame.
+ ** 
+ ** id3lib defines frames in a funny way.  Using some nice c++ conventions,
+ ** ID3_Frame class objects appear to be quite polymorphic; that is, they can
+ ** take on many forms.  The same ID3_Frame class provides the facilities for
+ ** the implementation of a complex APIC frame and for a simple text frame.
+ ** 
+ ** @author Dirk Mahoney
+ ** @version $Id: frame.cpp,v 1.20 2000/06/06 12:22:49 eldamitri Exp $
+ ** @see ID3_Tag
+ ** @see ID3_Field
+ ** @see ID3_Err
+ **/
+
+/** Default constructor; accepts as a default parameter the type of frame
+ ** to create.
+ ** 
+ ** The parameter which will internally set the frame's structure.  See
+ ** SetID() for more details.
+ **     
+ ** @param id The type of frame to create
+ ** @see ID3_FrameID
+ ** @see SetID
+ **/
 ID3_Frame::ID3_Frame(ID3_FrameID id)
   : __changed(false),
     __field_bitset(NULL),
@@ -41,8 +66,8 @@ ID3_Frame::ID3_Frame(ID3_FrameID id)
     __bad_parse(false)
 {
   
-  _InitFieldBits();
-  SetID(id);
+  this->_InitFieldBits();
+  this->SetID(id);
 }
 
 ID3_Frame::ID3_Frame(const ID3_FrameHeader &hdr)
@@ -68,7 +93,7 @@ ID3_Frame::ID3_Frame(const ID3_Frame& frame)
     __grouping_id('\0'),
     __bad_parse(false)
 {
-  _InitFieldBits();
+  this->_InitFieldBits();
   *this = frame;
 }
 
@@ -139,14 +164,19 @@ bool ID3_Frame::_ClearFields()
   return true;
 }
 
+/** Clears the frame of all data and resets the frame such that it can take
+ ** on the form of any id3v2 frame that id3lib supports.
+ ** 
+ ** @see ID3_Tag::Clear
+ **/
 void ID3_Frame::Clear()
 {
   this->_ClearFields();
   __hdr.Clear();
-  __encryption_id = '\0';
-  __grouping_id   = '\0';
+  __encryption_id   = '\0';
+  __grouping_id     = '\0';
   __num_fields      = 0;
-  __fields         = NULL;
+  __fields          = NULL;
 }
 
 void ID3_Frame::_InitFields()
@@ -192,6 +222,23 @@ void ID3_Frame::_InitFields()
   __changed = true;
 }
 
+/** Establishes the internal structure of an ID3_Frame object so
+ ** that it represents the id3v2 frame indicated by the parameter
+ ** 
+ ** Given an ID3_FrameID (a list of which is found in &lt;id3/field.h&gt;),
+ ** SetID() will structure the object according to the
+ ** frame you wish to implement.
+ ** 
+ ** Either using this call or via the constructor, this must be the first
+ ** command performed on an ID3_Frame object.  
+ ** 
+ ** \code
+ **   myFrame.SetID(ID3FID_TITLE);
+ ** \endcode
+ ** 
+ ** @param id The type of frame this frame should be set to
+ ** @see ID3_FrameID
+ **/
 bool ID3_Frame::SetID(ID3_FrameID id)
 {
   bool changed = (this->GetID() != id);
@@ -211,11 +258,14 @@ bool ID3_Frame::_SetID(ID3_FrameID id)
   return changed;
 }
 
-ID3_FrameID ID3_Frame::GetID() const
-{
-  return __hdr.GetFrameID();
-}
-
+/** \fn ID3_FrameID GetID() const
+ ** \brief Returns the type of frame that the object represents.
+ ** 
+ ** Useful in conjunction with ID3_Tag::Find() method
+ ** 
+ ** @returns The type, or id, of the frame
+ ** @see ID3_Tag::Find
+ **/
 
 bool ID3_Frame::SetSpec(ID3_V2Spec spec)
 {
@@ -227,33 +277,41 @@ ID3_V2Spec ID3_Frame::GetSpec() const
   return __hdr.GetSpec();
 }
 
-lsint ID3_Frame::_FindField(ID3_FieldID fieldName) const
+/** Returns a reference to the frame's internal field indicated by the
+ ** parameter.
+ ** 
+ ** A list of fields that are in given frames appears in <id3/field.cpp>.  This
+ ** method returns a reference to the field in question so that the result can
+ ** be used as though it were a field itself.
+ **
+ ** \code
+ **   ID3_TextEnc enc;
+ **   enc = (ID3_TextEnc) myFrame.Field(ID3FN_TEXTENC).Get();
+ ** \endcode
+ ** 
+ ** @param name The name of the field to be retrieved
+ ** @returns A reference to the desired field
+ **/
+ID3_Field& ID3_Frame::Field(ID3_FieldID fieldName) const
 {
-  
+  ID3_Field* field = NULL;
   if (BS_ISSET(__field_bitset, fieldName))
   {
-    for (lsint num = 0; num < (lsint) __num_fields; num++)
+    for (size_t num = 0; num < __num_fields; num++)
     {
       if (__fields[num]->__id == fieldName)
       {
-        return num;
+        field = __fields[num];
       }
     }
   }
-
-  return -1;
-}
-
-ID3_Field& ID3_Frame::Field(ID3_FieldID fieldName) const
-{
-  lsint fieldNum = _FindField(fieldName);
   
-  if (fieldNum < 0)
+  if (!field)
   {
     ID3_THROW(ID3E_FieldNotFound);
   }
-    
-  return *__fields[fieldNum];
+  
+  return *field;
 }
 
 size_t ID3_Frame::Size()
