@@ -1,4 +1,4 @@
-$Id: musicmatch.txt,v 1.3 2000/09/08 05:41:29 eldamitri Exp $
+$Id: musicmatch.txt,v 1.4 2000/09/09 23:02:37 eldamitri Exp $
 
 
                     MusicMatch (TM) tag format description
@@ -84,7 +84,7 @@ Abstract
     information.  One can assume that the specifition is unlikely to change,
     given MusicMatch's own abandonment of the format.  It should also be noted
     that incoporating functionality into applications to write tags in this
-    format is discouraged, as the format has been officially deprecated my
+    format is discouraged, as the format has been officially deprecated by
     MusicMatch themselves.
 
 3.  Conventions in this document
@@ -440,7 +440,7 @@ Abstract
 6.   Converting to ID3v2
 
     As of Jukebox 4.0, MusicMatch has abandoned the MusicMatch tagging format
-    inn favor of the open standard ID3v2.  The Jukebox application will convert
+    in favor of the open standard ID3v2.  The Jukebox application will convert
     old tags to ID3v2 upon request, but as this is a closed application that
     serves a limited number of platforms (currently on Windows and Macintosh),
     having a public specification for performing this mapping is necessary.  As
