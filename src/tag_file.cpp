@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.29 2000/10/14 23:29:18 eldamitri Exp $
+// $Id: tag_file.cpp,v 1.30 2000/10/21 22:24:29 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -38,6 +38,8 @@
 #include "io_strings.h"
 #include "tag_impl.h"
 #include "utils.h"
+
+using namespace dami;
 
 #if !defined HAVE_MKSTEMP
 #  include <stdio.h>
@@ -132,7 +134,7 @@ size_t ID3_TagImpl::Link(const char *fileInfo, flags_t tag_types)
     return 0;
   }
 
-  strcpy(_file_name, fileInfo);
+  _file_name = fileInfo;
   _changed = true;
 
   this->ParseFile();
@@ -177,7 +179,7 @@ size_t RenderV1ToFile(ID3_TagImpl& tag, fstream& file)
   
   ID3_IOStreamWriter out(file);
   
-  dami::id3::v1::render(out, tag);
+  id3::v1::render(out, tag);
 
   return ID3_V1_LEN;
 }
@@ -191,9 +193,9 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
     return 0;
   }
 
-  dami::String tagString; 
-  dami::io::StringWriter writer(tagString);
-  dami::id3::v2::render(writer, tag);
+  String tagString; 
+  io::StringWriter writer(tagString);
+  id3::v2::render(writer, tag);
   ID3D_NOTICE( "RenderV2ToFile: rendered v2" );
 
   const char* tagData = tagString.data();
@@ -209,6 +211,7 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
   }
   else
   {
+    String filename = tag.GetFileName();
 #if !defined HAVE_MKSTEMP
     // This section is for Windows folk
 
@@ -233,7 +236,7 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
     }
     
     rewind(tempOut);
-    dami::openWritableFile(tag.GetFileName(), file);
+    openWritableFile(filename, file);
     
     while (!feof(tempOut))
     {
@@ -248,17 +251,16 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
     // else we gotta make a temp file, copy the tag into it, copy the
     // rest of the old file after the tag, delete the old file, rename
     // this new file to the old file's name and update the handle
-
-    const char sTmpSuffix[] = ".XXXXXX";
-    if (strlen(tag.GetFileName()) + strlen(sTmpSuffix) > ID3_PATH_LENGTH)
+    String sTmpSuffix = ".XXXXXX";
+    if (filename.size() + sTmpSuffix.size() > ID3_PATH_LENGTH)
     {
       // log this
       return 0;
       //ID3_THROW_DESC(ID3E_NoFile, "filename too long");
     }
     char sTempFile[ID3_PATH_LENGTH];
-    strcpy(sTempFile, tag.GetFileName());
-    strcat(sTempFile, sTmpSuffix);
+    strcpy(sTempFile, filename.c_str());
+    strcat(sTempFile, sTmpSuffix.c_str());
     
     int fd = mkstemp(sTempFile);
     if (fd < 0)
@@ -291,10 +293,10 @@ size_t RenderV2ToFile(const ID3_TagImpl& tag, fstream& file)
 
     file.close();
 
-    remove(tag.GetFileName());
-    rename(sTempFile, tag.GetFileName());
+    remove(filename.c_str());
+    rename(sTempFile, filename.c_str());
 
-    dami::openWritableFile(tag.GetFileName(), file);
+    openWritableFile(filename, file);
 #endif
   }
 
@@ -307,12 +309,13 @@ flags_t ID3_TagImpl::Update(flags_t ulTagFlag)
   flags_t tags = ID3TT_NONE;
   
   fstream file;
-  ID3_Err err = dami::openWritableFile(this->GetFileName(), file);
-  _file_size = dami::getFileSize(file);
+  String filename = this->GetFileName();
+  ID3_Err err = openWritableFile(filename, file);
+  _file_size = getFileSize(file);
   
   if (err == ID3E_NoFile)
   {
-    err = dami::createFile(this->GetFileName(), file);
+    err = createFile(filename, file);
   }
   if (err == ID3E_ReadOnly)
   {
@@ -344,7 +347,7 @@ flags_t ID3_TagImpl::Update(flags_t ulTagFlag)
   }
   _changed = false;
   _file_tags.add(tags);
-  _file_size = dami::getFileSize(file);
+  _file_size = getFileSize(file);
   file.close();
   return tags;
 }
@@ -358,11 +361,11 @@ flags_t ID3_TagImpl::Strip(flags_t ulTagFlag)
   if (ulTagFlag & ID3TT_PREPENDED & _file_tags.get())
   {
     fstream file;
-    if (ID3E_NoError != dami::openWritableFile(this->GetFileName(), file))
+    if (ID3E_NoError != openWritableFile(this->GetFileName(), file))
     {
       return ulTags;
     }
-    _file_size = dami::getFileSize(file);
+    _file_size = getFileSize(file);
 
     // We will remove the id3v2 tag in place: since it comes at the beginning
     // of the file, we'll effectively move all the data that comes after the
@@ -445,7 +448,7 @@ flags_t ID3_TagImpl::Strip(flags_t ulTagFlag)
     nNewFileSize += this->GetPrependedBytes();
   }
 
-  if (ulTags && (truncate(_file_name, nNewFileSize) == -1))
+  if (ulTags && (truncate(_file_name.c_str(), nNewFileSize) == -1))
   {
     // log this
     return 0;
