@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: globals.h,v 1.45 2002/06/29 14:44:37 t1mpy Exp $
+/* $Id: globals.h,v 1.46 2002/06/29 17:42:54 t1mpy Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags Copyright
  * 1999, 2000 Scott Thomas Haug
@@ -401,3 +401,4 @@ ID3_ENUM(ID3_TimeStampFormat)
 #endif
 
 #endif /* _ID3LIB_GLOBALS_H_ */
+

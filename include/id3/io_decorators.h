@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: io_decorators.h,v 1.3 2002/06/27 12:48:28 t1mpy Exp $
+// $Id: io_decorators.h,v 1.4 2002/06/29 17:43:13 t1mpy Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -216,3 +216,4 @@ namespace dami
 };
 
 #endif /* _ID3LIB_READER_DECORATORS_H_ */
+

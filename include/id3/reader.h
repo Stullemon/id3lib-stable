@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: reader.h,v 1.11 2001/07/30 18:22:53 abscess Exp $
+// $Id: reader.h,v 1.12 2002/06/29 17:43:36 t1mpy Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -126,3 +126,4 @@ class ID3_CPP_EXPORT ID3_Reader
 };
 
 #endif /* _ID3LIB_READER_H_ */
+

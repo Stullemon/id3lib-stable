@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: io_strings.h,v 1.5 2002/06/27 12:48:23 t1mpy Exp $
+// $Id: io_strings.h,v 1.6 2002/06/29 17:43:24 t1mpy Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -235,3 +235,4 @@ namespace dami
 };
 
 #endif /* _ID3LIB_IO_STRINGS_H_ */
+

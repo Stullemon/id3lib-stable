@@ -1,4 +1,4 @@
-// $Id: writers.cpp,v 1.1 2000/10/08 20:40:51 eldamitri Exp $
+// $Id: writers.cpp,v 1.2 2002/06/29 17:37:42 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -42,3 +42,4 @@ ID3_MemoryWriter::writeChars(const char_type buf[], size_type len)
   return size;
 }
 */
+

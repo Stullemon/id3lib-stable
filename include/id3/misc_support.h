@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: misc_support.h,v 1.26 2002/03/20 10:32:55 slackorama Exp $
+// $Id: misc_support.h,v 1.27 2002/06/29 17:43:30 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -102,3 +102,4 @@ ID3_C_EXPORT ID3_Frame* ID3_GetSyncLyrics(const ID3_Tag *tag, const char *lang,
                                           const char *desc, char *pData, size_t &size);
 
 #endif /* _ID3LIB_MISC_SUPPORT_H_ */
+

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: helpers.h,v 1.7 2002/06/29 14:42:27 t1mpy Exp $
+// $Id: helpers.h,v 1.8 2002/06/29 17:43:01 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -106,3 +106,4 @@ namespace dami
 };
       
 #endif /* _ID3LIB_HELPERS_H_ */
+
