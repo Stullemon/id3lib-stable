@@ -1,4 +1,4 @@
-// $Id: frame.h,v 1.14 2000/04/28 16:25:14 eldamitri Exp $
+// $Id: frame.h,v 1.15 2000/05/01 16:41:00 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,9 +28,9 @@
 #define __ID3LIB_FRAME_H__
 
 #include "spec.h"
-#include "field.h"
 #include "header_frame.h"
 
+class ID3_Field;
 class ID3_Tag;
 
 /** The representative class of an id3v2 frame.
@@ -41,14 +41,13 @@ class ID3_Tag;
  ** the implementation of a complex APIC frame and for a simple text frame.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: frame.h,v 1.14 2000/04/28 16:25:14 eldamitri Exp $
+ ** @version $Id: frame.h,v 1.15 2000/05/01 16:41:00 eldamitri Exp $
  ** @see ID3_Tag
  ** @see ID3_Field
  ** @see ID3_Err
  **/
 class ID3_Frame : public ID3_Speccable
 {
-  friend ID3_Tag;
 public:
   /** Default constructor; accepts as a default parameter the type of frame
    ** to create.
@@ -65,14 +64,14 @@ public:
   ID3_Frame(const ID3_Frame&);
 
   /// Destructor.
-  ~ID3_Frame(void);
+  ~ID3_Frame();
   
   /** Clears the frame of all data and resets the frame such that it can take
    ** on the form of any id3v2 frame that id3lib supports.
    ** 
    ** @see ID3_Tag::Clear
    **/
-  void        Clear(void);
+  void        Clear();
 
   /** Establishes the internal structure of an ID3_Frame object so
    ** that it represents the id3v2 frame indicated by the parameter
@@ -100,7 +99,7 @@ public:
    ** @returns The type, or id, of the frame
    ** @see ID3_Tag::Find
    **/
-  ID3_FrameID GetID(void) const;
+  ID3_FrameID GetID() const;
   
   /** Returns a reference to the frame's internal field indicated by the 
    ** parameter.
@@ -121,18 +120,20 @@ public:
   ID3_Field  &Field(ID3_FieldID name) const;
   
   ID3_Frame  &operator=( const ID3_Frame &rFrame );
+  bool        HasChanged() const;
+  void        Parse(uchar *buffer, luint size);
+  luint       Size();
+  luint       Render(uchar *buffer);
+  bool        Contains(ID3_FieldID fld)
+  { return BS_ISSET(__auiFieldBits, fld); }
+  void        SetSpec(const ID3_V2Spec);
 
 protected:
   void        InitFields();
-  void        InitFieldBits(void);
-  bool        HasChanged(void) const;
-  void        Parse(uchar *buffer, luint size);
-  void        SetSpec(const ID3_V2Spec);
+  void        InitFieldBits();
   ID3_V2Spec  GetSpec() const;
-  void        UpdateStringTypes(void);
-  void        UpdateFieldDeps(void);
-  luint       Size(void);
-  luint       Render(uchar *buffer);
+  void        UpdateStringTypes();
+  void        UpdateFieldDeps();
   lsint       FindField(ID3_FieldID name) const;
 
 private:
