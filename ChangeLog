@@ -1,3 +1,56 @@
+2002-07-22 Monday 19:56   Thijmen Klok <thijmen@id3lib.org>
+
+	* include/id3/globals.h (1.49), include/id3/tag.h (1.56),
+	src/Makefile.am (1.27), src/Makefile.in (1.56), src/tag.cpp (1.48),
+	src/tag_impl.h (1.4), src/tag_parse.cpp (1.42), src/mp3_header.h
+	(1.1), src/mp3_parse.cpp (1.1): Added mp3 header info 
+
+2002-07-17 Wednesday 18:40   Thijmen Klok <thijmen@id3lib.org>
+
+	* Makefile.am (1.28), include/Makefile.am (1.6),
+	include/id3/Makefile.am (1.21), libprj/Makefile.am (1.6),
+	m4/Makefile.am (1.9), prj/Makefile.am (1.5, rel-3-7-13,
+	rel-3-7-12), src/Makefile.am (1.26): added copyright 
+
+2002-07-17 Wednesday 18:35   Thijmen Klok <thijmen@id3lib.org>
+
+	* Makefile.in (1.58), configure.in (1.61), doc/Makefile.in (1.17),
+	examples/Makefile.in (1.22), id3com/Makefile.in (1.1),
+	id3com/Sample/Makefile.in (1.1), include/Makefile.in (1.12),
+	include/id3/Makefile.in (1.56), libprj/Makefile.in (1.3),
+	m4/Makefile.in (1.17), prj/Makefile.in (1.3), src/Makefile.in
+	(1.55), aclocal.m4 (1.18), configure (1.72, rel-3-7-7): regenerated 
+
+2002-07-17 Wednesday 17:42   Thijmen Klok <thijmen@id3lib.org>
+
+	* configure.in (1.60): changed AC_PROG_LIBTOOL to AM_PROG_LIBTOOL 
+
+2002-07-17 Wednesday 17:16   Thijmen Klok <thijmen@id3lib.org>
+
+	* id3com/Sample/Makefile.am (1.1): initial file 
+
+2002-07-17 Wednesday 17:14   Thijmen Klok <thijmen@id3lib.org>
+
+	* id3com/Makefile.am (1.9): changed to reflect dir contents 
+
+2002-07-17 Wednesday 17:03   Thijmen Klok <thijmen@id3lib.org>
+
+	* m4/Makefile.am (1.8): added id3_unicode.m4 
+
+2002-07-16 Tuesday 17:32   Thijmen Klok <thijmen@id3lib.org>
+
+	* include/id3/: Makefile.am (1.20), Makefile.in (1.55): added
+	id3lib_bitset 
+
+2002-07-08 Monday 20:27   Thijmen Klok <thijmen@id3lib.org>
+
+	* prj/Makefile.am (1.4), prj/Makefile.in (1.2), libprj/Makefile.am
+	(1.5), libprj/Makefile.in (1.2): added win32.readme 
+
+2002-07-06 Saturday 23:31   Thijmen Klok <thijmen@id3lib.org>
+
+	* ChangeLog (1.130): added last two days 
+
 2002-07-06 Saturday 23:28   Thijmen Klok <thijmen@id3lib.org>
 
 	* src/tag_parse_v1.cpp (1.24): fixed setting field when previous
@@ -634,16 +687,12 @@
 	- Moved debug.h functionality to configure script 
 	- Removed file debug.h and all its inclusion's 
 
-2000-10-29 Sunday 02:18  eldamitri
-
-	* src/debug.h (1.2): Moved functionality in configure.in 
-
 2000-10-24 Tuesday 18:12  eldamitri
 
 	* src/: field_def.h (1.1), field_impl.h (1.1), frame_def.h (1.1),
 	frame_impl.h (1.1), header.h (1.1), header_frame.h (1.1),
-	header_tag.h (1.1), spec.h (1.1), tag_impl.h (1.1), debug.h (1.1),
-	flags.h (1.1): Moved from include/id3/ to src/ 
+	header_tag.h (1.1), spec.h (1.1), tag_impl.h (1.1), flags.h (1.1): 
+	Moved from include/id3/ to src/ 
 
 2000-10-24 Tuesday 09:00  eldamitri
 
@@ -1013,11 +1062,6 @@
 	zlib/include/zutil.h (1.3), zlib/src/gzio.c (1.3), zlib/src/zutil.c
 	(1.3): Updates to allow functionality for WinCE 
 
-2000-10-14 Saturday 23:26  eldamitri
-
-	* src/uint28.cpp (1.11): Removed; now use functions readUInt28 and
-	writeUInt28 
-
 2000-10-14 Saturday 23:23  eldamitri
 
 	* include/id3/Makefile.am (1.14), include/id3/io_helpers.h (1.2),
@@ -1025,11 +1069,6 @@
 	src/io_helpers.cpp (1.2), src/tag_impl.cpp (1.4), src/tag_parse.cpp
 	(1.34): Replaced class uint28 with functions
 	readUInt28(ID3_Reader&) and writeUInt28(ID3_Writer&, uint32) 
-
-2000-10-14 Saturday 22:50  eldamitri
-
-	* src/error.cpp (1.11): Removed; id3lib no longer uses exception
-	handling 
 
 2000-10-14 Saturday 22:46  eldamitri
 
@@ -1069,7 +1108,7 @@
 	(1.29), src/tag_file.cpp (1.28), src/tag_impl.cpp (1.3),
 	src/tag_parse.cpp (1.33), src/tag_parse_lyrics3.cpp (1.26),
 	src/tag_parse_musicmatch.cpp (1.14), src/tag_parse_v1.cpp (1.16),
-	src/tag_render.cpp (1.33), src/uint28.cpp (1.10): 
+	src/tag_render.cpp (1.33): 
 	- Replaced some io decorators in favor of io helper functions
 	(better efficiency) BinaryReader         -> readBinary,
 	readAllBinary TextReader           -> readString, readUnicodeString, 
@@ -1116,11 +1155,6 @@
 	(1.1), include/id3/io_strings.h (1.1), src/io_decorators.cpp (1.1),
 	src/io_helpers.cpp (1.1): Initial release 
 
-2000-10-14 Saturday 20:15  eldamitri
-
-	* src/reader_decorators.cpp (1.2): No longer needed.  Replaced by
-	io_helpers, io_decorators, and io_strings 
-
 2000-10-13 Friday 20:29  eldamitri
 
 	* examples/demo_simple.c (1.2): 
@@ -1131,11 +1165,6 @@
 	* examples/: demo_convert.cpp (1.11), demo_copy.cpp (1.5),
 	demo_info.cpp (1.21), demo_tag.cpp (1.11): 
 	(main): Bugfix with checking for warning, notice, v1tag, v2tag 
-
-2000-10-13 Friday 20:22  eldamitri
-
-	* src/uint28.cpp (1.9): Minor bugfix with placement of include for
-	config.h 
 
 2000-10-13 Friday 20:21  eldamitri
 
@@ -1317,16 +1346,6 @@
 	- size_t getUnSyncSize(uchar *, size_t); 
 	- void   unsync(uchar *, size_t, const uchar *, size_t); 
 	- size_t resync(uchar *, size_t); 
-
-2000-10-09 Monday 06:32  eldamitri
-
-	* src/uint28.cpp (1.8): 
-	- Added inclusion of files readers.h, reader_decorators.h, writers.h 
-	- Removed constructor uint28(const uchar*) 
-	- Removed methods Parse(const uchar*), Parse(const char*), 
-	Render(uchar*) and Render(char*) 
-	- Added methods Parse(ID3_Reader&) and Render(ID3_Writer&) 
-	- Reimplemented operator<< and operator>> to use Readers, Writers 
 
 2000-10-09 Monday 06:31  eldamitri
 
@@ -1627,11 +1646,6 @@
 	Hopefully they will be exposed soon enough for the next major
 	release.  
 
-2000-10-08 Sunday 23:05  eldamitri
-
-	* src/tag_sync.cpp (1.9): Removed.  No longer used.  Reader/writer
-	decorators provide same functionality.  
-
 2000-10-08 Sunday 23:03  eldamitri
 
 	* src/Makefile.am (1.18): 
@@ -1648,11 +1662,11 @@
 
 	* examples/Makefile.am (1.17): Removed testreader, added testio 
 
-2000-10-08 Sunday 22:38  eldamitri
+2000-10-08 Sunday 22:40  eldamitri
 
-	* src/reader_decorators.cpp (1.1), src/writer_decorators.cpp (1.1),
-	src/writers.cpp (1.1), include/id3/writer.h (1.1),
-	include/id3/writers.h (1.1): Initial release.  
+	* src/writer_decorators.cpp (1.1), src/writers.cpp (1.1),
+	include/id3/writer.h (1.1), include/id3/writers.h (1.1): Initial
+	release.  
 
 2000-10-08 Sunday 22:32  eldamitri
 
@@ -1674,8 +1688,7 @@
 
 	* src/: tag_file.cpp (1.25), tag_find.cpp (1.19), tag_parse.cpp
 	(1.29), tag_parse_lyrics3.cpp (1.23), tag_parse_musicmatch.cpp
-	(1.11), tag_parse_v1.cpp (1.14), tag_render.cpp (1.31),
-	tag_sync.cpp (1.8): 
+	(1.11), tag_parse_v1.cpp (1.14), tag_render.cpp (1.31): 
 	- Adjusted for changes in namespace 
 	- Implementation for methods of class ID3_TagImpl rather than class 
 	ID3_Tag 
@@ -1998,13 +2011,6 @@
 	tag_render.cpp (1.30), frame_render.cpp (1.14): Updated for renamed
 	functions in utils.h.  
 
-2000-09-27 Wednesday 09:40  eldamitri
-
-	* src/tag_sync.cpp (1.7): 
-	- All functions now in namespace ::id3 
-	- Renamed all functions to remove ID3_ prefix and uppercase first
-	char 
-
 2000-09-27 Wednesday 09:38  eldamitri
 
 	* src/: tag_find.cpp (1.17), utils.cpp (1.8): 
@@ -2061,10 +2067,6 @@
 
 	* examples/test_reader.cpp (1.1), include/id3/readers.h (1.1): 
 	Initial release 
-
-2000-09-27 Wednesday 05:32  eldamitri
-
-	* src/int28.cpp (1.5): No long used (replaced by uint28) 
 
 2000-09-27 Wednesday 05:26  eldamitri
 
@@ -2129,10 +2131,6 @@
 
 	* NEWS (1.22), configure.in (1.43, rel-3-7-13, rel-3-7-13),
 	id3lib.spec.in (1.20, rel-3-7-13): Updated for 3.7.13 release 
-
-2000-09-15 Friday 01:54  eldamitri
-
-	* src/uint28.cpp (1.7, rel-3-7-13): Added check for iomanip 
 
 2000-09-15 Friday 01:54  eldamitri
 
@@ -2299,20 +2297,19 @@
 	include/id3/globals.h (1.33, rel-3-7-13),
 	include/id3/misc_support.h (1.21), include/id3/sized_types.h (1.5,
 	rel-3-7-13), include/id3/tag.h (1.41, rel-3-7-13),
-	include/id3/utils.h (1.9, rel-3-7-13), src/error.cpp (1.10,
-	rel-3-7-13), src/field.cpp (1.27), src/field_binary.cpp (1.13),
-	src/field_integer.cpp (1.10), src/field_string_ascii.cpp (1.14),
-	src/field_string_unicode.cpp (1.18), src/frame.cpp (1.23),
-	src/frame_parse.cpp (1.17), src/frame_render.cpp (1.13,
-	rel-3-7-13), src/globals.cpp (1.3, rel-3-7-13), src/header.cpp
-	(1.9, rel-3-7-13), src/header_frame.cpp (1.11, rel-3-7-13),
-	src/header_tag.cpp (1.13, rel-3-7-13), src/int28.cpp (1.4,
-	rel-3-7-13), src/tag.cpp (1.25, rel-3-7-13), src/tag_file.cpp
-	(1.23, rel-3-7-13), src/tag_find.cpp (1.15, rel-3-7-13),
-	src/tag_parse.cpp (1.25), src/tag_parse_musicmatch.cpp (1.8,
-	rel-3-7-13), src/tag_render.cpp (1.28, rel-3-7-13), src/utils.cpp
-	(1.7, rel-3-7-13): Renamed all member variables.  Changed '__' to
-	'_', since names with '__' aren't allowed in the C++ standard.  
+	include/id3/utils.h (1.9, rel-3-7-13), src/field.cpp (1.27),
+	src/field_binary.cpp (1.13), src/field_integer.cpp (1.10),
+	src/field_string_ascii.cpp (1.14), src/field_string_unicode.cpp
+	(1.18), src/frame.cpp (1.23), src/frame_parse.cpp (1.17),
+	src/frame_render.cpp (1.13, rel-3-7-13), src/globals.cpp (1.3,
+	rel-3-7-13), src/header.cpp (1.9, rel-3-7-13), src/header_frame.cpp
+	(1.11, rel-3-7-13), src/header_tag.cpp (1.13, rel-3-7-13),
+	src/tag.cpp (1.25, rel-3-7-13), src/tag_file.cpp (1.23,
+	rel-3-7-13), src/tag_find.cpp (1.15, rel-3-7-13), src/tag_parse.cpp
+	(1.25), src/tag_parse_musicmatch.cpp (1.8, rel-3-7-13),
+	src/tag_render.cpp (1.28, rel-3-7-13), src/utils.cpp (1.7,
+	rel-3-7-13): Renamed all member variables.  Changed '__' to '_',
+	since names with '__' aren't allowed in the C++ standard.  
 
 2000-09-11 Monday 09:39  eldamitri
 
@@ -2374,12 +2371,6 @@
 	* doc/musicmatch.txt (1.2): Update documentation on MusicMatch
 	format.  
 
-2000-09-06 Wednesday 09:04  eldamitri
-
-	* src/error.cpp (1.9): 
-	(ID3_Error): Replaced strdup, since it's not part of standard
-	libraries (thanks Steven Frank) 
-
 2000-09-05 Tuesday 08:55  eldamitri
 
 	* doc/musicmatch.txt (1.1): Initial release.  
@@ -2393,9 +2384,8 @@
 
 2000-08-28 Monday 15:41  eldamitri
 
-	* include/id3/field.h (1.31), src/tag_parse_musicmatch.cpp (1.5),
-	src/uint28.cpp (1.6): Portability fixes for the Mac (thanks John
-	Firebaugh) 
+	* include/id3/field.h (1.31), src/tag_parse_musicmatch.cpp (1.5): 
+	Portability fixes for the Mac (thanks John Firebaugh) 
 
 2000-08-28 Monday 06:27  eldamitri
 
@@ -3089,12 +3079,6 @@
 	* examples/: 230-syncedlyrics.tag (1.1), example.lyr (1.1,
 	rel-3-7-13, rel-3-7-12, rel-3-7-11, rel-3-7-10): Initial revision 
 
-2000-06-22 Thursday 23:11  eldamitri
-
-	* src/error.cpp (1.8, rel-3-7-12, rel-3-7-11, rel-3-7-10): 
-	(ID3_Error): Use strdup rather than strlen + new + strncpy 
-	(~ID3_Error): Use array delete to free memory 
-
 2000-06-22 Thursday 22:20  eldamitri
 
 	* src/tag_parse_lyrics3.cpp (1.13): 
@@ -3115,12 +3099,6 @@
 	* src/frame.cpp (1.22, rel-3-7-12, rel-3-7-11, rel-3-7-10): 
 	(ID3_Frame): Initialize spec in construcotr.  
 
-2000-06-22 Thursday 21:31  adcockj
-
-	* src/: error.cpp (1.7), uint28.cpp (1.5, rel-3-7-12, rel-3-7-11,
-	rel-3-7-10): Fixed ID3_Error memory Leak and windows compiler
-	incompatibilty with uint28 
-
 2000-06-21 Wednesday 05:30  eldamitri
 
 	* examples/test_remove.cpp (1.1): Initial revision.  
@@ -3135,23 +3113,6 @@
 
 	* src/misc_support.cpp (1.14): Cleaned up memory leaks from
 	removing frames 
-
-2000-06-14 Wednesday 18:43  eldamitri
-
-	* src/uint28.cpp (1.4): 
-	- Added new documentation 
-	- Made constructors 'explicit' 
-	- Defined new class constants BITSUSED, MINVAL, and MAXVAL 
-	- New implementation for default constructor 
-	- Destructor is now virtual 
-	- Assigning a uint32 that is greater than the largest possible value 
-	maximizes the internal value, rather than masking it 
-	- Implementation of operator=(const char*) moved to Parse(const char
-	*) 
-	- Render now returns number of characters rendered 
-	- Removed unnecessary inclusion of string.h 
-	- Cleaned up implementation of Parse(), Render(), operator<<, and 
-	operator>> 
 
 2000-06-14 Wednesday 18:41  eldamitri
 
@@ -3530,14 +3491,6 @@
 	(BinSize): Fixed bug that was reporting the wrong binary size for 
 	unicode strings 
 
-2000-05-29 Monday 01:26  eldamitri
-
-	* src/tag_sync.cpp (1.6, rel-3-7-13, rel-3-7-12, rel-3-7-11,
-	rel-3-7-10, rel-3-7-9): 
-	(ID3_ReSync): Fixed a bug in ReSync'ing that caused it to improperly 
-	handle the last character 
-	(ID3_ShouldUnsync): Fixed a bug with recognizing sync signals 
-
 2000-05-29 Monday 01:25  eldamitri
 
 	* src/tag_render.cpp (1.21, rel-3-7-9): 
@@ -3876,9 +3829,9 @@
 
 2000-05-12 Friday 23:07  eldamitri
 
-	* src/error.cpp (1.6, rel-3-7-9), src/field_binary.cpp (1.9),
-	src/field_integer.cpp (1.8, rel-3-7-9), src/field_string_ascii.cpp
-	(1.11), src/field_string_unicode.cpp (1.11), src/frame.cpp (1.14),
+	* src/field_binary.cpp (1.9), src/field_integer.cpp (1.8,
+	rel-3-7-9), src/field_string_ascii.cpp (1.11),
+	src/field_string_unicode.cpp (1.11), src/frame.cpp (1.14),
 	src/frame_parse.cpp (1.13), src/misc_support.cpp (1.11),
 	src/utils.cpp (1.3, rel-3-7-10, rel-3-7-9), include/id3/frame.h
 	(1.24), include/id3/globals.h (1.23), include/id3/misc_support.h
@@ -3977,18 +3930,10 @@
 	(PaddingSize): 
 	- Updated luint return type to size_t 
 
-2000-05-12 Friday 05:40  eldamitri
-
-	* src/tag_sync.cpp (1.5): 
-	(ID3_ReSync): Updated luint parameter, return type to size_t 
-	(ID3_GetUnSyncSize): Updated luint parameter, return type to size_t 
-	(ID3_UnSync): Updated luint parameters to size_t 
-
 2000-05-11 Thursday 18:04  eldamitri
 
-	* include/id3/utils.h (1.5), src/tag_sync.cpp (1.4): All syncing
-	functions are now stand-alone, rather than member functions of
-	ID3_Tag 
+	* include/id3/utils.h (1.5): All syncing functions are now
+	stand-alone, rather than member functions of ID3_Tag 
 
 2000-05-11 Thursday 15:01  eldamitri
 
@@ -4551,12 +4496,6 @@
 
 2000-05-04 Thursday 01:24  eldamitri
 
-	* src/uint28.cpp (1.3, rel-3-7-9, rel-3-7-8, rel-3-7-7): 
-	(operator=): Returns *this (operator>>): Removed std:: (will put
-	this in later when make the move to STL/STC) 
-
-2000-05-04 Thursday 01:24  eldamitri
-
 	* src/header_tag.cpp (1.7): Added static definition of
 	ID3_TagHeader::ID 
 
@@ -4608,16 +4547,15 @@
 2000-05-03 Wednesday 05:02  eldamitri
 
 	* include/id3/field.h (1.19), include/id3/frame.h (1.17),
-	include/id3/tag.h (1.22), src/error.cpp (1.5, rel-3-7-8,
-	rel-3-7-7), src/field.cpp (1.12), src/field_binary.cpp (1.6),
-	src/field_integer.cpp (1.5), src/field_string_ascii.cpp (1.5),
-	src/field_string_unicode.cpp (1.5), src/frame.cpp (1.9),
-	src/frame_parse.cpp (1.6), src/frame_render.cpp (1.6), src/tag.cpp
-	(1.12), src/tag_file.cpp (1.7), src/tag_find.cpp (1.7),
-	src/tag_parse.cpp (1.8), src/tag_parse_lyrics3.cpp (1.5),
-	src/tag_parse_v1.cpp (1.5, rel-3-7-8, rel-3-7-7),
-	src/tag_render.cpp (1.12): Renamed member variables to something
-	not so windows-ish (ick!) 
+	include/id3/tag.h (1.22), src/field.cpp (1.12),
+	src/field_binary.cpp (1.6), src/field_integer.cpp (1.5),
+	src/field_string_ascii.cpp (1.5), src/field_string_unicode.cpp
+	(1.5), src/frame.cpp (1.9), src/frame_parse.cpp (1.6),
+	src/frame_render.cpp (1.6), src/tag.cpp (1.12), src/tag_file.cpp
+	(1.7), src/tag_find.cpp (1.7), src/tag_parse.cpp (1.8),
+	src/tag_parse_lyrics3.cpp (1.5), src/tag_parse_v1.cpp (1.5,
+	rel-3-7-8, rel-3-7-7), src/tag_render.cpp (1.12): Renamed member
+	variables to something not so windows-ish (ick!) 
 
 2000-05-03 Wednesday 00:43  eldamitri
 
@@ -4752,11 +4690,6 @@
 	* include/id3/utils.h (1.3), src/utils.cpp (1.1): Added; moved util
 	functions out of misc_support 
 
-2000-05-02 Tuesday 18:50  eldamitri
-
-	* src/uint28.cpp (1.2): Added; better implementation of the 28-bit
-	unsigned int class.  
-
 2000-05-01 Monday 18:41  eldamitri
 
 	* include/id3/frame.h (1.15): 
@@ -4792,20 +4725,18 @@
 2000-05-01 Monday 15:04  eldamitri
 
 	* Makefile.am (1.17), configure.in (1.31, rel-3-7-12),
-	src/Makefile.am (1.10), src/error.cpp (1.4), src/field.cpp (1.8),
-	src/field_binary.cpp (1.5), src/field_integer.cpp (1.4),
-	src/field_string_ascii.cpp (1.4), src/field_string_unicode.cpp
-	(1.4), src/frame.cpp (1.7), src/frame_parse.cpp (1.4),
-	src/frame_render.cpp (1.4), src/globals.cpp (1.2, rel-3-7-12,
-	rel-3-7-11, rel-3-7-10, rel-3-7-9, rel-3-7-8, rel-3-7-7),
-	src/header.cpp (1.6), src/header_frame.cpp (1.3),
-	src/header_tag.cpp (1.4), src/int28.cpp (1.3, rel-3-7-12,
-	rel-3-7-11, rel-3-7-10, rel-3-7-9, rel-3-7-8, rel-3-7-7),
+	src/Makefile.am (1.10), src/field.cpp (1.8), src/field_binary.cpp
+	(1.5), src/field_integer.cpp (1.4), src/field_string_ascii.cpp
+	(1.4), src/field_string_unicode.cpp (1.4), src/frame.cpp (1.7),
+	src/frame_parse.cpp (1.4), src/frame_render.cpp (1.4),
+	src/globals.cpp (1.2, rel-3-7-12, rel-3-7-11, rel-3-7-10,
+	rel-3-7-9, rel-3-7-8, rel-3-7-7), src/header.cpp (1.6),
+	src/header_frame.cpp (1.3), src/header_tag.cpp (1.4),
 	src/misc_support.cpp (1.5), src/tag.cpp (1.8), src/tag_file.cpp
 	(1.5), src/tag_find.cpp (1.5), src/tag_parse.cpp (1.6),
 	src/tag_parse_lyrics3.cpp (1.4), src/tag_parse_v1.cpp (1.4),
-	src/tag_render.cpp (1.9), src/tag_sync.cpp (1.3, rel-3-7-8,
-	rel-3-7-7): Removed Log comments at the end of all files.  
+	src/tag_render.cpp (1.9): Removed Log comments at the end of all
+	files.  
 
 2000-04-29 Saturday 00:04  eldamitri
 
@@ -5226,11 +5157,6 @@
 
 2000-04-24 Monday 16:47  eldamitri
 
-	* src/error.cpp (1.3, rel-3-7-5, rel-3-7-4, rel-3-7-3): 
-	(ID3_ErrorDescs): Added "no error" to list 
-
-2000-04-24 Monday 16:47  eldamitri
-
 	* src/c_wrapper.cpp (1.3, rel-3-7-3): 
 	(ID3Tag_Parse): Now returns an ID3_Err 
 	(ID3Tag_Update): Now returns an ID3_Err 
@@ -5382,10 +5308,6 @@
 	* examples/Makefile.am (1.5, rel-3-7-8, rel-3-7-7, rel-3-7-8,
 	rel-3-7-7, rel-3-7-5, rel-3-7-4, rel-3-7-3, rel-3-7-2): 
 	(EXTRA_DIST): mp3 files are no longer distributed 
-
-2000-04-21 Friday 07:56  eldamitri
-
-	* src/dll_wrapper.cpp (1.3): Removed; replaced by c_wrapper.cpp 
 
 2000-04-21 Friday 07:53  eldamitri
 
@@ -5589,8 +5511,7 @@
 
 2000-04-20 Thursday 03:57  eldamitri
 
-	* include/id3/utils.h (1.2), src/version.cpp (1.3): No longer
-	needed 
+	* include/id3/utils.h (1.2): No longer needed 
 
 2000-04-20 Thursday 02:40  eldamitri
 
@@ -5637,19 +5558,18 @@
 2000-04-19 Wednesday 03:49  eldamitri
 
 	* id3com/id3com.dsp (1.2), libprj/id3lib.dsp (1.2), prj/id3lib.dsp
-	(1.5, rel-3-7-13, rel-3-7-12), prj/id3lib.mak (1.3) (utags:
-	rel-3-7-1): Updated for new file paths.  
+	(1.5), prj/id3lib.mak (1.3) (utags: rel-3-7-1): Updated for new
+	file paths.  
 
 2000-04-19 Wednesday 00:14  eldamitri
 
-	* src/: version.cpp (1.2), id3/version.cpp (1.6): Moved version.cpp
-	from src/id3/ to src/ 
+	* src/id3/version.cpp (1.6): Moved version.cpp from src/id3/ to
+	src/ 
 
 2000-04-19 Wednesday 00:14  eldamitri
 
-	* src/: tag_sync.cpp (1.2, rel-3-7-5, rel-3-7-4, rel-3-7-3,
-	rel-3-7-2, rel-3-7-1), id3/tag_sync.cpp (1.11): Moved tag_sync.cpp
-	from src/id3/ to src/ 
+	* src/id3/tag_sync.cpp (1.11): Moved tag_sync.cpp from src/id3/ to
+	src/ 
 
 2000-04-19 Wednesday 00:14  eldamitri
 
@@ -5696,9 +5616,7 @@
 
 2000-04-19 Wednesday 00:12  eldamitri
 
-	* src/: int28.cpp (1.2, rel-3-7-5, rel-3-7-4, rel-3-7-3, rel-3-7-2,
-	rel-3-7-1), id3/int28.cpp (1.13): Moved int28.cpp from src/id3/ to
-	src/ 
+	* src/id3/int28.cpp (1.13): Moved int28.cpp from src/id3/ to src/ 
 
 2000-04-19 Wednesday 00:12  eldamitri
 
@@ -5765,13 +5683,12 @@
 
 2000-04-19 Wednesday 00:10  eldamitri
 
-	* src/: error.cpp (1.2, rel-3-7-2, rel-3-7-1), id3/error.cpp
-	(1.14): Moved error.cpp from src/id3/ to src/ 
+	* src/id3/error.cpp (1.14): Moved error.cpp from src/id3/ to src/ 
 
 2000-04-19 Wednesday 00:09  eldamitri
 
-	* src/: dll_wrapper.cpp (1.2, rel-3-7-1), id3/dll_wrapper.cpp
-	(1.15): Moved dll_wrapper.cpp from src/id3/ to src/ 
+	* src/id3/dll_wrapper.cpp (1.15): Moved dll_wrapper.cpp from
+	src/id3/ to src/ 
 
 2000-04-19 Wednesday 00:07  eldamitri
 
@@ -6431,84 +6348,6 @@
 
 	* src/Makefile.am (rel-3-1.3): Updated for development branch 
 
-2000-03-02 Thursday 21:09  eldamitri
-
-	* src/uint28.cpp (1.1): file uint28.cpp was initially added on
-	branch rel-3-1.  
-
-2000-03-02 Thursday 21:09  eldamitri
-
-	* src/text_field.cpp (1.1): file text_field.cpp was initially added
-	on branch rel-3-1.  
-
-2000-03-02 Thursday 21:09  eldamitri
-
-	* src/tag_header.cpp (1.1): file tag_header.cpp was initially added
-	on branch rel-3-1.  
-
-2000-03-02 Thursday 21:09  eldamitri
-
-	* src/lib.cpp (1.1): file lib.cpp was initially added on branch
-	rel-3-1.  
-
-2000-03-02 Thursday 21:08  eldamitri
-
-	* src/integer_field.cpp (1.1): file integer_field.cpp was initially
-	added on branch rel-3-1.  
-
-2000-03-02 Thursday 21:08  eldamitri
-
-	* src/genre.cpp (1.1): file genre.cpp was initially added on branch
-	rel-3-1.  
-
-2000-03-02 Thursday 21:08  eldamitri
-
-	* src/frame_header.cpp (1.1): file frame_header.cpp was initially
-	added on branch rel-3-1.  
-
-2000-03-02 Thursday 21:08  eldamitri
-
-	* src/frame_defs.cpp (1.1): file frame_defs.cpp was initially added
-	on branch rel-3-1.  
-
-2000-03-02 Thursday 21:08  eldamitri
-
-	* src/field_defs.cpp (1.1): file field_defs.cpp was initially added
-	on branch rel-3-1.  
-
-2000-03-02 Thursday 21:08  eldamitri
-
-	* src/details.cpp (1.1): file details.cpp was initially added on
-	branch rel-3-1.  
-
-2000-03-02 Thursday 21:08  eldamitri
-
-	* src/debug.cpp (1.1): file debug.cpp was initially added on branch
-	rel-3-1.  
-
-2000-03-02 Thursday 21:08  eldamitri
-
-	* src/conversion_ops.cpp (1.1): file conversion_ops.cpp was
-	initially added on branch rel-3-1.  
-
-2000-03-02 Thursday 21:07  eldamitri
-
-	* src/common_ops.cpp (1.1): file common_ops.cpp was initially added
-	on branch rel-3-1.  
-
-2000-03-02 Thursday 21:07  eldamitri
-
-	* src/: binary_field.cpp, common_ops.cpp, conversion_ops.cpp,
-	debug.cpp, details.cpp, field_defs.cpp, frame_defs.cpp,
-	frame_header.cpp, genre.cpp, integer_field.cpp, lib.cpp,
-	tag_header.cpp, text_field.cpp, uint28.cpp
-	(rel-3-1.[1,1,1,1,1,1,1,1,1,1,1,1,1,1]): Initial revision 
-
-2000-03-02 Thursday 21:07  eldamitri
-
-	* src/binary_field.cpp (1.1): file binary_field.cpp was initially
-	added on branch rel-3-1.  
-
 2000-03-02 Thursday 21:05  eldamitri
 
 	* src/: field.cpp, frame.cpp, header.cpp, tag.cpp
@@ -6516,28 +6355,17 @@
 
 2000-03-02 Thursday 20:45  eldamitri
 
-	* src/: dll_wrapper.cpp, error.cpp, field_binary.cpp,
-	field_integer.cpp, field_string_ascii.cpp,
-	field_string_unicode.cpp, frame_parse.cpp, frame_render.cpp,
-	header_frame.cpp, header_tag.cpp, int28.cpp, misc_support.cpp,
-	tag_file.cpp, tag_find.cpp, tag_parse.cpp, tag_parse_lyrics3.cpp,
-	tag_parse_v1.cpp, tag_render.cpp, tag_sync.cpp, version.cpp
-	(rel-3-1.[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]): Removed 
+	* src/: field_binary.cpp, field_integer.cpp,
+	field_string_ascii.cpp, field_string_unicode.cpp, frame_parse.cpp,
+	frame_render.cpp, header_frame.cpp, header_tag.cpp,
+	misc_support.cpp, tag_file.cpp, tag_find.cpp, tag_parse.cpp,
+	tag_parse_lyrics3.cpp, tag_parse_v1.cpp, tag_render.cpp
+	(rel-3-1.[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]): Removed 
 
 2000-03-02 Thursday 20:23  eldamitri
 
 	* src/: .cvsignore, id3/.cvsignore (rel-3-1.[1,1]): Moved from
 	src/id3/ to src/ 
-
-2000-03-02 Thursday 20:18  eldamitri
-
-	* src/version.cpp (1.1): file version.cpp was initially added on
-	branch rel-3-1.  
-
-2000-03-02 Thursday 20:18  eldamitri
-
-	* src/tag_sync.cpp (1.1): file tag_sync.cpp was initially added on
-	branch rel-3-1.  
 
 2000-03-02 Thursday 20:18  eldamitri
 
@@ -6578,11 +6406,6 @@
 
 	* src/misc_support.cpp (1.1): file misc_support.cpp was initially
 	added on branch rel-3-1.  
-
-2000-03-02 Thursday 20:17  eldamitri
-
-	* src/int28.cpp (1.1): file int28.cpp was initially added on branch
-	rel-3-1.  
 
 2000-03-02 Thursday 20:17  eldamitri
 
@@ -6641,34 +6464,23 @@
 
 2000-03-02 Thursday 20:16  eldamitri
 
-	* src/error.cpp (1.1): file error.cpp was initially added on branch
-	rel-3-1.  
-
-2000-03-02 Thursday 20:16  eldamitri
-
-	* src/: dll_wrapper.cpp, id3/dll_wrapper.cpp, error.cpp,
-	id3/error.cpp, field_binary.cpp, id3/field_binary.cpp, field.cpp,
-	id3/field.cpp, id3/field_integer.cpp, field_integer.cpp,
-	field_string_ascii.cpp, id3/field_string_ascii.cpp,
-	field_string_unicode.cpp, id3/field_string_unicode.cpp, frame.cpp,
-	id3/frame.cpp, frame_parse.cpp, id3/frame_parse.cpp,
-	frame_render.cpp, id3/frame_render.cpp, header.cpp, id3/header.cpp,
-	header_frame.cpp, id3/header_frame.cpp, header_tag.cpp,
-	id3/header_tag.cpp, int28.cpp, id3/int28.cpp, Makefile.am,
-	id3/Makefile.am, misc_support.cpp, id3/misc_support.cpp, tag.cpp,
-	id3/tag.cpp, tag_file.cpp, id3/tag_file.cpp, tag_find.cpp,
-	id3/tag_find.cpp, tag_parse.cpp, id3/tag_parse.cpp,
-	tag_parse_lyrics3.cpp, id3/tag_parse_lyrics3.cpp, tag_parse_v1.cpp,
-	id3/tag_parse_v1.cpp, tag_render.cpp, id3/tag_render.cpp,
-	tag_sync.cpp, id3/tag_sync.cpp, version.cpp, id3/version.cpp
-	(rel-3-1.[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2
-	,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]): Moved from src/id3/
-	to rc/ 
-
-2000-03-02 Thursday 20:16  eldamitri
-
-	* src/dll_wrapper.cpp (1.1): file dll_wrapper.cpp was initially
-	added on branch rel-3-1.  
+	* src/: id3/dll_wrapper.cpp, id3/error.cpp, field_binary.cpp,
+	id3/field_binary.cpp, field.cpp, id3/field.cpp,
+	id3/field_integer.cpp, field_integer.cpp, field_string_ascii.cpp,
+	id3/field_string_ascii.cpp, field_string_unicode.cpp,
+	id3/field_string_unicode.cpp, frame.cpp, id3/frame.cpp,
+	frame_parse.cpp, id3/frame_parse.cpp, frame_render.cpp,
+	id3/frame_render.cpp, header.cpp, id3/header.cpp, header_frame.cpp,
+	id3/header_frame.cpp, header_tag.cpp, id3/header_tag.cpp,
+	id3/int28.cpp, Makefile.am, id3/Makefile.am, misc_support.cpp,
+	id3/misc_support.cpp, tag.cpp, id3/tag.cpp, tag_file.cpp,
+	id3/tag_file.cpp, tag_find.cpp, id3/tag_find.cpp, tag_parse.cpp,
+	id3/tag_parse.cpp, tag_parse_lyrics3.cpp,
+	id3/tag_parse_lyrics3.cpp, tag_parse_v1.cpp, id3/tag_parse_v1.cpp,
+	tag_render.cpp, id3/tag_render.cpp, id3/tag_sync.cpp,
+	id3/version.cpp
+	(rel-3-1.[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1
+	,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]): Moved from src/id3/ to rc/ 
 
 2000-03-02 Thursday 20:09  eldamitri
 
@@ -7563,9 +7375,8 @@
 1999-12-02 Thursday 02:24  scott
 
 	* doc/ChangeLog (1.5, rel-3-7-5, rel-3-7-4, rel-3-7-3),
-	src/ChangeLog (1.2, rel-3-7-0, rel-3-6-2), src/examples/ChangeLog
-	(1.7), src/id3/ChangeLog (1.10): Merged into the top-level
-	ChangeLog.  
+	src/examples/ChangeLog (1.7), src/id3/ChangeLog (1.10): Merged into
+	the top-level ChangeLog.  
 
 1999-12-01 Wednesday 23:22  scott
 
@@ -8690,9 +8501,9 @@
 
 1999-11-01 Monday 06:29  scott
 
-	* configure (1.2), configure.in (1.2), src/Makefile.am (1.2),
-	src/id3/Makefile.am (1.2): Now makes Makefiles in src/zlib and
-	src/examples 
+	* configure (1.2), configure.in (1.2), src/Makefile.am (1.2,
+	rel-3-7-0, rel-3-6-2), src/id3/Makefile.am (1.2): Now makes
+	Makefiles in src/zlib and src/examples 
 
 1999-11-01 Monday 06:23  scott
 
@@ -9382,8 +9193,8 @@
 	rel-3-0-6pre1), m4/lf_local.m4 (1.1, rel-3-7-13, rel-3-7-12,
 	rel-3-7-11, rel-3-7-10, rel-3-7-9, rel-3-7-8, rel-3-7-7, rel-3-7-5,
 	rel-3-7-4, rel-3-7-3, rel-3-7-2, rel-3-7-1, rel-3-7-0, rel-3-6-2,
-	rel-3-6-0, rel-3-0-6pre1), src/Makefile.am (1.1, rel-3-6-0,
-	rel-3-0-6pre1), src/id3/Makefile.am (1.1): Initial revision 
+	rel-3-6-0, rel-3-0-6pre1), src/Makefile.am (1.1),
+	src/id3/Makefile.am (1.1): Initial revision 
 
 1999-11-01 Monday 04:14  scott
 
