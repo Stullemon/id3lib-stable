@@ -1,4 +1,4 @@
-// $Id: header.cpp,v 1.9 1999/12/26 15:11:13 scott Exp $
+// $Id: header.cpp,v 1.10 1999/12/27 05:43:28 scott Exp $
 // 
 // This program is free software; you can distribute it and/or modify it under
 // the terms discussed in the COPYING file, which should have been included
@@ -35,7 +35,7 @@ ID3_HeaderInfo ID3_VersionInfo[] =
 ID3_HeaderInfo *ID3_LookupHeaderInfo(uchar ver, uchar rev)
 {
   ID3_HeaderInfo *info = NULL;
-  for (luint i = 0; ID3_VersionInfo[i].ucVersion != 0; i++)
+  for (size_t i = 0; ID3_VersionInfo[i].ucVersion != 0; i++)
     if (ID3_VersionInfo[i].ucVersion  == ver &&
         ID3_VersionInfo[i].ucRevision == rev)
     {
@@ -48,7 +48,7 @@ ID3_HeaderInfo *ID3_LookupHeaderInfo(uchar ver, uchar rev)
 
 ID3_Header::ID3_Header(void)
 {
-  SetVersion(ID3_TAGVERSION, ID3_TAGREVISION);
+  SetVersion(ID3v2_VERSION, ID3v2_REVISION);
   __ulDataSize = 0;
   __ulFlags = 0;
 }
@@ -58,8 +58,6 @@ void ID3_Header::SetVersion(uchar ver, uchar rev)
   __ucVersion = ver;
   __ucRevision = rev;
   __pInfo = ID3_LookupHeaderInfo(__ucVersion, __ucRevision);
-  
-  return ;
 }
 
 void ID3_Header::SetDataSize(size_t newSize)
@@ -77,12 +75,69 @@ void ID3_Header::SetFlags(uint16 newFlags)
   __ulFlags = newFlags;
 }
 
+void ID3_Header::AddFlags(uint16 newFlags)
+{
+  __ulFlags |= newFlags;
+}
+
+void ID3_Header::RemoveFlags(uint16 newFlags)
+{
+  __ulFlags &= ~newFlags;
+}
+
 uint16 ID3_Header::GetFlags() const
 {
   return __ulFlags;
 }
 
+uchar ID3_Header::GetVersion() const
+{
+  return __ucVersion;
+}
+
+uchar ID3_Header::GetRevision() const
+{
+  return __ucRevision;
+}
+
+void ID3_Header::Clear()
+{
+  __ucVersion = 0;
+  __ucRevision = 0;
+  __ulDataSize = 0;
+  __ulFlags = 0;
+  //__pInfo = 0;
+}
+
+ID3_Header &ID3_Header::operator=( const ID3_Header &hdr )
+{
+  Copy(hdr);
+  return *this;
+}
+
+void ID3_Header::Copy(const ID3_Header &hdr)
+{
+  if (this != &hdr)
+  {
+    SetVersion(hdr.GetVersion(), hdr.GetRevision());
+    SetDataSize(hdr.GetDataSize());
+    SetFlags(hdr.GetFlags());
+    __pInfo = hdr.__pInfo;
+  }
+}
+
 // $Log: header.cpp,v $
+// Revision 1.10  1999/12/27 05:43:28  scott
+// (ID3_Header): Updated for new version constants.
+// (AddFlags): Added implementation.  Adds flag(s) to current flags.
+// (RemoveFlags): Added implementation.  Removes flag(s) from current
+// flags.
+// (GetVersion): Added implementation.  Returns version number of header.
+// (GetRevision): Added implementation.  Returns revision of header.
+// (Clear): Added implementation.  Clears contents of header.
+// (operator=): Added implementation. Assignment operator.
+// (Copy): Added implementation. Copies content of another header.
+//
 // Revision 1.9  1999/12/26 15:11:13  scott
 // (GetDataSize): Added implementation.
 // (GetFlags): Added implementation.
