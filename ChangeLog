@@ -1,7 +1,47 @@
+2002-07-27 Saturday 15:03   Thijmen Klok <thijmen@id3lib.org>
+
+	* src/mp3_parse.cpp (1.4): change of reading in uint16 number to
+	use existing routines 
+
+2002-07-26 Friday 13:09   Thijmen Klok <thijmen@id3lib.org>
+
+	* configure (1.75), Makefile.in (1.59), configure.in (1.64),
+	doc/Makefile.in (1.18), examples/Makefile.in (1.25),
+	id3com/Makefile.in (1.2), id3com/Sample/Makefile.in (1.2),
+	include/Makefile.in (1.13), include/id3/Makefile.in (1.57),
+	libprj/Makefile.in (1.4), m4/Makefile.in (1.18), prj/Makefile.in
+	(1.4), src/Makefile.in (1.57): made -liconv to work 
+
+2002-07-25 Thursday 15:51   Thijmen Klok <thijmen@id3lib.org>
+
+	* src/tag_impl.cpp (1.10): fixed setting _mp3_info to NULL 
+
+2002-07-25 Thursday 14:33   Thijmen Klok <thijmen@id3lib.org>
+
+	* src/mp3_parse.cpp (1.3): changed routine so 0 bitrate mp3s could
+	also be crc checked 
+
+2002-07-23 Tuesday 22:06   Thijmen Klok <thijmen@id3lib.org>
+
+	* config.h.win32 (1.20), configure (1.74, rel-3-7-8), configure.in
+	(1.63), macconfig.h (1.8): yet another devel release upgrade of
+	version nr 
+
+2002-07-23 Tuesday 21:55   Thijmen Klok <thijmen@id3lib.org>
+
+	* prj/id3lib.dsp (1.15), libprj/id3lib.dsp (1.14): included
+	mp3_parse.cpp and mp3_header.h 
+
+2002-07-23 Tuesday 18:28   Thijmen Klok <thijmen@id3lib.org>
+
+	* include/id3/sized_types.h (1.7): added a better desciption on
+	what to send on error 
+
 2002-07-23 Tuesday 16:15   Thijmen Klok <thijmen@id3lib.org>
 
 	* config.h.win32 (1.19), configure (1.73), configure.in (1.62),
-	macconfig.h (1.7): higher version because of devel release 
+	macconfig.h (1.7), ChangeLog (1.132): higher version because of
+	devel release 
 
 2002-07-23 Tuesday 15:57   Thijmen Klok <thijmen@id3lib.org>
 
