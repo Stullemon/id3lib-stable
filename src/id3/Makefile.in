@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.13 1999/12/01 22:40:05 scott Exp $
+# $Id: Makefile.in,v 1.14 1999/12/02 01:49:12 scott Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -102,8 +102,6 @@ lib_LTLIBRARIES = libid3.la
 libid3_la_SOURCES = $(the_sources)
 libid3_la_LIBADD = -lz
 libid3_la_LDFLAGS = -version-info $(LTVERSION)
-
-EXTRA_DIST = ChangeLog
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
@@ -126,7 +124,7 @@ CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
-DIST_COMMON =  ChangeLog Makefile.am Makefile.in
+DIST_COMMON =  Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -398,8 +396,8 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 # $Log: Makefile.in,v $
-# Revision 1.13  1999/12/01 22:40:05  scott
-# *** empty log message ***
+# Revision 1.14  1999/12/02 01:49:12  scott
+# Removed EXTRA_DIST (no more ChangeLog)
 #
 # Revision 1.7  1999/12/01 18:03:28  scott
 # (INCLUDES): Now points to new, toplevel include directory.

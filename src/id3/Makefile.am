@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.7 1999/12/01 18:03:28 scott Exp $
+# $Id: Makefile.am,v 1.8 1999/12/02 01:49:12 scott Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -46,9 +46,10 @@ libid3_la_SOURCES = $(the_sources)
 libid3_la_LIBADD  = -lz
 libid3_la_LDFLAGS = -version-info $(LTVERSION)
 
-EXTRA_DIST = ChangeLog
-
 # $Log: Makefile.am,v $
+# Revision 1.8  1999/12/02 01:49:12  scott
+# Removed EXTRA_DIST (no more ChangeLog)
+#
 # Revision 1.7  1999/12/01 18:03:28  scott
 # (INCLUDES): Now points to new, toplevel include directory.
 # (the_headers, id3includedir, id3include_HEADERS): Removed.  Headers are

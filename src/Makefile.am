@@ -9,5 +9,4 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 SUBDIRS = id3 examples
-EXTRA_DIST = ChangeLog
 
