@@ -1,6 +1,53 @@
 2000-05-09  Scott Haug  <scott@id3.org>
 
 	* include/id3/field.h 
+	(class ID3_Field): Added GetType(), IsEncodable(); uncommented
+	GetEncoding(), SetEncoding(); added __enc member variable
+
+	* include/id3/globals.h
+	(enum ID3_FieldFlags): Renamed for clarity: NULL->CSTR, 
+	NULLDIVIDE->LIST, ADJUSTENC->ENCODABLE; removed ADJUSTEDBY; added
+	TEXTLIST
+	(enum ID3_FieldType): Added NONE, TEXTSTRING, and NUMTYPES; removed
+	ASCIISTRING and UNICODESTRING
+
+	* include/id3/tag.h 
+	(class ID3_Tag): Removed decls of AddBinary(), ExpandBinaries(), and
+	ProcessBinaries(), since they'reno longer needed
+
+	* src/field.cpp: 
+	- Updated for renamed field flags
+	- Changed ID3FTY_ASCIISTRING's to ID3FTY_TEXTSTRING's
+	(ID3_Field): Updated to initialize __enc
+	(Clear): Updated to clear __enc
+	(SetSpec): Removed, no lnger needed
+	(Parse): Updated for use with new text encoding scheme
+	(Render): Updated for use with new text encoding scheme
+	(SetEncoding): Uncommented, updated
+
+	* src/field_string_ascii.cpp 
+	Updated for renamed field flags
+	(Set): Changes encoding, rather that type, of field
+	(Add): Changes encoding, rather that type, of field
+
+	* src/field_string_unicode.cpp: 
+	Updated for renamed field flags
+	(Set): Changes encoding, rather that type, of field
+
+	* src/frame.cpp: 
+	(_UpdateFieldDeps): Removed, never used
+	(_UpdateStringTypes): Reimplemented using new encoding code
+
+	* src/frame_parse.cpp 
+	(Parse): Uncommented call to SetEncoding
+
+	* src/tag_parse.cpp: 
+	(ID3_GetLastElem): Removed, no longer necessary
+	(AddBinary): Removed, no longer necessary
+	(ExpandBinaries): Removed, no longer necessary
+	(ProcessBinaries): Removed, no longer necessary
+
+	* include/id3/field.h 
 	(class ID3_Field): Added (commented out) decl's for SetEncoding() and
 	GetEncoding(); removed __spec member variable
 
