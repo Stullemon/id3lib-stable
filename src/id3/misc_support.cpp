@@ -121,3 +121,10 @@ void ID3_AddLyrics(ID3_Tag *tag, char *text)
   
   return ;
 }
+
+/*
+$Log: misc_support.cpp,v $
+Revision 1.4  1999/11/04 03:56:24  scott
+Added log cvs tag.
+
+*/
