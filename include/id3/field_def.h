@@ -1,4 +1,4 @@
-// $Id: field_def.h,v 1.2 2000/09/21 23:41:04 eldamitri Exp $
+// $Id: field_def.h,v 1.3 2000/10/21 03:51:28 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -33,7 +33,7 @@ struct ID3_FieldDef
 {
   ID3_FieldID   _id;
   ID3_FieldType _type;
-  size_t        _fixed_length;
+  size_t        _fixed_size;
   ID3_V2Spec    _spec_begin;
   ID3_V2Spec    _spec_end;
   flags_t       _flags;
