@@ -1,4 +1,4 @@
-// $Id: frame.h,v 1.23 2000/05/09 13:45:56 eldamitri Exp $
+// $Id: frame.h,v 1.24 2000/05/12 21:16:11 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -41,7 +41,7 @@ class ID3_Tag;
  ** the implementation of a complex APIC frame and for a simple text frame.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: frame.h,v 1.23 2000/05/09 13:45:56 eldamitri Exp $
+ ** @version $Id: frame.h,v 1.24 2000/05/12 21:16:11 eldamitri Exp $
  ** @see ID3_Tag
  ** @see ID3_Field
  ** @see ID3_Err
@@ -124,10 +124,10 @@ public:
 
   ID3_Frame  &operator=(const ID3_Frame &);
   bool        HasChanged() const;
-  size_t      Parse(const uchar *buffer, luint size);
-  luint       Size();
-  luint       Render(uchar *buffer);
-  bool        Contains(ID3_FieldID fld)
+  size_t      Parse(const uchar *buffer, size_t size);
+  size_t      Size();
+  size_t      Render(uchar *buffer);
+  bool        Contains(ID3_FieldID fld) const
   { return BS_ISSET(__field_bitset, fld) > 0; }
   bool        SetSpec(ID3_V2Spec);
   ID3_V2Spec  GetSpec() const;
@@ -151,7 +151,7 @@ private:
   char        __grouping_id[256];   // the group to which this frame belongs
   bool        __changed;            // frame changed since last parse/render?
   bitset      __field_bitset;       // which fields are present?
-  luint       __num_fields;         // how many fields are in this frame?
+  size_t      __num_fields;         // how many fields are in this frame?
   ID3_Field **__fields;             // an array of field object pointers
   ID3_FrameHeader __hdr;            // 
   bool        __bad_parse;          //

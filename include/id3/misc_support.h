@@ -1,4 +1,4 @@
-// $Id: misc_support.h,v 1.17 2000/05/10 13:24:02 eldamitri Exp $
+// $Id: misc_support.h,v 1.18 2000/05/12 21:16:11 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -56,15 +56,15 @@ ID3_Frame* ID3_AddComment(ID3_Tag *, const char*,
 size_t     ID3_RemoveComments(ID3_Tag*, const char * = NULL);
 
 char*      ID3_GetTrack(const ID3_Tag*);
-luint      ID3_GetTrackNum(const ID3_Tag*);
+size_t     ID3_GetTrackNum(const ID3_Tag*);
 ID3_Frame* ID3_AddTrack(ID3_Tag*, uchar ucTrack, uchar ucTotal = 0,
                         bool replace = false);
 ID3_Frame* ID3_AddTrack(ID3_Tag*, uchar ucTrack, bool replace);
 size_t     ID3_RemoveTracks(ID3_Tag*);
 
 char*      ID3_GetGenre(const ID3_Tag*);
-luint      ID3_GetGenreNum(const ID3_Tag*);
-ID3_Frame* ID3_AddGenre(ID3_Tag*, luint ucGenre, bool replace = false);
+size_t     ID3_GetGenreNum(const ID3_Tag*);
+ID3_Frame* ID3_AddGenre(ID3_Tag*, size_t ucGenre, bool replace = false);
 size_t     ID3_RemoveGenres(ID3_Tag*);
 
 char*      ID3_GetLyrics(const ID3_Tag*);
@@ -76,12 +76,12 @@ ID3_Frame* ID3_AddLyricist(ID3_Tag *, const char *, bool replace = false);
 size_t     ID3_RemoveLyricist(ID3_Tag*);
 
 ID3_Frame* ID3_AddSyncLyrics(ID3_Tag *tag, const char *lang, const char *desc,
-                             const uchar *text, luint textsize, 
+                             const uchar *text, size_t textsize, 
                              bool bReplace = false);
 ID3_Frame* ID3_GetSyncLyricsInfo(const ID3_Tag *tag, const char *lang, 
                                  const char *desc, char &stampformat, 
-                                 char &type, luint &size);
+                                 char &type, size_t &size);
 ID3_Frame* ID3_GetSyncLyrics(const ID3_Tag *tag, const char *lang, 
-                             const char *desc, char *pData, luint &size);
+                             const char *desc, char *pData, size_t &size);
 
 #endif /* __ID3LIB_MISC_SUPPORT_H__ */

@@ -1,4 +1,4 @@
-/* $Id: globals.h,v 1.22 2000/05/12 04:25:32 eldamitri Exp $
+/* $Id: globals.h,v 1.23 2000/05/12 21:16:11 eldamitri Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags Copyright
  * 1999, 2000 Scott Thomas Haug
@@ -34,6 +34,7 @@
 
 #include <stdlib.h>
 #include "sized_types.h"
+#include <iostream.h>
 
 /* id3lib version.
  * we prefix variable declarations so they can
@@ -78,7 +79,8 @@ typedef short unsigned int    suint;
 typedef long    signed int    lsint;
 typedef long  unsigned int    luint;
 typedef long           double ldoub;
-typedef long  unsigned int *  bitset;
+
+typedef uint32*               bitset;
 typedef uint16                unicode_t;
 typedef size_t                index_t;
 typedef uint16                flags_t;
@@ -272,7 +274,7 @@ ID3_ENUM(ID3_V1Lengths)
  **
  ** @author Dirk Mahoney (dirk@id3.org)
  ** @author Scott Thomas Haug (sth2@cs.wustl.edu)
- ** @version $Id: globals.h,v 1.22 2000/05/12 04:25:32 eldamitri Exp $
+ ** @version $Id: globals.h,v 1.23 2000/05/12 21:16:11 eldamitri Exp $
  ** @see ID3_Tag
  **/
 ID3_STRUCT(ID3V1_Tag)
@@ -351,7 +353,7 @@ ID3_ENUM(ID3_TimeStampFormat)
   ID3TSF_MS
 };
 
-#define BS_SIZE (sizeof(luint)*8)
+#define BS_SIZE (sizeof(uint32)*8)
 #define BS_SET(v,x)   ((v)[(x) / BS_SIZE] |=  (1 << ((x) % BS_SIZE)))
 #define BS_CLEAR(v,x) ((v)[(x) / BS_SIZE] &= ~(1 << ((x) % BS_SIZE)))
 #define BS_ISSET(v,x) ((v)[(x) / BS_SIZE] &   (1 << ((x) % BS_SIZE)))

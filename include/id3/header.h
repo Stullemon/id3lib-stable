@@ -1,4 +1,4 @@
-// $Id: header.h,v 1.12 2000/05/03 23:23:30 eldamitri Exp $
+// $Id: header.h,v 1.13 2000/05/12 21:16:11 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -39,7 +39,7 @@ public:
     uchar      frame_bytes_size;
     uchar      frame_bytes_flags;
     bool       is_extended;
-    luint      extended_bytes;
+    size_t     extended_bytes;
     bool       is_experimental;
   };
 
