@@ -1,18 +1,16 @@
-// $Id: dll_wrapper.cpp,v 1.6 1999/11/19 17:13:19 scott Exp $
-
-//  The authors have released ID3Lib as Public Domain (PD) and claim no
-//  copyright, patent or other intellectual property protection in this work.
-//  This means that it may be modified, redistributed and used in commercial
-//  and non-commercial software and hardware without restrictions.  ID3Lib is
-//  distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either
-//  express or implied.
-//
-//  The ID3Lib authors encourage improvements and optimisations to be sent to
-//  the ID3Lib coordinator, currently Dirk Mahoney (dirk@id3.org).  Approved
-//  submissions may be altered, and will be included and released under these
-//  terms.
-//
-//  Mon Nov 23 18:34:01 1998
+// $Id: dll_wrapper.cpp,v 1.7 1999/11/29 15:13:00 scott Exp $
+// 
+// The authors have released ID3Lib as Public Domain (PD) and claim no
+// copyright, patent or other intellectual property protection in this work.
+// This means that it may be modified, redistributed and used in commercial
+// and non-commercial software and hardware without restrictions.  ID3Lib is
+// distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either
+// express or implied.
+// 
+// The ID3Lib authors encourage improvements and optimisations to be sent to
+// the ID3Lib coordinator, currently Dirk Mahoney (dirk@id3.org).  Approved
+// submissions may be altered, and will be included and released under these
+// terms.
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
@@ -240,7 +238,7 @@ ID3_Frame *ID3Tag_FindFrameWithASCII(ID3_Tag *tag, ID3_FrameID id,
 
 CDLLEXPORT
 ID3_Frame *ID3Tag_FindFrameWithUNICODE(ID3_Tag *tag, ID3_FrameID id, 
-                                       ID3_FieldID fld, wchar_t *data)
+                                       ID3_FieldID fld, unicode_t *data)
 {
   ID3_Frame *frame = NULL;
   
@@ -381,7 +379,7 @@ luint ID3Field_GetINT(ID3_Field *field)
 
 
 CDLLEXPORT
-void ID3Field_SetUNICODE(ID3_Field *field, wchar_t *string)
+void ID3Field_SetUNICODE(ID3_Field *field, unicode_t *string)
 {
   if (field)
     field->Set(string);
@@ -391,7 +389,7 @@ void ID3Field_SetUNICODE(ID3_Field *field, wchar_t *string)
 
 
 CDLLEXPORT
-luint ID3Field_GetUNICODE(ID3_Field *field, wchar_t *buffer, 
+luint ID3Field_GetUNICODE(ID3_Field *field, unicode_t *buffer, 
                           luint maxChars, luint itemNum)
 {
   luint numChars = 0;
@@ -404,7 +402,7 @@ luint ID3Field_GetUNICODE(ID3_Field *field, wchar_t *buffer,
 
 
 CDLLEXPORT
-void ID3Field_AddUNICODE(ID3_Field *field, wchar_t *string)
+void ID3Field_AddUNICODE(ID3_Field *field, unicode_t *string)
 {
   if (field)
     field->Add(string);
@@ -489,6 +487,10 @@ void ID3Field_ToFile(ID3_Field *field, char *fileName)
 #endif
 
 // $Log: dll_wrapper.cpp,v $
+// Revision 1.7  1999/11/29 15:13:00  scott
+// Updated unicode function declarations to now pass unicode_t instead of
+// wchar_t.  unicode_t now defined in globals.h.
+//
 // Revision 1.6  1999/11/19 17:13:19  scott
 // * dll_wrapper.cpp (ID3Tag_Strip): Updated for interface change to
 // Tag::Strip.  Now accepts tag flags rather than a v1 boolean.
