@@ -1,0 +1,60 @@
+Version 3.6 of ID3Lib requires the following work:
+
+* Files should only be opened as writable when they are about to be written
+  to.  Otherwise they should be opened as read-only.
+
+* "Update" should allow for an alternate filename to be indicated.
+
+* Need to clarify the interface for files.  When given a file name, which 
+  methods should create one if it doesn't exist, which should be able to write,
+  which can go on if the file isn't writable, etc.  Its pretty muddled right
+  now.
+
+* Need to come up with a list of currently-unsupported frames from the ID3v2
+  spec.
+
+* Padding seems to be somewhat broken.  Using id3convert on a file with a 
+  smallish v2 tag (such as jules-goodtag.mp3) will work fine---the tag doesn't
+  grow in size.  Using id3convert on the file a second time will cause the 
+  tag to grow to 2K.  The tag is still valid, so this isn't a terrible problem,
+  but should be investigated.
+
+* Currently, for portability reasons, no temporary filenames are created.
+  Rather, when necessary, the tmpfile function is used to create temporary a
+  temporary file pointer, and a lot of copying back and forth between files
+  occurs when a tag is added to a file.  If a portable (that is, the issue 
+  of where to put the temporary file: /tmp/, C:\temp\, or whatever) method can
+  be resolved, then we can implement the original method of adding a tag to 
+  a file: write the tag to the temp file, copy the non-tag stuff to the temp
+  file, delete the original file, rename the temp file to the original file.
+  The current implementation works, but is slow and inefficient.
+
+* Most of the limitations listed for 3.05a still exist.  See below.
+
+Version 3.05a of ID3Lib has some known limitations...
+
+* Firstly, contrary to good programming ideas and contrary to the 'ID3v2
+  Programming Guidelines', ID3Lib will explode in a ball of brilliant blue
+  flame if asked to parse an invalid ID3v2 tag.  This will change.
+  + Update for 3.6.0: this has been improved, but still requires more testing.
+
+* Incorrect handling of unknown frames.  This means that when ID3Lib encounters
+  an unknown frame, it is currently ignored.  It is neither re-written to the
+  tag when re-rendered nor are the file or tag alter frame flags observed.
+
+* No support for the read-only frame flag.  It is currently ignored---such 
+  frames can be altered at will.
+
+* No support as yet for the verification of frames before rendering.
+
+* Does not yet render 3.0 extended headers.  Although the functionality for
+  selecting this is present, the setting is ignored for now.
+
+* Does not yet parse 3.0 extended headers.  They are quite adequately ignored
+  and the rest of the tag is parsed correctly.
+
+* ID3Lib currently has no direct support for things like the language and
+  currency fields.  It is up to the application to generate the data for these
+  fields manually.  soon, ID3Lib will have these things assigned to IDs so that
+  the applications programmer will not have to remember the ISO tables for the 
+  actual strings.
