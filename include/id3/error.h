@@ -1,4 +1,4 @@
-// $Id: error.h,v 1.12 2000/06/22 19:31:30 adcockj Exp $
+// $Id: error.h,v 1.13 2000/06/22 21:02:03 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -60,11 +60,11 @@ public:
    ** 
    ** Each error ID has a set string error type.
    **/
-  char   *GetErrorType() const;
+  const char   *GetErrorType() const;
   /** Returns a string that gives more explanation as to what caused the
    ** exception, if enabled by the code that caused the exception.
    **/
-  char   *GetErrorDesc() const;
+  const char   *GetErrorDesc() const;
   /** Returns a pointer to a string of characters that is the name
    ** of the id3lib source file that generated the exception.
    ** 
@@ -73,7 +73,7 @@ public:
    ** <pre>
    ** cout << "Exception in file '" << err.GetErrorFile() << "'" << endl;</pre>
    **/
-  char   *GetErrorFile() const;
+  const char   *GetErrorFile() const;
   /** Returns the line number in the id3lib source file that threw the
    ** exception.
    ** 
@@ -81,6 +81,12 @@ public:
    **/
   size_t   GetErrorLine() const;
   
+  ID3_Error() : 
+    __error(ID3E_NoError), 
+    __line_num(0), 
+    __file_name(NULL), 
+    __description(NULL)
+  { ; }
   /** Constructor
    ** 
    ** @param eID          Erroy id
@@ -88,9 +94,8 @@ public:
    ** @param nLineNum     Linenumber where error occurred
    ** @param sDescription Description of error
    **/
-  ID3_Error(ID3_Err eID, const char *sFileName, size_t nLineNum, 
-            const char *sDescription);
-  ID3_Error(ID3_Error& Error);
+  ID3_Error(ID3_Err, const char *, size_t, const char *);
+  ID3_Error(const ID3_Error&);
   ~ID3_Error();
 private:
   ID3_Err __error;
