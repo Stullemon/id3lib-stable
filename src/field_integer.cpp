@@ -1,4 +1,4 @@
-// $Id: field_integer.cpp,v 1.5 2000/05/03 03:02:56 eldamitri Exp $
+// $Id: field_integer.cpp,v 1.6 2000/05/06 21:24:35 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -25,7 +25,7 @@
 // http://download.sourceforge.net/id3lib/
 
 #include "field.h"
-#include "misc_support.h"
+#include "utils.h"
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
@@ -81,13 +81,7 @@ size_t ID3_Field::ParseInteger(const uchar *buffer, luint posn, size_t nSize)
 
 luint ID3_Field::RenderInteger(uchar *buffer)
 {
-  luint bytesUsed = 0;
-  luint length = BinSize();
-
-  RenderNumber(buffer, (uint32) __data, length);
-    
-  bytesUsed = length;
+  luint bytesUsed = RenderNumber(buffer, (uint32) __data, this->BinSize());
   __changed = false;
-  
   return bytesUsed;
 }
