@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.15 2000/09/27 07:31:08 eldamitri Exp $
+# $Id: Makefile.am,v 1.16 2000/10/01 00:05:20 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -30,6 +30,7 @@ id3lib_sources =                \
   field_string_ascii.cpp        \
   field_string_unicode.cpp      \
   frame.cpp                     \
+  frame_impl.cpp                \
   frame_parse.cpp               \
   frame_render.cpp              \
   globals.cpp                   \
