@@ -1,0 +1,91 @@
+1999-11-15  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* tag_render.cpp:
+	Added include for config.h.  Minor code cleanup.  Removed
+ 	assignments from if checks; first makes assignment, then checks
+ 	for appropriate value.  Made private member variable names more
+	descriptive.  Now uses mktemp rather than mkstemp in
+	GenerateTempName so that a file descriptor isn't created along
+	with the temporary name.
+
+	* tag_find.cpp:
+	Added include for config.h.  Removed assignments from if checks;
+ 	first makes assignment, then checks for appropriate value.  Made
+ 	private member variable names more descriptive.  Major code
+	cleanup: use of for loops instead of while's to ease code
+	readability, more compact looping structures to reduce possibility 
+	in coding or human parsing errors,
+
+	* tag_file.cpp:
+	Added include for config.h.  Minor code cleanup.  Removed
+ 	assignments from if checks; first makes assignment, then checks
+ 	for appropriate value.  Made private member variable names more
+	descriptive.  OpenLinkedFile now checks to see if the file is
+	writable or not, and still opens the file, even if it can't be
+	written to.  This needs to be more robust (i.e., we shouldn't be
+	creating temp files if the file isn't writable).  Made use of
+	bFileWrtiable variable, which was introduced.
+	
+	* tag.h:
+	Made variable names more descriptive.  Added const qualifier to
+	appropriate methods.
+	
+	* int28.cpp: 
+	Added include for config.h. Changed some ints to luints to avoid
+	compiler warnings.
+
+	* header.h, header_frame.h:
+	Made variable names more descriptive.
+	
+	* header.cpp:
+	Added include for config.h.  Minor code cleanup.  Made private
+	member variable names more descriptive.  Fixed bug I introduced in
+	logic of checking version/revision numbers in
+	ID3_LookupHeaderInfo, and cleaned up the code in the process.
+
+	* frame.h: 
+	Made ID3_Tag a friend of ID3_Frame to allow access to the private
+	members in ID3_Frame.  Made variable names more descriptive.
+	Added const qualifier to appropriate methods.
+
+	* field_binary.cpp, field_integer.cpp, field_string_ascii.cpp, field_string_unicode.cpp, frame.cpp, frame_render.cpp, header_frame.cpp, misc_support.cpp, tag.cpp, tag_parse.cpp, tag_parse_lyrics3.cpp, tag_parse_v1.cpp, tag_sync.cpp:
+	Added include for config.h.  Minor code cleanup.  Removed
+ 	assignments from if checks; first makes assignment, then checks
+ 	for appropriate value.  Made private member variable names more
+	descriptive.
+
+	* field.h:
+	Made ID3_Frame and ID3_Tag friends of the ID3_Field class to allow
+ 	access to the private members in ID3_Field.  Made ID3FF field
+ 	flags const luints, rather than #define's.  Made member variable
+	names of classes and structs more descriptive.  
+	
+	* field.cpp: 
+	Added include for config.h.  Replaced LU_NULL with ID3FF_NONE for
+ 	more consistency in flag naming.  Blocked out the ID3FD_Volume
+ 	array definition since it is currently unused.  Reformatted
+ 	ID3_FrameDefs for easier reading (although most lines are more
+ 	than 80 chars long now).  Made private member variable names more
+ 	descriptive.  Fixed bug in SetVersion (was checking "rev != rev").
+  	Adjusted logic somewhat in BinSize to ease code reading.  Fixed
+ 	bug in BinSize that was causing incorrect parsing of correct
+ 	frames, such as COMM (previously assumed a wchar_t is 2 bytes,
+	which might not be true on some platforms).
+
+	* error.h:
+	Made constructor public.  Added new interface to error reporting
+ 	to allow for more descriptive error messages (this should still be
+ 	worked on).  Made private member variable names more descriptive.
+	Added const qualifier to appropriate methods.
+
+	* error.cpp: 
+	Added include for config.h.  Added new interface to error
+ 	reporting to allow for more descriptive error messages (this
+ 	should still be worked on).  Made private member variable names
+	more descriptive. 
+
+	* dll_wrapper.cpp, frame_parse.cpp, header_tag.cpp:
+	Added include for config.h.  Made variable names more descriptive.
+
+	* Makefile.am, Makefile.in: Updated versioning info and CXXFLAGS
+
