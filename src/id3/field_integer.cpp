@@ -1,4 +1,4 @@
-// $Id: field_integer.cpp,v 1.5 1999/11/15 20:16:06 scott Exp $
+// $Id: field_integer.cpp,v 1.6 1999/11/19 17:29:18 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -47,7 +47,7 @@ luint ID3_Field::Get(void)
 }
 
 
-luint ID3_Field::ParseInteger(uchar *buffer, luint posn, luint buffSize)
+luint ID3_Field::ParseInteger(const uchar *buffer, const luint posn, const luint buffSize)
 {
   luint bytesUsed = 0;
 
@@ -87,6 +87,9 @@ luint ID3_Field::RenderInteger(uchar *buffer)
 }
 
 // $Log: field_integer.cpp,v $
+// Revision 1.6  1999/11/19 17:29:18  scott
+// (ParseInteger): Updated interface to make parameters const.
+//
 // Revision 1.5  1999/11/15 20:16:06  scott
 // Added include for config.h.  Minor code cleanup.  Removed
 // assignments from if checks; first makes assignment, then checks
