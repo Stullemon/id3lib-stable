@@ -14,7 +14,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.19 2000/10/08 21:10:52 eldamitri Exp $
+// $Id: demo_info.cpp,v 1.20 2000/10/10 04:15:07 eldamitri Exp $
 
 
 #ifdef HAVE_CONFIG_H
@@ -22,6 +22,7 @@
 #endif
 
 #include <id3/debug.h>
+
 #include <iostream.h>
 #include <id3/tag.h>
 #include <id3/utils.h>
@@ -29,11 +30,12 @@
 #include <id3/readers.h>
 #include <id3/reader_decorators.h>
 #include <id3/error.h>
-#include <popt.h>
+
+#include "demo_info_options.h"
 
 using namespace dami;
 
-static String VERSION_NUMBER = "$Revision: 1.19 $";
+static String VERSION_NUMBER = "$Revision: 1.20 $";
 
 void PrintUsage(const char *sName)
 {
@@ -311,86 +313,61 @@ void PrintInformation(const ID3_Tag &myTag)
 
 #define DEBUG
 
-int main( unsigned int argc, const char *argv[])
+int main( unsigned int argc, char * const argv[])
 {
-  const char* appname = argv[0];
-  int ret = 0;
-  bool 
-    bAssign = false, 
-    bVersion = false, 
-    bNotice = false,
-    bWarning = false,
-    bHelp = false;
   ID3D_INIT_DOUT();
 
-  static struct poptOption options[] =
+  gengetopt_args_info args;
+
+  if (cmdline_parser(argc, argv, &args) != 0)
   {
-    { "version", 'v', POPT_ARG_NONE, &bVersion, 0 },
-    { "notice",  'n', POPT_ARG_NONE, &bNotice,  0 },
-    { "warning", 'w', POPT_ARG_NONE, &bWarning, 0 },
-    { "help",    'h', POPT_ARG_NONE, &bHelp,    0 },
-    { "assign",  'a', POPT_ARG_NONE, &bAssign,  0 },
-    { NULL,      0,   0,             NULL,      0 }
-  };
-  poptContext con = poptGetContext(NULL, argc, argv, options, 0);
-  int rc = poptGetNextOpt(con);
-  if (rc < -1)
-  {
-    cerr << poptBadOption(con, POPT_BADOPTION_NOALIAS) << ": "
-         << poptStrerror(rc) << endl;
-    
-    cout << "Try `" << appname << " --help' for more information." << endl;
-    ret = -rc;
+    exit(1);
   }
-  else if (bHelp)
+
+#if defined ID3_ENABLE_DEBUG
+  if (args.warning_given)
   {
-    PrintVersion(appname);
-    PrintUsage(appname);
+    cout << "warnings turned on" << endl;
+    ID3D_INIT_WARNING();
+    ID3D_WARNING ( "warnings turned on" );
   }
-  else if (bVersion)
+  if (args.notice_given)
   {
-    PrintVersion(appname);
+    cout << "notices turned on" << endl;
+    ID3D_INIT_NOTICE();
+    ID3D_NOTICE ( "notices turned on" );
   }
-  else
+#endif
+
+  const char* filename = NULL;
+  for (size_t i = 0; i < args.inputs_num; ++i)
   {
-    if (bWarning)
+    filename = args.inputs[i];
+    try
     {
-      ID3D_INIT_WARNING();
-      ID3D_WARNING ( "warnings turned on" );
-    }
-    if (bNotice)
-    {
-      ID3D_INIT_NOTICE();
-      ID3D_NOTICE ( "notices turned on" );
-    }
-    const char* filename = NULL;
-    while((filename = poptGetArg(con)) != NULL)
-    {
-      try
-      {
-        ID3_Tag myTag;
+      ID3_Tag myTag;
       
-        myTag.Link(filename, ID3TT_ALL);
-        cout << endl << "*** Tag information for " << filename << endl;
-        if (!bAssign)
-        {
-          PrintInformation(myTag);
-        }
-        else
-        {
-          cout << "*** Testing assignment operator" << endl;
-          ID3_Tag tmpTag(myTag);
-          PrintInformation(tmpTag);
-        }
-      }
-      catch(ID3_Error &err)
+      myTag.Link(filename, ID3TT_ALL);
+      cout << endl << "*** Tag information for " << filename << endl;
+      if (!args.assign_given)
       {
-        cout << err.GetErrorFile() << " (" << err.GetErrorLine() << "): "
-             << err.GetErrorType() << ": " << err.GetErrorDesc() << endl;
+        PrintInformation(myTag);
       }
+      else
+      {
+        cout << "*** Testing assignment operator" << endl;
+        ID3_Tag tmpTag(myTag);
+        PrintInformation(tmpTag);
+      }
+    }
+    catch(ID3_Error &err)
+    {
+      ID3D_WARNING( err.GetErrorFile() << " ("  << 
+                    err.GetErrorLine() << "): " << 
+                    err.GetErrorType() << ": "  << 
+                    err.GetErrorDesc() );
     }
   }
 
-  poptFreeContext(con);
-  return ret;
+  return 0;
 }

@@ -1,4 +1,4 @@
-// $Id: demo_convert.cpp,v 1.9 2000/10/02 17:01:45 eldamitri Exp $
+// $Id: demo_convert.cpp,v 1.10 2000/10/10 04:15:07 eldamitri Exp $
 //
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -12,24 +12,22 @@
 //  submissions may be altered, and will be included and released under these
 //  terms.
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include <id3/debug.h>
+
 #include <iostream.h>
 #include <id3/tag.h>
 #include <id3/error.h>
-#include <popt.h>
+#include "demo_convert_options.h"
 
-static const char* VERSION_NUMBER = "$Revision: 1.9 $";
+static const char* VERSION_NUMBER = "$Revision: 1.10 $";
 
 void PrintUsage(const char *sName)
 {
-  cout << "Usage: " << sName << " [OPTION]... [FILE]..." << endl;
   cout << "Converts between id3v1 and id3v2 tags of an mp3 file." << endl;
-  cout << endl;
-  cout << "  -1, --v1tag     Render only the id3v1 tag" << endl;
-  cout << "  -2, --v2tag     Render only the id3v2 tag" << endl;
-  cout << "  -s, --strip     Strip, rather than render, the tags" << endl;
-  cout << "  -p, --padding   Use padding in the tag" << endl;
-  cout << "  -h, --help      Display this help and exit" << endl;
-  cout << "  -v, --version   Display version information and exit" << endl;
   cout << endl;
   cout << "Will render both types of tag by default.  Only the last" << endl
        << "tag type indicated in the option list will be used.  Non-" << endl
@@ -85,102 +83,78 @@ void DisplayTags(ostream &os, luint nTags)
   }
 }
 
-int main( unsigned int argc, const char *argv[])
+int main( unsigned int argc, char * const argv[])
 {
-  const char* appname = argv[0];
-  int ret = 0;
   flags_t ulFlag = ID3TT_ALL;
-  bool bStrip = false;
-  bool bPadding = false;
-  bool bVersion = false;
-  bool bHelp = false;
-  static struct poptOption options[] =
+  gengetopt_args_info args;
+
+  if (cmdline_parser(argc, argv, &args) != 0)
   {
-    { "v1tag",   '1', POPT_ARG_NONE, NULL,      ID3TT_ID3V1 },
-    { "v2tag",   '2', POPT_ARG_NONE, NULL,      ID3TT_ID3V2 },
-    { "strip",   's', POPT_ARG_NONE, &bStrip,   0 },
-    { "padding", 'p', POPT_ARG_NONE, &bPadding, 0 },
-    { "version", 'v', POPT_ARG_NONE, &bVersion, 0 },
-    { "help",    'h', POPT_ARG_NONE, &bHelp,    0 },
-    { NULL,      0,   0,             NULL,      0 }
-  };
-  poptContext con = poptGetContext(NULL, argc, argv, options, 0);
-  int rc = 0;
-  while ((rc = poptGetNextOpt(con)) > 0)
-  {
-    ulFlag = rc;
+    exit(1);
   }
-  if (rc < -1)
+
+  if (args.v1tag_given)
   {
-    cerr << poptBadOption(con, POPT_BADOPTION_NOALIAS) << ": "
-         << poptStrerror(rc) << endl;
-    
-    cout << "Try `" << appname << " --help' for more information." << endl;
-    ret = -rc;
+    ulFlag = ID3TT_ID3V1;
   }
-  else if (bHelp)
+
+  if (args.v2tag_given)
   {
-    PrintVersion(appname);
-    PrintUsage(appname);
+    ulFlag = ID3TT_ID3V2;
   }
-  else if (bVersion)
+
+
+  const char* filename = NULL;
+  for (size_t i = 0; i < args.inputs_num; ++i)
   {
-    PrintVersion(appname);
-  }
-  else
-  {
-    const char* filename = NULL;
-    while((filename = poptGetArg(con)) != NULL)
+    filename = args.inputs[i];
+    try
     {
-      try
+      ID3_Tag myTag;
+      
+      if (args.strip_given)
       {
-        ID3_Tag myTag;
-        
-        if (bStrip)
-        {
-          cout << "Stripping ";
-        }
-        else
-        {
-          cout << "Converting ";
-        }
-        cout << filename << ": ";
-        
-        myTag.Clear();
-        myTag.Link(filename, ID3TT_ALL);
-        myTag.SetPadding(bPadding);
-        
-        cout << "attempting ";
-        DisplayTags(cout, ulFlag);
-        luint nTags;
-        
-        if (bStrip)
-        {
-          nTags = myTag.Strip(ulFlag);
-          cout << ", stripped ";
-        }
-        else
-        {
-          nTags = myTag.Update(ulFlag);
-          cout << ", converted ";
-        }
-        
-        DisplayTags(cout, nTags);
-        cout << endl;
+        cout << "Stripping ";
+      }
+      else
+      {
+        cout << "Converting ";
+      }
+      cout << filename << ": ";
+      
+      myTag.Clear();
+      myTag.Link(filename, ID3TT_ALL);
+      myTag.SetPadding(args.padding_given);
+      
+      cout << "attempting ";
+      DisplayTags(cout, ulFlag);
+      luint nTags;
+      
+      if (args.warning_given)
+      {
+        nTags = myTag.Strip(ulFlag);
+        cout << ", stripped ";
+      }
+      else
+      {
+        nTags = myTag.Update(ulFlag);
+        cout << ", converted ";
       }
       
-      catch(ID3_Error err)
-      {
-        cout << endl;
-        cout << err.GetErrorFile() << " (" << err.GetErrorLine() << "): "
-             << err.GetErrorType() << ": " << err.GetErrorDesc() << endl;
-        ret = 1;
-        break;
-      }
+      DisplayTags(cout, nTags);
+      cout << endl;
+    }
+    
+    catch(ID3_Error err)
+    {
+      ID3D_WARNING( err.GetErrorFile() << " ("  << 
+                    err.GetErrorLine() << "): " << 
+                    err.GetErrorType() << ": "  << 
+                    err.GetErrorDesc() );
     }
   }
-  poptFreeContext(con);
-  return ret;
+
+  return 0;
 }
 
 

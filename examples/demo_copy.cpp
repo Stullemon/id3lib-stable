@@ -1,4 +1,4 @@
-// $Id: demo_copy.cpp,v 1.3 2000/10/02 17:01:45 eldamitri Exp $
+// $Id: demo_copy.cpp,v 1.4 2000/10/10 04:15:07 eldamitri Exp $
 //
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -12,22 +12,24 @@
 //  submissions may be altered, and will be included and released under these
 //  terms.
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include <id3/debug.h>
+
 #include <iostream.h>
 #include <id3/tag.h>
 #include <id3/error.h>
-#include <popt.h>
 
-static const char* VERSION_NUMBER = "$Revision: 1.3 $";
+#include "demo_copy_options.h"
+
+static const char* VERSION_NUMBER = "$Revision: 1.4 $";
 
 void PrintUsage(const char *sName)
 {
   cout << "Usage: " << sName << " [OPTION]... SOURCE DEST" << endl;
   cout << "Copy the tag(s) from SOURCE to DEST." << endl;
-  cout << endl;
-  cout << "  -1, --v1tag     Render only the id3v1 tag" << endl;
-  cout << "  -2, --v2tag     Render only the id3v2 tag" << endl;
-  cout << "  -h, --help      Display this help and exit" << endl;
-  cout << "  -v, --version   Display version information and exit" << endl;
   cout << endl;
 }
 
@@ -77,80 +79,75 @@ void DisplayTags(ostream &os, luint nTags)
   }
 }
 
-int main( unsigned int argc, const char *argv[])
+int main( unsigned int argc, char * const argv[])
 {
-  const char* appname = argv[0];
-  int ret = 0;
   int ulFlag = ID3TT_ID3;
-  bool bVersion = false;
-  bool bHelp = false;
-  static struct poptOption options[] =
+  ID3D_INIT_DOUT();
+  gengetopt_args_info args;
+
+  if (cmdline_parser(argc, argv, &args) != 0)
   {
-    { "v1tag",   '1', POPT_ARG_NONE, NULL,      ID3TT_ID3V1 },
-    { "v2tag",   '2', POPT_ARG_NONE, NULL,      ID3TT_ID3V2 },
-    { "version", 'v', POPT_ARG_NONE, &bVersion, 0 },
-    { "help",    'h', POPT_ARG_NONE, &bHelp,    0 },
-    { NULL,      0,   0,             NULL,      0 }
-  };
-  poptContext con = poptGetContext(NULL, argc, argv, options, 0);
-  int rc = 0;
-  while ((rc = poptGetNextOpt(con)) > 0)
-  {
-    ulFlag = rc;
+    exit(1);
   }
-  if (rc < -1)
+
+  if (args.v1tag_given)
   {
-    cerr << poptBadOption(con, POPT_BADOPTION_NOALIAS) << ": "
-         << poptStrerror(rc) << endl;
+    ulFlag = ID3TT_ID3V1;
+  }
+
+  if (args.v2tag_given)
+  {
+    ulFlag = ID3TT_ID3V2;
+  }
+  
+
+#if defined ID3_ENABLE_DEBUG
+  if (args.warning_given)
+  {
+    cout << "warnings turned on" << endl;
+    ID3D_INIT_WARNING();
+    ID3D_WARNING ( "warnings turned on" );
+  }
+  if (args.notice_given)
+  {
+    cout << "notices turned on" << endl;
+    ID3D_INIT_NOTICE();
+    ID3D_NOTICE ( "notices turned on" );
+  }
+#endif
+
+  if (args.inputs_num != 2)
+  {
+    cerr << "Usage: id3cp [OPTIONS] SOURCE DEST" << endl;
+    exit(1);
+  }
+
+  const char *source = args.inputs[0], *dest = args.inputs[1];
+
+  try
+  {
+    ID3_Tag myTag;
     
-    cout << "Try `" << appname << " --help' for more information." << endl;
-    ret = -rc;
+    cout << "Parsing " << source << ": ";
+    
+    myTag.Clear();
+    myTag.Link(source, ID3TT_ALL);
+    
+    cout << "done.  Copying to " << dest << ": ";
+    
+    myTag.Link(dest, ID3TT_NONE);
+    myTag.Update(ulFlag);
+    
+    cout << "done" << endl;
   }
-  else if (bHelp)
+  
+  catch(ID3_Error& err)
   {
-    PrintVersion(appname);
-    PrintUsage(appname);
+    ID3D_WARNING( err.GetErrorFile() << " ("  << 
+                  err.GetErrorLine() << "): " << 
+                  err.GetErrorType() << ": "  << 
+                  err.GetErrorDesc() );
   }
-  else if (bVersion)
-  {
-    PrintVersion(appname);
-  }
-  else
-  {
-    const char* filename = NULL;
-    while((filename = poptGetArg(con)) != NULL)
-    {
-      try
-      {
-        ID3_Tag myTag;
-
-        cout << "Parsing " << filename << ": ";
-
-        myTag.Clear();
-        myTag.Link(filename, ID3TT_ALL);
-
-        cout << "done.  Copying to " << filename << ": ";
-        
-        myTag.Link(filename, ID3TT_NONE);
-        myTag.Update(ulFlag);
-        
-        cout << "done" << endl;
-        cerr << "numframes = " << myTag.NumFrames() << endl;
-      }
-
-      catch(ID3_Error& err)
-      {
-        cout << endl;
-        cout << err.GetErrorFile() << " (" << err.GetErrorLine() << "): "
-             << err.GetErrorType() << ": " << err.GetErrorDesc() << endl;
-        ret = 1;
-        break;
-      }
-    }
-  }
-
-  poptFreeContext(con);
-  return ret;
+  
+  return 0;
 }
-
-
