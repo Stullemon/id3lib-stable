@@ -1,5 +1,46 @@
 2000-04-21  Scott Haug  <scott@id3.org>
 
+	* NEWS 
+	* configure.in: 
+	Updated for 3.7.2 release
+
+	* config.h.win32.in: 
+	Updated to be in line with config.h.in
+
+	* configure.in: 
+	Added DOX_DIR_{HTML,LATEX,MAN,RTF} so that doxygen's output directories
+	need only be adjusted in one file
+
+	* Makefile.am 
+	(docs): Added for creating documentation from top directory
+	(docs-release): Added for automating creation of documentation
+	deliverables
+	(release): Updated to create documentation release
+
+	* id3lib.spec.in: 
+	- More conditional blocks for noarch
+	- More thorough cleaning of files for documentation
+	- Updated html directory
+
+	* doc/Doxyfile.in: 
+	- Turned off verbatim headers
+	- Added *.c to example patterns
+	- Generalized output directories
+
+	* doc/Makefile.am 
+	(docs): 
+	- More thorough building of documentation (pd.gz, pdf, html)
+	- Generalized doxygen's output directories
+	- Cleans up intermediate files
+	(dist-hook): Removed; doxygen-created docs no longer distributed with
+	main tarball release
+
+	* doc/index.html.in: 
+	Generalized doxygen's html output directory
+
+	* examples/Makefile.am 
+	(EXTRA_DIST): mp3 files are no longer distributed
+
 	* id3lib.spec.in: 
 	- Fixed date of changelog entry for 3.7.1-1
 	- Added conditional blocks so docs only get built for noarch target
@@ -35,10 +76,14 @@
 	* id3com/id3com.dsp: 
 	Removed version.cpp
 
+	* src/dll_wrapper.cpp: 
+	Removed; replaced by c_wrapper.cpp	
+
 2000-04-20  Scott Haug  <scott@id3.org>
 
 	* src/Makefile.am 
-	(the_sources): Added c_wrapper.cpp
+	(the_sources): Added c_wrapper.cpp, an implementation of the C
+	interface
 	(EXTRA_DIST): Removed, since dll_wrapper.cpp is no longer distributed
 
 	* src/c_wrapper.cpp: 
