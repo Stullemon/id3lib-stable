@@ -1,4 +1,4 @@
-// $Id: tag_parse_lyrics3.cpp,v 1.6 2000/05/04 20:52:18 eldamitri Exp $
+// $Id: tag_parse_lyrics3.cpp,v 1.7 2000/05/06 05:42:04 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -43,7 +43,9 @@ luint ID3_CRLFtoLF(char *buffer, luint size)
   
   if (NULL == buffer || size == 0)
   {
-    ID3_THROW(ID3E_NoData);
+    // TODO: log this
+    return 0;
+    // ID3_THROW(ID3E_NoData);
   }
 
   while (source < (buffer + size))
@@ -72,7 +74,9 @@ luint ID3_StripTimeStamps(char *buffer, luint size)
   
   if ((buffer == NULL) || (size == 0))
   {
-    ID3_THROW(ID3E_NoData);
+    // TODO: log this
+    return 0;
+    // ID3_THROW(ID3E_NoData);
   }
 
   while (source < (buffer + size))
@@ -92,19 +96,20 @@ luint ID3_StripTimeStamps(char *buffer, luint size)
   return newSize;
 }
 
-luint ID3_Lyrics3ToSylt(char *buffer, luint size)
+luint ID3_Lyrics3ToSylt(uchar *buffer, luint size)
 {
   luint newSize = 0;
-  char *dest = buffer;
-  char *source = buffer;
-  luint	ms;
-  bool	bFirstTimeStamp = true;
-  bool	bFoundLf = false;
-  luint	*pts;
+  uchar *dest = buffer;
+  uchar *source = buffer;
+  luint ms;
+  bool  bFirstTimeStamp = true;
+  luint *pts;
   
   if ((buffer == NULL) || (size == 0))
   {
-    ID3_THROW(ID3E_NoData);
+    // TODO: log this
+    return 0;
+    //ID3_THROW(ID3E_NoData);
   }
 
   while (source < (buffer + size))
@@ -112,50 +117,41 @@ luint ID3_Lyrics3ToSylt(char *buffer, luint size)
     if (*source == '[')
     {
       // check if first timestamp
-      if (!bFirstTimeStamp)
+      if (bFirstTimeStamp)
+      {
+        bFirstTimeStamp = false;
+      }
+      else
       {
         // put synch identifier
         *dest++ = '\0';
 
         // put timestamp
-        pts = (luint *) dest;
-        *pts = ms;
-        dest += 4;
-
-        if (bFoundLf)
-        {
-          // put the LF
-          *dest++ = 0x0A;
-          bFoundLf = false;
-        }
-		  
+        RenderNumber(dest, ms, sizeof(uint32));
+        dest += sizeof(uint32);
       }
-      else
-        bFirstTimeStamp = false;
 
       // timestamp found skip [
       source++;
 
       // get minutes and ms
-      char minutes[5];
-      sprintf (minutes, "%c%c", source[0], source[1]);
-      ms = atoi (minutes) * 60000;
+      size_t minutes = strtol((const char*)source, NULL, 10);
 
       // skip :
-      source +=3;
+      source += 3;
 
-      // get seconds and ms
-      char sec[5];
-      sprintf (sec, "%c%c", source[0], source[1]);
-      ms = ms + (atoi (sec) * 1000);
+      size_t seconds = strtol((const char*)source, NULL, 10);
 
       // skip ]
-      source +=3;
+      source += 3;
+
+      // get seconds and ms
+      ms = ((60 * minutes) + seconds) * 1000;
+
     }
     else if (*source == 0x0A)
     {
       source++;
-      bFoundLf = true;
     }
     else
     {
@@ -167,27 +163,21 @@ luint ID3_Lyrics3ToSylt(char *buffer, luint size)
   *dest++ = '\0';
 
   // put the last timestamp
-  pts = (luint *) dest;
-  *pts = ms;
-  dest += 4;
-
-  if (bFoundLf)
-  {
-    // put the last LF
-    *dest++ = 0x0A;
-    bFoundLf = false;
-  }
+  RenderNumber(dest, ms, sizeof(uint32));
+  dest += sizeof(uint32);
   
   newSize = dest - buffer;
     
   return newSize;
 }
 
-void ID3_Tag::ParseLyrics3(void)
+void ID3_Tag::ParseLyrics3()
 {
   if (NULL == __file_handle)
   {
-    ID3_THROW(ID3E_NoData);
+    // TODO: log this
+    return;
+    // ID3_THROW(ID3E_NoData);
   }
 
   uchar buffer[18];
@@ -274,7 +264,7 @@ void ID3_Tag::ParseLyrics3(void)
       memcpy(text, bufflyr, newSize);
       delete[] bufflyr;
 
-      ID3_Frame	*pLyrFrame = ID3_AddLyrics(this, text);
+      ID3_Frame *pLyrFrame = ID3_AddLyrics(this, text);
       if (NULL != pLyrFrame)
       {
         pLyrFrame->Field(ID3FN_LANGUAGE) = "eng";
@@ -289,8 +279,8 @@ void ID3_Tag::ParseLyrics3(void)
       // we have a Lyrics3 v2.00 tag
       luint lyricsSize;
 
-      ID3_Frame	*pLyrFrame = NULL;
-      char		*textInf = NULL;
+      ID3_Frame *pLyrFrame = NULL;
+      char *textInf = NULL;
 
       buffer[6] = 0;
       lyricsSize = atoi((char *) buffer);
@@ -349,7 +339,7 @@ void ID3_Tag::ParseLyrics3(void)
               ID3_THROW(ID3E_NoMemory);
             }
 
-            text[size] = 0;
+            text[size] = '\0';
             memcpy(text, &buff2[posn + 8], size);
 
             ID3_AddTitle(this, text);
@@ -463,9 +453,13 @@ void ID3_Tag::ParseLyrics3(void)
 
                 // if already found an INF field, use it as description
                 if (NULL != textInf)
+                {
                   pLyrFrame->Field(ID3FN_DESCRIPTION) = textInf;
+                }
                 else
+                {
                   pLyrFrame->Field(ID3FN_DESCRIPTION) = "Converted from Lyrics3 v2.00";
+                }
               }
 
               delete[] text;
@@ -473,7 +467,7 @@ void ID3_Tag::ParseLyrics3(void)
             /* newSize = ID3_StripTimeStamps((char *) & buff2[posn + 8], 
                newSize);*/
             // convert lyrics into a SYLT frame Content Descriptor
-            newSize = ID3_Lyrics3ToSylt ((char *) & buff2[posn + 8], newSize);
+            newSize = ID3_Lyrics3ToSylt (& buff2[posn + 8], newSize);
 
             text = new char[newSize + 1];
             if (NULL == text)
@@ -500,9 +494,14 @@ void ID3_Tag::ParseLyrics3(void)
 
             // if already found an INF field, use it as description
             if (NULL != textInf)
+            {
               pLyrFrame->Field(ID3FN_DESCRIPTION) = textInf;
+            }
             else
-              pLyrFrame->Field(ID3FN_DESCRIPTION) = "Converted from Lyrics3 v2.00";
+            {
+              pLyrFrame->Field(ID3FN_DESCRIPTION) = 
+                "Converted from Lyrics3 v2.00";
+            }
 
             delete[] text;
           }
@@ -510,12 +509,12 @@ void ID3_Tag::ParseLyrics3(void)
           posn += size + 8;
         }
 
-        delete[] buff2;
+        delete [] buff2;
         if (NULL != textInf)
+        {
           delete[] textInf;
+        }
       }
     }
   }
-
-  return ;
 }
