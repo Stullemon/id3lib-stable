@@ -1,4 +1,4 @@
-// $Id: header_tag.cpp,v 1.24 2002/07/31 13:20:49 t1mpy Exp $
+// $Id: header_tag.cpp,v 1.25 2003/03/02 14:30:46 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -53,12 +53,12 @@ bool ID3_TagHeader::SetSpec(ID3_V2Spec spec)
 size_t ID3_TagHeader::Size() const
 {
   size_t bytesUsed = ID3_TagHeader::SIZE;
-  
+
   if (_info->is_extended)
   {
     bytesUsed += _info->extended_bytes;
   }
-  
+
   return bytesUsed;
 }
 
@@ -69,7 +69,7 @@ void ID3_TagHeader::Render(ID3_Writer& writer) const
 
   writer.writeChar(ID3_V2SpecToVer(ID3V2_LATEST));
   writer.writeChar(ID3_V2SpecToRev(ID3V2_LATEST));
-  
+
   // set the flags byte in the header
   writer.writeChar(static_cast<uchar>(_flags.get() & MASK8));
   io::writeUInt28(writer, this->GetDataSize()); //now includes the extended header
@@ -119,11 +119,11 @@ bool ID3_TagHeader::Parse(ID3_Reader& reader)
 
   // set the data size
   this->SetDataSize(io::readUInt28(reader));
-  
+
   if (_flags.test(HEADER_FLAG_EXTENDED) && this->GetSpec() == ID3V2_2_1)
   {
     //couldn't find anything about this in the draft specifying 2.2.1 -> http://www.id3.org/pipermail/id3v2/2000-April/000126.html
-    _flags.set(HEADER_FLAG_EXTENDED, false); 
+    _flags.set(HEADER_FLAG_EXTENDED, false);
     _info->extended_bytes = 0;
     // rest is checked at ParseExtended()
   }
@@ -212,10 +212,13 @@ void ID3_TagHeader::ParseExtended(ID3_Reader& reader)
     }
     _info->extended_bytes = 5 + extflagbytes + extrabytes;
   }
-  // a bit unorthodox, but since we are not using any of the extended header, but were merely 
+  // a bit unorthodox, but since we are not using any of the extended header, but were merely
   // parsing it to get the cursor right, we delete it. Be Gone !
   _flags.set(HEADER_FLAG_EXTENDED, false);
-  _data_size -= _info->extended_bytes;
-  _info->extended_bytes = 0;
+  if (_info)
+  {
+    _data_size -= _info->extended_bytes;
+    _info->extended_bytes = 0;
+  }//else there is a tag with a higher or lower version than supported
 }
 
