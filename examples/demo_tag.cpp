@@ -1,23 +1,17 @@
-// $Id: demo_tag.cpp,v 1.2 2000/04/18 21:45:59 eldamitri Exp $
-//
-//  The authors have released ID3Lib as Public Domain (PD) and claim no
-//  copyright, patent or other intellectual property protection in this work.
-//  This means that it may be modified, redistributed and used in commercial
-//  and non-commercial software and hardware without restrictions.  ID3Lib is
-//  distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either
-//  express or implied.
+// $Id: demo_tag.cpp,v 1.3 2000/04/20 03:27:47 eldamitri Exp $
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
 #endif
-                                                                                
+
 #include <iostream.h>
-#include <id3/tag.h>
 #include <getopt.h>
 #include <stdlib.h>
+
+#include <id3/tag.h>
 #include <id3/misc_support.h>
 
-#define VERSION_NUMBER "$Revision: 1.2 $"
+#define VERSION_NUMBER "$Revision: 1.3 $"
 
 void PrintUsage(char *sName)
 {
@@ -58,7 +52,7 @@ void PrintVersion(char *sName)
     cout << VERSION_NUMBER[nIndex];
   }
   cout << endl;
-  cout << "Uses " << ID3_FullName() << endl << endl;
+  cout << "Uses " << ID3LIB_FULL_NAME << endl << endl;
 
   cout << "This program tags mp3 files with ID3v1/1.1 and/or id3v2 tags" << endl;
 }

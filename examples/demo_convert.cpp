@@ -1,4 +1,4 @@
-// $Id: demo_convert.cpp,v 1.2 2000/04/18 21:45:27 eldamitri Exp $
+// $Id: demo_convert.cpp,v 1.3 2000/04/20 03:27:47 eldamitri Exp $
 //
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -20,7 +20,7 @@
 #include <id3/tag.h>
 #include <getopt.h>
 
-#define VERSION_NUMBER "$Revision: 1.2 $"
+#define VERSION_NUMBER "$Revision: 1.3 $"
 
 void PrintUsage(char *sName)
 {
@@ -62,7 +62,7 @@ void PrintVersion(char *sName)
     cout << VERSION_NUMBER[nIndex];
   }
   cout << endl;
-  cout << "Uses " << ID3_FullName() << endl << endl;
+  cout << "Uses " << ID3LIB_FULL_NAME << endl << endl;
 
   cout << "This program converts and strips ID3v1/1.1 and Lyrics3 v2.0" << endl;
   cout << "tags to ID3v2 tags." << endl << endl;

@@ -14,7 +14,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.2 2000/04/18 21:45:39 eldamitri Exp $
+// $Id: demo_info.cpp,v 1.3 2000/04/20 03:27:47 eldamitri Exp $
 
 
 #if defined HAVE_CONFIG_H
@@ -41,7 +41,7 @@ void PrintVersion(char *sName)
 {
   cout << sName << " 1.0" << endl;
   cout << "Displays ID3 Tag Information - Written by Scott Thomas Haug" << endl;
-  cout << "Uses " << ID3_FullName() << endl << endl;
+  cout << "Uses " << ID3LIB_FULL_NAME << endl << endl;
 }
 
 char *GetDescription(const ID3_FrameID eFrameID)
@@ -439,6 +439,9 @@ int main( int argc, char *argv[])
 }
 
 // $Log: demo_info.cpp,v $
+// Revision 1.3  2000/04/20 03:27:47  eldamitri
+// Replaced call to ID3_FullName with ID3LIB_FULL_NAME constant
+//
 // Revision 1.2  2000/04/18 21:45:39  eldamitri
 // Moved demo_info.cpp from src/examples to examples
 //
