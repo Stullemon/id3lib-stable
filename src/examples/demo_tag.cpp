@@ -1,4 +1,4 @@
-// $Id: demo_tag.cpp,v 1.1 1999/12/06 07:00:08 scott Exp $
+// $Id: demo_tag.cpp,v 1.2 1999/12/13 04:44:46 scott Exp $
 //
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <id3/misc_support.h>
 
-#define VERSION_NUMBER "$Revision: 1.1 $"
+#define VERSION_NUMBER "$Revision: 1.2 $"
 
 void PrintUsage(char *sName)
 {
@@ -28,6 +28,7 @@ void PrintUsage(char *sName)
   cout << "  -s, --song    \"SONG\"     Set the song title information" << endl;
   cout << "  -A, --album   \"ALBUM\"    Set the album title information" << endl;
   cout << "  -c, --comment \"COMMENT\"  Set the comment infromation" << endl;
+  cout << "  -C, --desc \"DESCRIPTION\" Set the comment description" << endl;
   cout << "  -g, --genre   num        Set the genre number" << endl;
   cout << "  -y, --year    num        Set the year" << endl;
   cout << "  -t, --track   num        Set the track number" << endl;
@@ -82,6 +83,7 @@ int main( int argc, char *argv[])
     *sGenre   = NULL,
     *sYear    = NULL,
     *sComment = NULL,
+    *sDesc    = NULL,
     *sTrack   = NULL,
     *sTotal   = NULL;
   size_t 
@@ -104,6 +106,7 @@ int main( int argc, char *argv[])
       { "genre",   required_argument, &iLongOpt, 'g' },
       { "year",    required_argument, &iLongOpt, 'y' },
       { "comment", required_argument, &iLongOpt, 'c' },
+      { "desc",    required_argument, &iLongOpt, 'C' },
       { "track",   required_argument, &iLongOpt, 't' },
       { "total",   required_argument, &iLongOpt, 'T' },
       { 0, 0, 0, 0 }
@@ -126,6 +129,7 @@ int main( int argc, char *argv[])
       case 'g': sGenre   = optarg;      break;
       case 'y': sYear    = optarg;      break;
       case 'c': sComment = optarg;      break;
+      case 'C': sDesc    = optarg;      break;
       case 't': sTrack   = optarg;      break;
       case 'T': sTotal   = optarg;      break;
       case '?': bError   = true;        break;
@@ -141,6 +145,7 @@ int main( int argc, char *argv[])
   }
   else 
   {
+    char *sEmpty = "";
     if (sArtist)
       cout << "+++ Artist  = " << sArtist << endl;
     if (sAlbum)
@@ -150,7 +155,15 @@ int main( int argc, char *argv[])
     if (sYear)
       cout << "+++ Year    = " << sYear << endl;
     if (sComment)
+    {
       cout << "+++ Comment = " << sComment << endl;
+      if (!sDesc)
+      {
+        sDesc = sEmpty;
+      }
+      cout << "+++ Comment Description" << endl;
+      cout << "            = " << sDesc << endl;
+    }
     if (sGenre)
     {
       nGenre = atoi(sGenre);
@@ -190,7 +203,9 @@ int main( int argc, char *argv[])
         if (sYear)
           ID3_AddYear(&myTag, sYear, true);
         if (sComment)
-          ID3_AddComment(&myTag, sComment, STR_V1_COMMENT_DESC, true);
+        {
+          ID3_AddComment(&myTag, sComment, sDesc, true);
+        }
         if (nGenre > 0)
           ID3_AddGenre(&myTag, nGenre, true);
         if (nTrack > 0)
