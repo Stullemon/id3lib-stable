@@ -1,5 +1,20 @@
 2000-05-03  Scott Haug  <scott@id3.org>
 
+	* NEWS 
+	* THANKS
+	* configure.in
+	* id3lib.spec.in: 
+	Updated for 3.7.6 release
+
+	* include/id3/frame.h
+	(SetCompression): Added as a replacement for ID3_Tag::GetCompression()
+	(GetCompression): Added
+
+	* include/id3.h 
+	* src/c_wrapper.cpp: 
+	Added ID3Frame_SetCompression and ID3Frame_GetCompression.  Deprecated
+	ID3Tag_SetCompression
+
 	* include/id3/frame.h
 	(Contains): Added comparison to ensure boolean output
 
