@@ -1,4 +1,4 @@
-// $Id: tag_find.cpp,v 1.4 1999/11/04 04:15:55 scott Exp $
+// $Id: tag_find.cpp,v 1.5 1999/11/15 20:20:47 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -14,25 +14,23 @@
 //
 //  Mon Nov 23 18:34:01 1998
 
+#if defined HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <id3/tag.h>
 #include <id3/misc_support.h>
 
 ID3_Elem *ID3_Tag::Find(ID3_Frame *frame)
 {
   ID3_Elem *elem = NULL;
-  ID3_Elem *cur = frameList;
-  bool done = false;
   
-  while (! done && cur)
-  {
-    if (cur->frame == frame)
+  for (ID3_Elem *cur = __pFrameList; NULL != cur; cur = cur->pNext)
+    if (cur->pFrame == frame)
     {
       elem = cur;
-      done = true;
+      break;
     }
-    else
-      cur = cur->next;
-  }
   
   return elem;
 }
@@ -40,32 +38,33 @@ ID3_Elem *ID3_Tag::Find(ID3_Frame *frame)
 ID3_Frame *ID3_Tag::Find(ID3_FrameID id)
 {
   ID3_Frame *frame = NULL;
-  ID3_Elem *cur = findCursor;
-  bool done = false;
   
-  if (cur == NULL)
-    findCursor = cur = frameList;
-    
-  while (! done && cur)
+  // reset the cursor if it isn't set
+  if (NULL == __pFindCursor)
+    __pFindCursor = __pFrameList;
+
+  for (int iCount = 0; iCount < 2 && frame == NULL; iCount++)
   {
-    if (cur->frame && (cur->frame->GetID() == id))
+    // We want to cycle through the list to find the matching frame.  We
+    // should start from the cursor, search each successive frame, wrapping
+    // if necessary.  The enclosing loop and the assignment statments below
+    // ensure that we first start at the cursor and search to the end of the
+    // list and, if unsuccessful, start from the beginning of the list and
+    // search to the cursor.
+    ID3_Elem
+      *pStart  = (0 == iCount ? __pFindCursor : __pFrameList), 
+      *pFinish = (0 == iCount ? NULL          : __pFindCursor);
+    // search from the cursor to the end
+    for (ID3_Elem *cur = pStart; cur != pFinish; cur = cur->pNext)
     {
-      frame = cur->frame;
-      
-      if (frame)
+      if ((cur->pFrame != NULL) && (cur->pFrame->GetID() == id))
       {
-        findCursor = cur->next;
-        done = true;
+        // We've found a valid frame.  Set the cursor to be the next element
+        frame = cur->pFrame;
+        __pFindCursor = cur->pNext;
+        break;
       }
     }
-    else
-      cur = cur->next;
-      
-    if (cur == NULL)
-      cur = frameList;
-      
-    if (cur == findCursor)
-      done = true;
   }
   
   return frame;
@@ -76,14 +75,15 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, char *data)
   ID3_Frame *frame = NULL;
   wchar_t *temp;
   
-  if (temp = new wchar_t[strlen(data) + 1])
-  {
-    ID3_ASCIItoUnicode(temp, data, strlen(data) + 1);
+  temp = new wchar_t[strlen(data) + 1];
+  if (NULL == temp)
+    ID3_THROW(ID3E_NoMemory);
+
+  ID3_ASCIItoUnicode(temp, data, strlen(data) + 1);
     
-    frame = Find(id, fld, temp);
+  frame = Find(id, fld, temp);
     
-    delete[] temp;
-  }
+  delete[] temp;
   
   return frame;
 }
@@ -91,53 +91,50 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, char *data)
 ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, wchar_t *data)
 {
   ID3_Frame *frame = NULL;
-  ID3_Elem *cur = findCursor;
-  bool done = false;
   
-  if (cur == NULL)
-    findCursor = cur = frameList;
-    
-  while (! done && cur)
+  // reset the cursor if it isn't set
+  if (NULL == __pFindCursor)
+    __pFindCursor = __pFrameList;
+
+  for (int iCount = 0; iCount < 2 && frame == NULL; iCount++)
   {
-    if (cur->frame && (cur->frame->GetID() == id))
+    // We want to cycle through the list to find the matching frame.  We
+    // should start from the cursor, search each successive frame, wrapping
+    // if necessary.  The enclosing loop and the assignment statments below
+    // ensure that we first start at the cursor and search to the end of the
+    // list and, if unsuccessful, start from the beginning of the list and
+    // search to the cursor.
+    ID3_Elem
+      *pStart  = (0 == iCount ? __pFindCursor : __pFrameList), 
+      *pFinish = (0 == iCount ? NULL          : __pFindCursor);
+    // search from the cursor to the end
+    for (ID3_Elem *cur = pStart; cur != pFinish; cur = cur->pNext)
     {
-      frame = cur->frame;
-      
-      if (data && wcslen(data) && BS_ISSET(frame->fieldBits, fld))
+      if ((cur->pFrame != NULL) && (cur->pFrame->GetID() == id) &&
+          (data != NULL) && wcslen(data) > 0 && 
+          BS_ISSET(cur->pFrame->__auiFieldBits, fld))
       {
-        wchar_t *buffer;
-        luint size;
-        
-        size = frame->Field(fld).BinSize();
-        
-        if (buffer = new wchar_t[size])
+        luint ulSize = cur->pFrame->Field(fld).BinSize();
+        wchar_t *wsBuffer = new wchar_t[ulSize];
+          
+        if (NULL == wsBuffer)
+          ID3_THROW(ID3E_NoMemory);
+          
+        cur->pFrame->Field(fld).Get(wsBuffer, ulSize);
+          
+        bool bInFrame = (wcscmp(wsBuffer, data) == 0);
+          
+        delete [] wsBuffer;
+
+        if (bInFrame)
         {
-          frame->Field(fld).Get(buffer, size);
-          
-          if (wcscmp(buffer, data) != 0)
-          {
-            frame = NULL;
-            cur = cur->next;
-          }
-          
-          delete[] buffer;
+          // We've found a valid frame.  Set cursor to be the next element
+          frame = cur->pFrame;
+          __pFindCursor = cur->pNext;
+          break;
         }
       }
-      
-      if (frame)
-      {
-        findCursor = cur->next;
-        break;
-      }
     }
-    else
-      cur = cur->next;
-      
-    if (cur == NULL)
-      cur = frameList;
-      
-    if (cur == findCursor)
-      done = true;
   }
   
   return frame;
@@ -146,73 +143,69 @@ ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, wchar_t *data)
 ID3_Frame *ID3_Tag::Find(ID3_FrameID id, ID3_FieldID fld, luint data)
 {
   ID3_Frame *frame = NULL;
-  ID3_Elem *cur = findCursor;
-  bool done = false;
   
-  if (cur == NULL)
-    findCursor = cur = frameList;
-    
-  while (! done && cur)
+  // reset the cursor if it isn't set
+  if (NULL == __pFindCursor)
+    __pFindCursor = __pFrameList;
+
+  for (int iCount = 0; iCount < 2 && frame == NULL; iCount++)
   {
-    if (cur->frame && (cur->frame->GetID() == id))
+    // We want to cycle through the list to find the matching frame.  We
+    // should start from the cursor, search each successive frame, wrapping
+    // if necessary.  The enclosing loop and the assignment statments below
+    // ensure that we first start at the cursor and search to the end of the
+    // list and, if unsuccessful, start from the beginning of the list and
+    // search to the cursor.
+    ID3_Elem
+      *pStart  = (0 == iCount ? __pFindCursor : __pFrameList), 
+      *pFinish = (0 == iCount ? NULL          : __pFindCursor);
+    // search from the cursor to the end
+    for (ID3_Elem *cur = pStart; cur != pFinish; cur = cur->pNext)
     {
-      frame = cur->frame;
-      
-      if (frame->Field(fld).Get() != data)
+      if ((cur->pFrame != NULL) && (cur->pFrame->GetID() == id) &&
+          (cur->pFrame->Field(fld).Get() == data))
       {
-        frame = NULL;
-        cur = cur->next;
-      }
-      
-      if (frame)
-      {
-        findCursor = cur->next;
+        // We've found a valid frame.  Set the cursor to be the next element
+        frame = cur->pFrame;
+        __pFindCursor = cur->pNext;
         break;
       }
     }
-    else
-      cur = cur->next;
-      
-    if (cur == NULL)
-      cur = frameList;
-      
-    if (cur == findCursor)
-      done = true;
   }
   
   return frame;
 }
 
-ID3_Frame *ID3_Tag::GetFrameNum(luint num)
+ID3_Frame *ID3_Tag::GetFrameNum(luint num) const
 {
   ID3_Frame *frame = NULL;
-  ID3_Elem *cur = frameList;
-  bool done = false;
+
   luint curNum = 0;
-  
-  while (cur && ! done)
-  {
-    if (num == curNum)
+  for (ID3_Elem *cur = __pFrameList; cur != NULL; cur = cur->pNext)
+    // compare and advance counter
+    if (num == curNum++)
     {
-      frame = cur->frame;
-      done = true;
+      frame = cur->pFrame;
+      break;
     }
-    else
-    {
-      curNum++;
-      cur = cur->next;
-    }
-  }
   
   return frame;
 }
 
-ID3_Frame *ID3_Tag::operator[](luint num)
+ID3_Frame *ID3_Tag::operator[](luint num) const
 {
   return GetFrameNum(num);
 }
 
 // $Log: tag_find.cpp,v $
+// Revision 1.5  1999/11/15 20:20:47  scott
+// Added include for config.h.  Removed assignments from if checks;
+// first makes assignment, then checks for appropriate value.  Made
+// private member variable names more descriptive.  Major code
+// cleanup: use of for loops instead of while's to ease code
+// readability, more compact looping structures to reduce possibility
+// in coding or human parsing errors,
+//
 // Revision 1.4  1999/11/04 04:15:55  scott
 // Added cvs Id and Log tags to beginning and end of file, respectively.
 //
