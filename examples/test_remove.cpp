@@ -1,4 +1,4 @@
-// $Id: test_remove.cpp,v 1.1 2000/06/21 03:30:13 eldamitri Exp $
+// $Id: test_remove.cpp,v 1.2 2000/06/23 00:35:07 eldamitri Exp $
 
 #include <iostream.h>
 #include <id3/tag.h>
@@ -13,10 +13,8 @@ int main( int argc, char *argv[])
 
     tag.Link("test-remove.tag");
     tag.Strip(ID3TT_ALL);
-    tag.Update();
     tag.Clear();
 
-    tag.Clear();
     frame.SetID(ID3FID_TITLE);
     frame.Field(ID3FN_TEXT).Set("Test title");
     tag.AddFrame(frame);

@@ -1,4 +1,4 @@
-// $Id: test_pic.cpp,v 1.4 2000/05/29 06:49:42 eldamitri Exp $
+// $Id: test_pic.cpp,v 1.5 2000/06/23 00:35:07 eldamitri Exp $
 
 #include <iostream.h>
 #include <id3/tag.h>
@@ -12,9 +12,8 @@ int main( int argc, char *argv[])
 
     tag.Link("test-230-picture.tag");
     tag.Strip(ID3TT_ALL);
-    tag.Update();
-
     tag.Clear();
+
     frame.SetID(ID3FID_TITLE);
     frame.Field(ID3FN_TEXT).Set("Aquarium");
     tag.AddFrame(frame);
