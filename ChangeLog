@@ -1,3 +1,58 @@
+2000-04-21  Scott Haug  <scott@id3.org>
+
+	* id3lib.spec.in: 
+	- Fixed date of changelog entry for 3.7.1-1
+	- Added conditional blocks so docs only get built for noarch target
+
+	* examples/Makefile.am: 
+	Updated for new example: id3simple
+
+	* examples/demo_simple.c: 
+	Initial release; simple example of how to use the C interface
+
+	* include/id3.h: 
+	Fixed parameters for ID3Tag_Strip
+
+	* include/id3/header_tag.h: 
+	- Moved ID3_{TAGID,TAGIDSIZE,TAGHEADERSIZE} macros to globals.h
+
+	* include/id3/globals.h: 
+	- Updated WIN32 macros for creating dll's
+	- Added ID3_{TAGID,TAGIDSIZE,TAGHEADERSIZE} macros from header.h
+	- Changed all enumerations to use same syntax for C and C++
+
+	* prj/id3lib.mak
+	* prj/id3lib.dsp: 
+	- Added globals.cpp
+	- Removed version.cpp, types.h, version.h
+	- Renamed src\dll_wrapper.cpp to src\c_wrapper.cpp
+
+	* libprj/id3lib.dsp: 
+	- Added globals.cpp
+	- Removed version.cpp, externals.h, types.h, version.h
+	- Renamed include\id3\dll.h to include\id3.h
+
+	* id3com/id3com.dsp: 
+	Removed version.cpp
+
+2000-04-20  Scott Haug  <scott@id3.org>
+
+	* src/Makefile.am 
+	(the_sources): Added c_wrapper.cpp
+	(EXTRA_DIST): Removed, since dll_wrapper.cpp is no longer distributed
+
+	* src/c_wrapper.cpp: 
+	Renamed and updated from dll_wrapper.cpp
+
+	* src/tag_find.cpp: 
+	Minor updates
+
+	* doc/Makefile.am 
+	(dist-hook): Copies latex code into dist package
+
+	* id3lib.spec.in: 
+	Updated to make doc package as lean as possible
+
 2000-04-19  Scott Haug  <scott@id3.org>
 
 	* NEWS
