@@ -1,4 +1,4 @@
-// $Id: tag_parse.cpp,v 1.20 2000/04/10 20:57:57 eldamitri Exp $
+// $Id: tag_parse.cpp,v 1.2 2000/04/18 22:13:27 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -425,6 +425,9 @@ luint ID3_Tag::ParseFromHandle(void)
 }
 
 // $Log: tag_parse.cpp,v $
+// Revision 1.2  2000/04/18 22:13:27  eldamitri
+// Moved tag_parse.cpp from src/id3/ to src/
+//
 // Revision 1.20  2000/04/10 20:57:57  eldamitri
 // * src/id3/tag_parse.cpp
 // (ProcessBinaries): Removed name of caught error since it isn't used.
