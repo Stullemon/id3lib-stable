@@ -1,4 +1,4 @@
-// $Id: field_binary.cpp,v 1.2 2000/04/18 22:10:20 eldamitri Exp $
+// $Id: field_binary.cpp,v 1.3 2000/04/24 14:47:50 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -137,9 +137,9 @@ ID3_Field::ParseBinary(const uchar *buffer, luint posn, size_t nSize)
 {
   size_t bytesUsed = nSize - posn;
   
-  if (__lFixedLength != -1)
+  if (__ulFixedLength > 0)
   {
-    bytesUsed = MIN(__lFixedLength, bytesUsed);
+    bytesUsed = MIN(__ulFixedLength, bytesUsed);
   }
     
   Set(&buffer[posn], bytesUsed);
@@ -166,6 +166,11 @@ ID3_Field::RenderBinary(uchar *buffer)
 
 
 // $Log: field_binary.cpp,v $
+// Revision 1.3  2000/04/24 14:47:50  eldamitri
+// __lFixedLength changed to __ulFixedLength.  A fixed length of 0, rather
+// than -1, represents a variable-length field, since we should never have
+// a fixed field length of 0.
+//
 // Revision 1.2  2000/04/18 22:10:20  eldamitri
 // Moved field_binary.cpp from src/id3/ to src/
 //

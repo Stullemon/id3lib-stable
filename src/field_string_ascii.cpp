@@ -1,4 +1,4 @@
-// $Id: field_string_ascii.cpp,v 1.2 2000/04/18 22:10:56 eldamitri Exp $
+// $Id: field_string_ascii.cpp,v 1.3 2000/04/24 14:47:50 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -48,7 +48,7 @@ void ID3_Field::Set(const char *sString)
   if (sString != NULL)
   {
     Clear();
-    size_t nStrLen = (-1 == __lFixedLength) ? strlen(sString) : __lFixedLength;
+    size_t nStrLen = (0 == __ulFixedLength) ? strlen(sString) : __ulFixedLength;
     unicode_t *temp = new unicode_t[nStrLen + 1];
     if (NULL == temp)
     {
@@ -138,10 +138,10 @@ ID3_Field::ParseASCIIString(const uchar *buffer, luint posn, size_t nSize)
   size_t bytesUsed = 0;
   char *temp = NULL;
   
-  if (__lFixedLength != -1)
+  if (__ulFixedLength > 0)
   {
     // The string is of fixed length
-    bytesUsed = __lFixedLength;
+    bytesUsed = __ulFixedLength;
   }
   else if (!(__ulFlags & ID3FF_NULL) || (__ulFlags & ID3FF_NULLDIVIDE))
   {
@@ -245,6 +245,11 @@ luint ID3_Field::RenderASCIIString(uchar *buffer)
 }
 
 // $Log: field_string_ascii.cpp,v $
+// Revision 1.3  2000/04/24 14:47:50  eldamitri
+// __lFixedLength changed to __ulFixedLength.  A fixed length of 0, rather
+// than -1, represents a variable-length field, since we should never have
+// a fixed field length of 0.
+//
 // Revision 1.2  2000/04/18 22:10:56  eldamitri
 // Moved field_string_ascii.cpp from src/id3/ to src/
 //

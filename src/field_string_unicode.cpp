@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.2 2000/04/18 22:11:08 eldamitri Exp $
+// $Id: field_string_unicode.cpp,v 1.3 2000/04/24 14:47:50 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -48,7 +48,7 @@ ID3_Field& ID3_Field::operator= (const unicode_t *string)
 void ID3_Field::Set(const unicode_t *string)
 {
   luint nBytes =
-    (-1 == __lFixedLength) ? ucslen(string) : __lFixedLength;
+    (0 == __ulFixedLength) ? ucslen(string) : __ulFixedLength;
   
   // we can simply increment the nBytes count here because we just pilfer
   // the NULL which is present in the string which was passed to us
@@ -200,9 +200,9 @@ ID3_Field::ParseUnicodeString(const uchar *buffer, luint posn, size_t nSize)
 {
   size_t nBytes = 0;
   unicode_t *temp = NULL;
-  if (__lFixedLength != -1)
+  if (__ulFixedLength > 0)
   {
-    nBytes = __lFixedLength;
+    nBytes = __ulFixedLength;
   }
   else
   {
@@ -344,6 +344,11 @@ luint ID3_Field::RenderUnicodeString(uchar *buffer)
 }
 
 // $Log: field_string_unicode.cpp,v $
+// Revision 1.3  2000/04/24 14:47:50  eldamitri
+// __lFixedLength changed to __ulFixedLength.  A fixed length of 0, rather
+// than -1, represents a variable-length field, since we should never have
+// a fixed field length of 0.
+//
 // Revision 1.2  2000/04/18 22:11:08  eldamitri
 // Moved field_string_unicode.cpp from src/id3/ to src/
 //

@@ -1,4 +1,4 @@
-// $Id: field_integer.cpp,v 1.2 2000/04/18 22:10:44 eldamitri Exp $
+// $Id: field_integer.cpp,v 1.3 2000/04/24 14:47:50 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -66,9 +66,9 @@ size_t ID3_Field::ParseInteger(const uchar *buffer, luint posn, size_t nSize)
   {
     nBytes = sizeof(uint32);
     
-    if (__lFixedLength != -1)
+    if (__ulFixedLength > 0)
     {
-      nBytes = MIN(__lFixedLength, nBytes);
+      nBytes = MIN(__ulFixedLength, nBytes);
     }
 
     Set(ParseNumber(&buffer[posn], nBytes));
@@ -93,6 +93,11 @@ luint ID3_Field::RenderInteger(uchar *buffer)
 }
 
 // $Log: field_integer.cpp,v $
+// Revision 1.3  2000/04/24 14:47:50  eldamitri
+// __lFixedLength changed to __ulFixedLength.  A fixed length of 0, rather
+// than -1, represents a variable-length field, since we should never have
+// a fixed field length of 0.
+//
 // Revision 1.2  2000/04/18 22:10:44  eldamitri
 // Moved field_integer.cpp from src/id3/ to src/
 //
