@@ -1,5 +1,11 @@
 2000-06-22  Scott Haug  <scott@id3.org>
 
+	* NEWS 
+	* THANKS
+	* configure.in
+	* id3lib.spec.in: 
+	Updated for 3.7.10 release
+
 	* examples/Makefile.am: 
 	Added id3cp and testremove
 
