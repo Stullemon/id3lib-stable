@@ -1,4 +1,4 @@
-# $Id: configure.in,v 1.41 2000/07/07 23:49:57 eldamitri Exp $
+# $Id: configure.in,v 1.42 2000/08/27 22:40:41 eldamitri Exp $
 
 # Copyright 1999, 2000 Scott Thomas Haug <eldamitri@users.sourceforge.net>
 #  
@@ -72,7 +72,7 @@ VERSION=$ID3LIB_VERSION
 PACKAGE=$ID3LIB_NAME
 
 dnl This is a hack to get the release date using cvs checkin macros
-ID3LIB_DATE="$Date: 2000/07/07 23:49:57 $ID3LIB_UNDEFINED"
+ID3LIB_DATE="$Date: 2000/08/27 22:40:41 $ID3LIB_UNDEFINED"
 ID3LIB_FULLNAME=$ID3LIB_NAME-$ID3LIB_VERSION
 
 AC_SUBST(ID3LIB_DATE)
@@ -124,13 +124,15 @@ AC_PROG_INSTALL
 
 dnl Checks for libraries.
 AC_CHECK_LIB(z,uncompress)#,,
+AC_CHECK_LIB(popt,poptGetContext)#,,
 #  AC_MSG_ERROR([id3lib requires zlib to process compressed frames]))
 
 AM_CONDITIONAL(ID3_NEEDZLIB, test x$ac_cv_lib_z_uncompress = xno)
+AM_CONDITIONAL(ID3_NEEDPOPT, test x$ac_cv_lib_popt_poptGetContext = xno)
 
 dnl Checks for header files.
 AC_HEADER_STDC
-AC_HAVE_HEADERS(zlib.h wchar.h sys/param.h)
+AC_HAVE_HEADERS(zlib.h wchar.h sys/param.h popt.h)
 AC_HAVE_HEADERS(                \
   ctype.h                       \
   limits.h                      \
@@ -197,15 +199,19 @@ AC_DEFINE_UNQUOTED(__ID3LIB_INTERFACE_AGE,         $ID3LIB_INTERFACE_AGE)
 AC_DEFINE_UNQUOTED(__ID3LIB_BINARY_AGE,            $ID3LIB_BINARY_AGE)
 AC_DEFINE_UNQUOTED(__ID3_COMPILED_WITH_DEBUGGING, "${enable_debug}")
 
+CONDITIONAL_SUBDIRS=
+if test "x$ac_cv_lib_popt_poptGetContext" = "xno"; then
+  CONDITIONAL_SUBDIRS="$CONDITIONAL_SUBDIRS popt"
+fi
+if test "x$ac_cv_lib_z_uncompress" = "xno"; then
+  CONDITIONAL_SUBDIRS="$CONDITIONAL_SUBDIRS zlib"
+fi
+AC_CONFIG_SUBDIRS(zlib popt)
+
 AC_OUTPUT(                      \
   Makefile                      \
   doc/Makefile                  \
   m4/Makefile                   \
-  zlib/Makefile                 \
-  zlib/include/Makefile         \
-  zlib/lib/Makefile             \
-  zlib/prj/Makefile             \
-  zlib/src/Makefile             \
   include/Makefile              \
   include/id3/Makefile          \
   src/Makefile                  \
