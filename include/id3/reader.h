@@ -1,4 +1,4 @@
-// $Id: reader.h,v 1.4 2000/10/03 00:53:04 eldamitri Exp $
+// $Id: reader.h,v 1.5 2000/10/09 01:55:35 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -33,12 +33,11 @@
 class ID3_Reader
 {
  public:
-  typedef size_t streamsize;
-  typedef size_t streamoff;
-  typedef unsigned char      char_type;
-  typedef unsigned long long pos_type;
-  typedef long long off_type;
-  typedef long long int_type;
+  typedef uint32 size_type;
+  typedef uint8  char_type;
+  typedef uint32 pos_type;
+  typedef  int32 off_type;
+  typedef  int16 int_type;
   static const int_type END_OF_READER = -1;
   
   /** Close the reader.  Any further actions on the reader should fail.
@@ -85,29 +84,29 @@ class ID3_Reader
    ** the value returned may be less than the number of bytes that the internal
    ** position advances, due to multi-byte characters.
    **/
-  virtual streamsize readChars(char* buf, streamsize len)
+  virtual size_type readChars(char* buf, size_type len)
   {
     return this->readChars(reinterpret_cast<uchar *>(buf), len);
   }
-  virtual streamsize readChars(uchar buf[], streamsize len) = 0;
+  virtual size_type readChars(uchar buf[], size_type len) = 0;
   
   /** Skip up to \c len chars in the stream and advance the internal position
    ** accordingly.  Returns the number of characters actually skipped (may be 
    ** less than requested).
    **/
-  virtual streamsize skipChars(streamsize len)
+  virtual size_type skipChars(size_type len)
   {
     char_type bytes[len];
     return this->readChars(bytes, len);
   }
 
-  virtual streamsize remainingChars()
+  virtual size_type remainingChars()
   {
     pos_type end = this->getEnd(), cur = this->getCur();
     ID3D_NOTICE( "ID3_Reader::remainingChars(): [cur, end] = [" << cur << ", " << end << "]" );
     if (end == pos_type(-1))
     {
-      return streamsize(-1);
+      return size_type(-1);
     }
 
     if (end >= cur)
