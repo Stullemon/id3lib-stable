@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.23 2000/05/29 02:48:08 eldamitri Exp $
+// $Id: field.cpp,v 1.24 2000/06/06 12:22:12 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -821,6 +821,63 @@ static  ID3_FrameDef ID3_FrameDefs[] =
   {ID3FID_NOFRAME}
 };
   
+/** \class ID3_Field
+ ** \brief The representative class of an ID3v2 field.
+ ** 
+ ** As a general rule, you need never create an object of this type.  id3lib
+ ** uses them internally as part of the id3_frame class.  You must know how to
+ ** interact with these objects, though, and that's what this section is about.
+ ** 
+ ** The ID3_Field contains many overloaded methods to provide these facilities
+ ** for four different data types: integers, ASCII strings, Unicode strings,
+ ** and binary data.
+ ** 
+ ** An integer field supports the Get(), Set(uint32), and operator=(uint32)
+ ** methods.
+ ** 
+ ** Both types of strings support the GetNumTextItems() method.
+ ** 
+ ** An ASCII string field supports the Get(char*, size_t, index_t)), 
+ ** Set(const char*), Add(const char*), and operator=(const char*) methods.
+ ** 
+ ** A Unicode field also supports Get(unicode_t*, size_t, index_t),
+ ** Set(const unicode_t*), Add(const unicode_t*), and 
+ ** operator=(const unicode_t*).  Without elaborating, the Unicode
+ ** methods behave exactly the same as their ASCII counterparts, taking
+ ** \c unicode_t pointers in place of \c char pointers.
+ ** 
+ ** All strings in id3lib are handled internally as Unicode.  This means that
+ ** when you set a field with an ASCII source type, it will be converted and
+ ** stored internally as a Unicode string.  id3lib will handle all necessary
+ ** conversions when parsing, rendering, and retrieving.  If you set a field as
+ ** an ASCII string, then try to read the string into a \c unicode_t buffer,
+ ** id3lib will automatically convert the string into Unicode so this will
+ ** function as expected.  The same holds true in reverse.  Of course, when
+ ** converting from Unicode to ASCII, you will experience problems when the
+ ** Unicode string contains characters that don't map to ISO-8859-1.
+ ** 
+ ** A binary field supports the Get(uchar*, size_t), Set(const uchar*, size_t),
+ ** FromFile(const char*), and ToFile(const char*) methods.  The binary field
+ ** holds miscellaneous data that can't easily be described any other way, such
+ ** as a JPEG image.
+ ** 
+ ** As a general implementation note, you should be prepared to support all
+ ** fields in an id3lib frame, even if all fields in the id3lib version of the
+ ** frame aren't present in the id3v2 version.  This is because of frames like
+ ** the picture frame, which changed slightly from one version of the id3v2
+ ** standard to the next (the IMAGEFORMAT format in 2.0 changed to a MIMETYPE
+ ** in 3.0).  If you support all id3lib fields in a given frame, id3lib can
+ ** generate the correct id3v2 frame for the id3v2 version you wish to support.
+ ** Alternatively, just support the fields you know will be used in, say, 3.0
+ ** if you only plan to generate 3.0 tags.
+ ** 
+ ** @author Dirk Mahoney
+ ** @version $Id: field.cpp,v 1.24 2000/06/06 12:22:12 eldamitri Exp $
+ ** \sa ID3_Tag
+ ** \sa ID3_Frame
+ ** \sa ID3_Err 
+ **/
+
 ID3_Field::ID3_Field()
   : __id(ID3FN_NOFIELD),
     __type(ID3FTY_INTEGER),
@@ -841,8 +898,12 @@ ID3_Field::~ID3_Field()
   this->Clear();
 }
 
-void
-ID3_Field::Clear()
+/** Clears any data and frees any memory associated with the field
+ ** 
+ ** \sa ID3_Tag::Clear()
+ ** \sa ID3_Frame::Clear()
+ **/
+void ID3_Field::Clear()
 {
   if (__data != NULL && __size > 0 && __type != ID3FTY_INTEGER)
   {
@@ -864,10 +925,24 @@ ID3_Field::HasChanged()
   return __changed;
 }
 
-size_t ID3_Field::Size() const
-{
-  return BinSize(false);
-}
+/** \fn size_t ID3_Field::Size() const
+ ** \brief Returns the size of a field.
+ ** 
+ ** The value returned is dependent on the type of the field.  For ASCII
+ ** strings, this returns the number of characters in the field, no including
+ ** any NULL-terminator.  The same holds true for Unicode---it returns the
+ ** number of characters in the field, not bytes, and this does not include
+ ** the Unicode BOM, which isn't put in a Unicode string obtained by the
+ ** Get(unicode_t*, size_t, index_t) method anyway.  For binary and
+ ** integer fields, this returns the number of bytes in the field.
+ ** 
+ ** \code
+ **   size_t howBig = myFrame.Field(ID3FN_DATA).Size();
+ ** \endcode
+ ** 
+ ** \return The size of the field, either in bytes (for binary or integer
+ **         fields) or characters (for strings).
+ **/
 
 size_t ID3_Field::BinSize(bool withExtras) const
 {
