@@ -1,4 +1,4 @@
-/* $Id: globals.h,v 1.20 2000/05/10 01:50:28 eldamitri Exp $
+/* $Id: globals.h,v 1.21 2000/05/10 03:39:56 eldamitri Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags Copyright
  * 1999, 2000 Scott Thomas Haug
@@ -270,7 +270,7 @@ ID3_ENUM(ID3_V1Lengths)
  **
  ** @author Dirk Mahoney (dirk@id3.org)
  ** @author Scott Thomas Haug (sth2@cs.wustl.edu)
- ** @version $Id: globals.h,v 1.20 2000/05/10 01:50:28 eldamitri Exp $
+ ** @version $Id: globals.h,v 1.21 2000/05/10 03:39:56 eldamitri Exp $
  ** @see ID3_Tag
  **/
 ID3_STRUCT(ID3V1_Tag)
@@ -294,20 +294,20 @@ ID3_STRUCT(ID3V1_Tag)
 ID3_ENUM(ID3_FieldFlags)
 {
   ID3FF_NONE       =      0,
-  ID3FF_NULL       = 1 << 0,
-  ID3FF_NULLDIVIDE = 1 << 1,
-  ID3FF_ADJUSTENC  = 1 << 2,
-  ID3FF_ADJUSTEDBY = 1 << 3
+  ID3FF_CSTR       = 1 << 0,
+  ID3FF_LIST       = 1 << 1,
+  ID3FF_ENCODABLE  = 1 << 2,
+  ID3FF_TEXTLIST   = ID3FF_CSTR | ID3FF_LIST | ID3FF_ENCODABLE
 };
 
 /** Enumeration of the types of field types */
 ID3_ENUM(ID3_FieldType)
 {
+  ID3FTY_NONE           = -1,
   ID3FTY_INTEGER        = 0,
-  ID3FTY_BITFIELD,
   ID3FTY_BINARY,
-  ID3FTY_ASCIISTRING,
-  ID3FTY_UNICODESTRING
+  ID3FTY_TEXTSTRING,
+  ID3FTY_NUMTYPES
 };
 
 /**
