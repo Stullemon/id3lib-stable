@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.9 2000/05/01 13:05:07 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.10 2000/05/01 15:30:41 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -91,10 +91,6 @@ luint ID3_Tag::Render(uchar *buffer)
   {
     if (cur->pFrame != NULL)
     {
-      if (__bCompression)
-      {
-        cur->pFrame->__FrmHdr.AddFlags(ID3FL_COMPRESSION);
-      }
       cur->pFrame->SetSpec(this->GetSpec());
       bytesUsed += cur->pFrame->Render(&buffer[bytesUsed]);
     }
