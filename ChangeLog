@@ -1,3 +1,34 @@
+2000-05-29  Scott Haug  <scott@id3.org>
+
+	* NEWS: 
+	Further updates for 3.7.9 release (hopefully this is it!)
+
+	* zlib/src/Makefile.am:
+	Updated to compile cleanly on a (Unix-like) system that needs it
+
+	* src/tag_file.cpp: 
+	Moved inclusion of "tag.h" to after other includes to compile correctly
+	on Solaris (hack!)
+
+	* src/field_string_unicode.cpp 
+	(RenderUnicodeString): Minor updates (needs major updates to compile
+	and work on all platforms!)
+
+	* src/Makefile.am 
+	(LDADD): Now conditionally includes distributions zlib if not already 
+	in environment
+
+	* include/id3/globals.h: 
+	So it will compile on Solaris, changed index_t typedef into #define
+
+	* examples/test_compression.cpp: 
+	* examples/test_pic.cpp: 
+	* examples/test_unicode.cpp: 
+	Removed inclusion of unnecessary header files
+
+	* configure.in: 
+	Changed AC_SIZE_T to AC_TYPE_SIZE_T
+
 2000-05-28  Scott Haug  <scott@id3.org>
 
 	* examples/get_pic.cpp 
