@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.8 2000/04/21 04:59:44 eldamitri Exp $
+# $Id: Makefile.am,v 1.9 2000/04/26 03:41:54 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -32,6 +32,7 @@ the_sources =                   \
   header_tag.cpp                \
   int28.cpp                     \
   misc_support.cpp              \
+  spec.cpp                      \
   tag.cpp                       \
   tag_file.cpp                  \
   tag_find.cpp                  \
@@ -51,6 +52,9 @@ libid3_la_LDFLAGS = \
   -export-dynamic
 
 # $Log: Makefile.am,v $
+# Revision 1.9  2000/04/26 03:41:54  eldamitri
+# (the_sources): Added spec.cpp
+#
 # Revision 1.8  2000/04/21 04:59:44  eldamitri
 # (the_sources): Added c_wrapper.cpp
 # (EXTRA_DIST): Removed, since dll_wrapper.cpp is no longer distributed
