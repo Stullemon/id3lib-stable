@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.32 2001/08/26 23:33:26 dmazzoni Exp $
+// $Id: tag_file.cpp,v 1.33 2001/12/16 09:10:14 shadrack Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -157,7 +157,11 @@ size_t RenderV1ToFile(ID3_TagImpl& tag, fstream& file)
     return 0;
   }
 
-  if (ID3_V1_LEN > tag.GetAppendedBytes())
+  // Heck no, this is stupid.  If we do not read in an initial V1(.1)
+  // header then we are constantly appending new V1(.1) headers. Files
+  // can get very big that way if we never overwrite the old ones.
+  //  if (ID3_V1_LEN > tag.GetAppendedBytes())   - Daniel Hazelbaker
+  if (ID3_V1_LEN > tag.GetFileSize())
   {
     file.seekp(0, ios::end);
   }
