@@ -8,5 +8,5 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-EXTRA_DIST = ChangeLog reconf configure
+EXTRA_DIST = ChangeLog reconf configure HISTORY TODO
 SUBDIRS = m4 doc src
