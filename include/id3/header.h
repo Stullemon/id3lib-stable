@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: header.h,v 1.19 2000/10/09 01:54:28 eldamitri Exp $
+// $Id: header.h,v 1.20 2000/10/16 06:58:35 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,13 +28,12 @@
 #ifndef _ID3LIB_HEADER_H_
 #define _ID3LIB_HEADER_H_
 
-#include "spec.h"
 #include "flags.h"
 
 class ID3_Reader;
 class ID3_Writer;
 
-class ID3_Header : public ID3_Speccable
+class ID3_Header
 {
 public:
   struct Info
