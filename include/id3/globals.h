@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: globals.h,v 1.46 2002/06/29 17:42:54 t1mpy Exp $
+/* $Id: globals.h,v 1.47 2002/06/30 17:37:45 t1mpy Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags Copyright
  * 1999, 2000 Scott Thomas Haug
@@ -85,11 +85,7 @@ ID3_C_VAR const int          ID3LIB_BINARY_AGE;
 
 
 typedef       unsigned char   uchar;
-typedef short   signed int    ssint;
-typedef short unsigned int    suint;
-typedef long    signed int    lsint;
 typedef long  unsigned int    luint;
-typedef long           double ldoub;
 
 typedef uint16                unicode_t;
 typedef uint16                flags_t;
