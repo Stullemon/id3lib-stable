@@ -42,9 +42,9 @@
 /* Defines which revision of id3lib is being used (int) */
 #define ID3LIB_REVISION (6)
 /* Defines which patch of id3lib is being used (int) */
-#define ID3LIB_PATCH (0)
+#define ID3LIB_PATCH (2)
 /* The date of this id3lib release */
-#define ID3LIB_DATE ": 1999/11/30 20:01:36 "
+#define ID3LIB_DATE ": 1999/12/03 00:47:51 "
 /* The identifying string of this id3lib */
 #define ID3LIB_FULLNAME "id3lib-3.6.0"
 
