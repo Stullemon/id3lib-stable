@@ -1,3 +1,13 @@
+2000-07-03  Scott Haug  <scott@id3.org>
+
+	* prj/id3lib.dsp 
+	* libprj/id3lib.dsp 
+	* id3com/id3com.dsp: 
+	Added tag_parse_musicmatch.cpp
+
+	* examples/test_remove.cpp 
+	(main): Tests the ability to remove frames with NULL descriptions.
+
 2000-07-02  Scott Haug  <scott@id3.org>
 
 	* src/c_wrapper.cpp:
