@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.11 2000/05/12 21:07:26 eldamitri Exp $
+// $Id: misc_support.cpp,v 1.12 2000/05/15 16:38:21 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -89,10 +89,9 @@ ID3_Frame* ID3_AddArtist(ID3_Tag *tag, const char *text, bool bReplace)
          tag->Find(ID3FID_CONDUCTOR)  == NULL &&
          tag->Find(ID3FID_COMPOSER)   == NULL))
     {
-      pFrame = new ID3_Frame;
+      pFrame = new ID3_Frame(ID3FID_LEADARTIST);
       if (pFrame)
       {
-        pFrame->SetID(ID3FID_LEADARTIST);
         pFrame->Field(ID3FN_TEXT) = text;
         tag->AttachFrame(pFrame);
       }
@@ -163,10 +162,9 @@ ID3_Frame* ID3_AddAlbum(ID3_Tag *tag, const char *text, bool bReplace)
     }
     if (bReplace || tag->Find(ID3FID_ALBUM) == NULL)
     {
-      pFrame = new ID3_Frame;
+      pFrame = new ID3_Frame(ID3FID_ALBUM);
       if (pFrame)
       {
-        pFrame->SetID(ID3FID_ALBUM);
         pFrame->Field(ID3FN_TEXT) = text;
         tag->AttachFrame(pFrame);
       }
@@ -222,10 +220,9 @@ ID3_Frame* ID3_AddTitle(ID3_Tag *tag, const char *text, bool bReplace)
     }
     if (bReplace || tag->Find(ID3FID_TITLE) == NULL)
     {
-      pFrame = new ID3_Frame;
+      pFrame = new ID3_Frame(ID3FID_TITLE);
       if (pFrame)
       {
-        pFrame->SetID(ID3FID_TITLE);
         pFrame->Field(ID3FN_TEXT) = text;
         tag->AttachFrame(pFrame);
       }
@@ -281,10 +278,9 @@ ID3_Frame* ID3_AddYear(ID3_Tag *tag, const char *text, bool bReplace)
     }
     if (bReplace || tag->Find(ID3FID_YEAR) == NULL)
     {
-      pFrame = new ID3_Frame;
+      pFrame = new ID3_Frame(ID3FID_YEAR);
       if (NULL != pFrame)
       {
-        pFrame->SetID(ID3FID_YEAR);
         pFrame->Field(ID3FN_TEXT) = text;
         tag->AttachFrame(pFrame);
       }
@@ -366,10 +362,9 @@ ID3_Frame* ID3_AddComment(ID3_Tag *tag, const char *sComment,
     }
     if (bAdd)
     {
-      pFrame = new ID3_Frame;
+      pFrame = new ID3_Frame(ID3FID_COMMENT);
       if (NULL != pFrame)
       {
-        pFrame->SetID(ID3FID_COMMENT);
         pFrame->Field(ID3FN_LANGUAGE) = "eng";
         pFrame->Field(ID3FN_DESCRIPTION) = sDescription;
         pFrame->Field(ID3FN_TEXT) = sComment;
@@ -463,7 +458,7 @@ ID3_Frame* ID3_AddTrack(ID3_Tag *tag, uchar ucTrack, uchar ucTotal, bool bReplac
     }
     if (bReplace || NULL == tag->Find(ID3FID_TRACKNUM))
     {
-      ID3_Frame *trackFrame = new ID3_Frame;
+      ID3_Frame *trackFrame = new ID3_Frame(ID3FID_TRACKNUM);
       if (trackFrame)
       {
         char *sTrack = NULL;
@@ -477,8 +472,7 @@ ID3_Frame* ID3_AddTrack(ID3_Tag *tag, uchar ucTrack, uchar ucTotal, bool bReplac
           sTrack = new char[8];
           sprintf(sTrack, "%lu/%lu", (size_t) ucTrack, (size_t) ucTotal);
         }
-
-        trackFrame->SetID(ID3FID_TRACKNUM);
+        
         trackFrame->Field(ID3FN_TEXT) = sTrack;
         tag->AttachFrame(trackFrame);
 
@@ -566,13 +560,12 @@ ID3_Frame* ID3_AddGenre(ID3_Tag *tag, size_t ucGenre, bool bReplace)
     }
     if (bReplace || NULL == tag->Find(ID3FID_CONTENTTYPE))
     {
-      pFrame = new ID3_Frame;
+      pFrame = new ID3_Frame(ID3FID_CONTENTTYPE);
       if (NULL != pFrame)
       {
         char sGenre[6];
         sprintf(sGenre, "(%lu)", (size_t) ucGenre);
 
-        pFrame->SetID(ID3FID_CONTENTTYPE);
         pFrame->Field(ID3FN_TEXT) = sGenre;
         tag->AttachFrame(pFrame);
       }
@@ -628,10 +621,9 @@ ID3_Frame* ID3_AddLyrics(ID3_Tag *tag, const char *text, bool bReplace)
     }
     if (bReplace || tag->Find(ID3FID_UNSYNCEDLYRICS) == NULL)
     {
-      pFrame = new ID3_Frame;
+      pFrame = new ID3_Frame(ID3FID_UNSYNCEDLYRICS);
       if (NULL != pFrame)
       {
-        pFrame->SetID(ID3FID_UNSYNCEDLYRICS);
         pFrame->Field(ID3FN_LANGUAGE) = "eng";
         pFrame->Field(ID3FN_TEXT) = text;
         tag->AttachFrame(pFrame);
@@ -688,10 +680,9 @@ ID3_Frame* ID3_AddLyricist(ID3_Tag *tag, const char *text, bool bReplace)
     }
     if (bReplace || (tag->Find(ID3FID_LYRICIST) == NULL))
     {    
-      pFrame = new ID3_Frame;
+      pFrame = new ID3_Frame(ID3FID_LYRICIST);
       if (pFrame)
       {
-        pFrame->SetID(ID3FID_LYRICIST);
         pFrame->Field(ID3FN_TEXT) = text;
         tag->AttachFrame(pFrame);
       }
