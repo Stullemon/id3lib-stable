@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.19 2000/05/11 12:49:00 eldamitri Exp $
+// $Id: field.cpp,v 1.20 2000/05/12 21:09:53 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -740,84 +740,84 @@ static ID3_FieldDef ID3FD_Volume[] =
 //       CRM  ID3FID_METACRYPTO        Encrypted meta frame
 static  ID3_FrameDef ID3_FrameDefs[] =
 {
-  //                          short  long      tag    file
-  // frame id                 id     id    pri discrd discrd handler field defs         description
-  {ID3FID_AUDIOCRYPTO,       "CRA", "AENC", 0, false, false, NULL, ID3FD_Unimplemented, "Audio encryption"},
-  {ID3FID_PICTURE,           "PIC", "APIC", 0, false, false, NULL, ID3FD_Picture,       "Attached picture"},
-  {ID3FID_COMMENT,           "COM", "COMM", 0, false, false, NULL, ID3FD_GeneralText,   "Comments"},
-  {ID3FID_COMMERCIAL,        ""   , "COMR", 0, false, false, NULL, ID3FD_Unimplemented, "Commercial"},
-  {ID3FID_CRYPTOREG,         ""   , "ENCR", 0, false, false, NULL, ID3FD_Registration,  "Encryption method registration"},
-  {ID3FID_EQUALIZATION,      "EQU", "EQUA", 0, false, true,  NULL, ID3FD_Unimplemented, "Equalization"},
-  {ID3FID_EVENTTIMING,       "ETC", "ETCO", 0, false, true,  NULL, ID3FD_Unimplemented, "Event timing codes"},
-  {ID3FID_GENERALOBJECT,     "GEO", "GEOB", 0, false, false, NULL, ID3FD_GEO,           "General encapsulated object"},
-  {ID3FID_GROUPINGREG,       ""   , "GRID", 0, false, false, NULL, ID3FD_Registration,  "Group identification registration"},
-  {ID3FID_INVOLVEDPEOPLE,    "IPL", "IPLS", 0, false, false, NULL, ID3FD_InvolvedPeople,"Involved people list"},
-  {ID3FID_LINKEDINFO,        "LNK", "LINK", 0, false, false, NULL, ID3FD_LinkedInfo,    "Linked information"},
-  {ID3FID_CDID,              "MCI", "MCDI", 0, false, false, NULL, ID3FD_Unimplemented, "Music CD identifier"},
-  {ID3FID_MPEGLOOKUP,        "MLL", "MLLT", 0, false, true,  NULL, ID3FD_Unimplemented, "MPEG location lookup table"},
-  {ID3FID_OWNERSHIP,         ""   , "OWNE", 0, false, false, NULL, ID3FD_Unimplemented, "Ownership frame"},
-  {ID3FID_PLAYCOUNTER,       "CNT", "PCNT", 0, false, false, NULL, ID3FD_PlayCounter,   "Play counter"},
-  {ID3FID_POPULARIMETER,     "POP", "POPM", 0, false, false, NULL, ID3FD_Popularimeter, "Popularimeter"},
-  {ID3FID_POSITIONSYNC,      ""   , "POSS", 0, false, true,  NULL, ID3FD_Unimplemented, "Position synchronisation frame"},
-  {ID3FID_PRIVATE,           ""   , "PRIV", 0, false, false, NULL, ID3FD_Private,       "Private frame"},
-  {ID3FID_BUFFERSIZE,        "BUF", "RBUF", 0, false, false, NULL, ID3FD_Unimplemented, "Recommended buffer size"},
-  {ID3FID_VOLUMEADJ,         "RVA", "RVAD", 0, false, true,  NULL, ID3FD_Unimplemented, "Relative volume adjustment"},
-  {ID3FID_REVERB,            "REV", "RVRB", 0, false, false, NULL, ID3FD_Unimplemented, "Reverb"},
-  {ID3FID_SYNCEDLYRICS,      "SLT", "SYLT", 0, false, false, NULL, ID3FD_SyncLyrics,	"Synchronized lyric/text"},
-  {ID3FID_SYNCEDTEMPO,       "STC", "SYTC", 0, false, true,  NULL, ID3FD_Unimplemented, "Synchronized tempo codes"},
-  {ID3FID_ALBUM,             "TAL", "TALB", 0, false, false, NULL, ID3FD_Text,          "Album/Movie/Show title"},
-  {ID3FID_BPM,               "TBP", "TBPM", 0, false, false, NULL, ID3FD_Text,          "BPM (beats per minute)"},
-  {ID3FID_COMPOSER,          "TCM", "TCOM", 0, false, false, NULL, ID3FD_Text,          "Composer"},
-  {ID3FID_CONTENTTYPE,       "TCO", "TCON", 0, false, false, NULL, ID3FD_Text,          "Content type"},
-  {ID3FID_COPYRIGHT,         "TCR", "TCOP", 0, false, false, NULL, ID3FD_Text,          "Copyright message"},
-  {ID3FID_DATE,              "TDA", "TDAT", 0, false, false, NULL, ID3FD_Text,          "Date"},
-  {ID3FID_PLAYLISTDELAY,     "TDY", "TDLY", 0, false, false, NULL, ID3FD_Text,          "Playlist delay"},
-  {ID3FID_ENCODEDBY,         "TEN", "TENC", 0, false, true,  NULL, ID3FD_Text,          "Encoded by"},
-  {ID3FID_LYRICIST,          "TXT", "TEXT", 0, false, false, NULL, ID3FD_Text,          "Lyricist/Text writer"},
-  {ID3FID_FILETYPE,          "TFT", "TFLT", 0, false, false, NULL, ID3FD_Text,          "File type"},
-  {ID3FID_INITIALKEY,        "TKE", "TKEY", 0, false, false, NULL, ID3FD_Text,          "Initial key"},
-  {ID3FID_TIME,              "TIM", "TIME", 0, false, false, NULL, ID3FD_Text,          "Time"},
-  {ID3FID_CONTENTGROUP,      "TT1", "TIT1", 0, false, false, NULL, ID3FD_Text,          "Content group description"},
-  {ID3FID_TITLE,             "TT2", "TIT2", 0, false, false, NULL, ID3FD_Text,          "Title/songname/content description"},
-  {ID3FID_SUBTITLE,          "TT3", "TIT3", 0, false, false, NULL, ID3FD_Text,          "Subtitle/Description refinement"},
-  {ID3FID_LANGUAGE,          "TLA", "TLAN", 0, false, false, NULL, ID3FD_Text,          "Language(s)"},
-  {ID3FID_SONGLEN,           "TLE", "TLEN", 0, false, true,  NULL, ID3FD_Text,          "Length"},
-  {ID3FID_MEDIATYPE,         "TMT", "TMED", 0, false, false, NULL, ID3FD_Text,          "Media type"},
-  {ID3FID_ORIGALBUM,         "TOT", "TOAL", 0, false, false, NULL, ID3FD_Text,          "Original album/movie/show title"},
-  {ID3FID_ORIGFILENAME,      "TOF", "TOFN", 0, false, false, NULL, ID3FD_Text,          "Original filename"},
-  {ID3FID_ORIGLYRICIST,      "TOL", "TOLY", 0, false, false, NULL, ID3FD_Text,          "Original lyricist(s)/text writer(s)"},
-  {ID3FID_ORIGARTIST,        "TOA", "TOPE", 0, false, false, NULL, ID3FD_Text,          "Original artist(s)/performer(s)"},
-  {ID3FID_ORIGYEAR,          "TOR", "TORY", 0, false, false, NULL, ID3FD_Text,          "Original release year"},
-  {ID3FID_FILEOWNER,         ""   , "TOWN", 0, false, false, NULL, ID3FD_Text,          "File owner/licensee"},
-  {ID3FID_LEADARTIST,        "TP1", "TPE1", 0, false, false, NULL, ID3FD_Text,          "Lead performer(s)/Soloist(s)"},
-  {ID3FID_BAND,              "TP2", "TPE2", 0, false, false, NULL, ID3FD_Text,          "Band/orchestra/accompaniment"},
-  {ID3FID_CONDUCTOR,         "TP3", "TPE3", 0, false, false, NULL, ID3FD_Text,          "Conductor/performer refinement"},
-  {ID3FID_MIXARTIST,         "TP4", "TPE4", 0, false, false, NULL, ID3FD_Text,          "Interpreted, remixed, or otherwise modified by"},
-  {ID3FID_PARTINSET,         "TPA", "TPOS", 0, false, false, NULL, ID3FD_Text,          "Part of a set"},
-  {ID3FID_PUBLISHER,         "TPB", "TPUB", 0, false, false, NULL, ID3FD_Text,          "Publisher"},
-  {ID3FID_TRACKNUM,          "TRK", "TRCK", 0, false, false, NULL, ID3FD_Text,          "Track number/Position in set"},
-  {ID3FID_RECORDINGDATES,    "TRD", "TRDA", 0, false, false, NULL, ID3FD_Text,          "Recording dates"},
-  {ID3FID_NETRADIOSTATION,   "TRN", "TRSN", 0, false, false, NULL, ID3FD_Text,          "Internet radio station name"},
-  {ID3FID_NETRADIOOWNER,     "TRO", "TRSO", 0, false, false, NULL, ID3FD_Text,          "Internet radio station owner"},
-  {ID3FID_SIZE,              "TSI", "TSIZ", 0, false, true,  NULL, ID3FD_Text,          "Size"},
-  {ID3FID_ISRC,              "TRC", "TSRC", 0, false, false, NULL, ID3FD_Text,          "ISRC (international standard recording code)"},
-  {ID3FID_ENCODERSETTINGS,   "TSS", "TSSE", 0, false, false, NULL, ID3FD_Text,          "Software/Hardware and settings used for encoding"},
-  {ID3FID_USERTEXT,          "TXX", "TXXX", 0, false, false, NULL, ID3FD_UserText,      "User defined text information"},
-  {ID3FID_YEAR,              "TYE", "TYER", 0, false, false, NULL, ID3FD_Text,          "Year"},
-  {ID3FID_UNIQUEFILEID,      "UFI", "UFID", 0, false, false, NULL, ID3FD_UFI,           "Unique file identifier"},
-  {ID3FID_TERMSOFUSE,        ""   , "USER", 0, false, false, NULL, ID3FD_TermsOfUse,    "Terms of use"},
-  {ID3FID_UNSYNCEDLYRICS,    "ULT", "USLT", 0, false, false, NULL, ID3FD_GeneralText,   "Unsynchronized lyric/text transcription"},
-  {ID3FID_WWWCOMMERCIALINFO, "WCM", "WCOM", 0, false, false, NULL, ID3FD_URL,           "Commercial information"},
-  {ID3FID_WWWCOPYRIGHT,      "WCP", "WCOP", 0, false, false, NULL, ID3FD_URL,           "Copyright/Legal infromation"},
-  {ID3FID_WWWAUDIOFILE,      "WAF", "WOAF", 0, false, false, NULL, ID3FD_URL,           "Official audio file webpage"},
-  {ID3FID_WWWARTIST,         "WAR", "WOAR", 0, false, false, NULL, ID3FD_URL,           "Official artist/performer webpage"},
-  {ID3FID_WWWAUDIOSOURCE,    "WAS", "WOAS", 0, false, false, NULL, ID3FD_URL,           "Official audio source webpage"},
-  {ID3FID_WWWRADIOPAGE,      "WRA", "WORS", 0, false, false, NULL, ID3FD_URL,           "Official internet radio station homepage"},
-  {ID3FID_WWWPAYMENT,        "WPY", "WPAY", 0, false, false, NULL, ID3FD_URL,           "Payment"},
-  {ID3FID_WWWPUBLISHER,      "WPB", "WPUB", 0, false, false, NULL, ID3FD_URL,           "Official publisher webpage"},
-  {ID3FID_WWWUSER,           "WXX", "WXXX", 0, false, false, NULL, ID3FD_UserURL,       "User defined URL link"},
-  {ID3FID_METACRYPTO,        "CRM", ""    , 0, false, false, NULL, ID3FD_Unimplemented, "Encrypted meta frame"},
-  {ID3FID_METACOMPRESSION,   "CDM", ""    , 0, false, false, NULL, ID3FD_CDM,           "Compressed data meta frame"},
+  //                          short  long   tag    file
+  // frame id                 id     id     discrd discrd field defs           description
+  {ID3FID_AUDIOCRYPTO,       "CRA", "AENC", false, false, ID3FD_Unimplemented, "Audio encryption"},
+  {ID3FID_PICTURE,           "PIC", "APIC", false, false, ID3FD_Picture,       "Attached picture"},
+  {ID3FID_COMMENT,           "COM", "COMM", false, false, ID3FD_GeneralText,   "Comments"},
+  {ID3FID_COMMERCIAL,        ""   , "COMR", false, false, ID3FD_Unimplemented, "Commercial"},
+  {ID3FID_CRYPTOREG,         ""   , "ENCR", false, false, ID3FD_Registration,  "Encryption method registration"},
+  {ID3FID_EQUALIZATION,      "EQU", "EQUA", false, true,  ID3FD_Unimplemented, "Equalization"},
+  {ID3FID_EVENTTIMING,       "ETC", "ETCO", false, true,  ID3FD_Unimplemented, "Event timing codes"},
+  {ID3FID_GENERALOBJECT,     "GEO", "GEOB", false, false, ID3FD_GEO,           "General encapsulated object"},
+  {ID3FID_GROUPINGREG,       ""   , "GRID", false, false, ID3FD_Registration,  "Group identification registration"},
+  {ID3FID_INVOLVEDPEOPLE,    "IPL", "IPLS", false, false, ID3FD_InvolvedPeople,"Involved people list"},
+  {ID3FID_LINKEDINFO,        "LNK", "LINK", false, false, ID3FD_LinkedInfo,    "Linked information"},
+  {ID3FID_CDID,              "MCI", "MCDI", false, false, ID3FD_Unimplemented, "Music CD identifier"},
+  {ID3FID_MPEGLOOKUP,        "MLL", "MLLT", false, true,  ID3FD_Unimplemented, "MPEG location lookup table"},
+  {ID3FID_OWNERSHIP,         ""   , "OWNE", false, false, ID3FD_Unimplemented, "Ownership frame"},
+  {ID3FID_PLAYCOUNTER,       "CNT", "PCNT", false, false, ID3FD_PlayCounter,   "Play counter"},
+  {ID3FID_POPULARIMETER,     "POP", "POPM", false, false, ID3FD_Popularimeter, "Popularimeter"},
+  {ID3FID_POSITIONSYNC,      ""   , "POSS", false, true,  ID3FD_Unimplemented, "Position synchronisation frame"},
+  {ID3FID_PRIVATE,           ""   , "PRIV", false, false, ID3FD_Private,       "Private frame"},
+  {ID3FID_BUFFERSIZE,        "BUF", "RBUF", false, false, ID3FD_Unimplemented, "Recommended buffer size"},
+  {ID3FID_VOLUMEADJ,         "RVA", "RVAD", false, true,  ID3FD_Unimplemented, "Relative volume adjustment"},
+  {ID3FID_REVERB,            "REV", "RVRB", false, false, ID3FD_Unimplemented, "Reverb"},
+  {ID3FID_SYNCEDLYRICS,      "SLT", "SYLT", false, false, ID3FD_SyncLyrics,	"Synchronized lyric/text"},
+  {ID3FID_SYNCEDTEMPO,       "STC", "SYTC", false, true,  ID3FD_Unimplemented, "Synchronized tempo codes"},
+  {ID3FID_ALBUM,             "TAL", "TALB", false, false, ID3FD_Text,          "Album/Movie/Show title"},
+  {ID3FID_BPM,               "TBP", "TBPM", false, false, ID3FD_Text,          "BPM (beats per minute)"},
+  {ID3FID_COMPOSER,          "TCM", "TCOM", false, false, ID3FD_Text,          "Composer"},
+  {ID3FID_CONTENTTYPE,       "TCO", "TCON", false, false, ID3FD_Text,          "Content type"},
+  {ID3FID_COPYRIGHT,         "TCR", "TCOP", false, false, ID3FD_Text,          "Copyright message"},
+  {ID3FID_DATE,              "TDA", "TDAT", false, false, ID3FD_Text,          "Date"},
+  {ID3FID_PLAYLISTDELAY,     "TDY", "TDLY", false, false, ID3FD_Text,          "Playlist delay"},
+  {ID3FID_ENCODEDBY,         "TEN", "TENC", false, true,  ID3FD_Text,          "Encoded by"},
+  {ID3FID_LYRICIST,          "TXT", "TEXT", false, false, ID3FD_Text,          "Lyricist/Text writer"},
+  {ID3FID_FILETYPE,          "TFT", "TFLT", false, false, ID3FD_Text,          "File type"},
+  {ID3FID_INITIALKEY,        "TKE", "TKEY", false, false, ID3FD_Text,          "Initial key"},
+  {ID3FID_TIME,              "TIM", "TIME", false, false, ID3FD_Text,          "Time"},
+  {ID3FID_CONTENTGROUP,      "TT1", "TIT1", false, false, ID3FD_Text,          "Content group description"},
+  {ID3FID_TITLE,             "TT2", "TIT2", false, false, ID3FD_Text,          "Title/songname/content description"},
+  {ID3FID_SUBTITLE,          "TT3", "TIT3", false, false, ID3FD_Text,          "Subtitle/Description refinement"},
+  {ID3FID_LANGUAGE,          "TLA", "TLAN", false, false, ID3FD_Text,          "Language(s)"},
+  {ID3FID_SONGLEN,           "TLE", "TLEN", false, true,  ID3FD_Text,          "Length"},
+  {ID3FID_MEDIATYPE,         "TMT", "TMED", false, false, ID3FD_Text,          "Media type"},
+  {ID3FID_ORIGALBUM,         "TOT", "TOAL", false, false, ID3FD_Text,          "Original album/movie/show title"},
+  {ID3FID_ORIGFILENAME,      "TOF", "TOFN", false, false, ID3FD_Text,          "Original filename"},
+  {ID3FID_ORIGLYRICIST,      "TOL", "TOLY", false, false, ID3FD_Text,          "Original lyricist(s)/text writer(s)"},
+  {ID3FID_ORIGARTIST,        "TOA", "TOPE", false, false, ID3FD_Text,          "Original artist(s)/performer(s)"},
+  {ID3FID_ORIGYEAR,          "TOR", "TORY", false, false, ID3FD_Text,          "Original release year"},
+  {ID3FID_FILEOWNER,         ""   , "TOWN", false, false, ID3FD_Text,          "File owner/licensee"},
+  {ID3FID_LEADARTIST,        "TP1", "TPE1", false, false, ID3FD_Text,          "Lead performer(s)/Soloist(s)"},
+  {ID3FID_BAND,              "TP2", "TPE2", false, false, ID3FD_Text,          "Band/orchestra/accompaniment"},
+  {ID3FID_CONDUCTOR,         "TP3", "TPE3", false, false, ID3FD_Text,          "Conductor/performer refinement"},
+  {ID3FID_MIXARTIST,         "TP4", "TPE4", false, false, ID3FD_Text,          "Interpreted, remixed, or otherwise modified by"},
+  {ID3FID_PARTINSET,         "TPA", "TPOS", false, false, ID3FD_Text,          "Part of a set"},
+  {ID3FID_PUBLISHER,         "TPB", "TPUB", false, false, ID3FD_Text,          "Publisher"},
+  {ID3FID_TRACKNUM,          "TRK", "TRCK", false, false, ID3FD_Text,          "Track number/Position in set"},
+  {ID3FID_RECORDINGDATES,    "TRD", "TRDA", false, false, ID3FD_Text,          "Recording dates"},
+  {ID3FID_NETRADIOSTATION,   "TRN", "TRSN", false, false, ID3FD_Text,          "Internet radio station name"},
+  {ID3FID_NETRADIOOWNER,     "TRO", "TRSO", false, false, ID3FD_Text,          "Internet radio station owner"},
+  {ID3FID_SIZE,              "TSI", "TSIZ", false, true,  ID3FD_Text,          "Size"},
+  {ID3FID_ISRC,              "TRC", "TSRC", false, false, ID3FD_Text,          "ISRC (international standard recording code)"},
+  {ID3FID_ENCODERSETTINGS,   "TSS", "TSSE", false, false, ID3FD_Text,          "Software/Hardware and settings used for encoding"},
+  {ID3FID_USERTEXT,          "TXX", "TXXX", false, false, ID3FD_UserText,      "User defined text information"},
+  {ID3FID_YEAR,              "TYE", "TYER", false, false, ID3FD_Text,          "Year"},
+  {ID3FID_UNIQUEFILEID,      "UFI", "UFID", false, false, ID3FD_UFI,           "Unique file identifier"},
+  {ID3FID_TERMSOFUSE,        ""   , "USER", false, false, ID3FD_TermsOfUse,    "Terms of use"},
+  {ID3FID_UNSYNCEDLYRICS,    "ULT", "USLT", false, false, ID3FD_GeneralText,   "Unsynchronized lyric/text transcription"},
+  {ID3FID_WWWCOMMERCIALINFO, "WCM", "WCOM", false, false, ID3FD_URL,           "Commercial information"},
+  {ID3FID_WWWCOPYRIGHT,      "WCP", "WCOP", false, false, ID3FD_URL,           "Copyright/Legal infromation"},
+  {ID3FID_WWWAUDIOFILE,      "WAF", "WOAF", false, false, ID3FD_URL,           "Official audio file webpage"},
+  {ID3FID_WWWARTIST,         "WAR", "WOAR", false, false, ID3FD_URL,           "Official artist/performer webpage"},
+  {ID3FID_WWWAUDIOSOURCE,    "WAS", "WOAS", false, false, ID3FD_URL,           "Official audio source webpage"},
+  {ID3FID_WWWRADIOPAGE,      "WRA", "WORS", false, false, ID3FD_URL,           "Official internet radio station homepage"},
+  {ID3FID_WWWPAYMENT,        "WPY", "WPAY", false, false, ID3FD_URL,           "Payment"},
+  {ID3FID_WWWPUBLISHER,      "WPB", "WPUB", false, false, ID3FD_URL,           "Official publisher webpage"},
+  {ID3FID_WWWUSER,           "WXX", "WXXX", false, false, ID3FD_UserURL,       "User defined URL link"},
+  {ID3FID_METACRYPTO,        "CRM", ""    , false, false, ID3FD_Unimplemented, "Encrypted meta frame"},
+  {ID3FID_METACOMPRESSION,   "CDM", ""    , false, false, ID3FD_CDM,           "Compressed data meta frame"},
   {ID3FID_NOFRAME}
 };
   
@@ -847,7 +847,7 @@ ID3_Field::Clear()
     
   __type       = ID3FTY_INTEGER;
   __data       = NULL;
-  __size       = sizeof (luint);
+  __size       = sizeof (uint32);
   __changed    = true;
   __enc        = ID3TE_NONE;
   
@@ -860,16 +860,14 @@ ID3_Field::HasChanged()
   return __changed;
 }
 
-luint
-ID3_Field::Size() const
+size_t ID3_Field::Size() const
 {
   return BinSize(false);
 }
 
-luint
-ID3_Field::BinSize(const bool withExtras) const
+size_t ID3_Field::BinSize(bool withExtras) const
 {
-  luint bytes   = 0;
+  size_t bytes   = 0;
 
   bytes = __size;
     
@@ -914,10 +912,9 @@ ID3_Field::BinSize(const bool withExtras) const
   return bytes;
 }
 
-luint
-ID3_Field::Parse(const uchar *buffer, const luint buffSize)
+size_t ID3_Field::Parse(const uchar *buffer, size_t buffSize)
 {
-  luint bytesUsed       = 0;
+  size_t bytesUsed       = 0;
   
   switch (this->GetType())
   {
@@ -953,7 +950,7 @@ ID3_FindFrameDef(const ID3_FrameID id)
 {
   ID3_FrameDef  *info   = NULL;
 
-  for (luint cur = 0; ID3_FrameDefs[cur].eID != ID3FID_NOFRAME; cur++)
+  for (index_t cur = 0; ID3_FrameDefs[cur].eID != ID3FID_NOFRAME; cur++)
   {
     if (ID3_FrameDefs[cur].eID == id)
     {
@@ -970,7 +967,7 @@ ID3_FindFrameID(const char *id)
 {
   ID3_FrameID fid = ID3FID_NOFRAME;
   
-  for (luint cur = 0; ID3_FrameDefs[cur].eID != ID3FID_NOFRAME; cur++)
+  for (index_t cur = 0; ID3_FrameDefs[cur].eID != ID3FID_NOFRAME; cur++)
   {
     if (((strcmp(ID3_FrameDefs[cur].sShortTextID, id) == 0) &&
          strlen(id) == 3) ||
@@ -985,10 +982,9 @@ ID3_FindFrameID(const char *id)
   return fid;
 }
 
-luint
-ID3_Field::Render(uchar *buffer)
+size_t ID3_Field::Render(uchar *buffer) const
 {
-  luint bytesUsed = 0;
+  size_t bytesUsed = 0;
   
   switch (this->GetType()) 
   {
