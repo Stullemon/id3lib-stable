@@ -14,14 +14,14 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.6 2000/05/03 14:10:22 eldamitri Exp $
+// $Id: demo_info.cpp,v 1.7 2000/05/06 05:42:46 eldamitri Exp $
 
 #include <iostream.h>
 #include <id3/tag.h>
 #include <id3/misc_support.h>
 #include <getopt.h>
 
-void PrintUsage(char *sName)
+void PrintUsage(const char *sName)
 {
   cout << "Usage: " << sName << " [OPTION]... [FILE]..." << endl;
   cout << "Display the id3 (both v1 and v2) tag information for a file." << endl;
@@ -32,14 +32,14 @@ void PrintUsage(char *sName)
   cout << "Will not differentiate between the two types of tags" << endl;
 }
 
-void PrintVersion(char *sName)
+void PrintVersion(const char *sName)
 {
   cout << sName << " 1.0" << endl;
   cout << "Displays ID3 Tag Information - Written by Scott Thomas Haug" << endl;
   cout << "Uses " << ID3LIB_FULL_NAME << endl << endl;
 }
 
-void PrintInformation(ID3_Tag &myTag)
+void PrintInformation(const ID3_Tag &myTag)
 {
   for (size_t nFrames = 0; nFrames < myTag.NumFrames(); nFrames++)
   {
@@ -214,7 +214,7 @@ void PrintInformation(ID3_Tag &myTag)
             nCounter = myFrame->Field(ID3FN_COUNTER).Get(),
             nRating = myFrame->Field(ID3FN_RATING).Get();
           cout << sEmail << ", counter=" 
-               << nCounter << " rating=" << nRating;
+               << nCounter << " rating=" << nRating << endl;
           delete [] sEmail;
           break;
         }
@@ -226,7 +226,50 @@ void PrintInformation(ID3_Tag &myTag)
             nSymbol = myFrame->Field(ID3FN_ID).Get(),
             nDataSize = myFrame->Field(ID3FN_DATA).Size();
           cout << "(" << nSymbol << "): " << sOwner
-               << ", " << nDataSize << " bytes";
+               << ", " << nDataSize << " bytes" << endl;
+          break;
+        }
+        case ID3FID_SYNCEDLYRICS:
+        {
+          char 
+            *sDesc = ID3_GetString(myFrame, ID3FN_DESCRIPTION), 
+            *sLang = ID3_GetString(myFrame, ID3FN_LANGUAGE);
+          size_t
+            nTimestamp = myFrame->Field(ID3FN_TIMESTAMPFORMAT).Get(),
+            nRating = myFrame->Field(ID3FN_CONTENTTYPE).Get();
+          cout << "(" << sDesc << ")[" << sLang << "]: ";
+          switch (nRating)
+          {
+            case ID3LC_OTHER:    cout << "Other"; break;
+            case ID3LC_LYRICS:   cout << "Lyrics"; break;
+            case ID3LC_TEXT:     cout << "Text transcription"; break;
+            case ID3LC_MOVEMENT: cout << "Movement/part name"; break;
+            case ID3LC_EVENTS:   cout << "Events"; break;
+            case ID3LC_CHORD:    cout << "Chord"; break;
+            case ID3LC_TRIVIA:   cout << "Trivia/'pop up' information"; break;
+          }
+
+          size_t size = myFrame->Field(ID3FN_DATA).Size();
+          const uchar* bin = myFrame->Field(ID3FN_DATA).GetBinary();
+          const uchar* p = bin;
+          while (p < bin + size)
+          {
+            size_t len = strlen((char *)p);
+            cout << p;
+            p += len + 1;
+            if (p < bin + size)
+            {
+              size_t 
+                bytesleft = bin + size - p,
+                bytestoparse = MIN(sizeof(uint32), bytesleft);
+              
+              cout << " [" << ParseNumber(p, bytestoparse) << "] ";
+              p += 4;
+            }
+          }
+          cout << endl;
+          delete [] sDesc;
+          delete [] sLang;
           break;
         }
         case ID3FID_AUDIOCRYPTO:
@@ -240,7 +283,6 @@ void PrintInformation(ID3_Tag &myTag)
         case ID3FID_BUFFERSIZE:
         case ID3FID_VOLUMEADJ:
         case ID3FID_REVERB:
-        case ID3FID_SYNCEDLYRICS:
         case ID3FID_SYNCEDTEMPO:
         case ID3FID_METACRYPTO:
         {
