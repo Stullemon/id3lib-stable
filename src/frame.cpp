@@ -1,4 +1,4 @@
-// $Id: frame.cpp,v 1.17 2000/05/28 22:56:18 eldamitri Exp $
+// $Id: frame.cpp,v 1.18 2000/05/29 02:11:51 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -256,28 +256,6 @@ ID3_Field& ID3_Frame::Field(ID3_FieldID fieldName) const
   return *__fields[fieldNum];
 }
 
-void ID3_Frame::_UpdateStringTypes()
-{
-  ID3_TextEnc enc = ID3TE_ASCII;
-  bool changed = false;
-  for (ID3_Field** fi = __fields; fi != __fields + __num_fields; fi++)
-  {
-    if (*fi && (*fi)->InScope(this->GetSpec()))
-    {
-      if ((*fi)->GetID() == ID3FN_TEXTENC)
-      {
-        enc = (ID3_TextEnc) (*fi)->Get();
-      }
-      else
-      {
-        changed = (*fi)->SetEncoding(enc) || changed;
-      }
-    }
-  }
-  __changed = __changed || changed;
-}
-
-
 size_t ID3_Frame::Size()
 {
   size_t bytesUsed = __hdr.Size();
@@ -292,14 +270,19 @@ size_t ID3_Frame::Size()
     bytesUsed++;
   }
     
-  // this call is to tell the string fields what they should be rendered/parsed
-  // as (ASCII or Unicode)
-  this->_UpdateStringTypes();
-  
+  ID3_TextEnc enc = ID3TE_ASCII;
   for (ID3_Field** fi = __fields; fi != __fields + __num_fields; fi++)
   {
     if (*fi && (*fi)->InScope(this->GetSpec()))
     {
+      if ((*fi)->GetID() == ID3FN_TEXTENC)
+      {
+        enc = (ID3_TextEnc) (*fi)->Get();
+      }
+      else
+      {
+        (*fi)->SetEncoding(enc);
+      }
       bytesUsed += (*fi)->BinSize();
     }
   }
@@ -337,6 +320,12 @@ ID3_Frame::operator=( const ID3_Frame &rFrame )
         *(__fields[nIndex]) = *(rFrame.__fields[nIndex]);
       }
     }
+    this->_SetEncryptionID(rFrame._GetEncryptionID());
+    this->_SetGroupingID(rFrame._GetGroupingID());
+    this->SetCompression(rFrame.GetCompression());
+    this->SetSpec(rFrame.GetSpec());
+    __bad_parse = false;
+    __changed = false;
   }
   return *this;
 }
