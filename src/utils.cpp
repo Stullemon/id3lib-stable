@@ -1,4 +1,4 @@
-// $Id: utils.cpp,v 1.9 2000/09/30 22:14:57 eldamitri Exp $
+// $Id: utils.cpp,v 1.10 2000/10/03 04:37:49 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -31,7 +31,7 @@
 #include <config.h>
 #endif
 
-namespace id3
+namespace dami
 {
 
   size_t timeToSeconds(const char* data, size_t size)
@@ -105,9 +105,9 @@ namespace id3
     }
   }
 
-  id3::string removeTrailingSpaces(id3::string str)
+  String removeTrailingSpaces(String str)
   {
-    id3::string buffer = str;
+    String buffer = str;
     size_t newlen = 0;
     for (newlen = buffer.length(); newlen > 0 && 0x20 == buffer[newlen-1]; --newlen)
     {
@@ -143,9 +143,9 @@ namespace id3
     return size;
   }
 
-  id3::string renderNumber(uint32 val, size_t size)
+  String renderNumber(uint32 val, size_t size)
   {
-    id3::string str(size, '\0');
+    String str(size, '\0');
     uint32 num = val;
     for (size_t i = 0; i < size; i++)
     {
@@ -385,5 +385,23 @@ namespace id3
     return ID3E_NoError;
   }
   
+  String toString(uint32 val)
+  {
+    if (val == 0)
+    {
+      return "0";
+    }
+    String text;
+    while (val > 0)
+    {
+      String tmp;
+      char ch = (val % 10) + '0';
+      tmp += ch;
+      text = tmp + text;
+      val /= 10;
+    }
+    return text;
+  }
+    
 }
 
