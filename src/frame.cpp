@@ -1,4 +1,4 @@
-// $Id: frame.cpp,v 1.21 2000/06/14 16:38:32 eldamitri Exp $
+// $Id: frame.cpp,v 1.22 2000/06/22 20:11:11 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -40,7 +40,7 @@
  ** the implementation of a complex APIC frame and for a simple text frame.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: frame.cpp,v 1.21 2000/06/14 16:38:32 eldamitri Exp $
+ ** @version $Id: frame.cpp,v 1.22 2000/06/22 20:11:11 eldamitri Exp $
  ** @see ID3_Tag
  ** @see ID3_Field
  ** @see ID3_Err
@@ -65,7 +65,7 @@ ID3_Frame::ID3_Frame(ID3_FrameID id)
     __grouping_id('\0'),
     __bad_parse(false)
 {
-  
+  this->SetSpec(ID3V2_LATEST);
   this->_InitFieldBits();
   this->SetID(id);
 }
