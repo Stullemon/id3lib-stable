@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: tag.h,v 1.62 2002/11/02 17:35:56 t1mpy Exp $
+// $Id: tag.h,v 1.63 2003/03/02 13:35:59 t1mpy Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -31,6 +31,7 @@
 
 #include <id3/id3lib_frame.h>
 #include <id3/field.h>
+#include <id3/utils.h>//for ID3_PATH_LENGTH
 
 class ID3_Reader;
 class ID3_Writer;
@@ -40,6 +41,7 @@ class ID3_Tag;
 class ID3_CPP_EXPORT ID3_Tag
 {
   ID3_TagImpl* _impl;
+  char _tmp_filename[ID3_PATH_LENGTH];
 public:
 
   class Iterator
