@@ -1,15 +1,10 @@
 Makefile
 Makefile.in
 acconfig.h
-aclocal.m4
 config.cache
 config.h
-config.h.in
 config.h.win32
 config.log
 config.status
-configure
 id3lib.spec
-libtool
-rename.pl
 stamp-h

@@ -1,11 +1,18 @@
 2000-05-03  Scott Haug  <scott@id3.org>
 
+	* src/frame.cpp 
+	(GetDescription): Now returns NULL rather than "Unknown" for unknown
+	frames.
+
 	* include/id3/field.cpp 
 	* include/id3/frame.cpp 
 	* src/field.cpp 
 	* src/frame.cpp: 
 	Replaced ID3_GetFrameDescription() with ID3_Frame::GetDescription() and
 	static ID3_Frame::GetDescription(ID3_FrameID)
+
+	* id3com/ID3Frame.cpp 
+	(get_FrameName): Updated for new ID3_Frame::GetDescription.
 
 	* examples/demo_info.cpp 
 	(PrintInformation): Updated for new ID3_Frame::GetDescription()
