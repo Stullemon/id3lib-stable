@@ -1,4 +1,4 @@
-// $Id: tag_parse_v1.cpp,v 1.2 2000/04/18 22:13:49 eldamitri Exp $
+// $Id: tag_parse_v1.cpp,v 1.3 2000/04/23 17:38:07 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -55,7 +55,7 @@ void ID3_Tag::ParseID3v1(void)
   ID3V1_Tag tagID3v1;
     
   // posn ourselves at 128 bytes from the end of the file
-  if (fseek(__fFileHandle, 0-LEN_V1, SEEK_END) != 0)
+  if (fseek(__fFileHandle, 0-ID3_V1_LEN, SEEK_END) != 0)
   {
     // TODO:  This is a bad error message.  Make it more descriptive
     ID3_THROW(ID3E_NoData);
@@ -63,14 +63,14 @@ void ID3_Tag::ParseID3v1(void)
     
     
   // read the next 128 bytes in;
-  if (fread(tagID3v1.sID, 1, LEN_V1_ID, __fFileHandle) != LEN_V1_ID)
+  if (fread(tagID3v1.sID, 1, ID3_V1_LEN_ID, __fFileHandle) != ID3_V1_LEN_ID)
   {
     // TODO:  This is a bad error message.  Make it more descriptive
     ID3_THROW(ID3E_NoData);
   }
     
   // check to see if it was a tag
-  if (memcmp(tagID3v1.sID, "TAG", LEN_V1_ID) == 0)
+  if (memcmp(tagID3v1.sID, "TAG", ID3_V1_LEN_ID) == 0)
   {
     // guess so, let's start checking the v2 tag for frames which are the
     // equivalent of the v1 fields.  When we come across a v1 field that has
@@ -78,73 +78,73 @@ void ID3_Tag::ParseID3v1(void)
     // from the v1 frame and attach it to the tag
       
     __bHasV1Tag = true;
-    __ulExtraBytes += LEN_V1;
+    __ulExtraBytes += ID3_V1_LEN;
 
     // the TITLE field/frame
-    if (fread(tagID3v1.sTitle, 1, LEN_V1_TITLE, __fFileHandle) != LEN_V1_TITLE)
+    if (fread(tagID3v1.sTitle, 1, ID3_V1_LEN_TITLE, __fFileHandle) != ID3_V1_LEN_TITLE)
     {
       // TODO:  This is a bad error message.  Make it more descriptive
       ID3_THROW(ID3E_NoData);
     }
-    tagID3v1.sTitle[LEN_V1_TITLE] = '\0';
-    ID3_RemoveTrailingSpaces(tagID3v1.sTitle,  LEN_V1_TITLE);
+    tagID3v1.sTitle[ID3_V1_LEN_TITLE] = '\0';
+    ID3_RemoveTrailingSpaces(tagID3v1.sTitle,  ID3_V1_LEN_TITLE);
     ID3_AddTitle(this, tagID3v1.sTitle);
     
     // the ARTIST field/frame
-    if (fread(tagID3v1.sArtist, 1, LEN_V1_ARTIST, __fFileHandle) != 
-        LEN_V1_ARTIST)
+    if (fread(tagID3v1.sArtist, 1, ID3_V1_LEN_ARTIST, __fFileHandle) != 
+        ID3_V1_LEN_ARTIST)
     {
       // TODO:  This is a bad error message.  Make it more descriptive
       ID3_THROW(ID3E_NoData);
     }
-    tagID3v1.sArtist[LEN_V1_ARTIST] = '\0';
-    ID3_RemoveTrailingSpaces(tagID3v1.sArtist, LEN_V1_ARTIST);
+    tagID3v1.sArtist[ID3_V1_LEN_ARTIST] = '\0';
+    ID3_RemoveTrailingSpaces(tagID3v1.sArtist, ID3_V1_LEN_ARTIST);
     ID3_AddArtist(this, tagID3v1.sArtist);
   
     // the ALBUM field/frame
-    if (fread(tagID3v1.sAlbum, 1, LEN_V1_ALBUM, __fFileHandle) != LEN_V1_ALBUM)
+    if (fread(tagID3v1.sAlbum, 1, ID3_V1_LEN_ALBUM, __fFileHandle) != ID3_V1_LEN_ALBUM)
     {
       // TODO:  This is a bad error message.  Make it more descriptive
       ID3_THROW(ID3E_NoData);
     }
-    tagID3v1.sAlbum[LEN_V1_ALBUM] = '\0';
-    ID3_RemoveTrailingSpaces(tagID3v1.sAlbum,  LEN_V1_ALBUM);
+    tagID3v1.sAlbum[ID3_V1_LEN_ALBUM] = '\0';
+    ID3_RemoveTrailingSpaces(tagID3v1.sAlbum,  ID3_V1_LEN_ALBUM);
     ID3_AddAlbum(this, tagID3v1.sAlbum);
   
     // the YEAR field/frame
-    if (fread(tagID3v1.sYear, 1, LEN_V1_YEAR, __fFileHandle) != LEN_V1_YEAR)
+    if (fread(tagID3v1.sYear, 1, ID3_V1_LEN_YEAR, __fFileHandle) != ID3_V1_LEN_YEAR)
     {
       // TODO:  This is a bad error message.  Make it more descriptive
       ID3_THROW(ID3E_NoData);
     }
-    tagID3v1.sYear[LEN_V1_YEAR] = '\0';
-    ID3_RemoveTrailingSpaces(tagID3v1.sYear,   LEN_V1_YEAR);
+    tagID3v1.sYear[ID3_V1_LEN_YEAR] = '\0';
+    ID3_RemoveTrailingSpaces(tagID3v1.sYear,   ID3_V1_LEN_YEAR);
     ID3_AddYear(this, tagID3v1.sYear);
   
     // the COMMENT field/frame
-    if (fread(tagID3v1.sComment, 1, LEN_V1_COMMENT, __fFileHandle) !=
-        LEN_V1_COMMENT)
+    if (fread(tagID3v1.sComment, 1, ID3_V1_LEN_COMMENT, __fFileHandle) !=
+        ID3_V1_LEN_COMMENT)
     {
       // TODO:  This is a bad error message.  Make it more descriptive
       ID3_THROW(ID3E_NoData);
     }
-    tagID3v1.sComment[LEN_V1_COMMENT] = '\0';
-    if ('\0' != tagID3v1.sComment[LEN_V1_COMMENT - 2] ||
-        '\0' == tagID3v1.sComment[LEN_V1_COMMENT - 1])
+    tagID3v1.sComment[ID3_V1_LEN_COMMENT] = '\0';
+    if ('\0' != tagID3v1.sComment[ID3_V1_LEN_COMMENT - 2] ||
+        '\0' == tagID3v1.sComment[ID3_V1_LEN_COMMENT - 1])
     {
-      ID3_RemoveTrailingSpaces(tagID3v1.sComment, LEN_V1_COMMENT);
+      ID3_RemoveTrailingSpaces(tagID3v1.sComment, ID3_V1_LEN_COMMENT);
     }
     else
     {
       // This is an id3v1.1 tag.  The last byte of the comment is the track
       // number.  
-      ID3_RemoveTrailingSpaces(tagID3v1.sComment, LEN_V1_COMMENT - 1);
-      ID3_AddTrack(this, tagID3v1.sComment[LEN_V1_COMMENT - 1]);
+      ID3_RemoveTrailingSpaces(tagID3v1.sComment, ID3_V1_LEN_COMMENT - 1);
+      ID3_AddTrack(this, tagID3v1.sComment[ID3_V1_LEN_COMMENT - 1]);
     }
     ID3_AddComment(this, tagID3v1.sComment, STR_V1_COMMENT_DESC);
       
     // the GENRE field/frame
-    fread(&tagID3v1.ucGenre, 1, LEN_V1_GENRE, __fFileHandle);
+    fread(&tagID3v1.ucGenre, 1, ID3_V1_LEN_GENRE, __fFileHandle);
     ID3_AddGenre(this, tagID3v1.ucGenre);
   }
     
@@ -152,6 +152,9 @@ void ID3_Tag::ParseID3v1(void)
 }
 
 // $Log: tag_parse_v1.cpp,v $
+// Revision 1.3  2000/04/23 17:38:07  eldamitri
+// - Updated ID3_V1_LEN constants to new names
+//
 // Revision 1.2  2000/04/18 22:13:49  eldamitri
 // Moved tag_parse_v1.cpp from src/id3/ to src/
 //
