@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.3 2000/04/20 03:50:26 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.4 2000/04/23 17:38:15 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,6 +24,14 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
+#if defined HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#if defined HAVE_SYS_PARAM_H
+#include <sys/param.h>
+#endif
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -32,9 +40,13 @@
 #include "tag.h"
 #include "misc_support.h"
 
-#if defined HAVE_CONFIG_H
-#include <config.h>
-#endif
+#ifdef  MAXPATHLEN
+#  define ID3_PATH_LENGTH   (MAXPATHLEN + 1)
+#elif   defined (PATH_MAX)
+#  define ID3_PATH_LENGTH   (PATH_MAX + 1)
+#else   /* !MAXPATHLEN */
+#  define ID3_PATH_LENGTH   (2048 + 1)
+#endif  /* !MAXPATHLEN && !PATH_MAX */
 
 luint ID3_Tag::Render(uchar *buffer)
 {
@@ -172,56 +184,56 @@ luint ID3_Tag::RenderV1(char *buffer)
   //  the destination string with nulls.  But unless it becomes a performance
   //  issue (I doubt it, for 128 bit strings), its an extra layer of
   //  protection.
-  memset(buffer, '\0', LEN_V1);
+  memset(buffer, '\0', ID3_V1_LEN);
 
   // Write the TAG identifier
-  strncpy(pCur, "TAG", LEN_V1_ID);
-  pCur = &pCur[LEN_V1_ID];
+  strncpy(pCur, "TAG", ID3_V1_LEN_ID);
+  pCur = &pCur[ID3_V1_LEN_ID];
 
   // Write the TITLE
   sTemp = ID3_GetTitle(this);
   if (sTemp != NULL)
   {
-    strncpy(pCur, sTemp, LEN_V1_TITLE);
+    strncpy(pCur, sTemp, ID3_V1_LEN_TITLE);
     delete [] sTemp;
   }
-  pCur = &pCur[LEN_V1_TITLE];
+  pCur = &pCur[ID3_V1_LEN_TITLE];
 
   // Write the ARTIST
   sTemp = ID3_GetArtist(this);
   if (sTemp != NULL)
   {
-    strncpy(pCur, sTemp, LEN_V1_ARTIST);
+    strncpy(pCur, sTemp, ID3_V1_LEN_ARTIST);
     delete [] sTemp;
   }
-  pCur = &pCur[LEN_V1_ARTIST];
+  pCur = &pCur[ID3_V1_LEN_ARTIST];
 
   // Write the ALBUM
   sTemp = ID3_GetAlbum(this);
   if (sTemp != NULL)
   {
-    strncpy(pCur, sTemp, LEN_V1_ALBUM);
+    strncpy(pCur, sTemp, ID3_V1_LEN_ALBUM);
     delete [] sTemp;
   }
-  pCur = &pCur[LEN_V1_ALBUM];
+  pCur = &pCur[ID3_V1_LEN_ALBUM];
 
   // Write the YEAR
   sTemp = ID3_GetYear(this);
   if (sTemp != NULL)
   {
-    strncpy(pCur, sTemp, LEN_V1_YEAR);
+    strncpy(pCur, sTemp, ID3_V1_LEN_YEAR);
     delete [] sTemp;
   }
-  pCur = &pCur[LEN_V1_YEAR];
+  pCur = &pCur[ID3_V1_LEN_YEAR];
 
   // Write the COMMENT
   sTemp = ID3_GetComment(this);
   if (sTemp != NULL)
   {
-    strncpy(pCur, sTemp, LEN_V1_COMMENT);
+    strncpy(pCur, sTemp, ID3_V1_LEN_COMMENT);
     delete [] sTemp;
   }
-  pCur = &pCur[LEN_V1_COMMENT];
+  pCur = &pCur[ID3_V1_LEN_COMMENT];
 
   // Write the TRACK, if it isn't 0
   luint nTrack = ID3_GetTrackNum(this);
@@ -236,26 +248,26 @@ luint ID3_Tag::RenderV1(char *buffer)
   // Write the GENRE
   pCur[0] = (uchar) ID3_GetGenreNum(this);
 
-  return LEN_V1;
+  return ID3_V1_LEN;
 }
 
 void ID3_Tag::RenderV1ToHandle(void)
 {
-  char sTag[LEN_V1];
-  char sID[LEN_V1_ID];
+  char sTag[ID3_V1_LEN];
+  char sID[ID3_V1_LEN_ID];
 
   RenderV1(sTag);
 
   // We want to check if there is already an id3v1 tag, so we can write over
   // it.  First, seek to the beginning of any possible id3v1 tag
-  if (fseek(__fFileHandle, 0-LEN_V1, SEEK_END) != 0)
+  if (fseek(__fFileHandle, 0-ID3_V1_LEN, SEEK_END) != 0)
   {
     // TODO:  This is a bad error message.  Make it more descriptive
     ID3_THROW(ID3E_NoData);
   }
 
   // Read in the TAG characters
-  if (fread(sID, 1, LEN_V1_ID, __fFileHandle) != LEN_V1_ID)
+  if (fread(sID, 1, ID3_V1_LEN_ID, __fFileHandle) != ID3_V1_LEN_ID)
   {
     // TODO:  This is a bad error message.  Make it more descriptive
     ID3_THROW(ID3E_NoData);
@@ -263,9 +275,9 @@ void ID3_Tag::RenderV1ToHandle(void)
 
   // If those three characters are TAG, then there's a preexisting id3v1 tag,
   // so we should set the file cursor so we can overwrite it with a new tag.
-  if (memcmp(sID, "TAG", LEN_V1_ID) == 0)
+  if (memcmp(sID, "TAG", ID3_V1_LEN_ID) == 0)
   {
-    if (fseek(__fFileHandle, 0-LEN_V1, SEEK_END) != 0)
+    if (fseek(__fFileHandle, 0-ID3_V1_LEN, SEEK_END) != 0)
     {
       // TODO:  This is a bad error message.  Make it more descriptive
       ID3_THROW(ID3E_NoData);
@@ -282,7 +294,7 @@ void ID3_Tag::RenderV1ToHandle(void)
     }
   }
 
-  fwrite(sTag, 1, LEN_V1, __fFileHandle);
+  fwrite(sTag, 1, ID3_V1_LEN, __fFileHandle);
   __bHasV1Tag = true;
 }
 
@@ -450,6 +462,11 @@ luint ID3_Tag::PaddingSize(luint curSize) const
 
 
 // $Log: tag_render.cpp,v $
+// Revision 1.4  2000/04/23 17:38:15  eldamitri
+// - Moved def of ID3_PATH_LENGTH from tag.h, since its def requires a
+//   macro defined in config.h, which isn't accessible from the .h files.
+// - Updated ID3_V1_LEN constants to new names
+//
 // Revision 1.3  2000/04/20 03:50:26  eldamitri
 // (RenderV2ToHandle): Now uses ID3_PATH_LENGTH instead of MAXPATHLEN
 //
