@@ -1,4 +1,4 @@
-// $Id: utils.h,v 1.3 2000/05/02 16:53:20 eldamitri Exp $
+// $Id: utils.h,v 1.4 2000/05/06 21:25:42 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -29,10 +29,12 @@
 
 #include "globals.h"
 
+#if defined ID3_UNDEFINED
 namespace id3
 {
+#endif /* ID3_UNDEFINED */
   uint32 ParseNumber(const uchar *buffer, size_t size = sizeof(uint32));
-  void   RenderNumber(uchar *buffer, uint32 val, size_t size = sizeof(uint32));
+  size_t RenderNumber(uchar *buffer, uint32 val, size_t size = sizeof(uint32));
   
   void   mbstoucs(unicode_t *unicode, const char *ascii, const luint len);
   void   ucstombs(char *ascii, const unicode_t *unicode, const luint len);
@@ -42,8 +44,9 @@ namespace id3
   int    ucscmp(const unicode_t *s1, const unicode_t *s2);
   int    ucsncmp(const unicode_t *s1, const unicode_t *s2, size_t len);
 
-  void RemoveTrailingSpaces(char *buffer, luint length);
+#if defined ID3_UNDEFINED
 }
+#endif  /* ID3_UNDEFINED */
   
   
 #endif /* __ID3LIB_UTILS_H__ */
