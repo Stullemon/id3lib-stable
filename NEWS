@@ -1,4 +1,14 @@
-$Id: NEWS,v 1.7 2000/04/20 04:59:44 eldamitri Exp $
+$Id: NEWS,v 1.8 2000/04/21 20:13:54 eldamitri Exp $
+
+2000-04-21 Version 3.7.2
+
+* Implementation of C interface for all platforms (in src/c_wrapper.cpp, which
+  replaces dll_wrapper.cpp)
+* Added examples/demo_simple.c which demonstrates basic use of C interface
+* Auto-generated documentation no longer shipped with main tarball distribution
+* mp3 example files no longer included (still available via CVS)
+* Updated Windows project files so that they'll (hopefully) compile cleanly
+  again
 
 2000-04-19 Version 3.7.1
 
