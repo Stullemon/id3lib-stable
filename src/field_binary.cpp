@@ -1,4 +1,4 @@
-// $Id: field_binary.cpp,v 1.19 2000/10/03 04:38:12 eldamitri Exp $
+// $Id: field_binary.cpp,v 1.20 2000/10/09 04:25:33 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -34,6 +34,7 @@
 
 #include "field_impl.h"
 #include "reader_decorators.h"
+#include "writer.h"
 
 using namespace dami;
 
@@ -74,7 +75,7 @@ ID3_FieldImpl::Set(const uchar *newData, //< data to assign to this field.
  ** 
  ** \code
  **   uchar buffer[1024];
- **   myFrame.Field(ID3FN_DATA).Get(buffer, sizeof(buffer));
+ **   myFrame.GetField(ID3FN_DATA)->Get(buffer, sizeof(buffer));
  ** \endcode
  **/
 size_t ID3_FieldImpl::Get(uchar *buffer,    //< Destination of retrieved string
@@ -97,7 +98,7 @@ size_t ID3_FieldImpl::Get(uchar *buffer,    //< Destination of retrieved string
 /** Copies binary data from the file specified to the field.
  ** 
  ** \code
- **   myFrame.Field(ID3FN_DATA).FromFile("mypic.jpg");
+ **   myFrame.GetField(ID3FN_DATA)->FromFile("mypic.jpg");
  ** \endcode
  **/
 void ID3_FieldImpl::FromFile(const char *info //< Source filename
@@ -133,7 +134,7 @@ void ID3_FieldImpl::FromFile(const char *info //< Source filename
 /** Copies binary data from the field to the specified file.
  ** 
  ** \code
- **   myFrame.Field(ID3FN_DATA).ToFile("output.bin");
+ **   myFrame.GetField(ID3FN_DATA)->ToFile("output.bin");
  ** \endcode
  **/
 void ID3_FieldImpl::ToFile(const char *info //< Destination filename
@@ -164,17 +165,14 @@ bool ID3_FieldImpl::ParseBinary(ID3_Reader& reader)
   // copy the remaining bytes, unless we're fixed length, in which case copy
   // the minimum of the remaining bytes vs. the fixed length
   ::io::BinaryReader br(reader);
-  ::BString binary = br.getBinary();
+  ::BString binary = br.readBinary();
   this->Set(binary.data(), binary.size());
   _changed = false;
   return true;
 }
 
-
-size_t ID3_FieldImpl::RenderBinary(uchar *buffer) const
+void ID3_FieldImpl::RenderBinary(ID3_Writer& writer) const
 {
-  size_t bytesUsed = this->BinSize();
-  ::memcpy(buffer, _binary, bytesUsed);
-  _changed = false;
-  return bytesUsed;
+  writer.writeChars(_binary, this->BinSize());
 }
+
