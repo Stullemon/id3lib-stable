@@ -8,7 +8,7 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-EXTRA_DIST = \
+zlib_sources = \
   adler32.c  \
   compress.c \
   crc32.c    \
@@ -24,3 +24,10 @@ EXTRA_DIST = \
   uncompr.c  \
   zutil.c
 
+if ID3_NEEDZLIB
+lib_LTLIBRARIES = libid3.la
+INCLUDES = -I$(top_srcdir)/zlib/include
+libid3_la_SOURCES = $(zlib_sources)
+endif
+
+EXTRA_DIST = $(zlib_sources)
