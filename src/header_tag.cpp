@@ -1,4 +1,4 @@
-// $Id: header_tag.cpp,v 1.18 2000/10/14 19:24:38 eldamitri Exp $
+// $Id: header_tag.cpp,v 1.19 2000/10/14 21:23:37 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -33,7 +33,6 @@
 #include <string.h>
 
 #include "header_tag.h"
-#include "uint28.h"
 #include "utils.h"
 #include "tag.h"
 #include "io_helpers.h"
@@ -78,9 +77,7 @@ void ID3_TagHeader::Render(ID3_Writer& writer) const
   
   // set the flags byte in the header
   writer.writeChar(static_cast<uchar>(_flags.get() & MASK8));
-  
-  uint28 size28(this->GetDataSize());
-  size28.Render(writer);
+  io::writeUInt28(writer, this->GetDataSize());
 
   // now we render the extended header
   if (_flags.test(EXTENDED))
@@ -109,9 +106,7 @@ bool ID3_TagHeader::Parse(ID3_Reader& reader)
   _flags.set(static_cast<ID3_Flags::TYPE>(reader.readChar()));
 
   // set the data size
-  uint28 data_size;
-  data_size.Parse(reader);
-  this->SetDataSize(data_size.to_uint32());
+  this->SetDataSize(io::readUInt28(reader));
   
   if (_flags.test(EXTENDED))
   {

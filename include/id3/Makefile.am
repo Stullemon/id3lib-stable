@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.13 2000/10/14 20:44:16 eldamitri Exp $
+# $Id: Makefile.am,v 1.14 2000/10/14 21:23:37 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -40,5 +40,4 @@ noinst_HEADERS =                \
   io_helpers.h                  \
   io_strings.h                  \
   strings.h                     \
-  uint28.h                      \
   utils.h                       

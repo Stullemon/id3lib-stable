@@ -1,4 +1,4 @@
-// $Id: io_helpers.cpp,v 1.1 2000/10/14 18:45:45 eldamitri Exp $
+// $Id: io_helpers.cpp,v 1.2 2000/10/14 21:23:37 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -165,6 +165,26 @@ String io::readTrailingSpaces(ID3_Reader& reader, size_t len)
   return str;
 }
 
+uint32 io::readUInt28(ID3_Reader& reader)
+{
+  uint32 val = 0;
+  const unsigned short BITSUSED = 7;
+  const uint32 MAXVAL = MASK(BITSUSED * sizeof(uint32));
+  // For each byte of the first 4 bytes in the string...
+  for (size_t i = 0; i < sizeof(uint32); ++i)
+  {
+    if (reader.atEnd())
+    {
+      break;
+    }
+    // ...append the last 7 bits to the end of the temp integer...
+    val = (val << BITSUSED) | static_cast<uint32>(reader.readChar()) & MASK(BITSUSED);
+  }
+
+  // We should always parse 4 characters
+  return min(val, MAXVAL);
+}
+
 size_t io::writeBENumber(ID3_Writer& writer, uint32 val, size_t len)
 {
   ID3_Writer::char_type bytes[sizeof(uint32)];
@@ -182,4 +202,28 @@ ID3_Writer::size_type io::writeTrailingSpaces(ID3_Writer& writer, String buf, si
   {
     writer.writeChar(' ');
   }
+}
+
+size_t io::writeUInt28(ID3_Writer& writer, uint32 val)
+{
+  uchar data[sizeof(uint32)];
+  const unsigned short BITSUSED = 7;
+  const uint32 MAXVAL = MASK(BITSUSED * sizeof(uint32));
+  val = min(val, MAXVAL);
+  // This loop renders the value to the character buffer in reverse order, as 
+  // it is easy to extract the last 7 bits of an integer.  This is why the
+  // loop shifts the value of the integer by 7 bits for each iteration.
+  for (size_t i = 0; i < sizeof(uint32); ++i)
+  {
+    // Extract the last BITSUSED bits from val and put it in its appropriate
+    // place in the data buffer
+    data[sizeof(uint32) - i - 1] = static_cast<uchar>(val & MASK(BITSUSED));
+
+    // The last BITSUSED bits were extracted from the val.  So shift it to the
+    // right by that many bits for the next iteration
+    val >>= BITSUSED;
+  }
+  
+  // Should always render 4 bytes
+  return writer.writeChars(data, sizeof(uint32));
 }

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.20 2000/10/14 20:45:08 eldamitri Exp $
+# $Id: Makefile.am,v 1.21 2000/10/14 21:23:37 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -51,7 +51,6 @@ id3lib_sources =                \
   tag_parse_musicmatch.cpp      \
   tag_parse_v1.cpp              \
   tag_render.cpp                \
-  uint28.cpp                    \
   utils.cpp                     \
   writers.cpp                   
 

@@ -1,4 +1,4 @@
-// $Id: tag_impl.cpp,v 1.3 2000/10/14 19:24:38 eldamitri Exp $
+// $Id: tag_impl.cpp,v 1.4 2000/10/14 21:23:37 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -37,7 +37,6 @@
 #include <string.h>
 
 #include "tag_impl.h"
-#include "uint28.h"
 #include "utils.h"
 #include "io_helpers.h"
 #include "io_strings.h"
@@ -59,9 +58,7 @@ size_t ID3_TagImpl::IsV2Tag(ID3_Reader& reader)
       (uchar) size[2] < 0x80   &&      (uchar) size[3] < 0x80)
   {
     io::StringReader sr(size);
-    uint28 data_size;
-    data_size.Parse(sr);
-    tagSize = data_size.to_uint32() + ID3_TagHeader::SIZE;
+    tagSize = io::readUInt28(sr) + ID3_TagHeader::SIZE;
   }
   else if (id != ID3_TagHeader::ID)
   {
