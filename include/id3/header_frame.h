@@ -1,4 +1,4 @@
-// $Id: header_frame.h,v 1.10 2000/05/02 21:59:24 eldamitri Exp $
+// $Id: header_frame.h,v 1.11 2000/05/09 13:38:17 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -56,6 +56,38 @@ public:
   const ID3_FrameDef* GetFrameDef() const;
   /* */ bool          Clear();
   ID3_FrameHeader&    operator=(const ID3_FrameHeader&);
+
+  size_t GetExtrasSize() const
+  {
+    return 
+      (__flags.test(COMPRESSION) ? sizeof(uint32) : 0) +
+      (__flags.test(ENCRYPTION)  ? sizeof(uchar)  : 0) +
+      (__flags.test(GROUPING)    ? sizeof(uchar)  : 0);
+  }
+  bool SetExpandedSize(size_t size)
+  {
+    bool changed = size != __expanded_size;
+    __expanded_size = size;
+    __changed = __changed || changed;
+    return changed;
+  }
+  size_t GetExpandedSize() const { return __expanded_size;  }
+  bool SetEncryptionID(uchar id)
+  {
+    bool changed = id != __encryption_id;
+    __encryption_id = id;
+    __changed = __changed || changed;
+    return changed;
+  }
+  uchar GetEncryptionID() const { return __encryption_id; }
+  bool SetGroupingID(uchar id)
+  {
+    bool changed = id != __grouping_id;
+    __grouping_id = id;
+    __changed = __changed || changed;
+    return changed;
+  }
+  uchar GetGroupingID() const { return __grouping_id; }
  
   bool SetCompression(bool b) { return this->SetFlags(COMPRESSION, b); }
   bool SetEncryption(bool b) { return this->SetFlags(ENCRYPTION, b); }
@@ -75,6 +107,10 @@ protected:
   }
   void                SetUnknownFrame(const char*);
 
+private:
+  uchar               __encryption_id;
+  uchar               __grouping_id;
+  size_t              __expanded_size;
   ID3_FrameDef*       __frame_def;
   bool                __dyn_frame_def;
 }
