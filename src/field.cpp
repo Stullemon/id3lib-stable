@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.20 2000/05/12 21:09:53 eldamitri Exp $
+// $Id: field.cpp,v 1.21 2000/05/28 22:54:34 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -824,9 +824,13 @@ static  ID3_FrameDef ID3_FrameDefs[] =
 ID3_Field::ID3_Field()
   : __id(ID3FN_NOFIELD),
     __type(ID3FTY_INTEGER),
+    __length(0),
+    __spec_begin(ID3V2_EARLIEST),
+    __spec_end(ID3V2_LATEST),
+    __flags(0),
+    __changed(false),
     __data(NULL),
     __size(0),
-    __flags(0),
     __enc(ID3TE_NONE)
 {
   Clear();
@@ -1031,6 +1035,10 @@ ID3_Field::operator=( const ID3_Field &rhs )
       case ID3FTY_BINARY:
       {
         this->Set(rhs.__data, rhs.__size);
+        break;
+      }
+      default:
+      {
         break;
       }
     }
