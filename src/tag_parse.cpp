@@ -1,4 +1,4 @@
-// $Id: tag_parse.cpp,v 1.23 2000/07/11 04:23:51 eldamitri Exp $
+// $Id: tag_parse.cpp,v 1.24 2000/07/15 16:20:30 adcockj Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -189,7 +189,7 @@ size_t ParseID3v2(ID3_Tag& tag, fstream& file)
   {
     uchar* bin = new uchar[tagSize];
     file.read(bin, tagSize - ID3_TagHeader::SIZE);
-    if (file.gcount() != tagSize)
+    if (tagSize != (size_t)file.gcount())
     {
       // log this...
       //return 0;

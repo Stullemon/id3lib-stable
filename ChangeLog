@@ -1,3 +1,8 @@
+2000-07-15  John Adcock  <johnadcock@hotmail.com>
+
+	* src/tag_parse.cpp
+	fixed compile warning under windows
+
 2000-07-14  John Adcock  <johnadcock@hotmail.com>
 
 	* src/utils.cpp
