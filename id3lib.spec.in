@@ -1,4 +1,4 @@
-# $Id: id3lib.spec.in,v 1.21 2000/09/30 22:20:21 eldamitri Exp $
+# $Id: id3lib.spec.in,v 1.22 2000/10/14 20:43:18 eldamitri Exp $
 
 %define name    @PACKAGE@
 %define	version	@VERSION@
@@ -58,37 +58,8 @@ software library for ID3v1 and ID3v2 tag maniuplation.
 %setup -q
 
 %build
-%ifarch i386 i486
 
-ID3_ARCH=i486
-
-%endif 
-
-%ifarch i586
-
-ID3_ARCH=pentium
-
-%endif 
-
-%ifarch i686
-
-ID3_ARCH=pentiumpro
-
-%endif 
-
-%ifarch k6
-
-ID3_ARCH=k6
-
-%endif
-
-%ifarch i386 i486 i586 i686 k6
-
-RPM_OPT_FLAGS="-O3 -fomit-frame-pointer -pipe -s -mcpu=$ID3_ARCH -march=$ID3_ARCH -ffast-math -fexpensive-optimizations -malign-loops=2 -malign-jumps=2 -malign-functions=2"
-
-%endif
-
-CXXFLAGS="$RPM_OPT_FLAGS -fexceptions" ./configure --prefix=%prefix --enable-debug=no
+CXXFLAGS="$RPM_OPT_FLAGS -fnoexceptions" ./configure --prefix=%prefix --enable-debug=no
 
 %ifnarch noarch
 
