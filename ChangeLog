@@ -1,5 +1,18 @@
 2000-04-24  Scott Haug  <scott@id3.org>
 
+	* NEWS 
+	* configure.in: 
+	Updated for 3.7.3 release
+
+	* id3lib.spec.in: 
+	Added explicit RPM_OPT_FLAGS def based on arch, since -fno-exceptions
+	and -fno-rtti are part of the default flags in rpmrc and we need both 
+	exceptions and rtti (exceptions uses rtti)
+
+	* doc/Makefile.am 
+	(dox): Added to give more precise control over documentation generation
+	(docs): Requires dox
+
 	* id3com/id3com.dsp: 
 	Added c_wrapper.cpp and globals.cpp
 
@@ -9,14 +22,14 @@
 	- ID3Tag_UpdateType renamed to ID3Tag_UpdateByTagType, returns ID3_Err
 
 	* include/id3/field.h: 
-	FixedLength is now unsigned, since a 0 rather than a -1 will represent
+	FixedLength is now unsigned, since a 0, rather than a -1, can represent
 	a variable-length field
 
 	* include/id3/frame.h: 
 	Added decl for copy constructor
 
 	* include/id3/globals.h: 
-	Replaced C++ comments for C comments
+	Replaced C++ comments with C comments
 
 	* include/id3/tag.h: 
 	- Moved doxygen comments to appropriate cpp file
@@ -97,7 +110,7 @@
 	- Remove ID3_ENUM_TYPE macro, renamed and redefined ID3_ENUM_DECL macro
 	  to ID3_ENUM to make it easier to use
 	- Added ID3_MACRO macro
-	- Renamed the ID3_SpecVersion, ID3_TatType enums to follow more
+	- Renamed the ID3_SpecVersion, ID3_TagType enums to follow more
 	  consistent naming of all enums
 	- Moved LEN_V1 constants into ID3_V1Lengths enumeration, since array
 	  lengths can't be specified with consts in C
@@ -139,7 +152,7 @@
 
 	* src/c_wrapper.cpp:
 	Added implementations for ID3Tag_UpdateType and 
-	ID3_Frame{New,NewID,Delete}.
+	ID3Frame_{New,NewID,Delete}.
 
 	* doc/index.html.in: 
 	Updated DOCTYPE.
