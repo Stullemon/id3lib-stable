@@ -1,4 +1,4 @@
-// $Id: error.cpp,v 1.5 1999/11/15 20:15:03 scott Exp $
+// $Id: error.cpp,v 1.6 1999/11/16 22:50:10 scott Exp $
 
 //  The authors have released ID3Lib as Public Domain (PD) and claim no
 //  copyright, patent or other intellectual property protection in this work.
@@ -32,7 +32,8 @@ static char *ID3_ErrorDescs[] =
   "tag is already attached to a file",
   "invalid tag version",
   "file not found",
-  "error in zlib compression library"
+  "error in zlib compression library",
+  "improperly formatted id3 tag"
 };
   
   
@@ -81,6 +82,9 @@ luint ID3_Error::GetErrorLine(void) const
 
 
 // $Log: error.cpp,v $
+// Revision 1.6  1999/11/16 22:50:10  scott
+// * error.cpp (ID3_ErrorDescs): Added text entry for ID3E_BadData.
+//
 // Revision 1.5  1999/11/15 20:15:03  scott
 // Added include for config.h.  Added new interface to error
 // reporting to allow for more descriptive error messages (this
