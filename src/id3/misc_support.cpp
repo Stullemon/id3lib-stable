@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.10 1999/11/29 19:26:18 scott Exp $
+// $Id: misc_support.cpp,v 1.11 1999/11/30 20:12:35 scott Exp $
 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -20,53 +20,34 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#if !defined SIZE_SPECIFIC_TYPES
-#include <wchar.h>
-#endif
-
 // converts an ASCII string into a Unicode one
 
 void mbstoucs(unicode_t *unicode, const char *ascii, const luint len)
 {
-#if !defined SIZE_SPECIFIC_TYPES
-  mbstowcs(unicode, ascii, len);
-#else
   if (NULL != ascii && NULL != unicode)
     for (luint i = 0; i < len; i++)
       unicode[i] = ascii[i] & 0xFF;
-#endif /* !defined SIZE_SPECIFIC_TYPES */
 }
 
 // converts a Unicode string into ASCII
 
 void ucstombs(char *ascii, const unicode_t *unicode, const luint len)
 {
-#if !defined SIZE_SPECIFIC_TYPES
-  wcstombs(ascii, unicode, len);
-#else
   if (NULL != unicode && NULL != ascii)
     for (luint i = 0; i < len; i++)
       ascii[i] = unicode[i] & 0x00FF;
-#endif /* !defined SIZE_SPECIFIC_TYPES */
 }
 
 size_t ucslen(const unicode_t *unicode)
 {
-#if !defined SIZE_SPECIFIC_TYPES
-  return wcslen(unicode, ascii, len);
-#else
   if (NULL != unicode)
     for (size_t size = 0; true; size++)
       if (NULL_UNICODE == unicode[size])
         return size;
-#endif /* !defined SIZE_SPECIFIC_TYPES */
 }
 
 void ucscpy(unicode_t *dest, const unicode_t *src)
 {
-#if !defined SIZE_SPECIFIC_TYPES
-  wcscpy(dest, src);
-#else
   if (NULL != dest && NULL != src)
   {
     size_t nIndex;
@@ -74,14 +55,10 @@ void ucscpy(unicode_t *dest, const unicode_t *src)
       dest[nIndex] = src[nIndex];
     dest[nIndex] = NULL_UNICODE;
   }
-#endif /* !defined SIZE_SPECIFIC_TYPES */
 }
 
 void ucsncpy(unicode_t *dest, const unicode_t *src, size_t len)
 {
-#if !defined SIZE_SPECIFIC_TYPES
-  wcsncpy(dest, src, len);
-#else
   if (NULL != dest && NULL != src)
   {
     size_t nIndex;
@@ -90,25 +67,17 @@ void ucsncpy(unicode_t *dest, const unicode_t *src, size_t len)
     for (; nIndex < len; nIndex++)
       dest[nIndex] = NULL_UNICODE;
   }
-#endif /* !defined SIZE_SPECIFIC_TYPES */
 }
 
 int ucscmp(const unicode_t *s1, const unicode_t *s2)
 {
-#if !defined SIZE_SPECIFIC_TYPES
-  wcscmp(s1, s2);
-#else
   return ucsncmp(s1, s2, (size_t) -1);
-#endif /* !defined SIZE_SPECIFIC_TYPES */
 }
 
 int ucsncmp(const unicode_t *s1, const unicode_t *s2, size_t len)
 {
-#if !defined SIZE_SPECIFIC_TYPES
-  wcsncmp(s1, s2, len);
-#else
-  if (NULL == s1 && NULL == s2) return 0;
-  if (NULL == s1)               return 1;
+  if (NULL == s1 && NULL == s2) return  0;
+  if (NULL == s1)               return  1;
   if (NULL == s2)               return -1;
   for (size_t nIndex = 0; true; nIndex++)
     if ((NULL_UNICODE == s1[nIndex]) ||
@@ -116,7 +85,6 @@ int ucsncmp(const unicode_t *s1, const unicode_t *s2, size_t len)
         (s1[nIndex]   != s2[nIndex]) ||
         (nIndex + 1   == len))
       return s2[nIndex] - s1[nIndex];
-#endif /* !defined SIZE_SPECIFIC_TYPES */
 }
 
 char *ID3_GetString(const ID3_Frame *frame, const ID3_FieldID fldName)
@@ -500,6 +468,10 @@ bool ID3_AddLyrics(ID3_Tag *tag, char *text)
 }
 
 // $Log: misc_support.cpp,v $
+// Revision 1.11  1999/11/30 20:12:35  scott
+// No more SIZE_SPECIFIC_TYPES code.  No more code for wchar's.  Typedefs
+// in sized_types.h guarantee that unicode_t will be two bytes.
+//
 // Revision 1.10  1999/11/29 19:26:18  scott
 // Updated the leading license information of the file to reflect new maintainer.
 //
