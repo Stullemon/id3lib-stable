@@ -1,4 +1,4 @@
-// $Id: field_binary.cpp,v 1.13 2000/04/17 02:31:35 eldamitri Exp $
+// $Id: field_binary.cpp,v 1.2 2000/04/18 22:10:20 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -166,6 +166,9 @@ ID3_Field::RenderBinary(uchar *buffer)
 
 
 // $Log: field_binary.cpp,v $
+// Revision 1.2  2000/04/18 22:10:20  eldamitri
+// Moved field_binary.cpp from src/id3/ to src/
+//
 // Revision 1.13  2000/04/17 02:31:35  eldamitri
 // Updated parameters of certain methods with const modifier to match
 // declaration.
