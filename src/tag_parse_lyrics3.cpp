@@ -1,4 +1,4 @@
-// $Id: tag_parse_lyrics3.cpp,v 1.13 2000/06/22 20:20:31 eldamitri Exp $
+// $Id: tag_parse_lyrics3.cpp,v 1.14 2000/06/22 23:22:25 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -158,6 +158,7 @@ luint ID3_Lyrics3ToSylt(char *buffer, luint size)
     size_t count = 0;
     while (ID3_IsTimeStamp(source, end))
     {
+      // For now, just skip over multiple time stamps
       if (count++ > 0)
       {
         source += 7;
@@ -257,12 +258,8 @@ void ID3_Tag::ParseLyrics3()
 
       lyr_begin[lyr_size] = '\0';
 
-      ID3_Frame *frame = ID3_AddLyrics(this, lyr_begin);
-      if (frame)
-      {
-        frame->Field(ID3FN_LANGUAGE) = "eng";
-        frame->Field(ID3FN_DESCRIPTION) = "Converted from Lyrics3 v1.00";
-      }
+      ID3_Frame *frame = ID3_AddLyrics(this, lyr_begin, 
+                                       "Converted from Lyrics3 v1.00");
 
       // if we got to here we must have some lyrics
       __file_tags.add(ID3TT_LYRICS);
@@ -274,7 +271,6 @@ void ID3_Tag::ParseLyrics3()
       __file_tags.add(ID3TT_LYRICS);
       
       ID3_Frame *lyr_frame = NULL;
-      char *textInf = NULL;
       
       id_buffer[6] = '\0';
       size_t lyr_size = atoi(id_buffer);
@@ -377,16 +373,13 @@ void ID3_Tag::ParseLyrics3()
         {
           size_t adj_size = ID3_CRLFtoLF(fld_data, fld_size);
 
-          textInf = new char[adj_size + 1];
-          textInf[adj_size] = '\0';
+          char* text = new char[adj_size + 1];
+          text[adj_size] = '\0';
+          memcpy(text, fld_data, adj_size);
 
-          memcpy(textInf, fld_data, adj_size);
+          ID3_AddComment(this, text, "Lyrics3 v2.00 INF");
 
-          // if already found the lyrics text use this field as description
-          if (NULL != lyr_frame)
-          {
-            lyr_frame->Field(ID3FN_DESCRIPTION) = textInf;
-          }
+          delete [] text;
         }
 
         // the LYRICS field
@@ -395,45 +388,30 @@ void ID3_Tag::ParseLyrics3()
           size_t adj_size = ID3_CRLFtoLF(fld_data, fld_size);
 
           // if already found an INF field, use it as description
-          const char* description = 
-            (textInf ? textInf : "Converted from Lyrics3 v2.00");
+          const char* desc =  "Converted from Lyrics3 v2.00";
           if (!has_time_stamps)
           {
             char* text = new char[adj_size + 1];
             text[adj_size] = '\0';
             memcpy(text, fld_data, adj_size);
 
-            lyr_frame = ID3_AddLyrics(this, text);
+            lyr_frame = ID3_AddLyrics(this, text, desc);
 
-            delete[] text;
-
-            if (lyr_frame)
-            {
-              lyr_frame->Field(ID3FN_LANGUAGE) = "eng";
-              lyr_frame->Field(ID3FN_DESCRIPTION) = description;
-            }
-
+            delete [] text;
           }
           else
           {
             // convert lyrics into a SYLT frame Content Descriptor
-            adj_size = ID3_Lyrics3ToSylt (fld_data, adj_size);
-            
-            char* text = new char[adj_size + 1];
-            text[adj_size] = '\0';
-            memcpy(text, fld_data, adj_size);
+            uchar* new_data = new uchar[adj_size];
+            memcpy(new_data, fld_data, adj_size);
+
+            // converts from lyrics3 to SYLT in-place
+            adj_size = ID3_Lyrics3ToSylt ((char *)new_data, adj_size);
             
             lyr_frame =
-              ID3_AddSyncLyrics(this, "eng", description, (uchar *)text, adj_size);
+              ID3_AddSyncLyrics(this, new_data, adj_size, ID3TSF_MS, desc);
 
-            delete[] text;
-
-            if (lyr_frame)
-            {
-              lyr_frame->Field(ID3FN_TIMESTAMPFORMAT) = ID3TSF_MS;
-              lyr_frame->Field(ID3FN_CONTENTTYPE) = ID3CT_LYRICS;
-            }
-
+            delete [] new_data;
           }
         }
 
@@ -441,10 +419,6 @@ void ID3_Tag::ParseLyrics3()
       }
 
       delete [] lyr_buffer;
-      if (NULL != textInf)
-      {
-        delete[] textInf;
-      }
     }
   }
 }
