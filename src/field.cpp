@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.21 2000/05/28 22:54:34 eldamitri Exp $
+// $Id: field.cpp,v 1.22 2000/05/29 02:00:51 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -898,7 +898,7 @@ size_t ID3_Field::BinSize(bool withExtras) const
     // if we are an ASCII string, divide by sizeof(unicode_t) because
     // internally we store the string as Unicode, so the ASCII version will
     // only be half as long
-    if (__type == ID3FTY_TEXTSTRING)
+    if (__type == ID3FTY_TEXTSTRING && this->GetEncoding() == ID3TE_ASCII)
     {
       bytes /= sizeof(unicode_t);
     }
