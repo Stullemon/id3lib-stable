@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.20 2000/05/24 03:02:45 eldamitri Exp $
+# $Id: Makefile.am,v 1.21 2000/06/23 02:50:28 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -59,6 +59,7 @@ release: config.h.win32 id3lib.spec
 	-find $(distdir) -name "*~" -exec rm {} \;
 	-find $(distdir) -type d -name CVS -exec rm -r {} \;
 	-find $(distdir) -name .cvsignore -exec rm {} \;
+	-find $(distdir) \( -name "*.dsp" -or -name "*.dsw" \) -exec unix2dos {} \;
 	cd $(distdir) && cp config.h.win32 config.h
 	cd $(distdir) && zip -r ../$(distdir).zip *
 	cd $(distdir) && ./configure && $(MAKE) $(AM_MAKEFLAGS) docs-release
