@@ -22,7 +22,7 @@
 #define STDC_HEADERS 1
 
 /* And now the rest of the boys */
-#define CXX_HAS_BUGGY_FOR_LOOPS
+#define CXX_HAS_BUGGY_FOR_LOOPS 1
 /* #undef CXX_HAS_NO_BOOL */
 
 /* config.h defines these preprocesser symbols to be used by id3lib for
