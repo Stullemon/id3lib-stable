@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.19 2000/05/23 15:42:50 eldamitri Exp $
+# $Id: Makefile.am,v 1.20 2000/05/24 03:02:45 eldamitri Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -44,6 +44,8 @@ docs-release: docs
 	-cp -R examples           $(docsdistdir)
 	-cp    doc/*.*            $(docsdistdir)
 	-cp -R doc/@DOX_DIR_HTML@ $(docsdistdir)
+	-cp    NEWS               $(docsdistdir)/NEWS.txt
+	-cp    ChangeLog          $(docsdistdir)/ChangeLog.txt
 	-find $(docsdistdir) -name "Makefile*" -exec rm -f {} \;
 	-find $(docsdistdir) -name "*.mp3"     -exec rm -f {} \;
 	GZIP=$(GZIP_ENV) $(TAR) zcf $(docsdistdir).tar.gz $(docsdistdir)
