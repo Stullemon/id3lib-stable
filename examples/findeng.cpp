@@ -1,3 +1,4 @@
+#include <iostream.h>
 #include <id3/tag.h>
 #include <id3/misc_support.h>
 
