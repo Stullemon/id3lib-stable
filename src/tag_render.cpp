@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.6 2000/04/26 03:42:52 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.7 2000/04/26 15:48:34 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -492,8 +492,8 @@ luint ID3_Tag::PaddingSize(luint curSize) const
   // if the old tag was large enough to hold the new tag, then we will simply
   // pad out the difference - that way the new tag can be written without
   // shuffling the rest of the song file around
-  if (__ulOldTagSize && (__ulOldTagSize > curSize) && 
-      (curSize - __ulOldTagSize) < ID3_PADMAX)
+  if (__ulOldTagSize && (__ulOldTagSize >= curSize) && 
+      (__ulOldTagSize - curSize) < ID3_PADMAX)
   {
     newSize = __ulOldTagSize;
   }
@@ -516,6 +516,10 @@ luint ID3_Tag::PaddingSize(luint curSize) const
 
 
 // $Log: tag_render.cpp,v $
+// Revision 1.7  2000/04/26 15:48:34  eldamitri
+// (PaddingSize): Fix for padding logic, thanks to John Adcock for the
+// patch.
+//
 // Revision 1.6  2000/04/26 03:42:52  eldamitri
 // - Replaced version/revision uchar combination with ID3_V2Spec enums
 // - Deprecated {Get,Set}Version, GetRevision for {Get,Set}Spec
