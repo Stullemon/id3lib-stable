@@ -1,6 +1,4 @@
-Version 3.6.0 of id3lib requires the following work:
-
-* "Update" should allow for an alternate filename to be indicated.
+Version 3.0.6 of id3lib requires the following work:
 
 * There are several functions created to allow easier use of the library under
   common situations.  All of those functions are defined in misc_support.h.
@@ -15,19 +13,6 @@ Version 3.6.0 of id3lib requires the following work:
   which can go on if the file isn't writable, etc.  Its pretty muddled right
   now.  Should the file interface for the tags be broken off from the Tag 
   class completely?  Needs better design.
-
-* Need to come up with a list of currently-unsupported frames from the ID3v2
-  spec.
-
-* Currently, for portability reasons, no temporary filenames are created.
-  Rather, when necessary, the tmpfile function is used to create a temporary
-  file pointer, and a lot of copying back and forth between files occurs when a
-  tag is added to a file.  If a portable (that is, the issue of where to put
-  the temporary file: /tmp/, C:\temp\, or whatever) method can be resolved,
-  then we can implement the original method of adding a tag to a file: write
-  the tag to the temp file, copy the non-tag stuff to the temp file, delete the
-  original file, rename the temp file to the original file.  The current
-  implementation works, but is slow and inefficient.
 
 * The C interface hasn't been touched (or tested), and probably needs to be 
   updated to reflect changes made since 3.05a.  The C interface currently is
@@ -52,11 +37,14 @@ Version 3.05a of ID3Lib has some known limitations...
 * Firstly, contrary to good programming ideas and contrary to the 'ID3v2
   Programming Guidelines', ID3Lib will explode in a ball of brilliant blue
   flame if asked to parse an invalid ID3v2 tag.  This will change.
-  + Update for 3.6: this has been improved, but still requires more testing.
+  + Update for 3.0.6: this has been improved, but still requires more testing.
 
 * Incorrect handling of unknown frames.  This means that when ID3Lib encounters
   an unknown frame, it is currently ignored.  It is neither re-written to the
   tag when re-rendered nor are the file or tag alter frame flags observed.
+  + 3.0.6 adds nominal support for all remaining known frames (as defined in
+    the spec for id3v2.2.0 and id3v2.3.0 at www.id3.org).  Unknown frames are
+    still not handled correctly.
 
 * No support for the read-only frame flag.  It is currently ignored---such 
   frames can be altered at will.
@@ -71,6 +59,6 @@ Version 3.05a of ID3Lib has some known limitations...
 
 * ID3Lib currently has no direct support for things like the language and
   currency fields.  It is up to the application to generate the data for these
-  fields manually.  soon, ID3Lib will have these things assigned to IDs so that
+  fields manually.  Soon, ID3Lib will have these things assigned to IDs so that
   the applications programmer will not have to remember the ISO tables for the 
   actual strings.
