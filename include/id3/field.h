@@ -1,4 +1,4 @@
-// $Id: field.h,v 1.20 2000/05/03 14:09:05 eldamitri Exp $
+// $Id: field.h,v 1.21 2000/05/06 05:42:36 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -109,7 +109,7 @@ struct ID3_FrameDef
  ** if you only plan to generate 3.0 tags.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: field.h,v 1.20 2000/05/03 14:09:05 eldamitri Exp $
+ ** @version $Id: field.h,v 1.21 2000/05/06 05:42:36 eldamitri Exp $
  ** \sa ID3_Tag
  ** \sa ID3_Frame
  ** \sa ID3_Err 
@@ -346,6 +346,8 @@ public:
   void          ToFile(const char *sInfo);
   
   ID3_Field&    operator=( const ID3_Field & );
+
+  const uchar*  GetBinary() const { return __data; }
 
 private:
   luint         BinSize(const bool withExtras = true);
