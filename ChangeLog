@@ -1,5 +1,8 @@
 2000-04-09  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
+	* include/id3/tag.h: 
+	Started updating comments for doxygen.
+
 	* src/id3/tag_parse.cpp: 
 	Minor structure change.
 
