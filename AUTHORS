@@ -2,5 +2,4 @@ Authors of id3lib.
 See also the files THANKS and ChangeLog.
 
 Dirk Mahoney originally designed and implemented id3lib.
-
-Scott Thomas Haug branched the project for better linux functionality.
+Scott Thomas Haug branched the project at 3.0.6 for better linux functionality.
