@@ -1,4 +1,4 @@
-// $Id: tag_parse.cpp,v 1.12 2000/05/08 04:07:39 eldamitri Exp $
+// $Id: tag_parse.cpp,v 1.13 2000/05/09 13:04:22 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -279,6 +279,72 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
   return ;
 }
 
+size_t ID3_Tag::ParseFrames(const uchar* const data, size_t size) 
+{ 
+  const uchar* const data_end = data + size; 
+  size_t total_size = 0; 
+  size_t frame_size = 0; 
+  for (const uchar* p = data; p < data_end && *p != '\0'; p += frame_size) 
+  { 
+    ID3_Frame* f = new ID3_Frame; 
+    frame_size = f->Parse(p, data_end - p); 
+    total_size += frame_size; 
+     
+    if (f->BadParse()) 
+    { 
+      // bad parse!  we can't attach this frame.  should probably log this 
+      // TODO: log this 
+      delete f; 
+    } 
+    else if (!frame_size) 
+    { 
+      // There is a problem. 
+      // If the frame size is 0, then we can't progress. 
+      // TODO: log this 
+      delete f; 
+      // Break for now. 
+      break; 
+    } 
+    else if (f->GetID() != ID3FID_METACOMPRESSION) 
+    { 
+      // a good, uncompressed frame.  attach away! 
+      this->AttachFrame(f); 
+    } 
+    else 
+    { 
+      // hmm.  an ID3v2.2.1 compressed frame.  It contains 1 or more compressed 
+      // frames.  Uncompress and call ParseFrames recursively. 
+      const uchar* const bin = f->Field(ID3FN_DATA).GetBinary(); 
+      if (*bin != 'z') 
+      { 
+        // unknown compression method 
+        // TODO: log this 
+      } 
+      else 
+      { 
+        uint32 new_size = ParseNumber(&bin[1]); 
+         
+        uchar *uncompressed = new uchar[new_size]; 
+         
+        uncompress(uncompressed, (luint *) &new_size, 
+                   &bin[1 + sizeof(uint32)], 
+                   f->GetDataSize() - sizeof(uint32) - 1); 
+
+        if (this->ParseFrames(uncompressed, new_size) != new_size) 
+        { 
+          // hmm.  it didn't parse the entire uncompressed data.  wonder why. 
+          // TODO: log this. 
+        } 
+         
+        delete [] uncompressed; 
+      } 
+    } 
+  } 
+   
+  return total_size; 
+} 
+ 
+         
 
   /** Turns a binary tag into a series of ID3_Frame objects attached to the
    ** tag.
@@ -319,83 +385,59 @@ void ID3_Tag::ProcessBinaries(ID3_FrameID whichFrame, bool attach)
    ** @param buffer The remainder of the tag (not including the data source) 
    **               read in from the data source.
    **/
-size_t ID3_Tag::Parse(const uchar header[ID3_TAGHEADERSIZE], const uchar *buffer)
+size_t ID3_Tag::Parse(const uchar header[ID3_TagHeader::SIZE],
+		      const uchar *buffer)
 {
-  luint tagSize = 0;
-  uint28 temp = &header[6];
-  luint posn = 0;
-  bool dynbuffer = false;
-  ID3_V2Spec prev_spec = this->GetSpec();
-  
-  Clear();
-  
-  tagSize = temp.to_uint32();
-  this->SetSpec(ID3_VerRevToV2Spec(header[3], header[4]));
-  
-  if (header[5] & ID3_TagHeader::UNSYNC)
+  this->Clear();
+
+  size_t hdr_size = __hdr.Parse(header, ID3_TagHeader::SIZE);
+  if (!hdr_size)
   {
-    uchar* data = new uchar[tagSize];
-    memcpy(data, buffer, tagSize);
-    tagSize = ReSync(data, tagSize);
-    buffer = data;
-    dynbuffer = true;
+    return 0;
   }
-  
-  // okay, if we are ID3v2.2.1, then let's skip over the extended header for
-  // now because I am lazy
-  if (this->GetSpec() == ID3V2_2_1)
+
+  size_t data_size = __hdr.GetDataSize();
+  uchar* unsynced_data = NULL;
+  if (__hdr.GetUnsync())
   {
-    if (header[5] & ID3_TagHeader::EXTENDED)
-    {
-      uint32 extSize = ParseNumber(buffer);
-      posn = extSize + sizeof(luint);
-    }
+    unsynced_data = new uchar[data_size];
+    memcpy(unsynced_data, buffer, data_size);
+    data_size = ReSync(unsynced_data, data_size);
+    buffer = unsynced_data;
   }
-    
-  // okay, if we are 3.00, then let's actually parse the extended header (for
-  // now, we skip it because we are lazy)
-  if (this->GetSpec() == ID3V2_3_0)
-  {
-    if (header[5] & ID3_TagHeader::EXTENDED)
-    {
-      uint32 extSize = ParseNumber(buffer);
-      posn = extSize + sizeof(luint);
-    }
-  }
-    
+
+  size_t parsed = this->ParseFrames(buffer, data_size);
+
   // this call will convert the binary data block (tag) into a linked list of
   // binary frames
-  ExpandBinaries(&buffer[posn], tagSize);
+  //ExpandBinaries(&buffer[posn], tagSize);
   
   // let's parse the CRYPTO frames. the 'false' parameter means "don't attach
   // the frame to the tag when processed".  This is because we have installed a
   // parsing handler for the crypto reg frame.  This is a default parameter -
   // if the frame type has a custom parsing handler, that handler will tell
   // ID3Lib whether to attach or not.
-  ProcessBinaries(ID3FID_CRYPTOREG, false);
+  //ProcessBinaries(ID3FID_CRYPTOREG, false);
   
   // let's parse the GROUPING frames. the 'false' parameter means "don't attach
   // the frame to the tag when processed".  This is because we have installed a
   // parsing handler for the crypto reg frame.  This is a default parameter -
   // if the frame type has a custom parsing handler, that handler will tell
   // ID3Lib whether to attach or not.
-  ProcessBinaries(ID3FID_GROUPINGREG, false);
+  //ProcessBinaries(ID3FID_GROUPINGREG, false);
   
   // let's parse the rest of the binaries
-  ProcessBinaries();
+  //ProcessBinaries();
   
   // reset the version parameters which were in effect before the parse
-  SetSpec(prev_spec);
+  //SetSpec(prev_spec);
   
   // set the flag which says that the tag hasn't changed
   __changed = false;
 
-  if (dynbuffer)
-  {
-    delete [] buffer;
-  }
+  delete [] unsynced_data;
   
-  return tagSize;
+  return hdr_size + data_size;
 }
 
 
