@@ -14,6 +14,12 @@
 
 /* This is the top section */
 
+#define ID3D_INIT_DOUT()
+#define ID3D_INIT_WARNING()
+#define ID3D_INIT_NOTICE()
+#define ID3D_NOTICE(x)
+#define ID3D_WARNING(x)
+
 
 /* Define to `unsigned' if <sys/types.h> doesn't define.  */
 /* #undef size_t */
@@ -31,7 +37,6 @@
  * or static methods.
  */
 #define _ID3LIB_NAME "id3lib"
-#define _ID3LIB_DATE "@ID3LIB_DATE@"
 #define _ID3LIB_VERSION "3.8.0pre1"
 #define _ID3LIB_FULLNAME "id3lib-3.8.0pre1"
 #define _ID3LIB_MAJOR_VERSION 3
