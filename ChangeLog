@@ -1,3 +1,65 @@
+2000-07-10  Scott Haug  <scott@id3.org>
+
+	* src/utils.cpp: 
+	Added implementations of exists, ID3_CreateFile, 
+	ID3_OpenFileForWriting, ID3_OpenFileForReading, and ID3_CloseFile
+
+	* src/tag_parse_v1.cpp: 
+	- Removed inclusion of stdio.h
+	(ParseID3v1): Now manipulates an fstream rather than a FILE*
+
+	* src/tag_parse_musicmatch.cpp: 
+	- Removed inclusion of stdio.h
+	(MM_ParseTextField): Now manipulates an fstream rather than a FILE*
+	(ParseMusicMatch): Now manipulates an fstream rather than a FILE*
+
+	* src/tag_parse_lyrics3.cpp: 
+	- Removed inclusion of stdio.h
+	(ParseLyrics3): Now manipulates an fstream rather than a FILE*
+	(ParseLyrics3v2): Now manipulates an fstream rather than a FILE*
+
+	* src/tag_parse.cpp: 
+	- Removed inclusion of stdio.h
+	(ParseID3v2): 
+	- Now manipulates an fstream rather than a FILE*
+	- Now uses ID3_Tag::IsV2Tag rather than ID3_IsTagHeader
+	(ParseFile): Now manipulates an fstream rather than a FILE*
+
+	* src/tag_file.cpp: 
+	- Added inclusion of utils.h
+	- Made inclusion of stdio.h dependent on HAVE_MKSTEMP's non-defintion
+	- Removed definition of ID3_PATH_LENGTH (now in utils.h)
+	- Removed CreateFile, OpenFileForWriting, OpenFileForReading, and 
+	  CloseFile definitions (redefined in utils.cpp)
+	(Link): Removed handling of __file_handle, push all file manipulation
+	into ParseFile
+	(RenderV1ToFile): Now manipulates an fstream rather than a FILE*
+	(RenderV2ToFile): Now manipulates an fstream rather than a FILE*
+	(Update): Now manipulates an fstream rather than a FILE*
+	(Strip): Now manipulates an fstream rather than a FILE*
+
+	* src/tag.cpp: 
+	- Added inclusion of utils.h
+	- Removed definition of ID3_PATH_LENGTH (now in utils.h)
+	- Removed all mention of __file_handle
+	- Removed all calls to CloseFile()
+
+	* src/misc_support.cpp 
+	* src/tag_render.cpp: 
+	Removed inclusion of stdio.h
+
+	* include/id3/utils.h: 
+	- Now includes config.h, since it isn't a distributed file
+	- Added definition of ID3_PATH_LENGTH
+	- Added declarations of file utils 
+
+	* include/id3/tag.h 
+	(class ID3_Tag): Removed __file_handle and protected file routines
+
+	* include/id3/Makefile.am 
+	(the_headers): removed utils.h
+	(noinst_HEADERS): added utils.h
+
 2000-07-08  Scott Haug  <scott@id3.org>
 
 	* src/tag_render.cpp 
