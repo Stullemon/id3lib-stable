@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.15 2000/05/29 06:53:40 eldamitri Exp $
+// $Id: field_string_unicode.cpp,v 1.16 2000/06/06 12:22:42 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -33,18 +33,22 @@
 #include <config.h>
 #endif
 
-// this function is another way of using Set()
+/** \fn ID3_Field& ID3_Field::operator=(const unicode_t*)
+ ** \brief Shortcut for the Set operator.
+ ** Performs similarly as operator=(const char*), taking a unicode_t
+ ** string as a parameter rather than an ascii string.
+ ** \sa Set(const unicode_t*)
+ ** \param string The string to assign to the field
+ **/
 
-ID3_Field& ID3_Field::operator= (const unicode_t *string)
-{
-  Set(string);
-  
-  return *this;
-}
-
-
-// this is Set()
-
+/** \brief Copies the supplied unicode string to the field.
+ ** 
+ ** Performs similarly as the ASCII Set() method, taking a unicode_t string
+ ** as a parameter rather than an ascii string.
+ ** 
+ ** \param string The unicode string to set this field to.
+ ** \sa Add(const unicode_t*)
+ **/
 void ID3_Field::Set(const unicode_t *string)
 {
   size_t nBytes = (0 == __length) ? ucslen(string) : __length;
@@ -69,6 +73,12 @@ void ID3_Field::Set(const unicode_t *string)
 }
 
 
+/** For fields which support this feature, adds a string to the list of
+ ** strings currently in the field.
+ ** 
+ ** Performs similarly as the ASCII Add(const char*) method, taking a unicode_t
+ ** string as a parameter rather than an ascii string.
+ **/
 void ID3_Field::Add(const unicode_t *string)
 {
   if (NULL == __data)
@@ -106,8 +116,26 @@ void ID3_Field::Add(const unicode_t *string)
 }
 
 
-// this is Get()
-
+/** Copies the contents of the field into the supplied buffer, up to the
+ ** number of characters specified; for fields with multiple entries, the
+ ** optional third parameter indicates which of the fields to retrieve.
+ ** 
+ ** Performs similarly as the ASCII Get(char *, size_t, index_t) method, taking
+ ** a unicode_t string as a parameter rather than an ascii string.  The
+ ** maxChars parameter still represents the maximum number of characters, not
+ ** bytes.
+ **   
+ ** \code
+ **   unicode_t myBuffer[1024];
+ **   size_t charsUsed = myFrame.Field(ID3FN_TEXT).Get(buffer, 1024);
+ ** \endcode 
+ **   
+ ** \param buffer   Where the field's data is copied to
+ ** \param maxChars The maximum number of characters to copy to the buffer.
+ ** \param itemNum  For fields with multiple items (such as the involved
+ **                 people frame, the item number to retrieve.
+ ** \sa Get(char *, size_t, index_t)
+ **/
 size_t ID3_Field::Get(unicode_t *buffer, size_t maxChars, index_t itemNum) const
 {
   size_t charsUsed = 0;
@@ -172,6 +200,14 @@ size_t ID3_Field::Get(unicode_t *buffer, size_t maxChars, index_t itemNum) const
 }
 
 
+/** Returns the number of items in a text list.
+ ** 
+ ** \code
+ **   size_t numItems = myFrame.Field(ID3FN_TEXT).GetNumItems();
+ ** \endcode
+ ** 
+ ** \return The number of items in a text list.
+ **/
 size_t ID3_Field::GetNumTextItems() const
 {
   size_t numItems = 0;
