@@ -1,4 +1,4 @@
-# $Id: id3lib.spec.in,v 1.1 2000/04/18 05:14:58 eldamitri Exp $
+# $Id: id3lib.spec.in,v 1.2 2000/04/20 04:03:12 eldamitri Exp $
 
 %define name    @PACKAGE@
 %define	version	@VERSION@
@@ -29,12 +29,30 @@ padding facilities.
 %package	devel
 Summary:	Headers for developing programs that will use id3lib
 Group:		Development/Libraries
-Requires:       %{name}, zlib-devel
+Requires:       %{name}
 
 %description	devel
 This package contains the headers that programmers will need to develop
 applications which will use id3lib, the software library for ID3v1 and ID3v2
 tag manipulation.
+
+%package        doc
+Summary:	Documentation for developing programs that will use id3lib
+Group:		Documentation
+
+%description	doc
+This package contains the documentation of the id3lib API that programmers will
+need to develop applications which will use id3lib, the software library for ID3v1
+and ID3v2 tag manipulation.
+
+%package        examples
+Summary:	Example applications that make use of the id3lib library
+Group:		Applications/File
+Requires:       %{name}
+
+%description	examples
+This package contains simple example applications that make use of id3lib, a 
+software library for ID3v1 and ID3v2 tag maniuplation.
 
 %prep
 %setup -q
@@ -62,13 +80,32 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(-, root, root)
-%doc doc/ src/examples/ AUTHORS COPYING ChangeLog NEWS README THANKS TODO
+%doc AUTHORS COPYING ChangeLog NEWS README THANKS TODO
 %{prefix}/include/id3
 %{prefix}/lib/*.la
 %{prefix}/lib/*.a
 %{prefix}/lib/*.so
 
+%files examples
+%defattr(-, root, root)
+%doc AUTHORS COPYING ChangeLog NEWS README THANKS TODO
+%{prefix}/bin/id3*
+
+%files doc
+%defattr(-, root, root)
+%doc AUTHORS COPYING ChangeLog NEWS README THANKS TODO
+%doc doc/*.html doc/*.css doc/*.gif doc/*.jpg doc/*.php doc/*.ico doc/*.png 
+%doc doc/*.ps doc/html/*.html doc/html/*.gif doc/html/*.css
+%doc examples/*.cpp examples/*.h examples/*.tag examples/*.mp3
+
 ##########################################################################
 %changelog
+* Wed Apr 18 2000 Scott Haug <scott@id3.org> 3.7.1-1
+- Release 3.7.1
+- Removed zlib-devel requirement from devel
+- Added doc package to distribute documentation
+- Added examples package to distribute binary examples (id3tag, id3info, ...)
+- Moved doc/ and examples/ source files from devel to doc package
+
 * Mon Apr 17 2000 Scott Haug <scott@id3.org> 3.7.0-1
 - First (s)rpm build
