@@ -1,5 +1,17 @@
 2000-05-23  Scott Haug  <scott@id3.org>
 
+	* NEWS 
+	* THANKS
+	* configure.in
+	* id3lib.spec.in: 
+	Updated for 3.7.9 release
+	
+	* Makefile.am 
+	(docs-release): Adds NEWS(.txt) and ChangeLog(.txt) to the docs release
+
+	* examples/demo_tag.cpp 
+	(main): Minor structural changes
+
 	* Makefile.am 
 	(release): win build now copies over delphi directory
 
@@ -35,15 +47,15 @@
 
 	* src/header_frame.cpp 
 	(Parse): Now only responsible for parsing header proper, and not any
-	"extra" info in the data that is a result of the various flags being set
-	(encryiption id, grouping id, and decompressed frame size).
+	"extra" info in the data that is a result of the various flags being 
+	set (encryiption id, grouping id, and decompressed frame size).
 
 	* src/tag_file.cpp 
 	(Update): Added call to CloseFile so that the file isn't left open when
 	Update exits.
 
 	* src/tag_render.cpp 
-	(RenderV1ToHandle): Put in a throw in wehn file handle is null.
+	(RenderV1ToHandle): Put in a throw when file handle is null.
 	(RenderV2ToHandle): Added a call to reopen new file for writing after
 	writing out v2 under linux so that the file handle isn't null after
 	leaving this function.
@@ -187,7 +199,7 @@
 	- Updated destructor to make better use of Clear()
 	- Updated appropriate methods to increment/decrement __num_frames when
 	  necessary
-	- RemoveFrame nwo returns the pointer to the frame returned (NULL if 
+	- RemoveFrame now returns the pointer to the frame returned (NULL if 
 	  not removed or not present) and therefore the tag is now released 
 	  from its responsibility of managing frame's memory
 	- Makes use of new __hdr member variable where appropriate
