@@ -1,4 +1,4 @@
-# $Id: configure.in,v 1.21 2000/04/17 12:52:10 eldamitri Exp $
+# $Id: configure.in,v 1.22 2000/04/19 02:04:36 eldamitri Exp $
 
 # Copyright 1999, 2000 Scott Thomas Haug <eldamitri@users.sourceforge.net>
 #  
@@ -58,7 +58,7 @@ VERSION=$ID3LIB_VERSION
 PACKAGE=id3lib
 
 dnl This is a hack to get the release date using cvs checkin macros
-ID3LIB_DATE="$Date: 2000/04/17 12:52:10 $ID3LIB_UNDEFINED"
+ID3LIB_DATE="$Date: 2000/04/19 02:04:36 $ID3LIB_UNDEFINED"
 ID3LIB_FULLNAME="$PACKAGE-$VERSION"
 
 AC_SUBST(ID3LIB_DATE)
@@ -196,13 +196,12 @@ AC_DEFINE_UNQUOTED(ID3LIB_DATE, "$ID3LIB_DATE")
 AC_OUTPUT(                      \
   Makefile                      \
   doc/Makefile                  \
+  examples/Makefile             \
   include/Makefile              \
   include/id3/Makefile          \
   m4/Makefile                   \
   prj/Makefile                  \
   src/Makefile                  \
-  src/id3/Makefile              \
-  src/examples/Makefile         \
   zlib/Makefile                 \
   zlib/include/Makefile         \
   zlib/lib/Makefile             \
@@ -213,6 +212,10 @@ AC_OUTPUT(                      \
 )
 
 # $Log: configure.in,v $
+# Revision 1.22  2000/04/19 02:04:36  eldamitri
+# (AC_OUTPUT): Added examples/Makefile, removed src/id3/Makefile and
+# src/examples/Makefile
+#
 # Revision 1.21  2000/04/17 12:52:10  eldamitri
 # (AC_OUTPUT): Removed doc's subdirs.
 #
