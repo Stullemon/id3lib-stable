@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: writer.h,v 1.5 2000/10/23 08:20:54 eldamitri Exp $
+// $Id: writer.h,v 1.6 2001/07/30 18:22:53 abscess Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -30,7 +30,7 @@
 
 #include <id3/globals.h>
 
-class ID3_Writer
+class ID3_CPP_EXPORT ID3_Writer
 {
  public:
   typedef uint32 size_type;

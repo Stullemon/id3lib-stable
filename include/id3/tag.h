@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: tag.h,v 1.52 2000/10/24 07:00:08 eldamitri Exp $
+// $Id: tag.h,v 1.53 2001/07/30 18:22:53 abscess Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -36,7 +36,7 @@ class ID3_Writer;
 class ID3_TagImpl;
 class ID3_Tag;
 
-class ID3_Tag
+class ID3_CPP_EXPORT ID3_Tag
 {
   ID3_TagImpl* _impl;
 public:
@@ -128,7 +128,7 @@ public:
 };
 
 // deprecated!
-int32 ID3_IsTagHeader(const uchar header[ID3_TAGHEADERSIZE]);
+int32 ID3_C_EXPORT ID3_IsTagHeader(const uchar header[ID3_TAGHEADERSIZE]);
 
 
 #endif /* _ID3LIB_TAG_H_ */

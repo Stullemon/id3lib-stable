@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: readers.h,v 1.8 2000/10/23 08:20:54 eldamitri Exp $
+// $Id: readers.h,v 1.9 2001/07/30 18:22:53 abscess Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -31,7 +31,7 @@
 #include <fstream.h>
 #include <id3/reader.h>
 
-class ID3_IStreamReader : public ID3_Reader
+class ID3_CPP_EXPORT ID3_IStreamReader : public ID3_Reader
 {
   istream& _stream;
  protected:
@@ -72,7 +72,7 @@ class ID3_IStreamReader : public ID3_Reader
   virtual pos_type setCur(pos_type pos) { _stream.seekg(pos); return pos; }
 };
   
-class ID3_IFStreamReader : public ID3_IStreamReader
+class ID3_CPP_EXPORT ID3_IFStreamReader : public ID3_IStreamReader
 {
   ifstream& _file;
  public:
@@ -85,7 +85,7 @@ class ID3_IFStreamReader : public ID3_IStreamReader
   }
 };
   
-class ID3_MemoryReader : public ID3_Reader
+class ID3_CPP_EXPORT ID3_MemoryReader : public ID3_Reader
 {
   const char_type* _beg;
   const char_type* _cur;

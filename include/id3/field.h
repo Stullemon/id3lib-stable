@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: field.h,v 1.42 2000/10/23 08:20:54 eldamitri Exp $
+// $Id: field.h,v 1.43 2001/07/30 18:22:53 abscess Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -33,7 +33,7 @@
 class ID3_Reader;
 class ID3_Writer;
 
-class ID3_Field
+class ID3_CPP_EXPORT ID3_Field
 {
 public:
   virtual void Clear() = 0;

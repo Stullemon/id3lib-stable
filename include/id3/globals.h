@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: globals.h,v 1.42 2000/10/29 08:15:12 eldamitri Exp $
+/* $Id: globals.h,v 1.43 2001/07/30 18:22:53 abscess Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags Copyright
  * 1999, 2000 Scott Thomas Haug
@@ -44,11 +44,14 @@
 #ifdef WIN32
 #  ifdef ID3LIB_COMPILATION
 #    define ID3_C_EXPORT extern _declspec(dllexport)
+#    define ID3_CPP_EXPORT __declspec(dllexport)
 #  else /* !ID3LIB_COMPILATION */
 #    define ID3_C_EXPORT extern _declspec(dllimport)
+#    define ID3_CPP_EXPORT __declspec(dllimport)
 #  endif /* !ID3LIB_COMPILATION */
 #else /* !WIN32 */
 #  define ID3_C_EXPORT
+#  define ID3_CPP_EXPORT
 #endif /* !WIN32 */
 #define ID3_C_VAR extern
 
