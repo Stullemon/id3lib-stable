@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.17 1999/12/17 16:13:04 scott Exp $
+// $Id: misc_support.cpp,v 1.18 1999/12/26 15:11:51 scott Exp $
 // 
 // This program is free software; you can distribute it and/or modify it under
 // the terms discussed in the COPYING file, which should have been included
@@ -19,6 +19,25 @@
 #include "misc_support.h"
 #include <stdlib.h>
 #include <ctype.h>
+
+// Extract a 32-bit number from a 4-byte character array
+size_t ParseNumber(const uchar *buffer, size_t size)
+{
+  size_t nSize = 0;
+  for (size_t nIndex = 0; nIndex < size; nIndex++)
+  {
+    nSize |= buffer[nIndex] << ((size - nIndex - 1) * 8);
+  }
+  return nSize;
+}
+
+void RenderNumber(uchar *buffer, size_t val, size_t size)
+{
+  for (size_t nIndex = 0; nIndex < size; nIndex++)
+  {
+    buffer[nIndex] = (uchar)((val >> ((size - nIndex - 1) * 8)) & MASK8);
+  }
+}
 
 // converts an ASCII string into a Unicode one
 
@@ -791,6 +810,12 @@ size_t ID3_RemoveLyrics(ID3_Tag *tag)
 }
 
 // $Log: misc_support.cpp,v $
+// Revision 1.18  1999/12/26 15:11:51  scott
+// (ParseNumber): Defined.  Converts a character buffer up to 4 bytes in
+// size into its equivalent big-endian integer equivalent.
+// (RenderNumber): Defined.  Converts an integer into an equivalent
+// big-endian binary character array, up to 4 bytes in length.
+//
 // Revision 1.17  1999/12/17 16:13:04  scott
 // Updated opening comment block.
 //
