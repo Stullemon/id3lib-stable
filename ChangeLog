@@ -1,5 +1,28 @@
 2000-05-10  Scott Haug  <scott@id3.org>
 
+	* NEWS 
+	* THANKS
+	* configure.in
+	* id3lib.spec.in: 
+	Updated for 3.7.7 release
+
+	* Makefile.am: 
+	Reordered subdirs to put zlib before src so it will be compiled before
+	id3lib if necessary
+
+	* include/id3/Makefile.am: 
+	utils.h re-included as a distributed file
+
+	* zlib/src/Makefile.in: 
+	Improved configuration for building zlib
+
+	* include/id3/field.h 
+	(class ID3_Field): Minor fix to IsEncodable so as to prevent warnings in
+	windows.
+
+	* src/tag_render.cpp 
+	(RenderV1): Minor bug fix
+
 	* src/field_string_ascii.cpp 
 	(ParseASCIIString): Minor fix
 
@@ -288,7 +311,7 @@
 	Added GetBinary() method
 
 	* include/id3/globals.h: 
-	Removed VerCtl enumeration, and LyricsContent enumeration.
+	Removed VerCtl enumeration, and added LyricsContent enumeration.
 
 	* include/id3/tag.h 
 	* src/tag_file.cpp: 
