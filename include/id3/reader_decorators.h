@@ -1,4 +1,4 @@
-// $Id: reader_decorators.h,v 1.2 2000/09/27 08:10:19 eldamitri Exp $
+// $Id: reader_decorators.h,v 1.3 2000/09/30 22:07:04 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -38,26 +38,40 @@ namespace id3
   class IdentityReader : public ID3_Reader
   {
     ID3_Reader& _reader;
-   protected:
-    ID3_Reader& getReader() { return _reader; }
    public:
     IdentityReader(ID3_Reader& reader) : _reader(reader) { }
-    virtual ~IdentityReader() { this->getReader().close(); }
+    virtual ~IdentityReader() { ; }
   
-    virtual void close() { this->getReader().close(); }
-    virtual pos_type getBeg() { return this->getReader().getBeg(); }
-    virtual pos_type getEnd() { return this->getReader().getEnd(); }
-    virtual pos_type getCur() { return this->getReader().getCur(); }
-    virtual pos_type setCur(pos_type pos) { return this->getReader().setCur(pos); }
+    virtual void close() { _reader.close(); }
+    virtual pos_type getBeg() { return _reader.getBeg(); }
+    virtual pos_type getEnd() { return _reader.getEnd(); }
+    virtual pos_type getCur() { return _reader.getCur(); }
+    virtual pos_type setCur(pos_type pos) { return _reader.setCur(pos); }
 
-    virtual int_type readChar() { return this->getReader().readChar(); }
-    virtual int_type peekChar() { return this->getReader().peekChar(); }
+    virtual int_type readChar() { return _reader.readChar(); }
+    virtual int_type peekChar() { return _reader.peekChar(); }
     virtual streamsize readChars(char_type buf[], streamsize len)
-    { return this->getReader().readChars(buf, len); }
+    { return _reader.readChars(buf, len); }
 
-    virtual streamsize skipChars(streamsize len) { return this->getReader().skipChars(len); }
+    virtual streamsize skipChars(streamsize len) { return _reader.skipChars(len); }
 
-    virtual streamsize remainingChars() { return this->getReader().remainingChars(); }
+    virtual streamsize remainingChars() { return _reader.remainingChars(); }
+    //virtual bool atEnd() { return _reader.atEnd(); }
+  };
+
+  /**
+   **/
+  class ExitTrigger
+  {
+    ID3_Reader::pos_type _pos;
+    ID3_Reader& _reader;
+    typedef IdentityReader SUPER;
+   public:
+    ExitTrigger(ID3_Reader& rdr) : _reader(rdr), _pos(rdr.getCur()) { ; }
+    ExitTrigger(ID3_Reader& rdr, ID3_Reader::pos_type pos) : _reader(rdr), _pos(pos) {;}
+    virtual ~ExitTrigger() { _reader.setCur(_pos); }
+    
+    void setExitPos(ID3_Reader::pos_type pos) { _pos = pos; }
   };
 
   /**
@@ -79,6 +93,27 @@ namespace id3
       _beg(reader.getBeg()),
       _end(reader.getEnd())
     {
+    }
+  
+    WindowedReader(ID3_Reader& reader, streamsize size) 
+    : SUPER(reader),
+      _beg(reader.getBeg()),
+      _end(reader.getEnd())
+    {
+      this->setWindow(this->getCur(), size);
+    }
+  
+    WindowedReader(ID3_Reader& reader, pos_type beg, streamsize size) 
+    : SUPER(reader),
+      _beg(reader.getBeg()),
+      _end(reader.getEnd())
+    {
+      this->setWindow(beg, size);
+    }
+
+    void closeWindow()
+    {
+      this->setCur(this->getEnd());
     }
   
     void setWindow(pos_type beg, streamsize size)
@@ -113,13 +148,17 @@ namespace id3
     {
       // make sure the position we want to set to isn't past the current
       // end position or the superclass's beginning position
-      if (beg <= _end && beg >= this->getReader().getBeg())
+      if (beg <= this->getEnd() && beg >= SUPER::getBeg())
       {
         _beg = beg;
       }
+      else if (beg > this->getEnd())
+      {
+        ID3D_WARNING( "id3::WindowedReader::setBeg() failed, [beg, _end] = " << beg << ", " << this->getEnd() << "]" );
+      }
       else
       {
-        ID3D_WARNING( "id3::WindowedReader::setBeg() failed" );
+        ID3D_WARNING( "id3::WindowedReader::setBeg() failed, [beg, _beg] = " << beg << ", " << this->getBeg() << "]" );
       }
       return _beg;
     }
@@ -127,7 +166,7 @@ namespace id3
     {
       // make sure the position we want to set to isn't beforen the current
       // beginning position or the superclass's end position
-      if (this->getBeg() <= end && end <= this->getReader().getEnd())
+      if (this->getBeg() <= end && end <= SUPER::getEnd())
       {
         _end = end;
       }
@@ -160,7 +199,7 @@ namespace id3
       int_type ch = END_OF_READER;
       if (this->inWindow())
       {
-        ch = this->getReader().readChar();
+        ch = SUPER::readChar();
       }
       return ch;
     }
@@ -170,7 +209,7 @@ namespace id3
       int_type ch = END_OF_READER;
       if (this->inWindow())
       {
-        ch = this->getReader().peekChar();
+        ch = SUPER::peekChar();
       }
       return ch;
     }
@@ -181,7 +220,7 @@ namespace id3
       streamsize size = 0;
       if (this->inWindow(cur))
       {
-        size = this->getReader().readChars(buf, id3::min<streamsize>(len, _end - cur));
+        size = SUPER::readChars(buf, id3::min<streamsize>(len, _end - cur));
       }
       return size;
     }
@@ -197,31 +236,17 @@ namespace id3
     };
   };
 
-  class UnsyncedReader : public IdentityReader
+  class CharReader : public IdentityReader
   {
     typedef IdentityReader SUPER;
    public:
 
-    UnsyncedReader(ID3_Reader& reader) : SUPER(reader) { }
-    int_type readChar()
-    {
-      int_type ch = this->peekChar();
-      if (ch == END_OF_READER)
-      {
-        return ch;
-      }
-      ch = this->getReader().readChar();
-      if (ch == 0xFF && this->peekChar() == 0x00)
-      {
-        ID3D_NOTICE( "id3::UnsyncedReader::readChar(): found sync at pos " << this->getCur() );
-        this->getReader().readChar();
-      }
-      return ch;
-    }
+    CharReader(ID3_Reader& reader) : SUPER(reader) { }
+    virtual ~CharReader() { ; }
     
     streamsize skipChars(streamsize len)
     {
-      ID3D_NOTICE( "id3::UnsyncedReader::skipChars(): len = " << len );
+      ID3D_NOTICE( "id3::CharReader::skipChars(): len = " << len );
       return this->readChars(NULL, len);
     }
 
@@ -233,10 +258,10 @@ namespace id3
     streamsize readChars(char_type buf[], streamsize len)
     {
       size_t numChars = 0;
-      ID3D_NOTICE( "id3::UnsyncedReader::readChars(): len = " << len );
+      ID3D_NOTICE( "id3::CharReader::readChars(): len = " << len );
       for (; numChars < len; ++numChars)
       {
-        if (this->peekChar() == END_OF_READER)
+        if (this->atEnd())
         {
           break;
         }
@@ -246,19 +271,65 @@ namespace id3
           buf[numChars] = ch;
         }
       }
-      ID3D_NOTICE( "id3::UnsyncedReader::readChars(): numChars = " << len );
+      ID3D_NOTICE( "id3::CharReader::readChars(): numChars = " << len );
       return numChars;
     }
 
     streamsize remainingChars()
     {
       pos_type cur = this->getCur();
-      ID3D_NOTICE( "id3::UnsyncedReader::remainingChars(): cur = " << cur );
+      ID3D_NOTICE( "id3::CharReader::remainingChars(): cur = " << cur );
       streamsize size = this->skipChars(this->getEnd() - cur);
-      ID3D_NOTICE( "id3::UnsyncedReader::remainingChars(): size = " << size );
+      ID3D_NOTICE( "id3::CharReader::remainingChars(): size = " << size );
       this->setCur(cur);
       return size;
+    }
+  };
+
+
+  class LineFeedReader : public CharReader
+  {
+    typedef CharReader SUPER;
+  public:
+    LineFeedReader(ID3_Reader& reader) : SUPER(reader) { ; }
+    virtual ~LineFeedReader() { ; }
+
+    int_type readChar()
+    {
+      if (this->atEnd())
+      {
+        return END_OF_READER;
+      }
+      char_type ch = SUPER::readChar();
+      if (ch == 0x0D && this->peekChar() == 0x0A)
+      {
+        ID3D_NOTICE( "id3::LineFeedReader::readChar(): found CRLF at pos " << this->getCur() );
+        ch = SUPER::readChar();
+      }
+      return ch;
     };
+  };
+
+  class UnsyncedReader : public CharReader
+  {
+    typedef CharReader SUPER;
+   public:
+
+    UnsyncedReader(ID3_Reader& reader) : SUPER(reader) { }
+    int_type readChar()
+    {
+      if (this->atEnd())
+      {
+        return END_OF_READER;
+      }
+      char_type ch = SUPER::readChar();
+      if (ch == 0xFF && this->peekChar() == 0x00)
+      {
+        ID3D_NOTICE( "id3::UnsyncedReader::readChar(): found sync at pos " << this->getCur() );
+        SUPER::readChar();
+      }
+      return ch;
+    }
   };
 
   class NumberReader : public IdentityReader
@@ -294,8 +365,12 @@ namespace id3
       {
         if (this->getEncoding() == ID3TE_ASCII)
         {
-          int_type ch = this->readChar();
-          if (ch == END_OF_READER || ch == '\0')
+          if (this->atEnd())
+          {
+            break;
+          }
+          char_type ch = this->readChar();
+          if (ch == '\0')
           {
             break;
           }
@@ -303,13 +378,17 @@ namespace id3
         }
         else if (this->getEncoding() == ID3TE_UNICODE)
         {
-          int_type ch1 = this->readChar();
-          int_type ch2 = this->readChar();
-          if (ch1 == END_OF_READER || ch2 == END_OF_READER)
+          if (this->atEnd())
           {
             break;
           }
-          else if (ch1 == '\0' && ch2 == '\0')
+          char_type ch1 = this->readChar();
+          if (this->atEnd())
+          {
+            break;
+          }
+          char_type ch2 = this->readChar();
+          if (ch1 == '\0' && ch2 == '\0')
           {
             break;
           }
@@ -328,11 +407,11 @@ namespace id3
         str.reserve(numChars);
         for (size_t i = 0; i < numChars; ++i)
         {
-          int_type ch = this->readChar();
-          if (ch == END_OF_READER)
+          if (this->atEnd())
           {
             break;
           }
+          char_type ch = this->readChar();
           str += static_cast<char>(ch);
         }
       }
@@ -341,12 +420,16 @@ namespace id3
         str.reserve(numChars * 2);
         for (size_t i = 0; i < numChars; ++i)
         {
-          int_type ch1 = this->readChar();
-          int_type ch2 = this->readChar();
-          if (ch1 == END_OF_READER || ch2 == END_OF_READER)
+          if (this->atEnd())
           {
             break;
           }
+          char_type ch1 = this->readChar();
+          if (this->atEnd())
+          {
+            break;
+          }
+          char_type ch2 = this->readChar();
           str += static_cast<char>(ch1);
           str += static_cast<char>(ch2);
         }
