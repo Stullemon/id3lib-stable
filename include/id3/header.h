@@ -1,4 +1,4 @@
-// $Id: header.h,v 1.7 2000/04/10 16:56:48 eldamitri Exp $
+// $Id: header.h,v 1.8 2000/04/20 03:43:09 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,10 +24,10 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#ifndef ID3LIB_HEADER_H
-#define ID3LIB_HEADER_H
+#ifndef __ID3LIB_HEADER_H__
+#define __ID3LIB_HEADER_H__
 
-#include "types.h"
+#include "globals.h"
 
 #define ID3v2_VERSION  (3)
 #define ID3v2_REVISION (0)
@@ -77,41 +77,4 @@ protected:
 
 ID3_HeaderInfo *ID3_LookupHeaderInfo(uchar ver, uchar rev);
 
-#endif
-
-// $Log: header.h,v $
-// Revision 1.7  2000/04/10 16:56:48  eldamitri
-// (class ID3_Header): Removed decl of Copy.
-//
-// Revision 1.6  2000/04/05 05:20:52  eldamitri
-// Updated initial comment information to reflect license, copyright
-// change.
-//
-// Revision 1.5  1999/12/27 06:11:33  scott
-// (ID3_VERSION, ID3_REVISION): Renamed to ID3v2_*
-// (class ID3_Header): Added declarations for GetVersion, GetRevision,
-// AddFlags, SetFlags, Clear, Copy, and operator= methods.  Changed
-// return type for Size and Render from luint to size_t.
-//
-// Revision 1.4  1999/12/26 16:40:13  scott
-// (class ID3_Header): Minor cleanup to interface.
-//
-// Revision 1.3  1999/12/17 16:05:02  scott
-// Updated opening comment block.
-//
-// Revision 1.2  1999/12/02 22:45:28  scott
-// Changed all of the #include <id3/*> to #include "*" to help ensure that
-// the sources are searched for in the right places.
-//
-// Revision 1.1  1999/12/01 17:16:04  scott
-// moved from src/id3 to include/id3
-//
-// Revision 1.6  1999/11/29 19:26:18  scott
-// Updated the leading license information of the file to reflect new maintainer.
-//
-// Revision 1.5  1999/11/15 20:18:59  scott
-// Made variable names more descriptive.
-//
-// Revision 1.4  1999/11/04 04:15:55  scott
-// Added cvs Id and Log tags to beginning and end of file, respectively.
-//
+#endif /* __ID3LIB_HEADER_H */

@@ -1,4 +1,4 @@
-// $Id: header_frame.h,v 1.8 2000/04/10 16:56:56 eldamitri Exp $
+// $Id: header_frame.h,v 1.9 2000/04/20 03:43:09 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,10 +24,9 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#ifndef ID3LIB_HEADER_FRAME_H
-#define ID3LIB_HEADER_FRAME_H
+#ifndef __ID3LIB_HEADER_FRAME_H__
+#define __ID3LIB_HEADER_FRAME_H__
 
-#include "types.h"
 #include "header.h"
 #include "header_tag.h"
 #include "field.h"
@@ -63,50 +62,4 @@ protected:
 }
 ;
 
-#endif
-
-// $Log: header_frame.h,v $
-// Revision 1.8  2000/04/10 16:56:56  eldamitri
-// (class ID3_FrameHeader): Added decl for operator=, removed decl of Copy
-//
-// Revision 1.7  2000/04/09 22:36:45  eldamitri
-// (class ID3_FrameHeader): Added destructor and new method
-// SetUnknownFrame(const char*) for creating a frame with an unknown
-// frame id.  Added __bDynFrameDef member, set when __pFrameDef has been
-// dynamically created.
-//
-// Revision 1.6  2000/04/05 05:20:52  eldamitri
-// Updated initial comment information to reflect license, copyright
-// change.
-//
-// Revision 1.5  1999/12/27 06:09:26  scott
-// (ID3_FrameAttr): Removed.
-// (class ID3_FrameHeader): Added declarations for default constructor and
-// Parse, GetFrameID, GetTextID, GetFrameDef, and Clear methods.  Changed
-// return type for Size and Render.  Replaced __eFrameID data member with
-// __pFrameDef, which encapsulates more information about the frame
-// header.
-//
-// Revision 1.4  1999/12/26 16:40:18  scott
-// (ID3FL_READONLY): Renamed from ID3FL_SIGNED.
-// (class ID3_FrameHeader): Minor cleanup to interface.
-//
-// Revision 1.3  1999/12/17 16:05:02  scott
-// Updated opening comment block.
-//
-// Revision 1.2  1999/12/02 22:45:28  scott
-// Changed all of the #include <id3/*> to #include "*" to help ensure that
-// the sources are searched for in the right places.
-//
-// Revision 1.1  1999/12/01 17:16:05  scott
-// moved from src/id3 to include/id3
-//
-// Revision 1.6  1999/11/29 19:26:18  scott
-// Updated the leading license information of the file to reflect new maintainer.
-//
-// Revision 1.5  1999/11/15 20:19:25  scott
-// Made variable names more descriptive.
-//
-// Revision 1.4  1999/11/04 04:15:55  scott
-// Added cvs Id and Log tags to beginning and end of file, respectively.
-//
+#endif /* __ID3LIB_HEADER_FRAME__ */

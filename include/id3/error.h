@@ -1,4 +1,4 @@
-// $Id: error.h,v 1.6 2000/04/11 03:38:15 eldamitri Exp $
+// $Id: error.h,v 1.7 2000/04/20 03:43:09 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,10 +24,10 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#ifndef ID3LIB_ERROR_H
-#define ID3LIB_ERROR_H
+#ifndef __ID3LIB_ERROR_H__
+#define __ID3LIB_ERROR_H__
 
-#include "types.h"
+#include "globals.h"
 
 /**
  ** Predefined id3lib error types.
@@ -142,52 +142,4 @@ private:
  **/
 #define ID3_THROW_DESC(x, y) throw ID3_Error(x, __FILE__, __LINE__, y)
 
-#endif
-
-// $Log: error.h,v $
-// Revision 1.6  2000/04/11 03:38:15  eldamitri
-// Updated comments for use with doxygen.
-//
-// Revision 1.5  2000/04/07 04:45:31  eldamitri
-// Minor cleanup for log comments.
-//
-// Revision 1.4  2000/04/05 05:20:52  eldamitri
-// Updated initial comment information to reflect license, copyright
-// change.
-//
-// Revision 1.3  1999/12/17 16:05:02  scott
-// Updated opening comment block.
-//
-// Revision 1.2  1999/12/02 22:45:28  scott
-// Changed all of the #include <id3/*> to #include "*" to help ensure that
-// the sources are searched for in the right places.
-//
-// Revision 1.1  1999/12/01 17:15:59  scott
-// moved from src/id3 to include/id3
-//
-// Revision 1.9  1999/11/29 19:26:18  scott
-// Updated the leading license information of the file to reflect new maintainer.
-//
-// Revision 1.8  1999/11/29 17:00:53  scott
-// Updated documentation to work better with doc++ (probably doesn't work
-// well with kdoc anymore).
-//
-// Revision 1.7  1999/11/25 19:05:06  scott
-// Added doc++/kdoc/javadoc-like documentation.
-// (ID3_Err): Added error types SmallBuffer and ReadOnly.
-//
-// Revision 1.6  1999/11/16 22:50:15  scott
-// (ID3_Err): Added new ID3_Err: ID3E_BadData.
-//
-// Revision 1.5  1999/11/15 20:15:13  scott
-// Made constructor public.  Added new interface to error reporting
-// to allow for more descriptive error messages (this should still be
-// worked on).  Made private member variable names more descriptive.
-// Added const qualifier to appropriate methods.
-//
-// Revision 1.4  1999/11/04 04:32:11  scott
-// Initial revision
-//
-// Revision 1.3  1999/11/04 04:15:54  scott
-// Added cvs Id and Log tags to beginning and end of file, respectively.
-//
+#endif /* __ID3LIB_ERROR_H__ */

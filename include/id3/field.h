@@ -1,4 +1,4 @@
-// $Id: field.h,v 1.13 2000/04/11 03:38:15 eldamitri Exp $
+// $Id: field.h,v 1.14 2000/04/20 03:43:09 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,11 +24,10 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#ifndef ID3LIB_FIELD_H
-#define ID3LIB_FIELD_H
+#ifndef __ID3LIB_FIELD_H__
+#define __ID3LIB_FIELD_H__
 
 #include <stdlib.h>
-#include "types.h"
 #include "error.h"
 
 // field flags
@@ -137,7 +136,7 @@ struct ID3_FrameDef
  ** if you only plan to generate 3.0 tags.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: field.h,v 1.13 2000/04/11 03:38:15 eldamitri Exp $
+ ** @version $Id: field.h,v 1.14 2000/04/20 03:43:09 eldamitri Exp $
  ** \sa ID3_Tag
  ** \sa ID3_Frame
  ** \sa ID3_Err 
@@ -414,82 +413,4 @@ protected:
 ID3_FrameDef *ID3_FindFrameDef(const ID3_FrameID id);
 ID3_FrameID   ID3_FindFrameID(const char *id);
 
-#endif
-
-// $Log: field.h,v $
-// Revision 1.13  2000/04/11 03:38:15  eldamitri
-// Updated comments for use with doxygen.
-//
-// Revision 1.12  2000/04/10 20:17:35  eldamitri
-// Updated comments for use with doxygen.
-//
-// Revision 1.11  2000/04/09 22:34:57  eldamitri
-// (struct ID3_FieldDef): Added DEFAULT.
-// (struct ID3_FrameDef): Made text id's fixed length char arrays rather
-// than char ptrs.
-//
-// Revision 1.10  2000/04/08 04:32:36  eldamitri
-// Changed new ANSI-standard C++ include headers to old-style headers.
-//
-// Revision 1.9  2000/04/07 04:45:31  eldamitri
-// Minor cleanup for log comments.
-//
-// Revision 1.8  2000/04/05 05:20:52  eldamitri
-// Updated initial comment information to reflect license, copyright
-// change.
-//
-// Revision 1.7  2000/01/04 15:42:22  eldamitri
-// For compilation with gcc 2.95.2 and better compatibility with ANSI/ISO
-// standard C++, updated, rearranged, and removed (where necessary)
-// #include directives.
-//
-// Revision 1.6  1999/12/26 16:40:04  scott
-// (class ID3_Field): Cleaned up interface to Parse* methods.
-//
-// Revision 1.5  1999/12/17 16:05:02  scott
-// Updated opening comment block.
-//
-// Revision 1.4  1999/12/15 06:37:39  scott
-// Reformatted some comments.
-//
-// Revision 1.3  1999/12/09 02:45:41  scott
-// (class ID3_Field): Added const to Get method.  Added operator= method
-// declaration.
-//
-// Revision 1.2  1999/12/02 22:45:28  scott
-// Changed all of the #include <id3/*> to #include "*" to help ensure that
-// the sources are searched for in the right places.
-//
-// Revision 1.1  1999/12/01 17:16:01  scott
-// moved from src/id3 to include/id3
-//
-// Revision 1.10  1999/11/29 19:26:18  scott
-// Updated the leading license information of the file to reflect new maintainer.
-//
-// Revision 1.9  1999/11/29 19:05:41  scott
-// Updated documentation to work better with doc++ (probably doesn't work
-// well with kdoc anymore).
-//
-// Revision 1.8  1999/11/25 19:11:40  scott
-// Added doc++/kdoc/javadoc-like documentation, mostly transcribed
-// from Dirk's ID3Lib Documentation MSWord doc.
-// (ID3_FieldFlags ): Created enumeration to replace generic constants.
-// (ID3_FieldID): Removed.  Replaced in globals.h.
-// (ID3_FrameID): Removed.  Replaced in globals.h.
-// (class ID3_Field): Made the constructor private.
-//
-// Revision 1.7  1999/11/19 17:19:58  scott
-// Updated method interfaces to make appropriate parameters const.
-//
-// Revision 1.6  1999/11/15 20:15:36  scott
-// Made ID3_Frame and ID3_Tag friends of the ID3_Field class to allow
-// access to the private members in ID3_Field.  Made ID3FF field
-// flags const luints, rather than #define's.  Made member variable
-// names of classes and structs more descriptive.
-//
-// Revision 1.5  1999/11/04 04:32:11  scott
-// Initial revision
-//
-// Revision 1.4  1999/11/04 04:15:54  scott
-// Added cvs Id and Log tags to beginning and end of file, respectively.
-//
+#endif /* __ID3LIB_FIELD_H__ */
