@@ -1,4 +1,4 @@
-/* $Id: id3.h,v 1.16 2001/08/07 11:58:23 shadrack Exp $
+/* $Id: id3.h,v 1.17 2001/09/08 02:33:41 shadrack Exp $
  * 
  * id3lib: a software library for creating and manipulating id3v1/v2 tags
  * Copyright 1999, 2000  Scott Thomas Haug
@@ -56,6 +56,7 @@ extern "C"
   ID3_C_EXPORT ID3Frame   *ID3Tag_RemoveFrame          (ID3Tag *tag, const ID3Frame *frame);
   ID3_C_EXPORT ID3_Err     ID3Tag_Parse                (ID3Tag *tag, const uchar header[ID3_TAGHEADERSIZE], const uchar *buffer);
   ID3_C_EXPORT size_t      ID3Tag_Link                 (ID3Tag *tag, const char *fileName);
+  ID3_C_EXPORT size_t      ID3Tag_LinkWithFlags        (ID3Tag *tag, const char *fileName, flags_t flags);
   ID3_C_EXPORT ID3_Err     ID3Tag_Update               (ID3Tag *tag);
   ID3_C_EXPORT ID3_Err     ID3Tag_UpdateByTagType      (ID3Tag *tag, flags_t type);
   ID3_C_EXPORT ID3_Err     ID3Tag_Strip                (ID3Tag *tag, flags_t ulTagFlags);
@@ -111,7 +112,7 @@ extern "C"
   ID3_C_EXPORT int         ID3FrameInfo_NumFields      (ID3_FrameID frameid);
   ID3_C_EXPORT ID3_FieldType ID3FrameInfo_FieldType    (ID3_FrameID frameid, int fieldnum);
   ID3_C_EXPORT size_t      ID3FrameInfo_FieldSize      (ID3_FrameID frameid, int fieldnum);
-  ID3_C_EXPORT flags_t     ID3FrameInfo_FieldFlags      (ID3_FrameID frameid, int fieldnum);
+  ID3_C_EXPORT flags_t     ID3FrameInfo_FieldFlags     (ID3_FrameID frameid, int fieldnum);
 
   /* Deprecated */
   ID3_C_EXPORT void        ID3Tag_SetCompression       (ID3Tag *tag, bool comp);

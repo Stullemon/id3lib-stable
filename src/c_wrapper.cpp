@@ -1,4 +1,4 @@
-// $Id: c_wrapper.cpp,v 1.16 2000/10/24 07:00:08 eldamitri Exp $
+// $Id: c_wrapper.cpp,v 1.17 2001/09/08 02:33:41 shadrack Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -180,6 +180,18 @@ extern "C"
     }
     return offset;
   }
+
+  ID3_C_EXPORT size_t
+  ID3Tag_LinkWithFlags(ID3Tag *tag, const char *fileName, flags_t flags)
+  {
+    size_t offset = 0;
+    if (tag)
+    {
+      ID3_CATCH(offset = reinterpret_cast<ID3_Tag *>(tag)->Link(fileName,flags));
+    }
+    return offset;
+  }
+
 
 
   ID3_C_EXPORT ID3_Err
