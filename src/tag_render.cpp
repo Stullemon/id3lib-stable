@@ -1,4 +1,4 @@
-// $Id: tag_render.cpp,v 1.31 2000/10/03 04:51:27 eldamitri Exp $
+// $Id: tag_render.cpp,v 1.32 2000/10/09 04:31:14 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -38,223 +38,112 @@
 #include "tag_impl.h"
 #include "helpers.h"
 #include "utils.h"
+#include "writers.h"
+#include "writer_decorators.h"
 
 using namespace dami;
 
-/** Renders an id3v1.1 version of the tag into the supplied buffer.
- ** 
- ** @return The actual number of the bytes of the buffer used to store the
- **         tag (should always be 128)
- ** @param  buffer The buffer that will contain the id3v1.1 tag.
- **/
-size_t RenderV1(const ID3_TagImpl& tag, uchar *buffer)
+void id3::v1::render(ID3_Writer& writer, const ID3_TagImpl& tag)
 {
-  // Sanity check our buffer
-  if (NULL == buffer)
+  writer.writeChars("TAG", 3);
+  
+  io::TrailingSpacesWriter tsw(writer);
+
+  tsw.writeString(id3::v2::getTitle(tag),  ID3_V1_LEN_TITLE);
+  tsw.writeString(id3::v2::getArtist(tag), ID3_V1_LEN_ARTIST);
+  tsw.writeString(id3::v2::getAlbum(tag),  ID3_V1_LEN_ALBUM);
+  tsw.writeString(id3::v2::getYear(tag),   ID3_V1_LEN_YEAR);
+  
+  size_t track = id3::v2::getTrackNum(tag);
+  String comment = id3::v2::getV1Comment(tag);
+  if (track > 0)
   {
-    return 0;
-    //ID3_THROW(ID3E_NoBuffer);
+    tsw.writeString(comment, ID3_V1_LEN_COMMENT - 2);
+    tsw.writeChar('\0');
+    tsw.writeChar((char) track);
   }
-
-  // pCur is used to mark where to next write in the buffer
-  // sTemp is used as a temporary string pointer for functions that return
-  //  dynamically created strings
-  char* pCur = (char *) buffer;
-  String str;
-
-  // The default char for a v1 tag is null
-  ::memset(buffer, '\0', ID3_V1_LEN);
-
-  // Write the TAG identifier
-  strncpy(pCur, "TAG", ID3_V1_LEN_ID);
-  pCur = &pCur[ID3_V1_LEN_ID];
-
-  // Write the TITLE
-  str = id3::v2::getTitle(tag);
-  ::strncpy(pCur, str.c_str(), ID3_V1_LEN_TITLE);
-  pCur = &pCur[ID3_V1_LEN_TITLE];
-
-  // Write the ARTIST
-  str = id3::v2::getArtist(tag);
-  ::strncpy(pCur, str.c_str(), ID3_V1_LEN_ARTIST);
-  pCur = &pCur[ID3_V1_LEN_ARTIST];
-
-  // Write the ALBUM
-  str = id3::v2::getAlbum(tag);
-  ::strncpy(pCur, str.c_str(), ID3_V1_LEN_ALBUM);
-  pCur = &pCur[ID3_V1_LEN_ALBUM];
-
-  // Write the YEAR
-  str = id3::v2::getYear(tag);
-  ::strncpy(pCur, str.c_str(), ID3_V1_LEN_YEAR);
-  pCur = &pCur[ID3_V1_LEN_YEAR];
-
-  // Write the COMMENT
-  // Find the comment with the description STR_V1_COMMENT_DESC
-  ID3_Frame* frame;
-  str = "";
-  (frame = tag.Find(ID3FID_COMMENT, ID3FN_DESCRIPTION, STR_V1_COMMENT_DESC)) ||
-  (frame = tag.Find(ID3FID_COMMENT, ID3FN_DESCRIPTION, ""))                  ||
-  (frame = tag.Find(ID3FID_COMMENT));
-  str = id3::v2::getString(frame, ID3FN_TEXT);
-  ::strncpy(pCur, str.c_str(), ID3_V1_LEN_COMMENT);
-  pCur = &pCur[ID3_V1_LEN_COMMENT];
-
-  // Write the TRACK, if it isn't 0
-  luint nTrack = id3::v2::getTrackNum(tag);
-  if (0 != nTrack)
+  else
   {
-    pCur -= 2;
-    pCur[0] = '\0';
-    pCur[1] = (uchar) nTrack;
-    pCur += 2;
+    tsw.writeString(comment, ID3_V1_LEN_COMMENT);
   }
-
-  // Write the GENRE
-  pCur[0] = (uchar) id3::v2::getGenreNum(tag);
-
-  return ID3_V1_LEN;
+  tsw.writeChar((char) id3::v2::getGenreNum(tag));
 }
 
-size_t RenderFrames(uchar* buffer, const ID3_Elem* cur)
+namespace
 {
-  size_t size = 0;
-  if (cur)
+  void renderFrames(ID3_Writer& writer, const ID3_TagImpl& tag)
   {
-    size = RenderFrames(buffer, cur->pNext);
-    size += cur->pFrame->Render(&buffer[size]);
-  }
-  return size;
-}
-
-/** Renders a binary image of the tag into the supplied buffer.
- ** 
- ** See <a href="#Size">Size</a> for an example.  This method returns the
- ** actual number of the bytes of the buffer used to store the tag.  This
- ** will be no more than the size of the buffer itself, because
- ** <a href="#Size">Size</a> over estimates the required buffer size when
- ** padding is enabled.
- ** 
- ** Before calling this method, it is advisable to call <a
- ** href="#HasChanged">HasChanged</a> first as this will let you know
- ** whether you should bother rendering the tag.
- ** 
- ** @see    ID3_IsTagHeader
- ** @see    ID3_Tag#HasChanged
- ** @return The actual number of the bytes of the buffer used to store the
- **         tag
- ** @param  buffer The buffer that will contain the rendered tag.
- **/
-size_t ID3_TagImpl::RenderV2(uchar *buffer) const
-{
-  // There has to be at least one frame for there to be a tag...
-  if (this->NumFrames() == 0)
-  {
-    return 0;
-  }
-  
-  if (NULL == buffer)
-  {
-    // log this
-    return 0;
-    //ID3_THROW(ID3E_NoBuffer);
-  }
-
-  ID3_TagHeader hdr;
-  hdr.SetSpec(ID3V2_LATEST);
-  size_t hdr_size = hdr.Size();
-  size_t bytesUsed = hdr_size;
-    
-  // set up the encryption and grouping IDs
-    
-  // ...
-  size_t frame_bytes = RenderFrames(&buffer[bytesUsed], _frames);
-  if (frame_bytes == 0)
-  {
-    return 0;
-  }
-  
-  bytesUsed += frame_bytes;
-  
-  if (this->GetUnsync())
-  {
-    size_t newTagSize = ::getUnSyncSize(&buffer[hdr_size], 
-                                        bytesUsed - hdr_size);
-    if (newTagSize > 0 && (newTagSize + hdr_size) > bytesUsed)
+    for (size_t i = 0; i < tag.NumFrames(); ++i)
     {
-      uchar* tempz = new uchar[newTagSize];
-      if (NULL == tempz)
+      ID3_Frame* frm = tag.GetFrameNum(i);
+      if (frm)
       {
-        return 0;
-        //ID3_THROW(ID3E_NoMemory);
+        frm->Render(writer);
       }
-
-      ::unsync(tempz, newTagSize, &buffer[hdr_size],
-               bytesUsed - hdr_size);
-      hdr.SetUnsync(true);
-
-      memcpy(&buffer[hdr_size], tempz, newTagSize);
-      bytesUsed = newTagSize + hdr_size;
-      delete[] tempz;
     }
   }
-    
-  // zero the remainder of the buffer so that our padding bytes are zero
-  luint nPadding = PaddingSize(bytesUsed);
-
-  memset(&buffer[bytesUsed], '\0', nPadding);
-  bytesUsed += nPadding;
-    
-  hdr.SetDataSize(bytesUsed - hdr_size);
-  hdr.Render(buffer);
-  
-  return bytesUsed;
 }
 
-size_t ID3_TagImpl::Render(uchar* buffer, ID3_TagType tt) const
+void id3::v2::render(ID3_Writer& writer, const ID3_TagImpl& tag)
 {
-  size_t tag_bytes = 0;
-  if (tt & ID3TT_ID3V2)
+  // There has to be at least one frame for there to be a tag...
+  if (tag.NumFrames() == 0)
   {
-    tag_bytes = this->RenderV2(buffer);
+    ID3D_WARNING( "id3::v2::render(): no frames to render" );
+    return;
   }
-  else if (tt & ID3TT_ID3V1)
+  
+  ID3D_NOTICE( "id3::v2::render(): rendering" );
+  ID3_TagHeader hdr;
+  hdr.SetSpec(tag.GetSpec());
+  hdr.SetExtended(tag.GetExtended());
+  hdr.SetExperimental(tag.GetExperimental());
+    
+  // set up the encryption and grouping IDs
+
+  // ...
+  String frms;
+  io::StringWriter frmWriter(frms);
+  if (!tag.GetUnsync())
   {
-    tag_bytes = RenderV1(*this, buffer);
+    ID3D_NOTICE( "id3::v2::render(): rendering frames" );
+    renderFrames(frmWriter, tag);
+    hdr.SetUnsync(false);
   }
-  return tag_bytes;
+  else
+  {
+    ID3D_NOTICE( "id3::v2::render(): rendering unsynced frames" );
+    io::UnsyncedWriter uw(frmWriter);
+    renderFrames(uw, tag);
+    uw.flush();
+    ID3D_NOTICE( "id3::v2::render(): numsyncs = " << uw.getNumSyncs() );
+    hdr.SetUnsync(uw.getNumSyncs() > 0);
+  }
+  size_t frmSize = frms.size();
+  if (frmSize == 0)
+  {
+    ID3D_WARNING( "id3::v2::render(): rendered frame size is 0 bytes" );
+    return;
+  }
+  
+  // zero the remainder of the buffer so that our padding bytes are zero
+  luint nPadding = tag.PaddingSize(frmSize);
+  ID3D_NOTICE( "id3::v2::render(): padding size = " << nPadding );
+  hdr.SetDataSize(frmSize + nPadding);
+  
+  hdr.Render(writer);
+
+  writer.writeChars(frms.data(), frms.size());
+
+  for (size_t i = 0; i < nPadding; ++i)
+  {
+    if (writer.writeChar('\0') == ID3_Writer::END_OF_WRITER)
+    {
+      break;
+    }
+  }
 }
 
-  /** Returns an over estimate of the number of bytes required to store a
-   ** binary version of a tag. 
-   ** 
-   ** When using <a href="#Render">Render</a> to render a binary tag to a
-   ** memory buffer, first use the result of this call to allocate a buffer of
-   ** unsigned chars.
-   ** 
-   ** \code
-   **   luint tagSize;
-   **   uchar *buffer;
-   **   if (myTag.HasChanged())
-   **   {
-   **     if ((tagSize= myTag.Size()) > 0)
-   **     {
-   **       if (buffer = new uchar[tagSize])
-   **       {
-   **         luint actualSize = myTag.Render(buffer);
-   **         // do something useful with the first
-   **         // 'actualSize' bytes of the buffer,
-   **         // like push it down a socket
-   **         delete [] buffer;
-   **       }
-   **     }
-   **   }
-   ** \endcode
-   **
-   ** @see #Render
-   ** @return The (overestimated) number of bytes required to store a binary
-   **         version of a tag
-   **/
 size_t ID3_TagImpl::Size() const
 {
   if (!this->NumFrames())
@@ -267,31 +156,31 @@ size_t ID3_TagImpl::Size() const
   hdr.SetSpec(this->GetSpec());
   size_t bytesUsed = hdr.Size();
   
-  size_t frame_bytes = 0;
+  size_t frameBytes = 0;
   while (cur)
   {
     if (cur->pFrame)
     {
       cur->pFrame->SetSpec(this->GetSpec());
-      frame_bytes += cur->pFrame->Size();
+      frameBytes += cur->pFrame->Size();
     }
     
     cur = cur->pNext;
   }
   
-  if (!frame_bytes)
+  if (!frameBytes)
   {
     return 0;
   }
   
-  bytesUsed += frame_bytes;
+  bytesUsed += frameBytes;
   // add 30% for sync
   if (this->GetUnsync())
   {
     bytesUsed += bytesUsed / 3;
   }
     
-  bytesUsed += PaddingSize(bytesUsed);
+  bytesUsed += this->PaddingSize(bytesUsed);
   return bytesUsed;
 }
 
