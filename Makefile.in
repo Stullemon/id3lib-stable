@@ -87,9 +87,8 @@ RANLIB = @RANLIB@
 VERSION = @VERSION@
 canonical_host_type = @canonical_host_type@
 
-EXTRA_DIST = reconf configure
-SUBDIRS = doc src
-EXTRA_SUBDIRS = m4
+EXTRA_DIST = ChangeLog reconf configure
+SUBDIRS = m4 doc src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = config.h
