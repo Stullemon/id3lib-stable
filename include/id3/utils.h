@@ -1,4 +1,4 @@
-// $Id: utils.h,v 1.12 2000/10/03 02:43:37 eldamitri Exp $
+// $Id: utils.h,v 1.13 2000/10/09 01:59:02 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -63,14 +63,6 @@ namespace dami
     return (a < T(0)) ? -a : a;
   }
 
-  size_t timeToSeconds(const char*, size_t);
-  bool isCRLF(const char*, const char*);
-  size_t CRLFtoLF(char *, size_t);
-
-  void   removeTrailingSpaces(char*, size_t);
-  String removeTrailingSpaces(String);
-  
-  uint32 parseNumber(const uchar *buffer, size_t size = sizeof(uint32));
   size_t renderNumber(uchar *buffer, uint32 val, size_t size = sizeof(uint32));
   String renderNumber(uint32 val, size_t size = sizeof(uint32));
 
@@ -84,11 +76,6 @@ namespace dami
   int    ucscmp(const unicode_t *s1, const unicode_t *s2);
   int    ucsncmp(const unicode_t *s1, const unicode_t *s2, size_t len);
 
-  // these can be utility functions
-  size_t     getUnSyncSize(uchar *, size_t);
-  void       unsync(uchar *, size_t, const uchar *, size_t);
-  size_t     resync(uchar *, size_t);
-
   // file utils
   size_t getFileSize(fstream&);
   size_t getFileSize(ifstream&);
@@ -99,6 +86,6 @@ namespace dami
   ID3_Err openReadableFile(const char*, fstream&);
   ID3_Err openReadableFile(const char*, ifstream&);
 
-}
+};
   
 #endif /* _ID3LIB_UTILS_H_ */
