@@ -14,10 +14,11 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 //  
-// $Id: demo_info.cpp,v 1.7 2000/05/06 05:42:46 eldamitri Exp $
+// $Id: demo_info.cpp,v 1.8 2000/05/06 21:41:50 eldamitri Exp $
 
 #include <iostream.h>
 #include <id3/tag.h>
+#include <id3/utils.h>
 #include <id3/misc_support.h>
 #include <getopt.h>
 
@@ -237,6 +238,7 @@ void PrintInformation(const ID3_Tag &myTag)
           size_t
             nTimestamp = myFrame->Field(ID3FN_TIMESTAMPFORMAT).Get(),
             nRating = myFrame->Field(ID3FN_CONTENTTYPE).Get();
+          const char* format = (2 == nTimestamp) ? "ms" : "frames";
           cout << "(" << sDesc << ")[" << sLang << "]: ";
           switch (nRating)
           {
@@ -248,7 +250,7 @@ void PrintInformation(const ID3_Tag &myTag)
             case ID3LC_CHORD:    cout << "Chord"; break;
             case ID3LC_TRIVIA:   cout << "Trivia/'pop up' information"; break;
           }
-
+          cout << endl;
           size_t size = myFrame->Field(ID3FN_DATA).Size();
           const uchar* bin = myFrame->Field(ID3FN_DATA).GetBinary();
           const uchar* p = bin;
@@ -263,7 +265,7 @@ void PrintInformation(const ID3_Tag &myTag)
                 bytesleft = bin + size - p,
                 bytestoparse = MIN(sizeof(uint32), bytesleft);
               
-              cout << " [" << ParseNumber(p, bytestoparse) << "] ";
+              cout << " [" << ParseNumber(p, bytestoparse) << " " << format << "] ";
               p += 4;
             }
           }
