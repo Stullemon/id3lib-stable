@@ -30,6 +30,8 @@
  * macros will be made available in the library via constants, functions,
  * or static methods.
  */
+#undef HAVE_ZLIB
+#undef HAVE_POPTLIB
 #undef ID3LIB_DEBUG
 #undef _ID3LIB_NAME
 #undef _ID3LIB_DATE
@@ -85,9 +87,6 @@
 /* Define if you have the <iostream.h> header file.  */
 #undef HAVE_IOSTREAM_H
 
-/* Define if you have the <libcw/debug.h> header file.  */
-#undef HAVE_LIBCW_DEBUG_H
-
 /* Define if you have the <libcw/sys.h> header file.  */
 #undef HAVE_LIBCW_SYS_H
 
@@ -123,12 +122,6 @@
 
 /* Define if you have the <zlib.h> header file.  */
 #undef HAVE_ZLIB_H
-
-/* Define if you have the popt library (-lpopt).  */
-#undef HAVE_LIBPOPT
-
-/* Define if you have the z library (-lz).  */
-#undef HAVE_LIBZ
 
 /* Name of package */
 #undef PACKAGE
