@@ -1,4 +1,4 @@
-// $Id: header.cpp,v 1.14 2000/04/10 16:57:18 eldamitri Exp $
+// $Id: header.cpp,v 1.2 2000/04/18 22:11:53 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -134,6 +134,9 @@ ID3_Header &ID3_Header::operator=( const ID3_Header& hdr )
 }
 
 // $Log: header.cpp,v $
+// Revision 1.2  2000/04/18 22:11:53  eldamitri
+// Moved header.cpp from src/id3/ to src/
+//
 // Revision 1.14  2000/04/10 16:57:18  eldamitri
 // (Copy): removed.
 // (operator=): Updated implementation so it isn't reliant on Copy.
