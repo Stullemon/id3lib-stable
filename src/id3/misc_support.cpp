@@ -1,4 +1,4 @@
-// $Id: misc_support.cpp,v 1.21 2000/04/08 04:40:40 eldamitri Exp $
+// $Id: misc_support.cpp,v 1.22 2000/04/10 16:57:56 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,6 +24,7 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
+#include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <stdio.h>
@@ -823,6 +824,9 @@ size_t ID3_RemoveLyrics(ID3_Tag *tag)
 }
 
 // $Log: misc_support.cpp,v $
+// Revision 1.22  2000/04/10 16:57:56  eldamitri
+// Added inclusion of string.h
+//
 // Revision 1.21  2000/04/08 04:40:40  eldamitri
 // Changed new ANSI-standard C++ include headers to old-style headers.
 // (ID3_GetString): Removed variable name to prevent warning in windows.
