@@ -1,4 +1,4 @@
-// $Id: utils.cpp,v 1.4 2000/06/25 06:23:44 eldamitri Exp $
+// $Id: utils.cpp,v 1.5 2000/07/11 04:29:07 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -229,6 +229,77 @@ namespace id3
     }
   }
 
+  bool exists(const char *name)
+  {
+    ifstream file(name, ios::nocreate);
+    return file.is_open();
+  }
+  
+  ID3_Err ID3_CreateFile(const char* name, fstream& file)
+  {
+    size_t size = 0;
+    if (file.is_open())
+    {
+      file.close();
+    }
+    
+    file.open(name, ios::out | ios::binary | ios::trunc);
+    if (!file)
+    {
+      return ID3E_ReadOnly;
+    }
+    
+    return ID3E_NoError;
+  }
+  
+  size_t ID3_GetFileSize(fstream& file)
+  {
+    size_t size = 0;
+    if (file.is_open())
+    {
+      streamoff curpos = file.tellp();
+      file.seekp(0, ios::end);
+      size = file.tellp();
+      file.seekp(curpos);
+    }
+    return size;
+  }
+  
+  ID3_Err ID3_OpenWritableFile(const char* name, fstream& file)
+  {
+    if (!exists(name))
+    {
+      return ID3E_NoFile;
+    }
+    
+    if (file.is_open())
+    {
+      file.close();
+    }
+    file.open(name, ios::in | ios::out | ios::binary | ios::nocreate);
+    if (!file)
+    {
+      return ID3E_ReadOnly;
+    }
+    
+    return ID3E_NoError;
+  }
+  
+  ID3_Err ID3_OpenReadableFile(const char* name, fstream& file)
+  {
+    if (file.is_open())
+    {
+      file.close();
+    }
+    file.open(name, ios::in | ios::binary | ios::nocreate);
+    if (!file)
+    {
+      return ID3E_NoFile;
+    }
+    
+    return ID3E_NoError;
+  }
+  
 #if defined ID3_UNDEFINED
 }
 #endif /* ID3_UNDEFINED */
