@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.17 2000/06/23 03:55:40 eldamitri Exp $
+// $Id: tag_file.cpp,v 1.18 2000/07/01 07:48:28 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -248,7 +248,7 @@ size_t ID3_Tag::Link(const char *fileInfo, flags_t tag_types)
   __ending_bytes = 0;
   if (ID3E_NoError == OpenFileForReading())
   {
-    __starting_bytes = ParseFromHandle();
+    ParseFromHandle(__file_handle);
     
     CloseFile();
   }
@@ -285,7 +285,7 @@ flags_t ID3_Tag::Update(flags_t ulTagFlag)
   }
   flags_t tags = ID3TT_NONE;
 
-  if ((ulTagFlag & ID3TT_ID3V2) && HasChanged())
+  if ((ulTagFlag & ID3TT_ID3V2) && this->HasChanged())
   {
     RenderV2ToHandle();
     tags |= ID3TT_ID3V2;
@@ -297,6 +297,7 @@ flags_t ID3_Tag::Update(flags_t ulTagFlag)
     RenderV1ToHandle();
     tags |= ID3TT_ID3V1;
   }
+  __file_tags.add(tags);
   CloseFile();
   return tags;
 }
@@ -311,13 +312,8 @@ flags_t ID3_Tag::Strip(flags_t ulTagFlag)
 {
   flags_t ulTags = ID3TT_NONE;
   
-  if (!(ulTagFlag & ID3TT_ID3V1) && !(ulTagFlag & ID3TT_ID3V2))
-  {
-    return ulTags;
-  }
-
   // First remove the v2 tag, if requested
-  if (ulTagFlag & ID3TT_ID3V2 && __starting_bytes > 0)
+  if (ulTagFlag & ID3TT_PREPENDED & __file_tags.get())
   {
     OpenFileForWriting();
     __file_size -= __starting_bytes;
@@ -330,11 +326,10 @@ flags_t ID3_Tag::Strip(flags_t ulTagFlag)
     // To copy the data, we'll need to keep two "pointers" in the file: one
     // will mark where to read from next, the other will indicate where to 
     // write to. 
-    long nNextRead, nNextWrite;
-    nNextWrite = ftell(__file_handle);
+    long nNextWrite = ftell(__file_handle);
     // Set the read pointer past the tag
     fseek(__file_handle, __starting_bytes, SEEK_CUR);
-    nNextRead = ftell(__file_handle);
+    long nNextRead = ftell(__file_handle);
     
     uchar aucBuffer[BUFSIZ];
     
@@ -345,7 +340,7 @@ flags_t ID3_Tag::Strip(flags_t ulTagFlag)
     // at the end of the file (e.g the id3v1 and lyrics tag).  This isn't
     // strictly necessary, since the truncation stage will remove these,
     // but this check prevents us from copying them unnecessarily.
-    if ((__ending_bytes > 0) && (ulTagFlag & ID3TT_ID3V1))
+    if (ulTagFlag & ID3TT_APPENDED)
     {
       nBytesToCopy -= __ending_bytes;
     }
@@ -398,19 +393,19 @@ flags_t ID3_Tag::Strip(flags_t ulTagFlag)
   
   size_t nNewFileSize = __file_size;
 
-  if ((__ending_bytes > 0) && (ulTagFlag & ID3TT_ID3V1))
+  if ((__file_tags.get() & ID3TT_APPENDED) && (ulTagFlag & ID3TT_APPENDED))
   {
     // if we're stripping the ID3v1 tag, be sure to reduce the file size by
     // those bytes
     nNewFileSize -= __ending_bytes;
-    ulTags |= ID3TT_ID3V1;
+    ulTags |= __file_tags.get() & ID3TT_APPENDED;
   }
   
-  if ((ulTagFlag & ID3TT_ID3V2) && (__starting_bytes > 0))
+  if ((ulTagFlag & ID3TT_PREPENDED) && (__file_tags.get() & ID3TT_PREPENDED))
   {
     // If we're stripping the ID3v2 tag, there's no need to adjust the new
     // file size, since it doesn't account for the ID3v2 tag size
-    ulTags |= ID3TT_ID3V2;
+    ulTags |= __file_tags.get() & ID3TT_PREPENDED;
   }
   else
   {
@@ -425,9 +420,9 @@ flags_t ID3_Tag::Strip(flags_t ulTagFlag)
     ID3_THROW(ID3E_NoFile);
   }
 
-  __starting_bytes = (ulTags & ID3TT_ID3V2) ? 0 : __starting_bytes;
-  __ending_bytes -= (ulTags & ID3TT_ID3V1) ? MIN(__ending_bytes, ID3_V1_LEN) : 0;
-      
+  __starting_bytes = (ulTags & ID3TT_PREPENDED) ? 0 : __starting_bytes;
+  __ending_bytes   = (ulTags & ID3TT_APPENDED)  ? 0 : __ending_bytes;
+  
   __changed = __file_tags.remove(ulTags) || __changed;
   
   return ulTags;
