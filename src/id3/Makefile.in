@@ -10,7 +10,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-# $Id: Makefile.in,v 1.6 1999/11/30 20:08:16 scott Exp $
+# $Id: Makefile.in,v 1.7 1999/11/30 20:32:45 scott Exp $
 # 
 # Copyright (C) 1999 Scott Thomas Haug <sth2@cs.wustl.edu>
 #  
@@ -97,7 +97,7 @@ INCLUDES = -I$(srcdir)/..
 the_sources =    dll_wrapper.cpp                 error.cpp                       field.cpp                       field_binary.cpp                field_integer.cpp               field_string_ascii.cpp          field_string_unicode.cpp        frame.cpp                       frame_parse.cpp                 frame_render.cpp                header.cpp                      header_frame.cpp                header_tag.cpp                  int28.cpp                       misc_support.cpp                tag.cpp                         tag_file.cpp                    tag_find.cpp                    tag_parse.cpp                   tag_parse_lyrics3.cpp           tag_parse_v1.cpp                tag_render.cpp                  tag_sync.cpp                    version.cpp                   
 
 
-the_headers =    dll.h                           error.h                         externals.h                     field.h                         frame.h                         globals.h                       header.h                        header_frame.h                  header_tag.h                    int28.h                         misc_support.h                  tag.h                           types.h                         version.h
+the_headers =    dll.h                           error.h                         externals.h                     field.h                         frame.h                         globals.h                       header.h                        header_frame.h                  header_tag.h                    int28.h                         misc_support.h                  sized_types.h                   tag.h                           types.h                         version.h
 
 
 lib_LTLIBRARIES = libid3.la 
@@ -423,6 +423,9 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 # $Log: Makefile.in,v $
+# Revision 1.7  1999/11/30 20:32:45  scott
+# *** empty log message ***
+#
 # Revision 1.6  1999/11/30 20:08:16  scott
 # (the_headers): Added sized_headers.h
 # (the_sources): Added version.cpp

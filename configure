@@ -543,7 +543,7 @@ id3lib_patch=0
 
 id3lib_release=$id3lib_version.$id3lib_revision.$id3lib_patch
 id3lib_name=id3lib
-id3lib_date="$Date: 1999/11/30 20:02:39 $UNDEFINED"
+id3lib_date="$Date: 1999/11/30 20:32:44 $UNDEFINED"
 
 ac_aux_dir=
 for ac_dir in $srcdir $srcdir/.. $srcdir/../..; do
@@ -2905,8 +2905,16 @@ test "$no_create" = yes || $SHELL $CONFIG_STATUS || exit 1
 
 
 # $Log: configure,v $
-# Revision 1.9  1999/11/30 20:02:39  scott
-# Changed as a result of changes to Makefile.am and configure.in.
+# Revision 1.10  1999/11/30 20:32:44  scott
+# *** empty log message ***
+#
+# Revision 1.8  1999/11/30 20:01:36  scott
+# * configure.in:
+# Minor modifications.  Removed call to SH_SIZE_SPECIFIC_TYPES---these
+# types are now defined in src/id3/sized_types.h.  Removed ID3LIB_NAME
+# macro (same as PACKAGE).  Removed ID3LIB_RELEASE macro (same as
+# VERSION).  Renamed ID3LIB_IDSTRING to ID3LIB_FULLNAME and removed
+# the date part of it.
 #
 # Revision 1.7  1999/11/30 14:25:49  scott
 # Generalized versioning mechanism so it only has to be changed in this

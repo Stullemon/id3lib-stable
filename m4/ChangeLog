@@ -1,5 +1,8 @@
 1999-11-30  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
+	* Makefile.am
+ 	(m4macros): Removed sh_types.m4.
+
 	* sh_types.m4:
 	Removed.  Content now in src/id3/sized_types.h (a more appropriate
 	file).
