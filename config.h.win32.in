@@ -125,7 +125,7 @@
 #define PACKAGE "@PACKAGE@"
 
 /* Version number of package */
-#define VERSION "@VERSION@"
+#define VERSION _ID3LIB_VERSION
 
 /* This is the bottom section */
 
