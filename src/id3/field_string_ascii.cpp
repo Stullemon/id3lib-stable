@@ -1,4 +1,4 @@
-// $Id: field_string_ascii.cpp,v 1.12 1999/12/13 04:44:07 scott Exp $
+// $Id: field_string_ascii.cpp,v 1.13 1999/12/15 06:36:45 scott Exp $
 // 
 // The authors have released ID3Lib as Public Domain (PD) and claim no
 // copyright, patent or other intellectual property protection in this work.
@@ -132,9 +132,9 @@ luint ID3_Field::ParseASCIIString(const uchar *buffer, const luint posn, const l
   }
   else if (!(__ulFlags & ID3FF_NULL) || (__ulFlags & ID3FF_NULLDIVIDE))
   {
-    // Either the string is null terminated, or it is null terminated but also
-    // null divided.  In which case, we're assured this is the last field of
-    // of the frame, and we can claim the remaining bytes for ourselves
+    // If the string isn't null-terminated or if it is null divided, we're
+    // assured this is the last field of of the frame, and we can claim the
+    // remaining bytes for ourselves
     bytesUsed = buffSize - posn;
   }
   else
@@ -257,6 +257,9 @@ luint ID3_Field::RenderASCIIString(uchar *buffer)
 }
 
 // $Log: field_string_ascii.cpp,v $
+// Revision 1.13  1999/12/15 06:36:45  scott
+// (ParseASCIIString): Better comment for assigning bytesUsed.
+//
 // Revision 1.12  1999/12/13 04:44:07  scott
 // (Get): Potential memory leaks plugged (thanks MusicMatch).
 // (RenderASCIIString): Bugfix for coversion from unicode to ascii string
