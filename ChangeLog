@@ -1,5 +1,11 @@
 1999-11-30  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
+	* README:
+	Renamed ID3Lib to id3lib.
+
+	* COPYING: 
+	Renamed ID3Lib to id3lib.  Fixed spelling of "optimizations".
+
 	* configure.in: 
 	Minor modifications.  Removed call to SH_SIZE_SPECIFIC_TYPES---these
 	types are now defined in src/id3/sized_types.h.  Removed ID3LIB_NAME

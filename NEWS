@@ -5,12 +5,12 @@ Please see the HISTORY file for changes to the library before version 3.6.0.
 
 Please send id3lib bug reports to sth2@cs.wustl.edu.
 
-1999-11-23 Version 3.6.0
+1999-11-30 Version 3.6.0
 
-A year since the last release!  This version represents a major overhaul in the
-project since the previous release (see the README and HISTORY file for
+Over a year since the last release!  This version represents a major overhaul
+in the project since the previous release (see the README and HISTORY file for
 details).  Most of the changes are at the implementation and documentation
-level---the library's interface and overall functionality remain mostly
+level---the library's interface and overall functionality remain (mostly)
 unchanged.  Below is an overview of the improvements made since version 3.05a.
 
 * Code overhaul: more descriptive variable naming, streamlined implementation
@@ -18,9 +18,9 @@ unchanged.  Below is an overview of the improvements made since version 3.05a.
   strings.
 * Better documentation: transcribed the the "Documentation for ID3Lib 3.05"
   document (written by Dirk Mahoney, 22 Nov 1998) into the actual source, using
-  javadoc-like tags so as to create documentation with applications like kdoc 
-  or doc++.  Using these programs allows for creating the documentation in
-  many different formats, including html, texinfo, man, latex, and the like.
+  javadoc-like tags so as to create documentation with the application doc++. 
+  Using this program (and ones like it) allows for creating the documentation
+  in many different formats, including html, texinfo, man, latex, and the like.
 * Added functionality: Added additional functions for simplified access to
   common tags, such as artist, title, and album.
 * More robust error checking: Improved upon the exception handling already in
@@ -33,11 +33,12 @@ unchanged.  Below is an overview of the improvements made since version 3.05a.
   "./configure; make; make install" installation process, as well as an
   equally trivial method for uninstallation: "make uninstall".  Likewise,
   "make check" builds the example applications (see below).
-* Improved examples: the src/examples/ subdirectory has new and improved
-  examples demonstrating how to make use of ID3Lib.  The "id3convert" example
-  now can convert both ways between id3v1 and id3v2 tags.  Additionally, an
-  "id3strip" app (for stripping id3v1/v2 tags) has been added, as well as an 
-  "id3info" app (for displaying id3v1/v2 tag information about a file).
+* Enhanced examples: the src/examples/ subdirectory has both new and improved
+  examples demonstrating how to make use of id3lib.  The original "id3convert"
+  example now can convert both ways between id3v1 and id3v2 tags, as well as
+  strip both types of tags off of files via command-line switches.
+  Additionally, an "id3info" app has been added for displaying id3v1/v2 tag
+  information about a file.
 * Bug fixing: Fixes, fixes, and more fixes.  A continual process.
 
 There are other changes that may not be so welcome, so I ask for any comments,
@@ -53,3 +54,14 @@ suggestions, or changes that others might feel would be better.
   of id3lib needs to "#include <id3/tag.h>" rather than "#include <id3_tag.h>".
   This was done to create more structure and to avoid clutter in the include
   directory.
+* The versioning strategy has been updated to be more in line with the 
+  "libtool" way.  However, in order to be more compatible with how versions
+  progressed previously, I've taken the approach that many other libraries have
+  taken: I've "massaged" the version:revision:age numbers so that the resulting
+  compiled library shows up as id3lib.so.3.6.0 (or whatever the current release
+  is).  This is /strongly/ advised against in the libtool documentation, so I'm
+  considering going to a more "traditional" libtool versioning approach (see
+  the libtool info page for more information).
+
+There is yet much to do!  Please see the TODO file for known bugs and lacking
+features...
