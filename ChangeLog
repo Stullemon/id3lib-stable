@@ -1,3 +1,39 @@
+2002-07-03 Wednesday 00:10   Thijmen Klok <thijmen@id3lib.org>
+
+	* include/id3/field.h (1.47), include/id3/frame.h (1.42),
+	include/id3/globals.h (1.48), include/id3/helpers.h (1.9),
+	include/id3/io_decorators.h (1.5), include/id3/reader.h (1.13),
+	include/id3/utils.h (1.22), include/id3/writer.h (1.8),
+	include/id3/writers.h (1.11), include/id3.h (1.19),
+	src/c_wrapper.cpp (1.19), src/field.cpp (1.45),
+	src/field_binary.cpp (1.26), src/field_def.h (1.2),
+	src/field_integer.cpp (1.21), src/field_string_ascii.cpp (1.28),
+	src/field_string_unicode.cpp (1.32), src/frame_def.h (1.2),
+	src/frame_impl.cpp (1.9), src/frame_parse.cpp (1.33),
+	src/frame_render.cpp (1.24), src/globals.cpp (1.6), src/header.h
+	(1.2), src/header_frame.cpp (1.22), src/header_tag.cpp (1.23),
+	src/helpers.cpp (1.11), src/io_decorators.cpp (1.4),
+	src/io_helpers.cpp (1.13), src/misc_support.cpp (1.36),
+	src/readers.cpp (1.7), src/spec.h (1.2), src/tag.cpp (1.47),
+	src/tag_file.cpp (1.38), src/tag_find.cpp (1.27), src/tag_impl.cpp
+	(1.9), src/tag_impl.h (1.3), src/tag_parse.cpp (1.40),
+	src/tag_parse_lyrics3.cpp (1.31), src/tag_parse_musicmatch.cpp
+	(1.19), src/tag_parse_v1.cpp (1.22), src/tag_render.cpp (1.43): 
+	cleaned header includes 
+
+2002-07-03 Wednesday 00:04   Thijmen Klok <thijmen@id3lib.org>
+
+	* src/utils.cpp (1.26): Added safeguard for failed iconv calls 
+
+2002-07-02 Tuesday 14:22   Thijmen Klok <thijmen@id3lib.org>
+
+	* src/utils.cpp (1.25): added prevention of going to unnecesary
+	code when empty 
+
+2002-07-01 Monday 16:44   Thijmen Klok <thijmen@id3lib.org>
+
+	* ChangeLog (1.127): added last two days 
+
 2002-07-01 Monday 16:03   Thijmen Klok <thijmen@id3lib.org>
 
 	* src/utils.cpp (1.24): Fix for iconv 
@@ -134,11 +170,6 @@
 2002-06-27 Thursday 15:02   Thijmen Klok <thijmen@id3lib.org>
 
 	* examples/demo_copy.cpp (1.10): corrected a typo 
-
-2002-06-27 Thursday 14:51   Thijmen Klok <thijmen@id3lib.org>
-
-	* include/id3/strings.h (1.5): replaced by id3lib_strings.h for
-	compile on NetBSD 
 
 2002-06-27 Thursday 14:41   Thijmen Klok <thijmen@id3lib.org>
 
@@ -569,42 +600,33 @@
 
 2000-10-24 Tuesday 18:12  eldamitri
 
-	* include/id3/field_def.h (1.5), src/field_def.h (1.1),
-	include/id3/field_impl.h (1.11), src/field_impl.h (1.1),
-	include/id3/frame_def.h (1.5), src/frame_def.h (1.1),
-	include/id3/frame_impl.h (1.5), src/frame_impl.h (1.1),
-	include/id3/header.h (1.22), src/header.h (1.1),
-	include/id3/header_frame.h (1.21), src/header_frame.h (1.1),
-	include/id3/header_tag.h (1.18), src/header_tag.h (1.1),
-	include/id3/spec.h (1.6), src/spec.h (1.1), include/id3/tag_impl.h
-	(1.9), src/tag_impl.h (1.1), include/id3/debug.h (1.6), src/debug.h
-	(1.1), include/id3/flags.h (1.5), src/flags.h (1.1): Moved from
-	include/id3/ to src/ 
+	* src/: field_def.h (1.1), field_impl.h (1.1), frame_def.h (1.1),
+	frame_impl.h (1.1), header.h (1.1), header_frame.h (1.1),
+	header_tag.h (1.1), spec.h (1.1), tag_impl.h (1.1), debug.h (1.1),
+	flags.h (1.1): Moved from include/id3/ to src/ 
 
 2000-10-24 Tuesday 09:00  eldamitri
 
 	* include/id3.h (1.15), include/id3/frame.h (1.38),
-	include/id3/frame_impl.h (1.4), include/id3/tag.h (1.52),
-	include/id3/tag_impl.h (1.8), src/c_wrapper.cpp (1.16),
-	src/frame.cpp (1.32), src/frame_impl.cpp (1.8), src/frame_parse.cpp
-	(1.29), src/frame_render.cpp (1.21), src/tag.cpp (1.35),
-	src/tag_find.cpp (1.25), src/tag_impl.cpp (1.7): Added
-	ID3_Frame::Iterator and ID3_Frame::ConstIterator to traverse an
-	ID3_Frame's fields.  Dynamically created with 
-	ID3_Frame::CreateIterator(), the iterator is to be used instead of
-	ID3_Frame::NumFields() and ID3_Tag::GetFieldNum() for efficiency.  
+	include/id3/tag.h (1.52), src/c_wrapper.cpp (1.16), src/frame.cpp
+	(1.32), src/frame_impl.cpp (1.8), src/frame_parse.cpp (1.29),
+	src/frame_render.cpp (1.21), src/tag.cpp (1.35), src/tag_find.cpp
+	(1.25), src/tag_impl.cpp (1.7): Added ID3_Frame::Iterator and
+	ID3_Frame::ConstIterator to traverse an ID3_Frame's fields. 
+	Dynamically created with ID3_Frame::CreateIterator(), the iterator
+	is to be used instead of ID3_Frame::NumFields() and
+	ID3_Tag::GetFieldNum() for efficiency.  
 
 2000-10-24 Tuesday 07:55  eldamitri
 
 	* examples/demo_info.cpp (1.27), examples/demo_simple.c (1.3),
-	include/id3.h (1.14), include/id3/tag.h (1.51),
-	include/id3/tag_impl.h (1.7), src/c_wrapper.cpp (1.15),
-	src/helpers.cpp (1.7), src/misc_support.cpp (1.30), src/tag.cpp
-	(1.34), src/tag_render.cpp (1.37): Added ID3_Tag::Iterator and
-	ID3_Tag::ConstIterator to traverse an ID3_Tag's frames.  Dynamically
-	created with ID3_Tag::CreateIterator(), the iterator is to be used
-	instead of ID3_Tag::NumFrames() and ID3_Tag::GetFrameNum() for
-	efficiency.  
+	include/id3.h (1.14), include/id3/tag.h (1.51), src/c_wrapper.cpp
+	(1.15), src/helpers.cpp (1.7), src/misc_support.cpp (1.30),
+	src/tag.cpp (1.34), src/tag_render.cpp (1.37): Added
+	ID3_Tag::Iterator and ID3_Tag::ConstIterator to traverse an
+	ID3_Tag's frames.  Dynamically created with 
+	ID3_Tag::CreateIterator(), the iterator is to be used instead of
+	ID3_Tag::NumFrames() and ID3_Tag::GetFrameNum() for efficiency.  
 
 2000-10-23 Monday 10:20  eldamitri
 
@@ -638,25 +660,23 @@
 
 2000-10-23 Monday 08:15  eldamitri
 
-	* include/: dami/lyr3.h (1.1), id3/lyr3.h (1.3), dami/lyr3_impl.h
-	(1.1), id3/lyr3_impl.h (1.3), dami/v1.h (1.1), id3/v1.h (1.3),
-	dami/v1_impl.h (1.1), id3/v1_impl.h (1.3): Moved from include/id3
-	to include/dami 
+	* include/dami/: lyr3.h (1.1), lyr3_impl.h (1.1), v1.h (1.1),
+	v1_impl.h (1.1): Moved from include/id3 to include/dami 
 
 2000-10-23 Monday 08:09  eldamitri
 
-	* include/: dami/mm_impl.h (1.1), id3/mm_impl.h (1.3): Moved
-	mm_impl.h from include/id3 to include/dami 
+	* include/dami/mm_impl.h (1.1): Moved mm_impl.h from include/id3 to
+	include/dami 
 
 2000-10-23 Monday 08:09  eldamitri
 
-	* include/: dami/mm.h (1.1), id3/mm.h (1.3): Moved mm.h from
-	include/id3 to include/dami 
+	* include/dami/mm.h (1.1): Moved mm.h from include/id3 to
+	include/dami 
 
 2000-10-23 Monday 08:04  eldamitri
 
-	* include/: dami/dami.idl (1.1), id3/dami.idl (1.2): Moved dami.idl
-	from include/id3 to include/dami 
+	* include/dami/dami.idl (1.1): Moved dami.idl from include/id3 to
+	include/dami 
 
 2000-10-23 Monday 06:34  eldamitri
 
@@ -664,13 +684,10 @@
 
 2000-10-23 Monday 06:32  eldamitri
 
-	* include/id3/: debug.h (1.5), field_def.h (1.4), flags.h (1.4),
-	frame.h (1.35), frame_def.h (1.4), globals.h (1.39), header_frame.h
-	(1.20), helpers.h (1.3), lyr3.h (1.2), lyr3_impl.h (1.2),
-	misc_support.h (1.23), mm.h (1.2), mm_impl.h (1.2), reader.h (1.9),
-	readers.h (1.7), sized_types.h (1.6), spec.h (1.5), strings.h
-	(1.4), utils.h (1.17), v1.h (1.2), v1_impl.h (1.2), writer.h (1.4),
-	writers.h (1.5): Added comment to indicate the file is a C++ header 
+	* include/id3/: frame.h (1.35), globals.h (1.39), helpers.h (1.3),
+	misc_support.h (1.23), reader.h (1.9), readers.h (1.7),
+	sized_types.h (1.6), utils.h (1.17), writer.h (1.4), writers.h
+	(1.5): Added comment to indicate the file is a C++ header 
 
 2000-10-22 Sunday 00:37  eldamitri
 
@@ -791,11 +808,6 @@
 	- Added mbstoucs(String) and ucstombs(String) 
 	- All of the file util functions now take in a String for file name 
 
-2000-10-21 Saturday 09:07  eldamitri
-
-	* include/id3/tag_impl.h (1.6): (class ID3_TagImpl): file name is
-	now a String 
-
 2000-10-21 Saturday 09:06  eldamitri
 
 	* include/id3/io_helpers.h (1.3): Added new write helper functions 
@@ -803,27 +815,6 @@
 2000-10-21 Saturday 09:05  eldamitri
 
 	* include/id3/globals.h (1.38): Removed bitset code 
-
-2000-10-21 Saturday 08:19  eldamitri
-
-	* include/id3/frame_impl.h (1.3): (class ID3_FrameImpl): Use
-	std::vector and std::bitset 
-
-2000-10-21 Saturday 08:14  eldamitri
-
-	* include/id3/field_impl.h (1.10): (class ID3_FieldImpl): 
-	- Changed function names GetText()             GetRawText() 
-	GetTextItem()         GetRawTextItem() GetUnicodeText()     
-	GetRawUnicodeText() GetUnicodeTextItem()  GetRawUnicodeTextItem() 
-	GetBinary()           GetRawBinary() 
-	- Added new methods that accept or return dami::String's GetText()  
-	SetText() GetTextItem()         AddText() GetBinary()          
-	SetBinary() 
-
-2000-10-21 Saturday 05:51  eldamitri
-
-	* include/id3/field_def.h (1.3): (struct ID3_FieldDef): Changed
-	name of _fixed_length to _fixed_size 
 
 2000-10-21 Saturday 05:50  eldamitri
 
@@ -838,6 +829,12 @@
 	* src/tag_render.cpp (1.36): 
 	(Size): Now use iterators to access the frames in the tag rather
 	than a pointer	to an ID3_Elem 
+
+2000-10-16 Monday 10:57  eldamitri
+
+	* src/tag_impl.cpp (1.5): Now use a std::list, instead of ID3_Elem,
+	to store the frames Find methods now accept dame::String and
+	dami::WString rather than const char* and const unicode_t* 
 
 2000-10-16 Monday 10:55  eldamitri
 
@@ -855,25 +852,10 @@
 	* include/id3/utils.h (1.15), src/utils.cpp (1.12): Added method
 	toWString(const unicode_t[], size_t) 
 
-2000-10-16 Monday 10:45  eldamitri
-
-	* include/id3/tag_impl.h (1.5), src/tag_impl.cpp (1.5): Now use a
-	std::list, instead of ID3_Elem, to store the frames Find methods now
-	accept dame::String and dami::WString rather than const char* and
-	const unicode_t* 
-
-2000-10-16 Monday 10:43  eldamitri
-
-	* include/id3/header.h (1.21): Minor bugfix 
-
 2000-10-16 Monday 10:42  eldamitri
 
 	* examples/: findeng.cpp (1.3), findstr.cpp (1.3): Enabled
 	debugging output, minor bugfixes 
-
-2000-10-16 Monday 09:01  eldamitri
-
-	* include/id3/spec.h (1.4): Removed interface ID3_Speccable 
 
 2000-10-16 Monday 09:00  eldamitri
 
@@ -882,18 +864,8 @@
 
 2000-10-16 Monday 08:59  eldamitri
 
-	* include/id3/tag_impl.h (1.4): class ID3_TagImpl no longer
-	inherits from ID3_Speccable 
-
-2000-10-16 Monday 08:59  eldamitri
-
 	* include/id3/tag.h (1.48): class ID3_Tag no longer inherits from
 	ID3_Speccable 
-
-2000-10-16 Monday 08:58  eldamitri
-
-	* include/id3/header.h (1.20): class ID3_Header no longer inherits
-	from ID3_Speccable 
 
 2000-10-16 Monday 08:58  eldamitri
 
@@ -965,12 +937,10 @@
 2000-10-15 Sunday 08:39  eldamitri
 
 	* examples/demo_info.cpp (1.24), examples/getopt.c (1.2),
-	include/id3/field_impl.h (1.9), include/id3/frame_def.h (1.3),
-	include/id3/header_frame.h (1.19), include/id3/reader.h (1.8),
-	include/id3/readers.h (1.6), include/id3/writer.h (1.3),
-	include/id3/writers.h (1.4), libprj/id3lib.dsp (1.11),
-	libprj/id3lib.dsw (1.6), prj/id3lib.dsp (1.12), src/field.cpp
-	(1.36), src/field_string_ascii.cpp (1.23),
+	include/id3/reader.h (1.8), include/id3/readers.h (1.6),
+	include/id3/writer.h (1.3), include/id3/writers.h (1.4),
+	libprj/id3lib.dsp (1.11), libprj/id3lib.dsw (1.6), prj/id3lib.dsp
+	(1.12), src/field.cpp (1.36), src/field_string_ascii.cpp (1.23),
 	src/field_string_unicode.cpp (1.27), src/frame.cpp (1.30),
 	src/frame_impl.cpp (1.5), src/io_helpers.cpp (1.3), src/readers.cpp
 	(1.3), src/tag_find.cpp (1.21), src/tag_parse.cpp (1.35),
@@ -1005,8 +975,8 @@
 
 2000-10-14 Saturday 23:26  eldamitri
 
-	* include/id3/uint28.h (1.9), src/uint28.cpp (1.11): Removed; now
-	use functions readUInt28 and writeUInt28 
+	* src/uint28.cpp (1.11): Removed; now use functions readUInt28 and
+	writeUInt28 
 
 2000-10-14 Saturday 23:23  eldamitri
 
@@ -1018,8 +988,8 @@
 
 2000-10-14 Saturday 22:50  eldamitri
 
-	* include/id3/error.h (1.15), src/error.cpp (1.11): Removed; id3lib
-	no longer uses exception handling 
+	* src/error.cpp (1.11): Removed; id3lib no longer uses exception
+	handling 
 
 2000-10-14 Saturday 22:46  eldamitri
 
@@ -1027,8 +997,7 @@
 	examples/demo_info.cpp (1.23), examples/demo_tag.cpp (1.12),
 	examples/get_pic.cpp (1.5), examples/test_compression.cpp (1.6),
 	examples/test_pic.cpp (1.7), examples/test_remove.cpp (1.8),
-	examples/test_unicode.cpp (1.5), include/id3/debug.h (1.4),
-	include/id3/field_impl.h (1.8), include/id3/globals.h (1.36),
+	examples/test_unicode.cpp (1.5), include/id3/globals.h (1.36),
 	src/c_wrapper.cpp (1.13, rel-3-7-8), src/header_frame.cpp (1.19),
 	src/misc_support.cpp (1.26): Removed references to error.h and
 	ID3_Error, as id3lib no longer uses exception handling 
@@ -1048,11 +1017,6 @@
 
 	* id3lib.spec.in (1.22): Removed explicit architecture detection,
 	since we no longer need to build with exceptions 
-
-2000-10-14 Saturday 22:03  eldamitri
-
-	* include/id3/: readers_compressed.h (1.4), writers_compressed.h
-	(1.3): No longer needed.  Moved to io_decorators.h 
 
 2000-10-14 Saturday 21:24  eldamitri
 
@@ -1088,10 +1052,6 @@
 	* include/id3/reader.h (1.7): Renamed remainingChars to
 	remainingBytes, minor code changes 
 
-2000-10-14 Saturday 21:03  eldamitri
-
-	* include/id3/strings.h (1.3): BString is "unsigned char" again 
-
 2000-10-14 Saturday 20:58  eldamitri
 
 	* include/id3/globals.h (1.35): Removed MAX, MIN, ABS, and CLAMP
@@ -1118,10 +1078,8 @@
 
 2000-10-14 Saturday 20:15  eldamitri
 
-	* include/id3/reader_decorators.h (1.8),
-	include/id3/writer_decorators.h (1.3), src/reader_decorators.cpp
-	(1.2): No longer needed.  Replaced by io_helpers, io_decorators,
-	and io_strings 
+	* src/reader_decorators.cpp (1.2): No longer needed.  Replaced by
+	io_helpers, io_decorators, and io_strings 
 
 2000-10-13 Friday 20:29  eldamitri
 
@@ -1148,15 +1106,6 @@
 
 	* src/header_frame.cpp (1.17): 
 	(Parse): More debugging output, minor bugfix 
-
-2000-10-13 Friday 20:19  eldamitri
-
-	* include/id3/reader_decorators.h (1.7): (class
-	BinaryNumberReader): Fixed bug with masking 
-
-2000-10-13 Friday 20:17  eldamitri
-
-	* include/id3/debug.h (1.3): Removed debugging output 
 
 2000-10-13 Friday 20:12  eldamitri
 
@@ -1218,21 +1167,14 @@
 
 2000-10-13 Friday 00:29  eldamitri
 
-	* include/id3/: reader.h (1.6), reader_decorators.h (1.6),
-	readers.h (1.5), readers_compressed.h (1.3), writer_decorators.h
-	(1.2), writers.h (1.2), writers_compressed.h (1.2): Minor code
-	changes, fixed ansi-compliance problems that gave compiler warnings 
-
-2000-10-13 Friday 00:29  eldamitri
-
-	* include/id3/tag_impl.h (1.3): (class ID3_TagImpl): method
-	SetChanged(bool) is now void 
+	* include/id3/: reader.h (1.6), readers.h (1.5), writers.h (1.2): 
+	Minor code changes, fixed ansi-compliance problems that gave
+	compiler warnings 
 
 2000-10-13 Friday 00:28  eldamitri
 
-	* include/id3/: field.h (1.40), field_impl.h (1.7): (class
-	ID3_Field): Added methods GetTextItem(size_t) and 
-	GetUnicodeTextItem(index_t) 
+	* include/id3/field.h (1.40): (class ID3_Field): Added methods
+	GetTextItem(size_t) and GetUnicodeTextItem(index_t) 
 
 2000-10-12 Thursday 10:15  eldamitri
 
@@ -1552,41 +1494,6 @@
 	- void   unsync(uchar *, size_t, const uchar *, size_t); 
 	- size_t resync(uchar *, size_t); 
 
-2000-10-09 Monday 03:57  eldamitri
-
-	* include/id3/uint28.h (1.8): 
-	- Added forward declarations for ID3_Reader, ID3_Writer (class
-	
-	uint28): 
-	- Removed constructor uint28(const uchar*) 
-	- Removed methods operator=(const uchar*), operator=(const char*), 
-	Parse(const uchar*), Parse(const char*), Render(uchar*) and 
-	Render(char*) 
-	- Added methods Parse(ID3_Reader&) and Render(ID3_Writer&) 
-
-2000-10-09 Monday 03:56  eldamitri
-
-	* include/id3/tag_impl.h (1.2): 
-	- Added inclusion of file error.h 
-	- Added forward decl for ID3_Writer 
-	- Removed definition of constant STR_V1_COMMENT_DESC (moved to 
-	globals.h) 
-	- Added declarations for the following functions in namespace
-	
-	'dami': 
-	- id3::v1::parse(ID3_TagImpl&, ID3_Reader&) 
-	- id3::v1::render(ID3_Writer&, ID3_TagImpl&) 
-	- id3::v2::parse(ID3_TagImpl&, ID3_Reader&) 
-	- id3::v2::render(ID3_Writer&, ID3_TagImpl&) 
-	- lyr3::v1::parse(ID3_TagImpl&, ID3_Reader&) 
-	- lyr3::v2::parse(ID3_TagImpl&, ID3_Reader&) 
-	- mm::parse(ID3_TagImpl&, ID3_Reader&) (class ID3_TagImpl): 
-	- Added methods SetChanged(bool), GetUnsync(), GetExtendedHeader(), 
-	GetExperimental() 
-	- Removed methods Parse(ID3_Reader&), Parse(const uchar*, size_t), 
-	Parse(const ucharp[, const uchar*) 
-	- Made PaddingSize(size_t) public 
-
 2000-10-09 Monday 03:56  eldamitri
 
 	* include/id3/tag.h (1.47): 
@@ -1596,35 +1503,11 @@
 
 2000-10-09 Monday 03:56  eldamitri
 
-	* include/id3/readers_compressed.h (1.2): (class
-	CompressedMemoryReader): Removed (class CompressedStreamReader): 
-	- Renamed from CompressedMemoryReader 
-	- Replaced types streamsize and streamoff with size_type and 
-	pos_type, respectively 
-	- Replaced type char with char_type 
-
-2000-10-09 Monday 03:56  eldamitri
-
 	* include/id3/readers.h (1.4): 
 	- Replaced types streamsize and streamoff with size_type and 
 	pos_type, respectively 
 	- Replaced type char with char_type (class ID3_MemoryReader): Added
 	constructor for signed chars 
-
-2000-10-09 Monday 03:55  eldamitri
-
-	* include/id3/reader_decorators.h (1.5): 
-	- Replaced types streamsize and streamoff with size_type and 
-	pos_type, respectively 
-	- Added more debugging output 
-	- Removed references to 'dami' namespace (class WindowedReader):
-	Added method atEnd() (class TrailingSpacesReader): Added (class
-	
-	BinaryNumberReader): 
-	- Renamed from NumberReader 
-	- Replaced call to function parseNumber with new code (class
-	BinaryReader): renamed method getBinary() to readBinary() (class
-	StringReader): Added 
 
 2000-10-09 Monday 03:55  eldamitri
 
@@ -1638,38 +1521,9 @@
 	* include/id3/helpers.h (1.2): Added function getV1Comment(const
 	ID3_TagImpl&) 
 
-2000-10-09 Monday 03:55  eldamitri
-
-	* include/id3/header_tag.h (1.17): (class ID3_FrameRender): 
-	- Replaced method Render(uchar*) with method Render(ID3_Writer&) 
-	- Added methods SetExperimental(bool), GetExperimental() 
-
-2000-10-09 Monday 03:54  eldamitri
-
-	* include/id3/header_frame.h (1.18): (class ID3_FrameHeader):
-	Replaced method Render(uchar*) with method Render(ID3_Writer&) 
-
-2000-10-09 Monday 03:54  eldamitri
-
-	* include/id3/header.h (1.19): 
-	- Removed include of file 'reader.h' (not needed) 
-	- Added forward declaration for ID3_Writer 
-	- Removed methods Render(uchar*) and Parse(const uchar*, size_t) 
-	- Added method Render(ID3_Writer&) 
-
 2000-10-09 Monday 03:54  eldamitri
 
 	* include/id3/globals.h (1.34): Added macro STR_V1_COMMENT_DESC 
-
-2000-10-09 Monday 03:53  eldamitri
-
-	* include/id3/frame_impl.h (1.2): (class ID3_FrameImpl): 
-	- Renamed method GetNumFields() to NumFields() to be consistent with 
-	ID3_Tag 
-	- Renamed method GetFieldAt() to GetFieldNum() to be consistent with 
-	ID3_Tag 
-	- Replaced method Render(uchar*) with method Render(ID3_Writer&) 
-	- Removed deprecated method Field(ID3_FieldID) 
 
 2000-10-09 Monday 03:53  eldamitri
 
@@ -1680,14 +1534,6 @@
 	- Renamed method GetFieldAt() to GetFieldNum() to be consistent with 
 	ID3_Tag 
 	- Replaced method Render(uchar*) with metod Render(ID3_Writer&) 
-
-2000-10-08 Sunday 23:36  eldamitri
-
-	* include/id3/field_impl.h (1.6): (class ID3_FieldImpl): 
-	- Removed methods Render(uchar*) and Parse(const uchar*, size_t) 
-	- Added method Render(ID3_Writer&) 
-	- Replaced methods renderInteger(uchar*), RenderString(uchar*), and 
-	RenderBinary(uchar*) with ID3_Writer equivalents 
 
 2000-10-08 Sunday 23:31  eldamitri
 
@@ -1766,8 +1612,7 @@
 
 	* src/reader_decorators.cpp (1.1), src/writer_decorators.cpp (1.1),
 	src/writers.cpp (1.1), include/id3/writer.h (1.1),
-	include/id3/writer_decorators.h (1.1), include/id3/writers.h (1.1),
-	include/id3/writers_compressed.h (1.1): Initial release.  
+	include/id3/writers.h (1.1): Initial release.  
 
 2000-10-08 Sunday 22:32  eldamitri
 
@@ -1849,12 +1694,6 @@
 	Implementation details are hidden behind the lone member variable,
 	which is a pointer to the class ID3_TagImpl.  
 
-2000-10-03 Tuesday 03:57  eldamitri
-
-	* include/id3/strings.h (1.2): Moved from namespace id3:: to
-	namespace dami::.  Renamed from 'string' to 'String', 'bstring' to
-	'BString', and 'wstring' to 'WString' 
-
 2000-10-03 Tuesday 03:21  eldamitri
 
 	* include/id3/readers.h (1.3): Moved Readers out of namespace id3. 
@@ -1863,21 +1702,10 @@
 	as with other classes.  Moved class CompressedMemoryReader and
 	CompressedStreamReader into readers_compressed.h.  
 
-2000-10-03 Tuesday 03:18  eldamitri
-
-	* include/id3/reader_decorators.h (1.4): Restructured namespaces. 
-	All Reader classes are now in namespace dami::io.  method
-	readChars() in IdentityReader now supports signed and unsigned chars 
-
 2000-10-03 Tuesday 02:53  eldamitri
 
 	* include/id3/reader.h (1.4): 
 	- method readChars() now supports signed and unsigned chars 
-
-2000-10-03 Tuesday 02:45  eldamitri
-
-	* include/id3/field_impl.h (1.5): (class ID3_FieldImpl): Added a
-	new char* Set method for binary data 
 
 2000-10-03 Tuesday 02:36  eldamitri
 
@@ -1895,10 +1723,6 @@
 2000-10-02 Monday 19:03  eldamitri
 
 	* include/id3/helpers.h (1.1), src/helpers.cpp (1.1),
-	include/id3/lyr3.h (1.1), include/id3/lyr3_impl.h (1.1),
-	include/id3/mm.h (1.1), include/id3/mm_impl.h (1.1),
-	include/id3/readers_compressed.h (1.1), include/id3/tag_impl.h
-	(1.1), include/id3/v1.h (1.1), include/id3/v1_impl.h (1.1),
 	src/readers.cpp (1.1), src/tag_impl.cpp (1.1): Initial release 
 
 2000-10-02 Monday 19:01  eldamitri
@@ -1906,6 +1730,10 @@
 	* examples/: demo_convert.cpp (1.9, rel-3-7-9), demo_copy.cpp
 	(1.3), demo_tag.cpp (1.8): Added include for error.h (should be
 	removed soon).  
+
+2000-10-01 Sunday 02:23  eldamitri
+
+	* src/frame_impl.cpp (1.1): Initial release 
 
 2000-10-01 Sunday 02:05  eldamitri
 
@@ -1916,11 +1744,6 @@
 
 	* include/id3/tag.h (1.45), src/misc_support.cpp (1.22),
 	src/tag_find.cpp (1.18): Added field.h to list of included files 
-
-2000-10-01 Sunday 02:03  eldamitri
-
-	* include/id3/frame_impl.h (1.1), src/frame_impl.cpp (1.1): Initial
-	release 
 
 2000-10-01 Sunday 02:03  eldamitri
 
@@ -1935,11 +1758,6 @@
 	stack-based frame objects, but this is pretty close.  
 	- Added methods SetEncryptionID(uchar), GetEncryptionID(), 
 	SetGroupingID(uchar), and GetGroupingID() 
-
-2000-10-01 Sunday 02:02  eldamitri
-
-	* include/id3/field_impl.h (1.4): (class ID3_FieldImpl): Changed
-	'friendship' to ID3_FrameImpl 
 
 2000-10-01 Sunday 02:01  eldamitri
 
@@ -2053,25 +1871,10 @@
 	- Deprecated method Field(ID3_FieldNum) 
 	- Removed mehtod BadParse() 
 
-2000-10-01 Sunday 00:07  eldamitri
-
-	* include/id3/reader_decorators.h (1.3): (class IdentityReader):
-	Cleaned up implementation (class ExitTrigger): Added (class
-	WindowedReader): new constructors to make using it simpler (class
-	CharReader): Added (class UnsyncReader): Now inherits from
-	CharReader (class LineFeedReader): Added 
-
 2000-10-01 Sunday 00:06  eldamitri
 
-	* include/id3/: header.h (1.18), header_frame.h (1.17),
-	header_tag.h (1.16): 
-	- method Parse(ID3_Reader&) now returns bool 
-	- method Parse(const uchar*, size_t) removed 
-
-2000-10-01 Sunday 00:06  eldamitri
-
-	* include/id3/: field.h (1.38), field_impl.h (1.3): 
-	Parse(ID3_Reader&) method(s) now return bool 
+	* include/id3/field.h (1.38): Parse(ID3_Reader&) method(s) now
+	return bool 
 
 2000-09-27 Wednesday 11:08  eldamitri
 
@@ -2132,23 +1935,6 @@
 	first letter 
 	- Added templated versions of functions min, max, and abs 
 
-2000-09-27 Wednesday 10:10  eldamitri
-
-	* include/id3/reader_decorators.h (1.2): 
-	- Removed definition of min (now defined in utils.h) 
-	- Added new debugging output via ID3_NOTICE and ID3_WARNING (class
-	IdentityReader): Cleaned-up implementation of IdentityReader to
-	match new ID3_Reader interface (class WindowedReader): 
-	- Cleaned-up implementation of inWindow, constructor, setWindow,
-	setBeg, setEnd 
-	- Removed seekBeg and seekEnd 
-	- Added implementation of remainingChars (class UnsyncedReader): 
-	- Added new debugging output via ID3_NOTICE and ID3_WARNING 
-	- Added implementation of skipChars 
-	- Implementation of readChars can accept a NULL buffer 
-	- Added implementation of remainingChars (class NumberReader, class
-	TextReader, class BinaryReader): added 
-
 2000-09-27 Wednesday 10:02  eldamitri
 
 	* include/id3/reader.h (1.2): 
@@ -2160,23 +1946,10 @@
 	- Replaced seek() with setCur() 
 	- skipChars() now returns a streamsize value 
 
-2000-09-27 Wednesday 09:56  eldamitri
-
-	* include/id3/header.h (1.17): Added forward declaration of
-	ID3_Reader 
-
-2000-09-27 Wednesday 09:53  eldamitri
-
-	* include/id3/field_impl.h (1.2): 
-	- Added new Parse method that accepts an ID3_Reader& 
-	- Replaced all protected Parse* methods that accept const uchar*
-	string with ones that accept ID3_Reader& 
-
 2000-09-27 Wednesday 09:51  eldamitri
 
-	* include/id3/: field.h (1.37), frame.h (1.30), header_frame.h
-	(1.16), header_tag.h (1.15), tag.h (1.43): Added new Parse method
-	that accepts an ID3_Reader& 
+	* include/id3/: field.h (1.37), frame.h (1.30), tag.h (1.43): Added
+	new Parse method that accepts an ID3_Reader& 
 
 2000-09-27 Wednesday 09:47  eldamitri
 
@@ -2246,14 +2019,12 @@
 
 2000-09-27 Wednesday 06:19  eldamitri
 
-	* examples/test_reader.cpp (1.1), include/id3/debug.h (1.2),
-	include/id3/readers.h (1.1), include/id3/strings.h (1.1): Initial
-	release 
+	* examples/test_reader.cpp (1.1), include/id3/readers.h (1.1): 
+	Initial release 
 
 2000-09-27 Wednesday 05:32  eldamitri
 
-	* include/id3/int28.h (1.11), src/int28.cpp (1.5): No long used
-	(replaced by uint28) 
+	* src/int28.cpp (1.5): No long used (replaced by uint28) 
 
 2000-09-27 Wednesday 05:26  eldamitri
 
@@ -2261,16 +2032,11 @@
 
 2000-09-22 Friday 06:40  eldamitri
 
-	* include/id3/: reader.h (1.1), reader_decorators.h (1.1), dami.idl
-	(1.1): Initial release 
+	* include/id3/reader.h (1.1): Initial release 
 
 2000-09-22 Friday 01:45  eldamitri
 
 	* doc/index.html.in (1.9): Added empeg to list of projects 
-
-2000-09-22 Friday 01:41  eldamitri
-
-	* include/id3/field_def.h (1.2): Minor fix for typo 
 
 2000-09-22 Friday 01:37  eldamitri
 
@@ -2306,21 +2072,6 @@
 
 	* include/id3/tag.h (1.42): Added inclusion of error.h for
 	convenience 
-
-2000-09-22 Friday 00:21  eldamitri
-
-	* include/id3/header_frame.h (1.15): Added a forward declaration
-	for FrameDef, since it was removed from field.h.  
-
-2000-09-22 Friday 00:10  eldamitri
-
-	* include/id3/header.h (1.16): (class ID3_Header): Bug fix in
-	initializing the constructor 
-
-2000-09-22 Friday 00:03  eldamitri
-
-	* include/id3/: field_def.h (1.1), field_impl.h (1.1), frame_def.h
-	(1.2): Initial release.  
 
 2000-09-21 Thursday 23:28  eldamitri
 
@@ -2503,16 +2254,11 @@
 
 2000-09-11 Monday 09:46  eldamitri
 
-	* include/id3.h (1.12, rel-3-7-13), include/id3/error.h (1.14,
-	rel-3-7-13), include/id3/field.h (1.32, rel-3-7-13),
-	include/id3/flags.h (1.3, rel-3-7-13), include/id3/frame.h (1.29,
-	rel-3-7-13), include/id3/globals.h (1.33, rel-3-7-13),
-	include/id3/header.h (1.15, rel-3-7-13), include/id3/header_frame.h
-	(1.14, rel-3-7-13), include/id3/header_tag.h (1.14, rel-3-7-13),
-	include/id3/int28.h (1.10, rel-3-7-13), include/id3/misc_support.h
-	(1.21), include/id3/sized_types.h (1.5, rel-3-7-13),
-	include/id3/spec.h (1.3, rel-3-7-13), include/id3/tag.h (1.41,
-	rel-3-7-13), include/id3/uint28.h (1.7, rel-3-7-13),
+	* include/id3.h (1.12, rel-3-7-13), include/id3/field.h (1.32,
+	rel-3-7-13), include/id3/frame.h (1.29, rel-3-7-13),
+	include/id3/globals.h (1.33, rel-3-7-13),
+	include/id3/misc_support.h (1.21), include/id3/sized_types.h (1.5,
+	rel-3-7-13), include/id3/tag.h (1.41, rel-3-7-13),
 	include/id3/utils.h (1.9, rel-3-7-13), src/error.cpp (1.10,
 	rel-3-7-13), src/field.cpp (1.27), src/field_binary.cpp (1.13),
 	src/field_integer.cpp (1.10), src/field_string_ascii.cpp (1.14),
@@ -2607,9 +2353,9 @@
 
 2000-08-28 Monday 15:41  eldamitri
 
-	* include/id3/field.h (1.31), include/id3/uint28.h (1.6),
-	src/tag_parse_musicmatch.cpp (1.5), src/uint28.cpp (1.6): 
-	Portability fixes for the Mac (thanks John Firebaugh) 
+	* include/id3/field.h (1.31), src/tag_parse_musicmatch.cpp (1.5),
+	src/uint28.cpp (1.6): Portability fixes for the Mac (thanks John
+	Firebaugh) 
 
 2000-08-28 Monday 06:27  eldamitri
 
@@ -3309,13 +3055,6 @@
 	(ID3_Error): Use strdup rather than strlen + new + strncpy 
 	(~ID3_Error): Use array delete to free memory 
 
-2000-06-22 Thursday 23:02  eldamitri
-
-	* include/id3/error.h (1.13, rel-3-7-8, rel-3-7-12, rel-3-7-11,
-	rel-3-7-10): (class ID3_Error): 
-	- All methods return char strings now return const char strings 
-	- Added default constructor 
-
 2000-06-22 Thursday 22:20  eldamitri
 
 	* src/tag_parse_lyrics3.cpp (1.13): 
@@ -3336,17 +3075,11 @@
 	* src/frame.cpp (1.22, rel-3-7-12, rel-3-7-11, rel-3-7-10): 
 	(ID3_Frame): Initialize spec in construcotr.  
 
-2000-06-22 Thursday 22:09  eldamitri
-
-	* include/id3/header.h (1.14, rel-3-7-12, rel-3-7-11, rel-3-7-10): 
-	(class ID3_Header): Initialized spec in constructor.  
-
 2000-06-22 Thursday 21:31  adcockj
 
-	* src/error.cpp (1.7), src/uint28.cpp (1.5, rel-3-7-12, rel-3-7-11,
-	rel-3-7-10), include/id3/error.h (1.12), include/id3/uint28.h (1.5,
-	rel-3-7-12, rel-3-7-11, rel-3-7-10): Fixed ID3_Error memory Leak
-	and windows compiler incompatibilty with uint28 
+	* src/: error.cpp (1.7), uint28.cpp (1.5, rel-3-7-12, rel-3-7-11,
+	rel-3-7-10): Fixed ID3_Error memory Leak and windows compiler
+	incompatibilty with uint28 
 
 2000-06-21 Wednesday 05:30  eldamitri
 
@@ -3401,20 +3134,6 @@
 	rel-3-7-10): 
 	(ID3FD_Unimplemented): Added { ID3FN_NOFIELD } entry to mark the end 
 	(ID3_FindFrameDef): Removed const qualifer from parameter 
-
-2000-06-14 Wednesday 18:24  eldamitri
-
-	* include/id3/uint28.h (1.4): (class uint28): 
-	- Added new documentation 
-	- Made constructors 'explicit' 
-	- Defined new class constants BITSUSED, MINVAL, and MAXVAL 
-	- New implementation for default constructor 
-	- Destructor is now virtual 
-	- Assigning a uint32 that is greater than the largest possible value 
-	maximizes the internal value, rather than masking it 
-	- Implementation of operator=(const char*) moved to Parse(const char
-	*) 
-	- Render now returns number of characters rendered 
 
 2000-06-14 Wednesday 18:14  eldamitri
 
@@ -3771,12 +3490,6 @@
 	(BinSize): Fixed bug that was reporting the wrong binary size for 
 	unicode strings 
 
-2000-05-29 Monday 03:57  eldamitri
-
-	* include/id3/header_frame.h (1.13, rel-3-7-12, rel-3-7-11,
-	rel-3-7-10, rel-3-7-9): (class ID3_FrameHeader): Minor code
-	reformatting 
-
 2000-05-29 Monday 01:26  eldamitri
 
 	* src/tag_sync.cpp (1.6, rel-3-7-13, rel-3-7-12, rel-3-7-11,
@@ -3972,14 +3685,6 @@
 	* include/id3/globals.h (1.24): Made inclusion of iostream.h
 	dependant on a c++ compiler 
 
-2000-05-23 Tuesday 17:29  eldamitri
-
-	* include/id3/header_frame.h (1.12): (class ID3_FrameHeader):
-	Removed methods GetExtrasSize(), SetExpandedSize(), GetExpandedSize,
-	SetEncryptionID(), GetEncryptionID(), SetGroupingID,
-	GetGroupingID(), since it was determined that these issues lie
-	outside the domain of the frame header.  
-
 2000-05-23 Tuesday 17:27  eldamitri
 
 	* src/frame.cpp (1.15): Updated to reflect changes in
@@ -4135,29 +3840,16 @@
 	src/field_integer.cpp (1.8, rel-3-7-9), src/field_string_ascii.cpp
 	(1.11), src/field_string_unicode.cpp (1.11), src/frame.cpp (1.14),
 	src/frame_parse.cpp (1.13), src/misc_support.cpp (1.11),
-	src/utils.cpp (1.3, rel-3-7-10, rel-3-7-9), include/id3/error.h
-	(1.11, rel-3-7-7, rel-3-7-9), include/id3/frame.h (1.24),
-	include/id3/globals.h (1.23), include/id3/header.h (1.13,
-	rel-3-7-9), include/id3/misc_support.h (1.18, rel-3-7-9),
-	include/id3/utils.h (1.6, rel-3-7-10, rel-3-7-9): Updated luint
-	parameter, return type with more descriptive type name (either
-	size_t, index_t, or flags_t) 
-
-2000-05-12 Friday 06:31  eldamitri
-
-	* include/id3/flags.h (1.2, rel-3-7-12, rel-3-7-11, rel-3-7-10,
-	rel-3-7-9): (class ID3_Flags): Changed TYPE to flags_t 
+	src/utils.cpp (1.3, rel-3-7-10, rel-3-7-9), include/id3/frame.h
+	(1.24), include/id3/globals.h (1.23), include/id3/misc_support.h
+	(1.18, rel-3-7-9), include/id3/utils.h (1.6, rel-3-7-10,
+	rel-3-7-9): Updated luint parameter, return type with more
+	descriptive type name (either size_t, index_t, or flags_t) 
 
 2000-05-12 Friday 06:25  eldamitri
 
 	* include/id3/globals.h (1.22): Added typedefs for index_t (size_t)
 	and flags_t (uint16) 
-
-2000-05-12 Friday 06:24  eldamitri
-
-	* include/id3/header_tag.h (1.13, rel-3-7-12, rel-3-7-11,
-	rel-3-7-10, rel-3-7-9): (class ID3_TagHeader): Added SetExtended(),
-	GetExtended() 
 
 2000-05-12 Friday 06:24  eldamitri
 
@@ -4468,19 +4160,6 @@
 	indicate if the frame has changed; added BadParse() and 
 	GetDataSize() methods, added __bad_parse member variable 
 
-2000-05-09 Tuesday 15:38  eldamitri
-
-	* include/id3/header_frame.h (1.11, rel-3-7-8, rel-3-7-7): (class
-	ID3_FrameHeader): Added GetExtrasSize(), SetExpandedSize(), 
-	GetExpandedSize(), SetEncryptionID(), GetEncryptionID(), 
-	SetGroupingID(), and GetGroupingID() methods, as well as 
-	__encryption_id, __grouping_id, and __expanded_size member variables 
-
-2000-05-09 Tuesday 15:36  eldamitri
-
-	* include/id3/header_tag.h (1.12, rel-3-7-8, rel-3-7-7): (class
-	ID3_TagHeader): Added GetUnsync() method 
-
 2000-05-09 Tuesday 15:35  eldamitri
 
 	* include/id3/tag.h (1.29): (class ID3_Tag): Added ParseFrames()
@@ -4574,9 +4253,8 @@
 
 2000-05-08 Monday 06:07  eldamitri
 
-	* include/id3/error.h (1.10, rel-3-7-8, rel-3-7-7),
-	include/id3/field.h (1.22, rel-3-7-10), include/id3/frame.h (1.22),
-	include/id3/tag.h (1.28), src/field.cpp (1.15),
+	* include/id3/field.h (1.22, rel-3-7-10), include/id3/frame.h
+	(1.22), include/id3/tag.h (1.28), src/field.cpp (1.15),
 	src/field_binary.cpp (1.7), src/field_string_unicode.cpp (1.7),
 	src/frame_parse.cpp (1.7), src/tag.cpp (1.15, rel-3-7-8,
 	rel-3-7-7), src/tag_find.cpp (1.10, rel-3-7-8, rel-3-7-7),
@@ -4844,23 +4522,6 @@
 
 2000-05-04 Thursday 01:23  eldamitri
 
-	* include/id3/uint28.h (1.3, rel-3-7-9, rel-3-7-8, rel-3-7-7): 
-	Replaced #include iostream with #include iostream.h.  Removed
-	#include algorithm (not needed) 
-
-2000-05-04 Thursday 01:23  eldamitri
-
-	* include/id3/header_tag.h (1.11): (class ID3_TagHeader): Replaced
-	definition of ID3_TagHeader with just a declaration (windows didn't
-	like having it defined in the header) 
-
-2000-05-04 Thursday 01:23  eldamitri
-
-	* include/id3/header.h (1.12, rel-3-7-8, rel-3-7-7): 
-	(Clear): Updated to return boolean if the header actually changed 
-
-2000-05-04 Thursday 01:23  eldamitri
-
 	* include/id3/frame.h (1.19): 
 	(Contains): Added comparison to ensure boolean output 
 
@@ -4895,9 +4556,8 @@
 
 2000-05-03 Wednesday 16:05  eldamitri
 
-	* include/id3/header_tag.h (1.10), include/id3/tag.h (1.23),
-	src/header_tag.cpp (1.6), src/tag.cpp (1.13): Moved
-	ID3_TagHeader::IsHeader() to ID3_Tag::IsV2Tag() 
+	* include/id3/tag.h (1.23), src/header_tag.cpp (1.6), src/tag.cpp
+	(1.13): Moved ID3_TagHeader::IsHeader() to ID3_Tag::IsV2Tag() 
 
 2000-05-03 Wednesday 06:20  eldamitri
 
@@ -4907,17 +4567,17 @@
 
 2000-05-03 Wednesday 05:02  eldamitri
 
-	* include/id3/error.h (1.9), include/id3/field.h (1.19),
-	include/id3/frame.h (1.17), include/id3/tag.h (1.22), src/error.cpp
-	(1.5, rel-3-7-8, rel-3-7-7), src/field.cpp (1.12),
-	src/field_binary.cpp (1.6), src/field_integer.cpp (1.5),
-	src/field_string_ascii.cpp (1.5), src/field_string_unicode.cpp
-	(1.5), src/frame.cpp (1.9), src/frame_parse.cpp (1.6),
-	src/frame_render.cpp (1.6), src/tag.cpp (1.12), src/tag_file.cpp
-	(1.7), src/tag_find.cpp (1.7), src/tag_parse.cpp (1.8),
-	src/tag_parse_lyrics3.cpp (1.5), src/tag_parse_v1.cpp (1.5,
-	rel-3-7-8, rel-3-7-7), src/tag_render.cpp (1.12): Renamed member
-	variables to something not so windows-ish (ick!) 
+	* include/id3/field.h (1.19), include/id3/frame.h (1.17),
+	include/id3/tag.h (1.22), src/error.cpp (1.5, rel-3-7-8,
+	rel-3-7-7), src/field.cpp (1.12), src/field_binary.cpp (1.6),
+	src/field_integer.cpp (1.5), src/field_string_ascii.cpp (1.5),
+	src/field_string_unicode.cpp (1.5), src/frame.cpp (1.9),
+	src/frame_parse.cpp (1.6), src/frame_render.cpp (1.6), src/tag.cpp
+	(1.12), src/tag_file.cpp (1.7), src/tag_find.cpp (1.7),
+	src/tag_parse.cpp (1.8), src/tag_parse_lyrics3.cpp (1.5),
+	src/tag_parse_v1.cpp (1.5, rel-3-7-8, rel-3-7-7),
+	src/tag_render.cpp (1.12): Renamed member variables to something
+	not so windows-ish (ick!) 
 
 2000-05-03 Wednesday 00:43  eldamitri
 
@@ -4945,54 +4605,6 @@
 
 	* include/id3/globals.h (1.16): Added ID3FID_METACOMPRESSION enum
 	for ID3v2.2.1's compressed-data meta-frame ("CDM") 
-
-2000-05-02 Tuesday 23:59  eldamitri
-
-	* include/id3/header.h (1.11): 
-	(ID3_HeaderInfo): 
-	- Struct now defined within ID3_Header 
-	- renamed to Info (ID3_Header::Info) 
-	- renamed member variables to something not so windows-ish (ick!) 
-	- removed ID3_V2Spec member (redundant) 
-	(ID3_Header): 
-	- Most members now defined in header 
-	- Removed *Flags() methods; replaced with __flags protected data
-	members subclasses should now provide subclasses to access this
-	member 
-	- removed ID3_V2Spec member (redundant) 
-	- Added Parse() pure virtual method to be implemented by subclasses 
-	- renamed member variables to something not so windows-ish (ick!) 
-	- SetSpec's parameter is no longer const, now returns bool to
-	indicate if the spec actually changed 
-	- Clear() now returns bool to indicate if the tag actually needed 
-	clearing 
-	- Size() method is now const 
-
-2000-05-02 Tuesday 23:59  eldamitri
-
-	* include/id3/header_frame.h (1.10): 
-	- ID3FL #define's now public enum's within the class 
-	- Added SetCompression(), SetEncryption(), SetGrouping(), 
-	GetCompression(), GetEncryption(), GetGrouping(), and GetReadOnly() 
-	methods and their definitions 
-	- renamed member variables to something not so windows-ish (ick!) 
-
-2000-05-02 Tuesday 23:59  eldamitri
-
-	* include/id3/header_tag.h (1.9): 
-	- ID3HF #define's now public enum's within the class 
-	- Added default constructor, copy constructor, destructor,
-	SetSpec(), Parse(), SetUnsync(), and static IsHeader() methods 
-	- Added enumeration of offsets, sizes for header fields 
-	- Added static const char* ID variable 
-	- Deprecated ID3_IsTagHeader (use ID3_TagHeader::IsHeader() instead) 
-
-2000-05-02 Tuesday 23:59  eldamitri
-
-	* include/id3/spec.h (1.2, rel-3-7-12, rel-3-7-11, rel-3-7-10,
-	rel-3-7-9, rel-3-7-8, rel-3-7-7): 
-	- SetSpec's, SetVersion's now return bool 
-	- SetSpec's parameter is no longer const 
 
 2000-05-02 Tuesday 23:58  eldamitri
 
@@ -5095,11 +4707,6 @@
 	* src/tag_render.cpp (1.11): 
 	(Render): Replaced call of SetFlags(ID3HF_UNSYNC) to SetUnsync(true) 
 
-2000-05-02 Tuesday 18:54  eldamitri
-
-	* include/id3/flags.h (1.1, rel-3-7-8, rel-3-7-7): Added; basic
-	class for manipulating a flags bitset 
-
 2000-05-02 Tuesday 18:53  eldamitri
 
 	* include/id3/utils.h (1.3), src/utils.cpp (1.1): Added; moved util
@@ -5107,8 +4714,8 @@
 
 2000-05-02 Tuesday 18:50  eldamitri
 
-	* include/id3/uint28.h (1.2), src/uint28.cpp (1.2): Added; better
-	implementation of the 28-bit unsigned int class.  
+	* src/uint28.cpp (1.2): Added; better implementation of the 28-bit
+	unsigned int class.  
 
 2000-05-01 Monday 18:41  eldamitri
 
@@ -5356,11 +4963,6 @@
 
 2000-04-26 Wednesday 17:54  eldamitri
 
-	* include/id3/header.h (1.10, rel-3-7-5, rel-3-7-4): Removed
-	SetSpec's default parameter, made parameter const 
-
-2000-04-26 Wednesday 17:54  eldamitri
-
 	* include/id3/tag.h (1.18, rel-3-7-4): SetSpec's parameter now
 	const 
 
@@ -5393,22 +4995,6 @@
 	* src/tag_render.cpp (1.7, rel-3-7-4): 
 	(PaddingSize): Fix for padding logic, thanks to John Adcock for the 
 	patch.  
-
-2000-04-26 Wednesday 06:18  eldamitri
-
-	* include/id3/spec.h (1.1, rel-3-7-5, rel-3-7-4): Added; defines
-	ID3_Speccable pure virtual class, which provides {Get,Set}Spec
-	methods and deprecated {Get,Set}Version, GetRevision 
-
-2000-04-26 Wednesday 06:18  eldamitri
-
-	* include/id3/header.h (1.9): 
-	- Now inherits from ID3_Speccable 
-	- Deprecated SetVersion, added SetSpec and GetSpec 
-	- Deprecated ID3_LookupHeaderInfo(uchar, uchar) in favor of 
-	ID3_LookupHeaderInfo(ID3_V2Spec) 
-	- Removed ID3v2_{VERSION,REVISION}; now use ID3V2_LATEST instead 
-	- Replaced version/revision uchar combination with ID3_V2Spec enums 
 
 2000-04-26 Wednesday 06:18  eldamitri
 
@@ -5670,11 +5256,6 @@
 
 2000-04-23 Sunday 19:36  eldamitri
 
-	* include/id3/error.h (1.8, rel-3-7-5, rel-3-7-4, rel-3-7-3): Moved
-	ID3_Err enumeration to globals.h 
-
-2000-04-23 Sunday 19:36  eldamitri
-
 	* examples/demo_info.cpp (1.4, rel-3-7-4, rel-3-7-3): 
 	- Removed dependency on config.h 
 
@@ -5787,12 +5368,6 @@
 
 	* include/id3.h (1.2, rel-3-7-2): Fixed parameters for ID3Tag_Strip 
 
-2000-04-21 Friday 07:46  eldamitri
-
-	* include/id3/header_tag.h (1.8, rel-3-7-5, rel-3-7-4, rel-3-7-3,
-	rel-3-7-2): 
-	- Moved ID3_{TAGID,TAGIDSIZE,TAGHEADERSIZE} macros to globals.h 
-
 2000-04-21 Friday 07:45  eldamitri
 
 	* include/id3/globals.h (1.10, rel-3-7-2): 
@@ -5869,10 +5444,6 @@
 	rel-3-7-2, rel-3-7-3): Changed #include <id3/dll.h> to #include
 	<id3.h> 
 
-2000-04-20 Thursday 06:19  eldamitri
-
-	* include/id3/dll.h (1.6): No longer needed 
-
 2000-04-20 Thursday 06:03  eldamitri
 
 	* id3lib.spec.in (1.2): 
@@ -5928,13 +5499,8 @@
 
 2000-04-20 Thursday 05:43  eldamitri
 
-	* include/id3/: error.h (1.7, rel-3-7-2), field.h (1.14,
-	rel-3-7-2), frame.h (1.10, rel-3-7-2), header.h (1.8, rel-3-7-3,
-	rel-3-7-2), header_frame.h (1.9, rel-3-7-5, rel-3-7-4, rel-3-7-3,
-	rel-3-7-2), header_tag.h (1.7), int28.h (1.9, rel-3-7-12,
-	rel-3-7-11, rel-3-7-10, rel-3-7-9, rel-3-7-8, rel-3-7-7, rel-3-7-5,
-	rel-3-7-4, rel-3-7-3, rel-3-7-2) (utags: rel-3-7-1): Minor updates;
-	removed log comments to reduce file size 
+	* include/id3/: field.h (1.14), frame.h (1.10) (utags: rel-3-7-1,
+	rel-3-7-2): Minor updates; removed log comments to reduce file size 
 
 2000-04-20 Thursday 05:42  eldamitri
 
@@ -5983,14 +5549,13 @@
 
 2000-04-20 Thursday 03:57  eldamitri
 
-	* include/id3/externals.h (1.4), include/id3/utils.h (1.2),
-	include/id3/version.h (1.6), src/version.cpp (1.3): No longer
+	* include/id3/utils.h (1.2), src/version.cpp (1.3): No longer
 	needed 
 
 2000-04-20 Thursday 02:40  eldamitri
 
-	* include/id3/: types.h (1.7), utils.h (1.1): Renamed from types.h
-	to utils.h to better match its special purpose 
+	* include/id3/utils.h (1.1): Renamed from types.h to utils.h to
+	better match its special purpose 
 
 2000-04-20 Thursday 00:52  eldamitri
 
@@ -6489,10 +6054,9 @@
 
 2000-04-11 Tuesday 05:38  eldamitri
 
-	* include/id3/: error.h (1.6, rel-3-7-0), field.h (1.13,
-	rel-3-7-0), frame.h (1.9, rel-3-7-0), globals.h (1.7), tag.h (1.13,
-	rel-3-7-0), version.h (1.5, rel-3-7-0): Updated comments for use
-	with doxygen.  
+	* include/id3/: field.h (1.13, rel-3-7-8, rel-3-7-0), frame.h (1.9,
+	rel-3-7-0), globals.h (1.7), tag.h (1.13, rel-3-7-0): Updated
+	comments for use with doxygen.  
 
 2000-04-10 Monday 22:58  eldamitri
 
@@ -6538,21 +6102,6 @@
 	(Copy): removed.  (operator=): Updated implementation so it isn't
 	reliant on Copy.  
 
-2000-04-10 Monday 18:57  eldamitri
-
-	* include/id3/header_tag.h (1.6, rel-3-7-0): (class ID3_TagHeader):
-	Added decl for operator=.  
-
-2000-04-10 Monday 18:56  eldamitri
-
-	* include/id3/header_frame.h (1.8, rel-3-7-0): (class
-	ID3_FrameHeader): Added decl for operator=, removed decl of Copy 
-
-2000-04-10 Monday 18:56  eldamitri
-
-	* include/id3/header.h (1.7, rel-3-7-0): (class ID3_Header):
-	Removed decl of Copy.  
-
 2000-04-10 Monday 05:40  eldamitri
 
 	* include/id3/tag.h (1.12): Started updating comments for doxygen.  
@@ -6579,18 +6128,11 @@
 
 	* src/id3/field.cpp (1.18): Added implementation for DEFAULT.  
 
-2000-04-10 Monday 00:36  eldamitri
-
-	* include/id3/header_frame.h (1.7): (class ID3_FrameHeader): Added
-	destructor and new method SetUnknownFrame(const char*) for creating
-	a frame with an unknown frame id.  Added __bDynFrameDef member, set
-	when __pFrameDef has been dynamically created.  
-
 2000-04-10 Monday 00:34  eldamitri
 
-	* include/id3/field.h (1.11): (struct ID3_FieldDef): Added DEFAULT.  
-	(struct ID3_FrameDef): Made text id's fixed length char arrays
-	rather than char ptrs.  
+	* include/id3/field.h (1.11, rel-3-7-7): (struct ID3_FieldDef):
+	Added DEFAULT.  (struct ID3_FrameDef): Made text id's fixed length
+	char arrays rather than char ptrs.  
 
 2000-04-09 Sunday 16:07  eldamitri
 
@@ -6665,10 +6207,9 @@
 
 2000-04-08 Saturday 06:32  eldamitri
 
-	* include/id3/field.h (1.10), include/id3/int28.h (1.8, rel-3-7-0),
-	include/id3/tag.h (1.11), src/id3/error.cpp (1.13, rel-3-7-0),
-	src/id3/field_string_ascii.cpp (1.19),
-	src/id3/field_string_unicode.cpp (1.16, rel-3-7-0),
+	* include/id3/field.h (1.10), include/id3/tag.h (1.11),
+	src/id3/error.cpp (1.13, rel-3-7-0), src/id3/field_string_ascii.cpp
+	(1.19), src/id3/field_string_unicode.cpp (1.16, rel-3-7-0),
 	src/id3/frame_render.cpp (1.13, rel-3-7-0), src/id3/header.cpp
 	(1.13), src/id3/header_frame.cpp (1.13), src/id3/header_tag.cpp
 	(1.13), src/id3/tag_parse.cpp (1.17), src/id3/tag_parse_lyrics3.cpp
@@ -6684,10 +6225,6 @@
 	* include/id3/tag.h (1.10): Added HasV1Tag, HasV2Tag, and HasLyrics
 	(thanks John Adcock).  
 
-2000-04-07 Friday 21:07  eldamitri
-
-	* include/id3/dll.h (1.5, rel-3-7-0): Added extern "C" 
-
 2000-04-07 Friday 06:47  eldamitri
 
 	* src/id3/Makefile.am (1.10, rel-3-7-0): Updated versioning macros,
@@ -6699,15 +6236,14 @@
 
 2000-04-07 Friday 06:45  eldamitri
 
-	* include/id3/: error.h (1.5), field.h (1.9), int28.h (1.7),
-	misc_support.h (1.10, rel-3-7-0), tag.h (1.9), types.h (1.6,
-	rel-3-7-0): Minor cleanup for log comments.  
+	* include/id3/: field.h (1.9), misc_support.h (1.10, rel-3-7-0),
+	tag.h (1.9): Minor cleanup for log comments.  
 
 2000-04-07 Friday 06:40  eldamitri
 
-	* include/id3/version.h (1.4), src/id3/version.cpp (1.5,
-	rel-3-7-0): Changed the version functions to reflect the name
-	change of release and revision to major and minor.  
+	* src/id3/version.cpp (1.5, rel-3-7-0): Changed the version
+	functions to reflect the name change of release and revision to
+	major and minor.  
 
 2000-04-07 Friday 06:29  eldamitri
 
@@ -6756,28 +6292,23 @@
 
 2000-04-05 Wednesday 07:20  eldamitri
 
-	* include/id3/dll.h (1.4), include/id3/error.h (1.4),
-	include/id3/externals.h (1.3, rel-3-7-0), include/id3/field.h
-	(1.8), include/id3/frame.h (1.7), include/id3/globals.h (1.6),
-	include/id3/header.h (1.6), include/id3/header_frame.h (1.6),
-	include/id3/header_tag.h (1.5), include/id3/int28.h (1.6),
-	include/id3/misc_support.h (1.9), include/id3/sized_types.h (1.3,
-	rel-3-7-0), include/id3/tag.h (1.7), include/id3/types.h (1.5),
-	include/id3/version.h (1.3), src/id3/dll_wrapper.cpp (1.13),
-	src/id3/error.cpp (1.12), src/id3/field.cpp (1.16),
-	src/id3/field_binary.cpp (1.12), src/id3/field_integer.cpp (1.13),
-	src/id3/field_string_ascii.cpp (1.18),
-	src/id3/field_string_unicode.cpp (1.15), src/id3/frame.cpp (1.13),
-	src/id3/frame_parse.cpp (1.12, rel-3-7-0), src/id3/frame_render.cpp
-	(1.12), src/id3/header.cpp (1.12), src/id3/header_frame.cpp (1.12),
-	src/id3/header_tag.cpp (1.12), src/id3/int28.cpp (1.11),
-	src/id3/misc_support.cpp (1.20), src/id3/tag.cpp (1.14, rel-3-7-0),
-	src/id3/tag_file.cpp (1.14), src/id3/tag_find.cpp (1.12),
-	src/id3/tag_parse.cpp (1.15), src/id3/tag_parse_lyrics3.cpp (1.11),
-	src/id3/tag_parse_v1.cpp (1.14), src/id3/tag_render.cpp (1.18),
-	src/id3/tag_sync.cpp (1.10, rel-3-7-0), src/id3/version.cpp (1.4): 
-	Updated initial comment information to reflect license, copyright 
-	change.  
+	* include/id3/field.h (1.8), include/id3/frame.h (1.7),
+	include/id3/globals.h (1.6), include/id3/misc_support.h (1.9),
+	include/id3/sized_types.h (1.3, rel-3-7-0), include/id3/tag.h
+	(1.7), src/id3/dll_wrapper.cpp (1.13), src/id3/error.cpp (1.12),
+	src/id3/field.cpp (1.16), src/id3/field_binary.cpp (1.12),
+	src/id3/field_integer.cpp (1.13), src/id3/field_string_ascii.cpp
+	(1.18), src/id3/field_string_unicode.cpp (1.15), src/id3/frame.cpp
+	(1.13), src/id3/frame_parse.cpp (1.12, rel-3-7-0),
+	src/id3/frame_render.cpp (1.12), src/id3/header.cpp (1.12),
+	src/id3/header_frame.cpp (1.12), src/id3/header_tag.cpp (1.12),
+	src/id3/int28.cpp (1.11), src/id3/misc_support.cpp (1.20),
+	src/id3/tag.cpp (1.14, rel-3-7-0), src/id3/tag_file.cpp (1.14),
+	src/id3/tag_find.cpp (1.12), src/id3/tag_parse.cpp (1.15),
+	src/id3/tag_parse_lyrics3.cpp (1.11), src/id3/tag_parse_v1.cpp
+	(1.14), src/id3/tag_render.cpp (1.18), src/id3/tag_sync.cpp (1.10,
+	rel-3-7-0), src/id3/version.cpp (1.4): Updated initial comment
+	information to reflect license, copyright change.  
 
 2000-04-05 Wednesday 07:09  eldamitri
 
@@ -6839,102 +6370,22 @@
 	* Makefile.am, configure.in (rel-3-1.[1,1]): Updated for
 	development branch 
 
-2000-03-02 Thursday 22:24  eldamitri
-
-	* include/id3/uint28.h (1.1): file uint28.h was initially added on
-	branch rel-3-1.  
-
-2000-03-02 Thursday 22:24  eldamitri
-
-	* include/id3/tag_header.h (1.1): file tag_header.h was initially
-	added on branch rel-3-1.  
-
-2000-03-02 Thursday 22:24  eldamitri
-
-	* include/id3/tag_find.h (1.1): file tag_find.h was initially added
-	on branch rel-3-1.  
-
-2000-03-02 Thursday 22:24  eldamitri
-
-	* include/id3/macros.h (1.1): file macros.h was initially added on
-	branch rel-3-1.  
-
-2000-03-02 Thursday 22:24  eldamitri
-
-	* include/id3/lib.h (1.1): file lib.h was initially added on branch
-	rel-3-1.  
-
-2000-03-02 Thursday 22:24  eldamitri
-
-	* include/id3/genre.h (1.1): file genre.h was initially added on
-	branch rel-3-1.  
-
-2000-03-02 Thursday 22:24  eldamitri
-
-	* include/id3/frame_header.h (1.1): file frame_header.h was
-	initially added on branch rel-3-1.  
-
-2000-03-02 Thursday 22:23  eldamitri
-
-	* include/id3/frame_def.h (1.1): file frame_def.h was initially
-	added on branch rel-3-1.  
-
-2000-03-02 Thursday 22:23  eldamitri
-
-	* include/id3/enums.h (1.1): file enums.h was initially added on
-	branch rel-3-1.  
-
-2000-03-02 Thursday 22:23  eldamitri
-
-	* include/id3/details.h (1.1): file details.h was initially added
-	on branch rel-3-1.  
-
-2000-03-02 Thursday 22:23  eldamitri
-
-	* include/id3/debug.h (1.1): file debug.h was initially added on
-	branch rel-3-1.  
-
-2000-03-02 Thursday 22:23  eldamitri
-
-	* include/id3/conversion_ops.h (1.1): file conversion_ops.h was
-	initially added on branch rel-3-1.  
-
-2000-03-02 Thursday 22:23  eldamitri
-
-	* include/id3/constants.h (1.1): file constants.h was initially
-	added on branch rel-3-1.  
-
-2000-03-02 Thursday 22:23  eldamitri
-
-	* include/id3/common_ops.h (1.1): file common_ops.h was initially
-	added on branch rel-3-1.  
-
 2000-03-02 Thursday 22:21  eldamitri
 
-	* include/id3/Makefile.in, include/id3/Makefile.in,
-	include/id3/common_ops.h, include/id3/constants.h,
-	include/id3/conversion_ops.h, include/id3/debug.h,
-	include/id3/details.h, include/id3/enums.h,
-	include/id3/frame_def.h, include/id3/frame_header.h,
-	include/id3/genre.h, include/id3/lib.h, include/id3/macros.h,
-	include/id3/tag_find.h, include/id3/tag_header.h,
-	include/id3/uint28.h, acconfig, examples/test_file.cpp,
-	examples/test_frame.cpp, examples/test_lib.cpp,
-	examples/test_tag.cpp, examples/test_uint28.cpp
-	(rel-3-1.[1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]): Initial
+	* include/id3/Makefile.in, include/id3/Makefile.in, acconfig,
+	examples/test_file.cpp, examples/test_frame.cpp,
+	examples/test_lib.cpp, examples/test_tag.cpp,
+	examples/test_uint28.cpp (rel-3-1.[1,2,1,1,1,1,1,1]): Initial
 	revision 
 
 2000-03-02 Thursday 22:20  eldamitri
 
-	* include/id3/: Makefile.am, field.h, frame.h, header.h,
-	sized_types.h, tag.h, types.h (rel-3-1.[1,1,1,1,1,1,1]): Complete
-	rewrite for developer branch 
+	* include/id3/: Makefile.am, field.h, frame.h, sized_types.h, tag.h
+	(rel-3-1.[1,1,1,1,1]): Complete rewrite for developer branch 
 
 2000-03-02 Thursday 22:13  eldamitri
 
-	* include/id3/: dll.h, error.h, externals.h, globals.h,
-	header_frame.h, header_tag.h, int28.h, misc_support.h, version.h
-	(rel-3-1.[1,1,1,1,1,1,1,1,1]): Removed 
+	* include/id3/: globals.h, misc_support.h (rel-3-1.[1,1]): Removed 
 
 2000-03-02 Thursday 21:35  eldamitri
 
@@ -7348,9 +6799,8 @@
 
 2000-01-04 Tuesday 16:42  eldamitri
 
-	* include/id3/field.h (1.7), include/id3/int28.h (1.5),
-	include/id3/misc_support.h (1.8), include/id3/tag.h (1.6),
-	include/id3/types.h (1.4), src/id3/dll_wrapper.cpp (1.12),
+	* include/id3/field.h (1.7), include/id3/misc_support.h (1.8),
+	include/id3/tag.h (1.6), src/id3/dll_wrapper.cpp (1.12),
 	src/id3/error.cpp (1.11), src/id3/field.cpp (1.15),
 	src/id3/field_binary.cpp (1.11), src/id3/field_integer.cpp (1.12),
 	src/id3/field_string_ascii.cpp (1.17),
@@ -7405,29 +6855,6 @@
 	redundant data members that are now encapsulated within new frame
 	header member.  Added declaration for new methods InitFields and
 	InitFieldBits.  
-
-1999-12-27 Monday 07:11  scott
-
-	* include/id3/header.h (1.5): 
-	(ID3_VERSION, ID3_REVISION): Renamed to ID3v2_* (class ID3_Header):
-	Added declarations for GetVersion, GetRevision, AddFlags, SetFlags,
-	Clear, Copy, and operator= methods.  Changed return type for Size
-	and Render from luint to size_t.  
-
-1999-12-27 Monday 07:09  scott
-
-	* include/id3/header_frame.h (1.5): 
-	(ID3_FrameAttr): Removed.  (class ID3_FrameHeader): Added
-	declarations for default constructor and Parse, GetFrameID,
-	GetTextID, GetFrameDef, and Clear methods.  Changed return type for
-	Size and Render.  Replaced __eFrameID data member with __pFrameDef,
-	which encapsulates more information about the frame header.  
-
-1999-12-27 Monday 07:06  scott
-
-	* include/id3/header_tag.h (1.4): 
-	(ID3_TAGIDSIZE): Added constant.  (class ID3_TagHeader): Minor
-	return type changes for Size and Render.  
 
 1999-12-27 Monday 07:05  scott
 
@@ -7524,21 +6951,6 @@
 	(MASK): Defined macro for masking bits.  (): Added declarations for
 	ParseNumber and RenderNumber, for converting between character
 	arrays and unsigned ints.  
-
-1999-12-26 Sunday 17:40  scott
-
-	* include/id3/int28.h (1.4): (class int28): Restructured.  
-
-1999-12-26 Sunday 17:40  scott
-
-	* include/id3/header_frame.h (1.4): 
-	(ID3FL_READONLY): Renamed from ID3FL_SIGNED.  (class
-	ID3_FrameHeader): Minor cleanup to interface.  
-
-1999-12-26 Sunday 17:40  scott
-
-	* include/id3/header.h (1.4): (class ID3_Header): Minor cleanup to
-	interface.  
 
 1999-12-26 Sunday 17:40  scott
 
@@ -7694,20 +7106,15 @@
 
 1999-12-17 Friday 17:05  scott
 
-	* include/id3/dll.h (1.3), include/id3/error.h (1.3),
-	include/id3/externals.h (1.2), include/id3/field.h (1.5),
-	include/id3/frame.h (1.4), include/id3/globals.h (1.4),
-	include/id3/header.h (1.3), include/id3/header_frame.h (1.3),
-	include/id3/header_tag.h (1.3), include/id3/int28.h (1.3),
-	include/id3/misc_support.h (1.6), include/id3/sized_types.h (1.2),
-	include/id3/tag.h (1.5), include/id3/types.h (1.3),
-	include/id3/version.h (1.2), src/id3/dll_wrapper.cpp (1.11),
-	src/id3/error.cpp (1.10), src/id3/field.cpp (1.13),
-	src/id3/field_binary.cpp (1.9), src/id3/field_integer.cpp (1.10),
-	src/id3/field_string_ascii.cpp (1.14),
-	src/id3/field_string_unicode.cpp (1.12), src/id3/frame.cpp (1.9),
-	src/id3/frame_parse.cpp (1.8), src/id3/frame_render.cpp (1.8),
-	src/id3/header.cpp (1.8), src/id3/header_frame.cpp (1.8),
+	* include/id3/field.h (1.5), include/id3/frame.h (1.4),
+	include/id3/globals.h (1.4), include/id3/misc_support.h (1.6),
+	include/id3/sized_types.h (1.2), include/id3/tag.h (1.5),
+	src/id3/dll_wrapper.cpp (1.11), src/id3/error.cpp (1.10),
+	src/id3/field.cpp (1.13), src/id3/field_binary.cpp (1.9),
+	src/id3/field_integer.cpp (1.10), src/id3/field_string_ascii.cpp
+	(1.14), src/id3/field_string_unicode.cpp (1.12), src/id3/frame.cpp
+	(1.9), src/id3/frame_parse.cpp (1.8), src/id3/frame_render.cpp
+	(1.8), src/id3/header.cpp (1.8), src/id3/header_frame.cpp (1.8),
 	src/id3/header_tag.cpp (1.8), src/id3/int28.cpp (1.8),
 	src/id3/misc_support.cpp (1.17), src/id3/tag.cpp (1.11),
 	src/id3/tag_file.cpp (1.12), src/id3/tag_find.cpp (1.10),
@@ -8069,12 +7476,10 @@
 
 1999-12-02 Thursday 23:45  scott
 
-	* include/id3/: dll.h (1.2), error.h (1.2), field.h (1.2), frame.h
-	(1.2), globals.h (1.2), header.h (1.2), header_frame.h (1.2),
-	header_tag.h (1.2), int28.h (1.2), misc_support.h (1.3), tag.h
-	(1.2), types.h (1.2) (utags: rel-3-6-2, rel-3-6-0): Changed all of
-	the #include <id3/*> to #include "*" to help ensure that the sources
-	are searched for in the right places.  
+	* include/id3/: field.h (1.2), frame.h (1.2), globals.h (1.2),
+	misc_support.h (1.3), tag.h (1.2) (utags: rel-3-6-2, rel-3-6-0): 
+	Changed all of the #include <id3/*> to #include "*" to help ensure
+	that the sources are searched for in the right places.  
 
 1999-12-02 Thursday 02:58  scott
 
@@ -8082,8 +7487,7 @@
 	config.h.in (1.6), configure (1.17), doc/Makefile.in (1.7),
 	doc/html/Makefile.in (1.3), doc/latex/Makefile.in (1.3),
 	doc/man/Makefile.in (1.3), doc/texinfo/Makefile.in (1.3),
-	include/Makefile (1.3), include/Makefile.in (1.3),
-	include/id3/Makefile (1.7), include/id3/Makefile.in (1.7),
+	include/Makefile.in (1.3), include/id3/Makefile.in (1.7),
 	m4/Makefile.in (1.7), src/Makefile.in (1.6),
 	src/examples/Makefile.in (1.9), src/id3/Makefile.in (1.15): Removed
 	automatically generated files.  Will be generated in the normal
@@ -8158,11 +7562,10 @@
 
 1999-12-01 Wednesday 20:10  scott
 
-	* include/: Makefile (1.2, rel-3-7-13, rel-3-7-12, rel-3-7-11,
-	rel-3-7-10, rel-3-7-9, rel-3-7-8, rel-3-7-7), Makefile.am (1.2,
-	rel-3-7-0, rel-3-6-2, rel-3-6-0), Makefile.in (1.2), id3/Makefile
-	(1.2), id3/Makefile.am (1.2, rel-3-7-0, rel-3-6-2, rel-3-6-0),
-	id3/Makefile.in (1.2): 
+	* include/: Makefile.am (1.2, rel-3-7-13, rel-3-7-12, rel-3-7-11,
+	rel-3-7-10, rel-3-7-9, rel-3-7-8, rel-3-7-7, rel-3-7-0, rel-3-6-2,
+	rel-3-6-0), Makefile.in (1.2), id3/Makefile.am (1.2, rel-3-7-0,
+	rel-3-6-2, rel-3-6-0), id3/Makefile.in (1.2): 
 	(EXTRA_DIST): Removed.  No extra files to distribute 
 
 1999-12-01 Wednesday 20:08  scott
@@ -8212,22 +7615,17 @@
 
 1999-12-01 Wednesday 18:14  scott
 
-	* include/id3/dll.h (1.1), src/id3/dll.h (1.8, rel-3-6-0),
-	include/id3/error.h (1.1), src/id3/error.h (1.10),
-	include/id3/externals.h (1.1, rel-3-6-2, rel-3-6-0),
+	* src/id3/dll.h (1.8, rel-3-6-0), src/id3/error.h (1.10),
 	src/id3/externals.h (1.6), include/id3/field.h (1.1),
 	src/id3/field.h (1.11), include/id3/frame.h (1.1), src/id3/frame.h
 	(1.10), include/id3/globals.h (1.1), src/id3/globals.h (1.5),
-	include/id3/header.h (1.1), src/id3/header.h (1.7),
-	include/id3/header_frame.h (1.1), src/id3/header_frame.h (1.7),
-	include/id3/header_tag.h (1.1), src/id3/header_tag.h (1.6),
-	include/id3/int28.h (1.1), src/id3/int28.h (1.6),
+	src/id3/header.h (1.7), src/id3/header_frame.h (1.7),
+	src/id3/header_tag.h (1.6), src/id3/int28.h (1.6),
 	include/id3/misc_support.h (1.1), src/id3/misc_support.h (1.9),
 	include/id3/sized_types.h (1.1, rel-3-6-2, rel-3-6-0),
 	src/id3/sized_types.h (1.2), include/id3/tag.h (1.1), src/id3/tag.h
-	(1.11), include/id3/types.h (1.1), src/id3/types.h (1.8),
-	include/id3/version.h (1.1, rel-3-6-2, rel-3-6-0),
-	src/id3/version.h (1.9): moved from src/id3 to include/id3 
+	(1.11), src/id3/types.h (1.8), src/id3/version.h (1.9): moved from
+	src/id3 to include/id3 
 
 1999-12-01 Wednesday 05:26  scott
 
