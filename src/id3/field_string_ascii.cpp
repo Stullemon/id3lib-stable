@@ -1,18 +1,16 @@
-// $Id: field_string_ascii.cpp,v 1.7 1999/11/19 17:34:44 scott Exp $
-
-//  The authors have released ID3Lib as Public Domain (PD) and claim no
-//  copyright, patent or other intellectual property protection in this work.
-//  This means that it may be modified, redistributed and used in commercial
-//  and non-commercial software and hardware without restrictions.  ID3Lib is
-//  distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either
-//  express or implied.
+// $Id: field_string_ascii.cpp,v 1.8 1999/11/29 17:23:16 scott Exp $
+// 
+// The authors have released ID3Lib as Public Domain (PD) and claim no
+// copyright, patent or other intellectual property protection in this work.
+// This means that it may be modified, redistributed and used in commercial
+// and non-commercial software and hardware without restrictions.  ID3Lib is
+// distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either
+// express or implied.
 //
-//  The ID3Lib authors encourage improvements and optimisations to be sent to
-//  the ID3Lib coordinator, currently Dirk Mahoney (dirk@id3.org).  Approved
-//  submissions may be altered, and will be included and released under these
-//  terms.
-//
-//  Mon Nov 23 18:34:01 1998
+// The ID3Lib authors encourage improvements and optimisations to be sent to
+// the ID3Lib coordinator, currently Dirk Mahoney (dirk@id3.org).  Approved
+// submissions may be altered, and will be included and released under these
+// terms.
 
 #if defined HAVE_CONFIG_H
 #include <config.h>
@@ -39,11 +37,11 @@ void ID3_Field::Set(const char *sString)
   {
     Clear();
     size_t nStrLen = (-1 == __lFixedLength) ? strlen(sString) : __lFixedLength;
-    wchar_t *temp = new wchar_t[nStrLen + 1];
+    unicode_t *temp = new unicode_t[nStrLen + 1];
     if (NULL == temp)
       ID3_THROW(ID3E_NoMemory);
 
-    ID3_ASCIItoUnicode(temp, sString, nStrLen + 1);
+    mbstoucs(temp, sString, nStrLen + 1);
 
     Set(temp);
     delete [] temp;
@@ -60,10 +58,10 @@ void ID3_Field::Set(const char *sString)
 luint ID3_Field::Get(char *buffer, luint maxLength, luint itemNum)
 {
   luint bytesUsed = 0;
-  wchar_t *temp;
+  unicode_t *temp;
   char *ascii;
   
-  temp = new wchar_t[maxLength];
+  temp = new unicode_t[maxLength];
   if (NULL == temp)
     ID3_THROW(ID3E_NoMemory);
 
@@ -75,7 +73,7 @@ luint ID3_Field::Get(char *buffer, luint maxLength, luint itemNum)
 
   luint length;
         
-  ID3_UnicodeToASCII(ascii, temp, len + 1);
+  ucstombs(ascii, temp, len + 1);
         
   length = MIN(strlen(ascii), maxLength);
         
@@ -95,12 +93,12 @@ void ID3_Field::Add(const char *sString)
 {
   if (sString)
   {
-    wchar_t *temp;
+    unicode_t *temp;
     
-    temp = new wchar_t[strlen(sString) + 1];
+    temp = new unicode_t[strlen(sString) + 1];
     if (NULL == temp)
     {
-      ID3_ASCIItoUnicode(temp, sString, strlen(sString) + 1);
+      mbstoucs(temp, sString, strlen(sString) + 1);
       Add(temp);
       delete [] temp;
       
@@ -177,7 +175,7 @@ luint ID3_Field::RenderASCIIString(uchar *buffer)
 
     luint i;
       
-    ID3_UnicodeToASCII(ascii, (wchar_t *) __sData, __ulSize);
+    ucstombs(ascii, (unicode_t *) __sData, __ulSize);
     memcpy(buffer, (uchar *) ascii, bytesUsed);
       
     // now we convert the internal dividers to what they are supposed to be
@@ -208,6 +206,12 @@ luint ID3_Field::RenderASCIIString(uchar *buffer)
 }
 
 // $Log: field_string_ascii.cpp,v $
+// Revision 1.8  1999/11/29 17:23:16  scott
+// Updated methods to use unicode_t instead of wchar_t.  unicode_t is
+// defined in globals.h.  The type unicode_t is more likely to be two
+// bytes on every platform.  Updated calls to unicode methods to more
+// general methods defined in misc_support.cpp.
+//
 // Revision 1.7  1999/11/19 17:34:44  scott
 // (operator=): Updated interface to make parameters const.
 // (Set): Updated interface to make parameters const.  Bug fix for fixed
