@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.16 2000/04/08 04:37:19 eldamitri Exp $
+// $Id: field_string_unicode.cpp,v 1.2 2000/04/18 22:11:08 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -344,6 +344,9 @@ luint ID3_Field::RenderUnicodeString(uchar *buffer)
 }
 
 // $Log: field_string_unicode.cpp,v $
+// Revision 1.2  2000/04/18 22:11:08  eldamitri
+// Moved field_string_unicode.cpp from src/id3/ to src/
+//
 // Revision 1.16  2000/04/08 04:37:19  eldamitri
 // Changed new ANSI-standard C++ include headers to old-style headers.
 //
