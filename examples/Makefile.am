@@ -8,16 +8,6 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-LDADD_BASE =
-
-if ID3_NEEDPOPT
-popt_lib = $(top_builddir)/popt/libpopt.la
-popt_include = -I$(top_srcdir)/popt
-else
-popt_lib = -lpopt
-popt_include =
-endif
-
 if ID3_NEEDDEBUG
 ID3_DEBUG_LIBS =  -lcwd -lbfd -liberty
 else
@@ -32,9 +22,15 @@ zlib_lib = -lz
 zlib_include =
 endif
 
-LDADD =  $(top_builddir)/src/libid3.la $(popt_lib) $(zlib_lib) $(ID3_DEBUG_LIBS)
+if ID3_NEEDGETOPT_LONG
+getopt_lib = getopt.o getopt1.o
+else
+getopt_lib = 
+endif
 
-INCLUDES = @ID3LIB_DEBUG_FLAGS@ -I$(top_srcdir)/include $(popt_include)
+LDADD =  $(top_builddir)/src/libid3.la $(zlib_lib) $(ID3_DEBUG_LIBS) $(getopt_lib)
+
+INCLUDES = @ID3LIB_DEBUG_FLAGS@ -I$(top_srcdir)/include
 
 bin_PROGRAMS            = id3info id3convert id3tag id3cp
 check_PROGRAMS          = \
@@ -47,10 +43,15 @@ check_PROGRAMS          = \
   get_pic                 \
   findstr                 \
   findeng
-id3cp_SOURCES           = demo_copy.cpp
-id3info_SOURCES         = demo_info.cpp
-id3convert_SOURCES      = demo_convert.cpp
-id3tag_SOURCES          = demo_tag.cpp
+
+id3cp_SOURCES           = demo_copy_options.c    demo_copy.cpp
+
+id3info_SOURCES         = demo_info_options.c    demo_info.cpp
+
+id3convert_SOURCES      = demo_convert_options.c demo_convert.cpp
+
+id3tag_SOURCES          = demo_tag_options.c     demo_tag.cpp
+
 id3simple_SOURCES       = demo_simple.c
 testpic_SOURCES         = test_pic.cpp
 testunicode_SOURCES     = test_unicode.cpp
@@ -61,8 +62,7 @@ get_pic_SOURCES         = get_pic.cpp
 findeng_SOURCES         = findeng.cpp
 findstr_SOURCES         = findstr.cpp
 
-
-EXTRA_DIST =            \
+tag_files =             \
   composer.jpg          \
   demo_main.cpp         \
   221-compressed.tag    \
@@ -72,3 +72,29 @@ EXTRA_DIST =            \
   230-syncedlyrics.tag  \
   thatspot.tag          \
   ozzy.tag              
+
+getopt_files =          \
+  getopt.c              \
+  getopt.h              \
+  getopt1.c             
+
+header_files =          \
+  demo_tag_options.h    \
+  demo_copy_options.h   \
+  demo_info_options.h   \
+  demo_convert_options.h
+
+EXTRA_DIST =            \
+  $(tag_files)          \
+  $(getopt_files)       \
+  $(header_files)       
+
+PROGNAME = gengetopt
+
+%.ggo: $(srcdir)/%.ggo.in $(top_builddir)/config.status
+	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+%.c: $(srcdir)/%.ggo
+	$(PROGNAME) --file-name=$* --unamed-opts --input=$<
+
+demo_%.cpp: demo_%_options.c
