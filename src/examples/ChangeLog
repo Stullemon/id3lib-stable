@@ -1,3 +1,12 @@
+1999-11-19  Scott Thomas Haug  <sth2@cs.wustl.edu>
+
+	* Makefile.am: Added compilation options for demo_strip.cpp
+
+	* demo_info.cpp: Added runtime options for version and help.  Minor
+	code cleanup.
+
+	* demo_strip.cpp: Initial revision.
+
 1999-11-15  Scott Thomas Haug  <sth2@cs.wustl.edu>
 
 	* Makefile.am: Added macros to allow for compiling test programs

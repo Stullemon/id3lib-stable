@@ -1,6 +1,13 @@
 .deps
 .kdbgrc.id3info
+.libs
 Makefile
+bad-v1.mp3
+bad-v2.mp3
+bad.mp3
 convert
+id3convert
+id3info
+id3strip
 jules.mp3
 jules.mp3qG4WHB
