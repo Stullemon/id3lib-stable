@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.5 2000/04/26 15:53:30 eldamitri Exp $
+// $Id: field.cpp,v 1.6 2000/04/27 15:53:07 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -763,6 +763,7 @@ ID3_Field::ID3_Field(void)
   __sData   = NULL;
   __ulSize  = 0;
   __ulFlags = 0;
+  __spec    = ID3V2_LATEST;
   
   Clear();
 }
@@ -969,7 +970,7 @@ ID3_Field::operator=( const ID3_Field &rField )
 {
   if (this != &rField) // && (__spec >= __eSpecBegin && __spec <= __eSpecEnd))
   {
-    switch (__eType)
+    switch (rField.__eType)
     {
       case ID3FTY_INTEGER:
         *this = rField.Get();
@@ -982,10 +983,15 @@ ID3_Field::operator=( const ID3_Field &rField )
         break;
     }
   }
+  __eType = rField.__eType;
+  __spec  = rField.__spec;
   return *this;
 }
 
 // $Log: field.cpp,v $
+// Revision 1.6  2000/04/27 15:53:07  eldamitri
+// Fixed bugs in creation and assignment (thanks John Adcock)
+//
 // Revision 1.5  2000/04/26 15:53:30  eldamitri
 // Updated lists of supported/unsupported frames (PRIV now supported)
 // (ID3FD_Private): Added definition
