@@ -1,4 +1,4 @@
-// $Id: field_binary.cpp,v 1.11 2000/06/06 12:22:19 eldamitri Exp $
+// $Id: field_binary.cpp,v 1.12 2000/09/09 23:04:28 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -44,27 +44,20 @@ void ID3_Field::Set(const uchar *newData, //< The data to assign to this field.
 {
   Clear();
   
-  if (newSize > 0)
+  if (newSize == 0 || newData == NULL)
+  {
+    __size = 0;
+    __data = NULL;
+  }
+  else
   {
     __data = new uchar[newSize];
-    if (NULL == __data)
-    {
-      ID3_THROW(ID3E_NoMemory);
-    }
     
-    if (newData != NULL)
-    {
-      memcpy(__data, newData, newSize);
-    }
-    else
-    {
-      memset(__data, 0, newSize);
-    }
+    memcpy(__data, newData, newSize);
     __size = newSize;
-    
-    __type = ID3FTY_BINARY;
-    __changed = true;
   }
+  __type = ID3FTY_BINARY;
+  __changed = true;
   
   return ;
 }
