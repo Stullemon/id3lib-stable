@@ -31,12 +31,12 @@
  * or static methods.
  */
 #define _ID3LIB_NAME "id3lib"
-#define _ID3LIB_DATE ": 2000/09/27 09:07:47 "
-#define _ID3LIB_VERSION "3.7.13"
-#define _ID3LIB_FULLNAME "id3lib-3.7.13"
+#define _ID3LIB_DATE ": 2000/10/13 18:12:16 "
+#define _ID3LIB_VERSION "3.8.0pre1"
+#define _ID3LIB_FULLNAME "id3lib-3.8.0pre1"
 #define _ID3LIB_MAJOR_VERSION 3
-#define _ID3LIB_MINOR_VERSION 7
-#define _ID3LIB_PATCH_VERSION 13
+#define _ID3LIB_MINOR_VERSION 8
+#define _ID3LIB_PATCH_VERSION 0
 #define _ID3LIB_INTERFACE_AGE 0
 #define _ID3LIB_BINARY_AGE 0
 /* #undef ID3_COMPILED_WITH_DEBUGGING */
@@ -81,7 +81,7 @@
 #define PACKAGE "id3lib"
 
 /* Version number of package */
-#define VERSION "3.7.13"
+#define VERSION "3.8.0pre1"
 
 /* This is the bottom section */
 
