@@ -1,4 +1,4 @@
-// $Id: tag_parse.cpp,v 1.16 2000/05/12 03:48:42 eldamitri Exp $
+// $Id: tag_parse.cpp,v 1.17 2000/05/12 21:08:08 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -144,8 +144,6 @@ size_t ID3_ParseFrames(ID3_Tag& tag, const uchar* const data, size_t size)
 size_t ID3_Tag::Parse(const uchar header[ID3_TagHeader::SIZE],
 		      const uchar *buffer)
 {
-  this->Clear();
-
   size_t hdr_size = __hdr.Parse(header, ID3_TagHeader::SIZE);
   if (!hdr_size)
   {
@@ -189,15 +187,17 @@ size_t ID3_Tag::ParseFromHandle()
   {
     if (fseek(__file_handle, 0, SEEK_SET) != 0)
     {
-      ID3_THROW_DESC(ID3E_NoFile, 
-                     "ID3_Tag::ParseFromHandle: Ack! Couldn't seek");
+      return 0;
+      //ID3_THROW_DESC(ID3E_NoFile, 
+      //"ID3_Tag::ParseFromHandle: Ack! Couldn't seek");
     }
     
     uchar header[ID3_TAGHEADERSIZE];
     if (fread(header, 1, sizeof(header), __file_handle) == 0)
     {
-      ID3_THROW_DESC(ID3E_NoFile, 
-                     "ID3_Tag::ParseFromHandle: Ack! Couldn't read");
+      return 0;
+      //ID3_THROW_DESC(ID3E_NoFile, 
+      // "ID3_Tag::ParseFromHandle: Ack! Couldn't read");
     }
     
     lsint tagSize = ID3_IsTagHeader(header);
@@ -211,11 +211,12 @@ size_t ID3_Tag::ParseFromHandle()
       
       if (fread(bin, 1, tagSize, __file_handle) == 0)
       {
-        ID3_THROW_DESC(ID3E_NoFile, 
-                       "ID3_Tag::ParseFromHandle: Ack! Couldn't read");
+        return 0;
+        //ID3_THROW_DESC(ID3E_NoFile, 
+        //               "ID3_Tag::ParseFromHandle: Ack! Couldn't read");
       }
       
-      Parse(header, bin);
+      this->Parse(header, bin);
       size = tagSize;
       
       delete[] bin;
@@ -233,5 +234,4 @@ size_t ID3_Tag::ParseFromHandle()
   }
     
   return size;
-
 }
