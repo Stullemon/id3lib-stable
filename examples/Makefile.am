@@ -21,9 +21,6 @@ id3simple_SOURCES  = demo_simple.c
 
 EXTRA_DIST =            \
   demo_main.cpp         \
-  jules.mp3             \
-  jules-badtag.mp3      \
-  jules-goodtag.mp3     \
   221-compressed.tag    \
   230-compressed.tag    \
   230-picture.tag       \
