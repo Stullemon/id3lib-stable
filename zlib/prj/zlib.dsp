@@ -27,7 +27,6 @@ CFG=zlib - Win32 NASM Debug
 # PROP AllowPerConfigDependencies 0
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath "H/PC Ver. 2.00"
-# PROP WCE_FormatVersion ""
 CPP=cl.exe
 RSC=rc.exe
 
@@ -75,7 +74,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:"..\zlib.lib"
+# ADD LIB32 /nologo /out:"..\zlibD.lib"
 
 !ELSEIF  "$(CFG)" == "zlib - Win32 NASM Debug"
 
