@@ -1,4 +1,4 @@
-// $Id: header_frame.h,v 1.13 2000/05/29 01:57:41 eldamitri Exp $
+// $Id: header_frame.h,v 1.14 2000/09/11 07:46:32 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,8 +24,8 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#ifndef __ID3LIB_HEADER_FRAME_H__
-#define __ID3LIB_HEADER_FRAME_H__
+#ifndef _ID3LIB_HEADER_FRAME_H_
+#define _ID3LIB_HEADER_FRAME_H_
 
 #include "header.h"
 #include "field.h"
@@ -44,7 +44,7 @@ public:
     GROUPING    = 1 <<  5
   };
 
-  ID3_FrameHeader() : __frame_def(NULL), __dyn_frame_def(false) { ; }
+  ID3_FrameHeader() : _frame_def(NULL), _dyn_frame_def(false) { ; }
   virtual ~ID3_FrameHeader() { this->Clear(); }
   
   /* */ size_t        Size() const;
@@ -61,24 +61,24 @@ public:
   bool SetEncryption(bool b)  { return this->SetFlags(ENCRYPTION, b); }
   bool SetGrouping(bool b)    { return this->SetFlags(GROUPING, b); }
 
-  bool GetCompression() const { return __flags.test(COMPRESSION); }
-  bool GetEncryption() const  { return __flags.test(ENCRYPTION); }
-  bool GetGrouping() const    { return __flags.test(GROUPING); }
-  bool GetReadOnly() const    { return __flags.test(READONLY); }
+  bool GetCompression() const { return _flags.test(COMPRESSION); }
+  bool GetEncryption() const  { return _flags.test(ENCRYPTION); }
+  bool GetGrouping() const    { return _flags.test(GROUPING); }
+  bool GetReadOnly() const    { return _flags.test(READONLY); }
 
 protected:
   bool                SetFlags(uint16 f, bool b)
   {
-    bool changed = __flags.set(f, b);
-    __changed = __changed || changed;
+    bool changed = _flags.set(f, b);
+    _changed = _changed || changed;
     return changed;
   }
   void                SetUnknownFrame(const char*);
 
 private:
-  ID3_FrameDef*       __frame_def;
-  bool                __dyn_frame_def;
+  ID3_FrameDef*       _frame_def;
+  bool                _dyn_frame_def;
 }
 ;
 
-#endif /* __ID3LIB_HEADER_FRAME__ */
+#endif /* _ID3LIB_HEADER_FRAME_ */

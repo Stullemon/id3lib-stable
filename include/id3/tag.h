@@ -1,4 +1,4 @@
-// $Id: tag.h,v 1.40 2000/08/26 20:21:05 eldamitri Exp $
+// $Id: tag.h,v 1.41 2000/09/11 07:46:32 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,8 +24,8 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#ifndef __ID3LIB_TAG_H__
-#define __ID3LIB_TAG_H__
+#ifndef _ID3LIB_TAG_H_
+#define _ID3LIB_TAG_H_
 
 #include <stdio.h>
 #include "header_tag.h"
@@ -75,10 +75,10 @@ public:
   flags_t    Update(flags_t = (flags_t) ID3TT_ALL);
   flags_t    Strip(flags_t = (flags_t) ID3TT_ALL);
   
-  size_t     GetPrependedBytes() const { return __prepended_bytes; }
-  size_t     GetAppendedBytes() const { return __appended_bytes; }
-  size_t     GetFileSize() const { return __file_size; }
-  const char* GetFileName() const { return __file_name; }
+  size_t     GetPrependedBytes() const { return _prepended_bytes; }
+  size_t     GetAppendedBytes() const { return _appended_bytes; }
+  size_t     GetFileSize() const { return _file_size; }
+  const char* GetFileName() const { return _file_name; }
   
   /// Finds frame with given frame id
   ID3_Frame* Find(ID3_FrameID id) const;
@@ -99,14 +99,14 @@ public:
    ** 
    ** \return The number of frames present in the tag object.
    **/
-  size_t     NumFrames() const { return __num_frames; }
+  size_t     NumFrames() const { return _num_frames; }
   ID3_Frame* GetFrameNum(index_t) const;
   ID3_Frame* operator[](index_t) const;
   ID3_Tag&   operator=( const ID3_Tag & );
   
-  bool       GetUnsync() const { return __hdr.GetUnsync(); }
+  bool       GetUnsync() const { return _hdr.GetUnsync(); }
   
-  bool       HasTagType(uint16 tt) const { return __file_tags.test(tt); }
+  bool       HasTagType(uint16 tt) const { return _file_tags.test(tt); }
   ID3_V2Spec GetSpec() const;
   
   static size_t IsV2Tag(const uchar*);
@@ -132,23 +132,23 @@ protected:
   size_t     RenderV2(uchar*) const;
   
 private:
-  ID3_TagHeader __hdr;          // information relevant to the tag header
-  bool       __is_padded;       // add padding to tags?
+  ID3_TagHeader _hdr;          // information relevant to the tag header
+  bool       _is_padded;       // add padding to tags?
   
-  ID3_Elem*  __frames;          // frames attached to the tag
-  size_t     __num_frames;      // the current number of frames
+  ID3_Elem*  _frames;          // frames attached to the tag
+  size_t     _num_frames;      // the current number of frames
   
-  mutable ID3_Elem*  __cursor;  // which frame in list are we at
-  mutable bool       __changed; // has tag changed since last parse or render?
+  mutable ID3_Elem*  _cursor;  // which frame in list are we at
+  mutable bool       _changed; // has tag changed since last parse or render?
   
   // file-related member variables
-  char*      __file_name;       // name of the file we are linked to
-  size_t     __file_size;       // the size of the file (without any tag(s))
-  size_t     __prepended_bytes; // number of tag bytes at start of file
-  size_t     __appended_bytes;  // number of tag bytes at end of file
-  bool       __is_file_writable;// is the associated file (via Link) writable?
-  ID3_Flags  __tags_to_parse;   // which tag types should attempt to be parsed
-  ID3_Flags  __file_tags;       // which tag types does the file contain
+  char*      _file_name;       // name of the file we are linked to
+  size_t     _file_size;       // the size of the file (without any tag(s))
+  size_t     _prepended_bytes; // number of tag bytes at start of file
+  size_t     _appended_bytes;  // number of tag bytes at end of file
+  bool       _is_file_writable;// is the associated file (via Link) writable?
+  ID3_Flags  _tags_to_parse;   // which tag types should attempt to be parsed
+  ID3_Flags  _file_tags;       // which tag types does the file contain
 };
 
 //@{
@@ -162,4 +162,4 @@ size_t     ID3_GetDataSize(const ID3_Tag&);
 // deprecated!
 int32 ID3_IsTagHeader(const uchar header[ID3_TAGHEADERSIZE]);
 
-#endif /* __ID3LIB_TAG_H__ */
+#endif /* _ID3LIB_TAG_H_ */

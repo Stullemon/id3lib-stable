@@ -1,4 +1,4 @@
-// $Id: spec.h,v 1.2 2000/05/02 21:59:08 eldamitri Exp $
+// $Id: spec.h,v 1.3 2000/09/11 07:46:32 eldamitri Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,8 +24,8 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#ifndef __ID3LIB_SPEC_H__
-#define __ID3LIB_SPEC_H__
+#ifndef _ID3LIB_SPEC_H_
+#define _ID3LIB_SPEC_H_
 
 #include "globals.h"
 
@@ -54,4 +54,4 @@ public:
   }
 };
 
-#endif /* __ID3LIB_SPEC_H__ */
+#endif /* _ID3LIB_SPEC_H_ */

@@ -1,4 +1,4 @@
-// $Id: field_binary.cpp,v 1.12 2000/09/09 23:04:28 eldamitri Exp $
+// $Id: field_binary.cpp,v 1.13 2000/09/11 07:46:32 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -46,18 +46,18 @@ void ID3_Field::Set(const uchar *newData, //< The data to assign to this field.
   
   if (newSize == 0 || newData == NULL)
   {
-    __size = 0;
-    __data = NULL;
+    _size = 0;
+    _data = NULL;
   }
   else
   {
-    __data = new uchar[newSize];
+    _data = new uchar[newSize];
     
-    memcpy(__data, newData, newSize);
-    __size = newSize;
+    memcpy(_data, newData, newSize);
+    _size = newSize;
   }
-  __type = ID3FTY_BINARY;
-  __changed = true;
+  _type = ID3FTY_BINARY;
+  _changed = true;
   
   return ;
 }
@@ -82,9 +82,9 @@ void ID3_Field::Get(uchar *buffer,    //< Destination of retrieved string
     ID3_THROW(ID3E_NoBuffer);
   }
     
-  if (__data != NULL && __size > 0)
+  if (_data != NULL && _size > 0)
   {
-    memcpy(buffer, __data, MIN(max_bytes, __size));
+    memcpy(buffer, _data, MIN(max_bytes, _size));
   }
 }
 
@@ -141,12 +141,12 @@ void ID3_Field::ToFile(const char *info //< Destination filename
     ID3_THROW(ID3E_NoData);
   }
     
-  if ((__data != NULL) && (__size > 0))
+  if ((_data != NULL) && (_size > 0))
   {
     FILE* temp_file = fopen(info, "wb");
     if (temp_file != NULL)
     {
-      fwrite(__data, 1, __size, temp_file);
+      fwrite(_data, 1, _size, temp_file);
       fclose(temp_file);
     }
   }
@@ -160,9 +160,9 @@ ID3_Field::ParseBinary(const uchar *buffer, size_t nSize)
 {
   // copy the remaining bytes, unless we're fixed length, in which case copy
   // the minimum of the remaining bytes vs. the fixed length
-  size_t bytesUsed = (__length > 0 ? MIN(nSize, __length) : nSize);
+  size_t bytesUsed = (_length > 0 ? MIN(nSize, _length) : nSize);
   this->Set(buffer, bytesUsed);
-  __changed = false;
+  _changed = false;
   
   return bytesUsed;
 }
@@ -171,7 +171,7 @@ ID3_Field::ParseBinary(const uchar *buffer, size_t nSize)
 size_t ID3_Field::RenderBinary(uchar *buffer) const
 {
   size_t bytesUsed = BinSize();
-  memcpy(buffer, (uchar *) __data, bytesUsed);
-  __changed = false;
+  memcpy(buffer, (uchar *) _data, bytesUsed);
+  _changed = false;
   return bytesUsed;
 }

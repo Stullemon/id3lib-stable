@@ -1,4 +1,4 @@
-// $Id: header.h,v 1.14 2000/06/22 20:09:55 eldamitri Exp $
+// $Id: header.h,v 1.15 2000/09/11 07:46:32 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,8 +24,8 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#ifndef __ID3LIB_HEADER_H__
-#define __ID3LIB_HEADER_H__
+#ifndef _ID3LIB_HEADER_H_
+#define _ID3LIB_HEADER_H_
 
 #include "spec.h"
 #include "flags.h"
@@ -44,24 +44,24 @@ public:
   };
 
   ID3_Header() 
-    : __spec (ID3V2_UNKNOWN)
+    : _spec (ID3V2_UNKNOWN)
   { 
     this->Clear();
-    __changed = false;
+    _changed = false;
   }
   virtual ~ID3_Header() { ; }
   
   virtual bool       SetSpec(ID3_V2Spec);
-  /*   */ ID3_V2Spec GetSpec() const { return __spec; }
+  /*   */ ID3_V2Spec GetSpec() const { return _spec; }
 
   /*   */ bool       SetDataSize(size_t size)
   { 
-    bool changed = size != __data_size; 
-    __changed = __changed || changed;
-    __data_size = size;
+    bool changed = size != _data_size; 
+    _changed = _changed || changed;
+    _data_size = size;
     return changed;
   }
-  /*   */ size_t     GetDataSize() const { return __data_size; }
+  /*   */ size_t     GetDataSize() const { return _data_size; }
   
   virtual bool       Clear()
   {
@@ -71,8 +71,8 @@ public:
       this->SetSpec(ID3V2_LATEST);
       changed = true;
     }
-    changed = __flags.clear() || changed;
-    __changed = changed || __changed;
+    changed = _flags.clear() || changed;
+    _changed = changed || _changed;
     return changed;
   }
   virtual size_t     Size() const = 0;
@@ -86,18 +86,18 @@ public:
     { 
       this->SetSpec(rhs.GetSpec());
       this->SetDataSize(rhs.GetSpec());
-      this->__flags = rhs.__flags;
+      this->_flags = rhs._flags;
     }
     return *this;
   }
 
 protected:
-  ID3_V2Spec      __spec;             // which version of the spec 
-  size_t          __data_size;        // how big is the data?
-  ID3_Flags       __flags;            // header flags
-  const Info*     __info;             // header info w.r.t. id3v2 spec
-  bool            __changed;          // has the header changed since parsing
+  ID3_V2Spec      _spec;             // which version of the spec 
+  size_t          _data_size;        // how big is the data?
+  ID3_Flags       _flags;            // header flags
+  const Info*     _info;             // header info w.r.t. id3v2 spec
+  bool            _changed;          // has the header changed since parsing
 }
 ;
 
-#endif /* __ID3LIB_HEADER_H */
+#endif /* _ID3LIB_HEADER_H */

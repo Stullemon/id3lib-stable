@@ -1,4 +1,4 @@
-// $Id: field_integer.cpp,v 1.9 2000/06/06 12:22:26 eldamitri Exp $
+// $Id: field_integer.cpp,v 1.10 2000/09/11 07:46:32 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -49,10 +49,10 @@ void ID3_Field::Set(uint32 val)
 {
   Clear();
   
-  __data = (uchar *) val;  // Ack!  This is terrible!
-  __size = sizeof(uint32);
-  __type = ID3FTY_INTEGER;
-  __changed = true;
+  _data = (uchar *) val;  // Ack!  This is terrible!
+  _size = sizeof(uint32);
+  _type = ID3FTY_INTEGER;
+  _changed = true;
   
   return ;
 }
@@ -75,13 +75,13 @@ size_t ID3_Field::ParseInteger(const uchar *buffer, size_t nSize)
   {
     nBytes = MIN(nSize, sizeof(uint32));
     
-    if (__length > 0)
+    if (_length > 0)
     {
-      nBytes = MIN(__length, nBytes);
+      nBytes = MIN(_length, nBytes);
     }
 
     Set(ParseNumber(buffer, nBytes));
-    __changed = false;
+    _changed = false;
   }
   
   return nBytes;
@@ -90,7 +90,7 @@ size_t ID3_Field::ParseInteger(const uchar *buffer, size_t nSize)
 
 size_t ID3_Field::RenderInteger(uchar *buffer) const
 {
-  size_t bytesUsed = RenderNumber(buffer, (uint32) __data, this->BinSize());
-  __changed = false;
+  size_t bytesUsed = RenderNumber(buffer, (uint32) _data, this->BinSize());
+  _changed = false;
   return bytesUsed;
 }

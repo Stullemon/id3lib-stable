@@ -1,4 +1,4 @@
-/* $Id: sized_types.h,v 1.4 2000/04/20 03:42:44 eldamitri Exp $
+/* $Id: sized_types.h,v 1.5 2000/09/11 07:46:32 eldamitri Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags Copyright
  * 1999, 2000 Scott Thomas Haug
@@ -30,8 +30,8 @@
  ** limits.h
  **/
 
-#ifndef __SIZED_TYPES_H__
-#define __SIZED_TYPES_H__ 
+#ifndef _SIZED_TYPES_H_
+#define _SIZED_TYPES_H_ 
 
 #include <limits.h>
 
@@ -82,5 +82,5 @@ typedef short            int32;
 #error This machine has no 32-bit type
 #endif /* UINT_MAX == 0xfffffffful */
 
-#endif /* __SIZED_TYPES_H__ */
+#endif /* _SIZED_TYPES_H_ */
 

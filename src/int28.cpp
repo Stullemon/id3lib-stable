@@ -1,4 +1,4 @@
-// $Id: int28.cpp,v 1.3 2000/05/01 13:05:07 eldamitri Exp $
+// $Id: int28.cpp,v 1.4 2000/09/11 07:46:32 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -46,41 +46,41 @@ void int28::set(uchar val[sizeof(uint32)])
 {
   for (size_t i = 0; i < sizeof(uint32); i++)
   {
-    __acValue[i] = val[i];
+    _acValue[i] = val[i];
   }
 
   uchar bytes [4];
-  bytes[0] = (uchar) ((__acValue[0] >> 3) & MASK4);
-  bytes[1] = (uchar)(((__acValue[1] >> 2) & MASK5) | ((__acValue[0] & MASK3) << 5));
-  bytes[2] = (uchar)(((__acValue[2] >> 1) & MASK6) | ((__acValue[1] & MASK2) << 6));
-  bytes[3] = (uchar)(((__acValue[3] >> 0) & MASK7) | ((__acValue[2] & MASK1) << 7));
+  bytes[0] = (uchar) ((_acValue[0] >> 3) & MASK4);
+  bytes[1] = (uchar)(((_acValue[1] >> 2) & MASK5) | ((_acValue[0] & MASK3) << 5));
+  bytes[2] = (uchar)(((_acValue[2] >> 1) & MASK6) | ((_acValue[1] & MASK2) << 6));
+  bytes[3] = (uchar)(((_acValue[3] >> 0) & MASK7) | ((_acValue[2] & MASK1) << 7));
 
-  __nValue = ParseNumber(bytes);
+  _nValue = ParseNumber(bytes);
 }
 
 void int28::set(uint32 val)
 {
-  __nValue = val;
+  _nValue = val;
   for (size_t i = 0; i < sizeof(uint32); i++)
   {
-    __acValue[sizeof(uint32) - 1 - i] = 
+    _acValue[sizeof(uint32) - 1 - i] = 
       (uchar) (((val >> (i * 7)) & MASK7) & MASK8);
   }
 }
 
 uint32 int28::get(void)
 {
-  return __nValue;
+  return _nValue;
 }
 
 uchar int28::operator[](size_t posn)
 {
-  return __acValue[posn];
+  return _acValue[posn];
 }
 
 ostream& operator<<(ostream& out, int28& val)
 {
-  out.write(val.__acValue, sizeof(uint32));
+  out.write(val._acValue, sizeof(uint32));
   return out;
 }
 

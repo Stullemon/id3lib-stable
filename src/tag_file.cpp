@@ -1,4 +1,4 @@
-// $Id: tag_file.cpp,v 1.22 2000/07/14 07:10:58 adcockj Exp $
+// $Id: tag_file.cpp,v 1.23 2000/09/11 07:46:32 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -131,15 +131,15 @@ size_t ID3_Tag::Link(const char *fileInfo, bool parseID3v1, bool parseLyrics3)
  **/
 size_t ID3_Tag::Link(const char *fileInfo, flags_t tag_types)
 {
-  __tags_to_parse.set(tag_types);
+  _tags_to_parse.set(tag_types);
   
   if (NULL == fileInfo)
   {
     return 0;
   }
 
-  strcpy(__file_name, fileInfo);
-  __changed = true;
+  strcpy(_file_name, fileInfo);
+  _changed = true;
 
   this->ParseFile();
   
@@ -341,7 +341,7 @@ flags_t ID3_Tag::Update(flags_t ulTagFlag)
   
   fstream file;
   ID3_Err err = ID3_OpenWritableFile(this->GetFileName(), file);
-  __file_size = ID3_GetFileSize(file);
+  _file_size = ID3_GetFileSize(file);
   
   if (err == ID3E_NoFile)
   {
@@ -354,8 +354,8 @@ flags_t ID3_Tag::Update(flags_t ulTagFlag)
 
   if ((ulTagFlag & ID3TT_ID3V2) && this->HasChanged())
   {
-    __prepended_bytes = RenderV2ToFile(*this, file);
-    if (__prepended_bytes)
+    _prepended_bytes = RenderV2ToFile(*this, file);
+    if (_prepended_bytes)
     {
       tags |= ID3TT_ID3V2;
     }
@@ -368,16 +368,16 @@ flags_t ID3_Tag::Update(flags_t ulTagFlag)
     if (tag_bytes)
     {
       // only add the tag_bytes if there wasn't an id3v1 tag before
-      if (! __file_tags.test(ID3TT_ID3V1))
+      if (! _file_tags.test(ID3TT_ID3V1))
       {
-        __appended_bytes += tag_bytes;
+        _appended_bytes += tag_bytes;
       }
       tags |= ID3TT_ID3V1;
     }
   }
-  __changed = false;
-  __file_tags.add(tags);
-  __file_size = ID3_GetFileSize(file);
+  _changed = false;
+  _file_tags.add(tags);
+  _file_size = ID3_GetFileSize(file);
   file.close();
   return tags;
 }
@@ -394,14 +394,14 @@ flags_t ID3_Tag::Strip(flags_t ulTagFlag)
   const size_t data_size = ID3_GetDataSize(*this);
   
   // First remove the v2 tag, if requested
-  if (ulTagFlag & ID3TT_PREPENDED & __file_tags.get())
+  if (ulTagFlag & ID3TT_PREPENDED & _file_tags.get())
   {
     fstream file;
     if (ID3E_NoError != ID3_OpenWritableFile(this->GetFileName(), file))
     {
       return ulTags;
     }
-    __file_size = ID3_GetFileSize(file);
+    _file_size = ID3_GetFileSize(file);
 
     // We will remove the id3v2 tag in place: since it comes at the beginning
     // of the file, we'll effectively move all the data that comes after the
@@ -459,9 +459,9 @@ flags_t ID3_Tag::Strip(flags_t ulTagFlag)
   
   size_t nNewFileSize = data_size;
 
-  if ((__file_tags.get() & ID3TT_APPENDED) && (ulTagFlag & ID3TT_APPENDED))
+  if ((_file_tags.get() & ID3TT_APPENDED) && (ulTagFlag & ID3TT_APPENDED))
   {
-    ulTags |= __file_tags.get() & ID3TT_APPENDED;
+    ulTags |= _file_tags.get() & ID3TT_APPENDED;
   }
   else
   {
@@ -470,11 +470,11 @@ flags_t ID3_Tag::Strip(flags_t ulTagFlag)
     nNewFileSize += this->GetAppendedBytes();
   }
   
-  if ((ulTagFlag & ID3TT_PREPENDED) && (__file_tags.get() & ID3TT_PREPENDED))
+  if ((ulTagFlag & ID3TT_PREPENDED) && (_file_tags.get() & ID3TT_PREPENDED))
   {
     // If we're stripping the ID3v2 tag, there's no need to adjust the new
     // file size, since it doesn't account for the ID3v2 tag size
-    ulTags |= __file_tags.get() & ID3TT_PREPENDED;
+    ulTags |= _file_tags.get() & ID3TT_PREPENDED;
   }
   else
   {
@@ -484,16 +484,16 @@ flags_t ID3_Tag::Strip(flags_t ulTagFlag)
     nNewFileSize += this->GetPrependedBytes();
   }
 
-  if (ulTags && (truncate(__file_name, nNewFileSize) == -1))
+  if (ulTags && (truncate(_file_name, nNewFileSize) == -1))
   {
     ID3_THROW(ID3E_NoFile);
   }
 
-  __prepended_bytes = (ulTags & ID3TT_PREPENDED) ? 0 : __prepended_bytes;
-  __appended_bytes  = (ulTags & ID3TT_APPENDED)  ? 0 : __appended_bytes;
-  __file_size = data_size + __prepended_bytes + __appended_bytes;
+  _prepended_bytes = (ulTags & ID3TT_PREPENDED) ? 0 : _prepended_bytes;
+  _appended_bytes  = (ulTags & ID3TT_APPENDED)  ? 0 : _appended_bytes;
+  _file_size = data_size + _prepended_bytes + _appended_bytes;
   
-  __changed = __file_tags.remove(ulTags) || __changed;
+  _changed = _file_tags.remove(ulTags) || _changed;
   
   return ulTags;
 }

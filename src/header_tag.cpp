@@ -1,4 +1,4 @@
-// $Id: header_tag.cpp,v 1.12 2000/05/28 05:02:08 eldamitri Exp $
+// $Id: header_tag.cpp,v 1.13 2000/09/11 07:46:32 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -41,10 +41,10 @@ bool ID3_TagHeader::SetSpec(ID3_V2Spec spec)
   bool changed = this->ID3_Header::SetSpec(spec);
   if (changed)
   {
-    if (__info)
+    if (_info)
     {
-      __flags.set(EXPERIMENTAL, __info->is_experimental);
-      __flags.set(EXTENDED,     __info->is_extended);
+      _flags.set(EXPERIMENTAL, _info->is_experimental);
+      _flags.set(EXTENDED,     _info->is_extended);
     }
   }
   return changed;
@@ -54,9 +54,9 @@ size_t ID3_TagHeader::Size() const
 {
   size_t bytesUsed = ID3_TagHeader::SIZE;
   
-  if (__info->is_extended)
+  if (_info->is_extended)
   {
-    bytesUsed += __info->extended_bytes + sizeof(uint32);
+    bytesUsed += _info->extended_bytes + sizeof(uint32);
   }
   
   return bytesUsed;
@@ -74,16 +74,16 @@ size_t ID3_TagHeader::Render(uchar *buffer) const
   buffer[size++] = ID3_V2SpecToRev(ID3V2_LATEST);
   
   // set the flags byte in the header
-  buffer[size++] = static_cast<uchar>(__flags.get() & MASK8);
+  buffer[size++] = static_cast<uchar>(_flags.get() & MASK8);
   
   uint28 size28(this->GetDataSize());
   size28.Render(&buffer[size]);
   size += sizeof(uint32);
 
   // now we render the extended header
-  if (__flags.test(EXTENDED))
+  if (_flags.test(EXTENDED))
   {
-    size += RenderNumber(&buffer[size], __info->extended_bytes);
+    size += RenderNumber(&buffer[size], _info->extended_bytes);
   }
   
   return size;
@@ -104,13 +104,13 @@ size_t ID3_TagHeader::Parse(const uchar* data, size_t size)
   this->SetSpec(ID3_VerRevToV2Spec(major, minor));
 
   // Get the flags at the appropriate offset
-  __flags.set(static_cast<ID3_Flags::TYPE>(data[FLAGS_OFFSET]));
+  _flags.set(static_cast<ID3_Flags::TYPE>(data[FLAGS_OFFSET]));
 
   // set the data size
   uint28 data_size = uint28(&data[SIZE_OFFSET]);
   this->SetDataSize(data_size.to_uint32());
   
-  if (__flags.test(EXTENDED))
+  if (_flags.test(EXTENDED))
   {
     if (this->GetSpec() == ID3V2_2_1)
     {

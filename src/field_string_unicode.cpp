@@ -1,4 +1,4 @@
-// $Id: field_string_unicode.cpp,v 1.17 2000/06/23 00:37:33 eldamitri Exp $
+// $Id: field_string_unicode.cpp,v 1.18 2000/09/11 07:46:32 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -51,11 +51,11 @@
  **/
 void ID3_Field::Set(const unicode_t *string)
 {
-  size_t nBytes = (0 == __length) ? ucslen(string) : __length;
+  size_t nBytes = (0 == _length) ? ucslen(string) : _length;
   
   // we can simply increment the nBytes count here because we just pilfer
   // the NULL which is present in the string which was passed to us
-  if (__flags & ID3FF_CSTR)
+  if (_flags & ID3FF_CSTR)
   {
     nBytes++;
   }
@@ -66,8 +66,8 @@ void ID3_Field::Set(const unicode_t *string)
   Set((uchar *) string, nBytes);
   
   this->SetEncoding(ID3TE_UNICODE);
-  __type = ID3FTY_TEXTSTRING;
-  __changed = true;
+  _type = ID3FTY_TEXTSTRING;
+  _changed = true;
   
   return ;
 }
@@ -81,13 +81,13 @@ void ID3_Field::Set(const unicode_t *string)
  **/
 void ID3_Field::Add(const unicode_t *string)
 {
-  if (NULL == __data)
+  if (NULL == _data)
   {
     Set(string);
   }
   else
   {
-    unicode_t *uBuffer = (unicode_t *) __data;
+    unicode_t *uBuffer = (unicode_t *) _data;
 
     // +1 is for the NULL at the end and the other +1 is for the list divider
     size_t newLen = ucslen(string) + ucslen(uBuffer) + 1 + 1;
@@ -141,11 +141,11 @@ size_t ID3_Field::Get(unicode_t *buffer, size_t maxChars, index_t itemNum) const
   size_t charsUsed = 0;
   
   // check to see if there is a string in the frame to copy before we even try
-  if (NULL != __data)
+  if (NULL != _data)
   {
     lsint nullOffset = 0;
     
-    if (__flags & ID3FF_CSTR)
+    if (_flags & ID3FF_CSTR)
     {
       nullOffset = -1;
     }
@@ -154,7 +154,7 @@ size_t ID3_Field::Get(unicode_t *buffer, size_t maxChars, index_t itemNum) const
     // before we try to get it
     if (itemNum <= GetNumTextItems() && itemNum > 0)
     {
-      unicode_t *source = (unicode_t *) __data;
+      unicode_t *source = (unicode_t *) _data;
       size_t posn = 0;
       size_t sourceLen = 0;
       index_t curItemNum = 1;
@@ -163,7 +163,7 @@ size_t ID3_Field::Get(unicode_t *buffer, size_t maxChars, index_t itemNum) const
       while (curItemNum < itemNum)
       {
         while (*source != L'\001' && *source != L'\0' && posn <
-               ((__size / sizeof(unicode_t)) + nullOffset))
+               ((_size / sizeof(unicode_t)) + nullOffset))
         {
           source++, posn++;
         }
@@ -175,7 +175,7 @@ size_t ID3_Field::Get(unicode_t *buffer, size_t maxChars, index_t itemNum) const
       // now that we are positioned at the first character of the string we
       // want, find the end of it
       while (source[sourceLen] != L'\001' && source[sourceLen] != L'\0' &&
-             posn <((__size / sizeof(unicode_t) + nullOffset)))
+             posn <((_size / sizeof(unicode_t) + nullOffset)))
       {
         sourceLen++, posn++;
       }
@@ -212,15 +212,15 @@ size_t ID3_Field::GetNumTextItems() const
 {
   size_t numItems = 0;
   
-  if (NULL != __data)
+  if (NULL != _data)
   {
     index_t posn = 0;
     
     numItems++;
     
-    while (posn < __size)
+    while (posn < _size)
     {
-      if (__data[posn++] == L'\001')
+      if (_data[posn++] == L'\001')
       {
         numItems++;
       }
@@ -236,13 +236,13 @@ ID3_Field::ParseUnicodeString(const uchar *buffer, size_t nSize)
 {
   size_t nBytes = 0;
   unicode_t *temp = NULL;
-  if (__length > 0)
+  if (_length > 0)
   {
-    nBytes = __length;
+    nBytes = _length;
   }
   else
   {
-    if (__flags & ID3FF_CSTR)
+    if (_flags & ID3FF_CSTR)
     {
       while (nBytes < nSize &&
              !(buffer[nBytes] == 0 && buffer[nBytes + 1] == 0))
@@ -317,12 +317,12 @@ ID3_Field::ParseUnicodeString(const uchar *buffer, size_t nSize)
     delete [] temp;
   }
   
-  if (__flags & ID3FF_CSTR)
+  if (_flags & ID3FF_CSTR)
   {
     nBytes += sizeof(unicode_t);
   }
     
-  __changed = false;
+  _changed = false;
   
   return nBytes;
 }
@@ -334,11 +334,11 @@ size_t ID3_Field::RenderUnicodeString(uchar *buffer) const
   
   nBytes = BinSize();
   
-  if (NULL != __data && __size && nBytes)
+  if (NULL != _data && _size && nBytes)
   {
     // we render at sizeof(unicode_t) bytes into the buffer because we make
     // room for the Unicode BOM
-    memcpy(&buffer[sizeof(unicode_t)], (uchar *) __data, 
+    memcpy(&buffer[sizeof(unicode_t)], (uchar *) _data, 
            nBytes - sizeof(unicode_t));
     
     unicode_t *ourString = (unicode_t *) &buffer[sizeof(unicode_t)];
@@ -349,7 +349,7 @@ size_t ID3_Field::RenderUnicodeString(uchar *buffer) const
       {
         unicode_t sub = L'/';
         
-        if (__flags & ID3FF_LIST)
+        if (_flags & ID3FF_LIST)
         {
           sub = L'\0';
         }
@@ -366,7 +366,7 @@ size_t ID3_Field::RenderUnicodeString(uchar *buffer) const
     BOM[0] = 0xFEFF;
   }
   
-  if (nBytes == sizeof(unicode_t) && (__flags & ID3FF_CSTR))
+  if (nBytes == sizeof(unicode_t) && (_flags & ID3FF_CSTR))
   {
     for (size_t i = 0; i < sizeof(unicode_t); i++)
     {
@@ -374,7 +374,7 @@ size_t ID3_Field::RenderUnicodeString(uchar *buffer) const
     }
   }
     
-  __changed = false;
+  _changed = false;
   
   return nBytes;
 }

@@ -1,4 +1,4 @@
-// $Id: int28.h,v 1.9 2000/04/20 03:43:09 eldamitri Exp $
+// $Id: int28.h,v 1.10 2000/09/11 07:46:32 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,8 +24,8 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#ifndef __ID3LIB_INT28_H__
-#define __ID3LIB_INT28_H__
+#ifndef _ID3LIB_INT28_H_
+#define _ID3LIB_INT28_H_
 
 #include <iostream.h>
 #include "globals.h"
@@ -46,9 +46,9 @@ protected:
   void set(uchar val[sizeof(uint32)]);
 
 private:
-  uchar __acValue[sizeof(uint32)]; // the integer stored as a uchar array
-  uint32 __nValue;
+  uchar _acValue[sizeof(uint32)]; // the integer stored as a uchar array
+  uint32 _nValue;
 }
 ;
 
-#endif /* __ID3LIB_INT28_H__ */
+#endif /* _ID3LIB_INT28_H_ */

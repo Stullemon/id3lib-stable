@@ -1,4 +1,4 @@
-/* $Id: globals.h,v 1.32 2000/07/04 21:49:51 eldamitri Exp $
+/* $Id: globals.h,v 1.33 2000/09/11 07:46:31 eldamitri Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags Copyright
  * 1999, 2000 Scott Thomas Haug
@@ -29,8 +29,8 @@
  ** throughout id3lib.
  **/
 
-#ifndef __ID3LIB_GLOBALS_H__
-#define __ID3LIB_GLOBALS_H__
+#ifndef _ID3LIB_GLOBALS_H_
+#define _ID3LIB_GLOBALS_H_
 
 #if defined __cplusplus
 #  include <iostream.h>
@@ -46,9 +46,9 @@
  */
 #ifdef WIN32
 #  ifdef ID3LIB_COMPILATION
-#    define ID3_C_EXPORT extern __declspec(dllexport)
+#    define ID3_C_EXPORT extern _declspec(dllexport)
 #  else /* !ID3LIB_COMPILATION */
-#    define ID3_C_EXPORT extern __declspec(dllimport)
+#    define ID3_C_EXPORT extern _declspec(dllimport)
 #  endif /* !ID3LIB_COMPILATION */
 #else /* !WIN32 */
 #  define ID3_C_EXPORT
@@ -101,8 +101,8 @@ typedef uint16                flags_t;
 #  define ID3_ENUM(E)   enum   E
 #  define ID3_STRUCT(S) struct S
 #else
-#  define ID3_ENUM(E)   typedef enum   __ ## E E; enum   __ ## E
-#  define ID3_STRUCT(S) typedef struct __ ## S S; struct __ ## S
+#  define ID3_ENUM(E)   typedef enum   _ ## E E; enum   _ ## E
+#  define ID3_STRUCT(S) typedef struct _ ## S S; struct _ ## S
 #endif
 
 /**
@@ -290,7 +290,7 @@ ID3_ENUM(ID3_V1Lengths)
  **
  ** @author Dirk Mahoney (dirk@id3.org)
  ** @author Scott Thomas Haug (sth2@cs.wustl.edu)
- ** @version $Id: globals.h,v 1.32 2000/07/04 21:49:51 eldamitri Exp $
+ ** @version $Id: globals.h,v 1.33 2000/09/11 07:46:31 eldamitri Exp $
  ** @see ID3_Tag
  **/
 ID3_STRUCT(ID3V1_Tag)
@@ -398,7 +398,7 @@ ID3_ENUM(ID3_TimeStampFormat)
 
 #else  /* !WIN32 */
 
-#  ifndef __EMX__
+#  ifndef _EMX_
 /* Unix */
 
 #    define ID3_DIR_SEPARATOR '/'
@@ -434,4 +434,4 @@ ID3_ENUM(ID3_TimeStampFormat)
 #undef CLAMP
 #define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
  
-#endif /* __ID3LIB_GLOBALS_H__ */
+#endif /* _ID3LIB_GLOBALS_H_ */

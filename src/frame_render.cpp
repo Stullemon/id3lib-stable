@@ -1,4 +1,4 @@
-// $Id: frame_render.cpp,v 1.12 2000/06/06 12:22:57 eldamitri Exp $
+// $Id: frame_render.cpp,v 1.13 2000/09/11 07:46:32 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -80,7 +80,7 @@ size_t ID3_Frame::Render(uchar *buffer) const
 
   // Return immediately if we have no fields, which (usually) means we're
   // trying to render a frame which has been Cleared or hasn't been initialized
-  if (!__num_fields)
+  if (!_num_fields)
   {
     return 0;
   }
@@ -88,7 +88,7 @@ size_t ID3_Frame::Render(uchar *buffer) const
   uchar e_id = this->_GetEncryptionID(), g_id = this->_GetGroupingID();
   size_t decompressed_size = 0;
   size_t extras = ( e_id > 0 ? 1 : 0 ) + ( g_id > 0 ? 1 : 0 );
-  ID3_FrameHeader hdr = __hdr;
+  ID3_FrameHeader hdr = _hdr;
   
   const size_t hdr_size = hdr.Size();
 
@@ -97,7 +97,7 @@ size_t ID3_Frame::Render(uchar *buffer) const
   ID3_TextEnc enc = ID3TE_ASCII;
   size_t data_size = 0;
     
-  for (ID3_Field** fi = __fields; fi != __fields + __num_fields; fi++)
+  for (ID3_Field** fi = _fields; fi != _fields + _num_fields; fi++)
   {
     if ((*fi)->GetID() == ID3FN_TEXTENC)  
     {
@@ -172,7 +172,7 @@ size_t ID3_Frame::Render(uchar *buffer) const
   {
     *data++ = g_id;
   }
-  __changed = false;
+  _changed = false;
     
   return hdr_size + extras + data_size;
 }

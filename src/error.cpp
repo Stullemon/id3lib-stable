@@ -1,4 +1,4 @@
-// $Id: error.cpp,v 1.9 2000/09/06 07:04:18 eldamitri Exp $
+// $Id: error.cpp,v 1.10 2000/09/11 07:46:32 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -53,52 +53,52 @@ static char *ID3_ErrorDescs[] =
 ID3_Error::ID3_Error(ID3_Err eCode, const char *sFileName, 
                      size_t nLine, const char *sDesc)
 {
-  __error = eCode;
-  __line_num = nLine;
-  __file_name = __file_name = new char[strlen(sFileName) + 1]; 
-  strcpy(__file_name, sFileName);
-  __description = new char[strlen(sDesc) + 1];
-  strcpy(__description, sDesc);
+  _error = eCode;
+  _line_num = nLine;
+  _file_name = _file_name = new char[strlen(sFileName) + 1]; 
+  strcpy(_file_name, sFileName);
+  _description = new char[strlen(sDesc) + 1];
+  strcpy(_description, sDesc);
 }
 
 ID3_Error::ID3_Error(const ID3_Error& Error)
 {
-  __error = Error.__error;
-  __line_num = Error.__line_num;
+  _error = Error._error;
+  _line_num = Error._line_num;
 
-  __file_name = new char[strlen(Error.__file_name) + 1];
-  strcpy(__file_name, Error.__file_name);
-  __description = new char[strlen(Error.__description) + 1];
-  strcpy(__description, Error.__description);                          
+  _file_name = new char[strlen(Error._file_name) + 1];
+  strcpy(_file_name, Error._file_name);
+  _description = new char[strlen(Error._description) + 1];
+  strcpy(_description, Error._description);                          
 }
 
 ID3_Error::~ID3_Error()
 {
-  delete [] __file_name;
-  delete [] __description;
+  delete [] _file_name;
+  delete [] _description;
 }
 
 ID3_Err ID3_Error::GetErrorID() const
 {
-  return __error;
+  return _error;
 }
 
 const char *ID3_Error::GetErrorType() const
 {
-  return ID3_ErrorDescs[__error];
+  return ID3_ErrorDescs[_error];
 }
 
 const char *ID3_Error::GetErrorDesc() const
 {
-  return __description;
+  return _description;
 }
 
 const char *ID3_Error::GetErrorFile() const
 {
-  return __file_name;
+  return _file_name;
 }
 
 size_t ID3_Error::GetErrorLine() const
 {
-  return __line_num;
+  return _line_num;
 }

@@ -1,4 +1,4 @@
-// $Id: flags.h,v 1.2 2000/05/12 04:31:20 eldamitri Exp $
+// $Id: flags.h,v 1.3 2000/09/11 07:46:31 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,8 +24,8 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#ifndef __ID3LIB_FLAGS_H__
-#define __ID3LIB_FLAGS_H__
+#ifndef _ID3LIB_FLAGS_H_
+#define _ID3LIB_FLAGS_H_
 
 #include "flags.h"
 
@@ -34,12 +34,12 @@ class ID3_Flags
 public:
   typedef flags_t TYPE;
 
-  ID3_Flags() : __f(0) { ; }
+  ID3_Flags() : _f(0) { ; }
   virtual ~ID3_Flags() { ; }
 
-  TYPE   get() const         { return __f; }
+  TYPE   get() const         { return _f; }
   bool   test(TYPE f) const { return (this->get() & f) == f; }
-  bool   set(TYPE f)        { bool r = (__f != f); __f = f; return r; }
+  bool   set(TYPE f)        { bool r = (_f != f); _f = f; return r; }
   bool   add(TYPE f)        { return this->set(this->get() | f); }
   bool   remove(TYPE f)     { return this->set(this->get() & ~f); }
   bool   clear()             { return this->set(0); }
@@ -49,7 +49,7 @@ public:
   { if (this != &f) { this->set(f.get()); } return *this; }
 
 private:
-  TYPE __f;
+  TYPE _f;
 };
 
-#endif /* __ID3LIB_FLAGS_H__ */
+#endif /* _ID3LIB_FLAGS_H_ */

@@ -1,4 +1,4 @@
-// $Id: field.h,v 1.31 2000/08/28 13:41:32 eldamitri Exp $
+// $Id: field.h,v 1.32 2000/09/11 07:46:31 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,8 +24,8 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#ifndef __ID3LIB_FIELD_H__
-#define __ID3LIB_FIELD_H__
+#ifndef _ID3LIB_FIELD_H_
+#define _ID3LIB_FIELD_H_
 
 #include <stdlib.h>
 #include "error.h"
@@ -71,7 +71,7 @@ public:
   // integer field functions
   ID3_Field&    operator= (uint32 val) { this->Set(val); return *this; }
   void          Set(uint32);
-  uint32        Get() const { return (uint32) __data; }
+  uint32        Get() const { return (uint32) _data; }
 
   // ASCII string field functions
   ID3_Field&    operator= (const char* s) { this->Set(s); return *this; }
@@ -93,15 +93,15 @@ public:
   
   // miscelaneous functions
   ID3_Field&    operator=( const ID3_Field & );
-  const uchar*  GetBinary() const { return __data; }
+  const uchar*  GetBinary() const { return _data; }
   bool          InScope(ID3_V2Spec spec) const
-  { return __spec_begin <= spec && spec <= __spec_end; }
+  { return _spec_begin <= spec && spec <= _spec_end; }
 
-  ID3_FieldID   GetID() const { return __id; }
-  ID3_FieldType GetType() const { return __type; }
+  ID3_FieldID   GetID() const { return _id; }
+  ID3_FieldType GetType() const { return _type; }
   bool          SetEncoding(ID3_TextEnc enc);
-  ID3_TextEnc   GetEncoding() const { return __enc; }
-  bool          IsEncodable() const { return (__flags & ID3FF_ENCODABLE) > 0; }
+  ID3_TextEnc   GetEncoding() const { return _enc; }
+  bool          IsEncodable() const { return (_flags & ID3FF_ENCODABLE) > 0; }
   
 
 private:
@@ -115,16 +115,16 @@ private:
   // To prevent public instantiation, the constructor is made private
   ID3_Field();
 
-  ID3_FieldID   __id;              // the ID of this field
-  ID3_FieldType __type;            // what type is this field or should be
-  size_t        __length;          // length of field (fixed if positive)
-  ID3_V2Spec    __spec_begin;      // spec end
-  ID3_V2Spec    __spec_end;        // spec begin
-  flags_t       __flags;           // special field flags
-  mutable bool  __changed;         // field changed since last parse/render?
-  uchar        *__data;
-  size_t        __size;
-  ID3_TextEnc   __enc;             // encoding
+  ID3_FieldID   _id;              // the ID of this field
+  ID3_FieldType _type;            // what type is this field or should be
+  size_t        _length;          // length of field (fixed if positive)
+  ID3_V2Spec    _spec_begin;      // spec end
+  ID3_V2Spec    _spec_end;        // spec begin
+  flags_t       _flags;           // special field flags
+  mutable bool  _changed;         // field changed since last parse/render?
+  uchar        *_data;
+  size_t        _size;
+  ID3_TextEnc   _enc;             // encoding
 protected:
   size_t RenderInteger(uchar *buffer) const;
   size_t RenderASCIIString(uchar *buffer) const;
@@ -142,4 +142,4 @@ protected:
 ID3_FrameDef *ID3_FindFrameDef(ID3_FrameID id);
 ID3_FrameID   ID3_FindFrameID(const char *id);
 
-#endif /* __ID3LIB_FIELD_H__ */
+#endif /* _ID3LIB_FIELD_H_ */

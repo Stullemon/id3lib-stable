@@ -1,5 +1,5 @@
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
-// $Id: uint28.h,v 1.6 2000/08/28 13:41:33 eldamitri Exp $
+// $Id: uint28.h,v 1.7 2000/09/11 07:46:32 eldamitri Exp $
 
 // This library is free software; you can redistribute it and/or modify it
 // under the terms of the GNU Library General Public License as published by
@@ -22,8 +22,8 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#ifndef __ID3LIB_UINT28_H__
-#define __ID3LIB_UINT28_H__
+#ifndef _ID3LIB_UINT28_H_
+#define _ID3LIB_UINT28_H_
 
 #include "globals.h"
 #include <iostream.h>
@@ -53,7 +53,7 @@ class uint28
   // Store the 28-bit integer's value as a regular 32-bit integer.  The Parse()
   // and and Render() methods handle the manipulation of its actual byte
   // representation.
-  uint32 __value;
+  uint32 _value;
 public:
   // can't initilaize statics here as windows compiler doesn't like it
   // these variables are initilaized in the cpp file
@@ -77,7 +77,7 @@ public:
   /** Copy constructor
    ** \param rhs The uint28 object to copy
    **/
-  uint28(const uint28& rhs) : __value(rhs.to_uint32()) { ; }
+  uint28(const uint28& rhs) : _value(rhs.to_uint32()) { ; }
 
   virtual ~uint28() { ; }
 
@@ -91,7 +91,7 @@ public:
   uint28&    operator=(uint32 val)
   { 
     // The value must not exceed uint28::MAX
-    __value = (val > MAXVAL ? MAXVAL : val);
+    _value = (val > MAXVAL ? MAXVAL : val);
     return *this;
   }
   
@@ -103,7 +103,7 @@ public:
   { 
     if (this != &rhs)
     {
-      __value = rhs.to_uint32(); 
+      _value = rhs.to_uint32(); 
     }
     return *this; 
   }
@@ -135,7 +135,7 @@ public:
    **/
   uint32    to_uint32() const 
   {
-    return __value; 
+    return _value; 
   }
   
   /** Extracts a 28-bit integer from a character string
@@ -161,4 +161,4 @@ ostream& operator<<(ostream&, const uint28&);
 /** Extract a 28-bit integer from a character stream **/
 istream& operator>>(istream&, uint28&);
 
-#endif /* __ID3LIB_UINT28_H__ */
+#endif /* _ID3LIB_UINT28_H_ */

@@ -1,4 +1,4 @@
-// $Id: field_string_ascii.cpp,v 1.13 2000/06/06 12:22:34 eldamitri Exp $
+// $Id: field_string_ascii.cpp,v 1.14 2000/09/11 07:46:32 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -50,7 +50,7 @@ void ID3_Field::Set(const char *sString)
   if (sString != NULL)
   {
     Clear();
-    size_t nStrLen = (0 == __length) ? strlen(sString) : __length;
+    size_t nStrLen = (0 == _length) ? strlen(sString) : _length;
     unicode_t *temp = new unicode_t[nStrLen + 1];
     if (NULL == temp)
     {
@@ -63,7 +63,7 @@ void ID3_Field::Set(const char *sString)
     delete [] temp;
       
     this->SetEncoding(ID3TE_ASCII);
-    __type = ID3FTY_TEXTSTRING;
+    _type = ID3FTY_TEXTSTRING;
   }
   
   return ;
@@ -166,7 +166,7 @@ void ID3_Field::Add(const char *str)
     delete [] unicode_buffer;
     
     this->SetEncoding(ID3TE_ASCII);
-    __type = ID3FTY_TEXTSTRING;
+    _type = ID3FTY_TEXTSTRING;
   }
 }
 
@@ -177,12 +177,12 @@ ID3_Field::ParseASCIIString(const uchar *buffer, size_t nSize)
   size_t bytesUsed = 0;
   char *temp = NULL;
   
-  if (__length > 0)
+  if (_length > 0)
   {
     // The string is of fixed length
-    bytesUsed = __length;
+    bytesUsed = _length;
   }
-  else if (!(__flags & ID3FF_CSTR) || (__flags & ID3FF_LIST))
+  else if (!(_flags & ID3FF_CSTR) || (_flags & ID3FF_LIST))
   {
     // If the string isn't null-terminated or if it is null divided, we're
     // assured this is the last field of of the frame, and we can claim the
@@ -202,7 +202,7 @@ ID3_Field::ParseASCIIString(const uchar *buffer, size_t nSize)
     Set("");
   }
   // This check needs to come before the check for ID3FF_CSTR
-  else if (__flags & ID3FF_LIST)
+  else if (_flags & ID3FF_LIST)
   {
     const char *sBuffer = (const char *) buffer;
     for (size_t i = 0; i < bytesUsed; i += strlen(&sBuffer[i]) + 1)
@@ -211,7 +211,7 @@ ID3_Field::ParseASCIIString(const uchar *buffer, size_t nSize)
     }
   }
   // This check needs to come after the check for ID3FF_LIST
-  else if (__flags & ID3FF_CSTR)
+  else if (_flags & ID3FF_CSTR)
   {
     Set((const char *)buffer);
   }
@@ -236,12 +236,12 @@ ID3_Field::ParseASCIIString(const uchar *buffer, size_t nSize)
     delete [] temp;
   }
   
-  if (__flags & ID3FF_CSTR && !(__flags & ID3FF_LIST))
+  if (_flags & ID3FF_CSTR && !(_flags & ID3FF_LIST))
   {
     bytesUsed++;
   }
     
-  __changed = false;
+  _changed = false;
   
   return bytesUsed;
 }
@@ -251,9 +251,9 @@ size_t ID3_Field::RenderASCIIString(uchar *buffer) const
 {
   size_t nChars = BinSize();
 
-  if ((NULL != __data) && (nChars > 0))
+  if ((NULL != _data) && (nChars > 0))
   {
-    ucstombs((char *) buffer, (unicode_t *) __data, nChars);
+    ucstombs((char *) buffer, (unicode_t *) _data, nChars);
       
     // now we convert the internal dividers to what they are supposed to be
     for (index_t i = 0; i < nChars; i++)
@@ -262,7 +262,7 @@ size_t ID3_Field::RenderASCIIString(uchar *buffer) const
       {
         char sub = '/';
           
-        if (__flags & ID3FF_LIST)
+        if (_flags & ID3FF_LIST)
         {
           sub = '\0';
         }
@@ -271,12 +271,12 @@ size_t ID3_Field::RenderASCIIString(uchar *buffer) const
     }
   }
   
-  if ((1 == nChars) && (__flags & ID3FF_CSTR))
+  if ((1 == nChars) && (_flags & ID3FF_CSTR))
   {
     buffer[0] = '\0';
   }
     
-  __changed = false;
+  _changed = false;
   
   return nChars;
 }

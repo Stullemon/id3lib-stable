@@ -1,4 +1,4 @@
-// $Id: header_tag.h,v 1.13 2000/05/12 04:24:55 eldamitri Exp $
+// $Id: header_tag.h,v 1.14 2000/09/11 07:46:32 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,8 +24,8 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#ifndef __ID3LIB_HEADER_TAG_H__
-#define __ID3LIB_HEADER_TAG_H__
+#ifndef _ID3LIB_HEADER_TAG_H_
+#define _ID3LIB_HEADER_TAG_H_
 
 #include "header.h"
 
@@ -53,18 +53,18 @@ public:
 
   bool SetUnsync(bool b)
   {
-    bool changed = __flags.set(UNSYNC, b);
-    __changed = __changed || changed;
+    bool changed = _flags.set(UNSYNC, b);
+    _changed = _changed || changed;
     return changed;
   }
-  bool GetUnsync() const { return __flags.test(UNSYNC); }
+  bool GetUnsync() const { return _flags.test(UNSYNC); }
   bool SetExtended(bool b)
   {
-    bool changed = __flags.set(EXTENDED, b);
-    __changed = __changed || changed;
+    bool changed = _flags.set(EXTENDED, b);
+    _changed = _changed || changed;
     return changed;
   }
-  bool GetExtended() const { return __flags.test(EXTENDED); }
+  bool GetExtended() const { return _flags.test(EXTENDED); }
 
   // id3v2 tag header signature:  $49 44 33 MM mm GG ss ss ss ss
   // MM = major version (will never be 0xFF)
@@ -84,4 +84,4 @@ public:
   
 };
 
-#endif /* __ID3LIB_HEADER_TAG_H__ */
+#endif /* _ID3LIB_HEADER_TAG_H_ */

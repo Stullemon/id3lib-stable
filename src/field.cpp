@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.26 2000/09/09 23:03:08 eldamitri Exp $
+// $Id: field.cpp,v 1.27 2000/09/11 07:46:32 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -599,7 +599,7 @@ static ID3_FieldDef ID3FD_SyncLyrics[] =
 /*
  * Currently unused
  */
-#if defined __UNDEFINED__
+#if defined _UNDEFINED_
 static ID3_FieldDef ID3FD_Volume[] =
 {
   {
@@ -658,7 +658,7 @@ static ID3_FieldDef ID3FD_Volume[] =
   },
   { ID3FN_NOFIELD }
 };
-#endif /* __UNEFINED__ */
+#endif /* _UNEFINED_ */
 
 // **** Currently Implemented Frames
 // APIC  PIC  ID3FID_PICTURE           Attached picture
@@ -873,23 +873,23 @@ static  ID3_FrameDef ID3_FrameDefs[] =
  ** if you only plan to generate 3.0 tags.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: field.cpp,v 1.26 2000/09/09 23:03:08 eldamitri Exp $
+ ** @version $Id: field.cpp,v 1.27 2000/09/11 07:46:32 eldamitri Exp $
  ** \sa ID3_Tag
  ** \sa ID3_Frame
  ** \sa ID3_Err 
  **/
 
 ID3_Field::ID3_Field()
-  : __id(ID3FN_NOFIELD),
-    __type(ID3FTY_INTEGER),
-    __length(0),
-    __spec_begin(ID3V2_EARLIEST),
-    __spec_end(ID3V2_LATEST),
-    __flags(0),
-    __changed(false),
-    __data(NULL),
-    __size(0),
-    __enc(ID3TE_NONE)
+  : _id(ID3FN_NOFIELD),
+    _type(ID3FTY_INTEGER),
+    _length(0),
+    _spec_begin(ID3V2_EARLIEST),
+    _spec_end(ID3V2_LATEST),
+    _flags(0),
+    _changed(false),
+    _data(NULL),
+    _size(0),
+    _enc(ID3TE_NONE)
 {
   Clear();
 }
@@ -906,16 +906,16 @@ ID3_Field::~ID3_Field()
  **/
 void ID3_Field::Clear()
 {
-  if (__data != NULL && __size > 0 && __type != ID3FTY_INTEGER)
+  if (_data != NULL && _size > 0 && _type != ID3FTY_INTEGER)
   {
-    delete[] __data;
+    delete[] _data;
   }
     
-  __type       = ID3FTY_INTEGER;
-  __data       = NULL;
-  __size       = sizeof (uint32);
-  __changed    = true;
-  __enc        = ID3TE_NONE;
+  _type       = ID3FTY_INTEGER;
+  _data       = NULL;
+  _size       = sizeof (uint32);
+  _changed    = true;
+  _enc        = ID3TE_NONE;
   
   return ;
 }
@@ -923,7 +923,7 @@ void ID3_Field::Clear()
 bool
 ID3_Field::HasChanged()
 {
-  return __changed;
+  return _changed;
 }
 
 /** \fn size_t ID3_Field::Size() const
@@ -949,24 +949,24 @@ size_t ID3_Field::BinSize(bool withExtras) const
 {
   size_t bytes   = 0;
 
-  bytes = __size;
+  bytes = _size;
     
   // check to see if we are within the legal limit for this field 0 means
   // arbitrary length field
-  if (__length > 0)
+  if (_length > 0)
   {
-    bytes = __length;
+    bytes = _length;
   }
   else if (withExtras)
   {
-    if (NULL == __data && __size > 0)
+    if (NULL == _data && _size > 0)
     {
-      bytes = (__flags & ID3FF_CSTR) ? sizeof(unicode_t) : 0;
+      bytes = (_flags & ID3FF_CSTR) ? sizeof(unicode_t) : 0;
     }
       
     // if we are a Unicode string, add 2 bytes for the BOM (but only if there
     // is a string to render - regardless of NULL)
-    if (ID3TE_UNICODE == this->GetEncoding() && __data != NULL && __size > 0)
+    if (ID3TE_UNICODE == this->GetEncoding() && _data != NULL && _size > 0)
     {
       bytes += sizeof(unicode_t);
     }
@@ -974,12 +974,12 @@ size_t ID3_Field::BinSize(bool withExtras) const
     // if we are an ASCII string, divide by sizeof(unicode_t) because
     // internally we store the string as Unicode, so the ASCII version will
     // only be half as long
-    if (__type == ID3FTY_TEXTSTRING && this->GetEncoding() != ID3TE_UNICODE)
+    if (_type == ID3FTY_TEXTSTRING && this->GetEncoding() != ID3TE_UNICODE)
     {
       bytes /= sizeof(unicode_t);
     }
   }
-  else if (__type == ID3FTY_TEXTSTRING)
+  else if (_type == ID3FTY_TEXTSTRING)
   {
     // because it seems that the application called us via ID3_Field::Size()
     // we are going to return the number of characters, not bytes.  since we
@@ -1109,7 +1109,7 @@ ID3_Field::operator=( const ID3_Field &rhs )
       case ID3FTY_TEXTSTRING:
       case ID3FTY_BINARY:
       {
-        this->Set(rhs.__data, rhs.__size);
+        this->Set(rhs._data, rhs._size);
         break;
       }
       default:
@@ -1118,7 +1118,7 @@ ID3_Field::operator=( const ID3_Field &rhs )
       }
     }
   }
-  __type = rhs.__type;
+  _type = rhs._type;
   return *this;
 }
 
@@ -1128,8 +1128,8 @@ bool ID3_Field::SetEncoding(ID3_TextEnc enc)
     (ID3TE_NONE < enc && enc < ID3TE_NUMENCODINGS);
   if (changed)
   {
-    __enc = enc;
-    __changed = true;
+    _enc = enc;
+    _changed = true;
   }
   return changed;
 }

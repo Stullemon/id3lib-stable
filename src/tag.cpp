@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.24 2000/07/11 04:14:02 eldamitri Exp $
+// $Id: tag.cpp,v 1.25 2000/09/11 07:46:32 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -79,7 +79,7 @@
  ** 'CDM' frames from the unreleased ID3v2 2.01 draft specification.
  **
  ** \author Dirk Mahoney
- ** \version $Id: tag.cpp,v 1.24 2000/07/11 04:14:02 eldamitri Exp $
+ ** \version $Id: tag.cpp,v 1.25 2000/09/11 07:46:32 eldamitri Exp $
  ** \sa ID3_Frame
  ** \sa ID3_Field
  ** \sa ID3_Err
@@ -237,12 +237,12 @@ ID3_Tag& operator<<(ID3_Tag& tag, const ID3_Frame *frame)
  ** \param name The filename of the mp3 file to link to
  **/
 ID3_Tag::ID3_Tag(const char *name)
-  : __frames(NULL),
-    __file_name(new char[ID3_PATH_LENGTH]),
-    __file_size(0),
-    __prepended_bytes(0),
-    __appended_bytes(0),
-    __is_file_writable(false)
+  : _frames(NULL),
+    _file_name(new char[ID3_PATH_LENGTH]),
+    _file_size(0),
+    _prepended_bytes(0),
+    _appended_bytes(0),
+    _is_file_writable(false)
 {
   this->Clear();
   if (name)
@@ -256,12 +256,12 @@ ID3_Tag::ID3_Tag(const char *name)
  ** \param tag What is copied into this tag
  **/
 ID3_Tag::ID3_Tag(const ID3_Tag &tag)
-  : __frames(NULL),
-    __file_name(new char[ID3_PATH_LENGTH]),
-    __file_size(0),
-    __prepended_bytes(0),
-    __appended_bytes(0),
-    __is_file_writable(false)
+  : _frames(NULL),
+    _file_name(new char[ID3_PATH_LENGTH]),
+    _file_size(0),
+    _prepended_bytes(0),
+    _appended_bytes(0),
+    _is_file_writable(false)
 {
   *this = tag;
 }
@@ -270,7 +270,7 @@ ID3_Tag::~ID3_Tag()
 {
   this->Clear();
   
-  delete [] __file_name;
+  delete [] _file_name;
 }
 
 /** Clears the object and disassociates it from any files.
@@ -280,21 +280,21 @@ ID3_Tag::~ID3_Tag()
  **/
 void ID3_Tag::Clear()
 {
-  if (__frames)
+  if (_frames)
   {
-    ID3_ClearList(__frames);
-    __frames = NULL;
+    ID3_ClearList(_frames);
+    _frames = NULL;
   }
-  __num_frames = 0;
-  __cursor = NULL;
-  __is_padded = true;
+  _num_frames = 0;
+  _cursor = NULL;
+  _is_padded = true;
   
-  __hdr.Clear();
-  __hdr.SetSpec(ID3V2_LATEST);
+  _hdr.Clear();
+  _hdr.SetSpec(ID3V2_LATEST);
   
-  __tags_to_parse.clear();
+  _tags_to_parse.clear();
 
-  __changed = true;
+  _changed = true;
 }
 
 
@@ -356,14 +356,14 @@ void ID3_Tag::AttachFrame(ID3_Frame *frame)
   }
 
   ID3_Elem *elem = new ID3_Elem;
-  elem->pNext = __frames;
+  elem->pNext = _frames;
   elem->pFrame = frame;
   
-  __frames = elem;
-  __num_frames++;
-  __cursor = NULL;
+  _frames = elem;
+  _num_frames++;
+  _cursor = NULL;
   
-  __changed = true;
+  _changed = true;
 }
 
 
@@ -421,9 +421,9 @@ ID3_Frame* ID3_Tag::RemoveFrame(const ID3_Frame *frame)
     the_frame = elem->pFrame;
     //assert(the_frame == frame);
     elem->pFrame = NULL;
-    ID3_RemoveFromList(elem, &__frames);
-    --__num_frames;
-    __changed = true;
+    ID3_RemoveFromList(elem, &_frames);
+    --_num_frames;
+    _changed = true;
   }
     
   return the_frame;
@@ -455,11 +455,11 @@ ID3_Frame* ID3_Tag::RemoveFrame(const ID3_Frame *frame)
  **/
 bool ID3_Tag::HasChanged() const
 {
-  bool changed = __changed;
+  bool changed = _changed;
   
   if (! changed)
   {
-    ID3_Elem *cur = __frames;
+    ID3_Elem *cur = _frames;
     
     while (cur)
     {
@@ -484,14 +484,14 @@ bool ID3_Tag::HasChanged() const
 
 bool ID3_Tag::SetSpec(ID3_V2Spec spec)
 {
-  bool changed = __hdr.SetSpec(spec);
-  __changed = __changed || changed;
+  bool changed = _hdr.SetSpec(spec);
+  _changed = _changed || changed;
   return changed;
 }
 
 ID3_V2Spec ID3_Tag::GetSpec() const
 {
-  return __hdr.GetSpec();
+  return _hdr.GetSpec();
 }
 
 /** Turns unsynchronization on or off, dependant on the value of the boolean
@@ -513,8 +513,8 @@ ID3_V2Spec ID3_Tag::GetSpec() const
  **/
 bool ID3_Tag::SetUnsync(bool b)
 {
-  bool changed = __hdr.SetUnsync(b);
-  __changed = changed || __changed;
+  bool changed = _hdr.SetUnsync(b);
+  _changed = changed || _changed;
   return changed;
 }
 
@@ -537,8 +537,8 @@ bool ID3_Tag::SetUnsync(bool b)
  **/
 bool ID3_Tag::SetExtendedHeader(bool ext)
 {
-  bool changed = __hdr.SetExtended(ext);
-  __changed = changed || __changed;
+  bool changed = _hdr.SetExtended(ext);
+  _changed = changed || _changed;
   return changed;
 }
 
@@ -573,11 +573,11 @@ bool ID3_Tag::SetExtendedHeader(bool ext)
  **/
 bool ID3_Tag::SetPadding(bool pad)
 {
-  bool changed = (__is_padded != pad);
-  __changed = changed || __changed;
+  bool changed = (_is_padded != pad);
+  _changed = changed || _changed;
   if (changed)
   {
-    __is_padded = pad;
+    _is_padded = pad;
   }
   
   return changed;

@@ -1,4 +1,4 @@
-// $Id: tag_parse.cpp,v 1.24 2000/07/15 16:20:30 adcockj Exp $
+// $Id: tag_parse.cpp,v 1.25 2000/09/11 07:46:32 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -143,15 +143,15 @@ size_t ID3_ParseFrames(ID3_Tag& tag, const uchar* const data, size_t size)
 size_t ID3_Tag::Parse(const uchar header[ID3_TagHeader::SIZE],
 		      const uchar *buffer)
 {
-  size_t hdr_size = __hdr.Parse(header, ID3_TagHeader::SIZE);
+  size_t hdr_size = _hdr.Parse(header, ID3_TagHeader::SIZE);
   if (!hdr_size)
   {
     return 0;
   }
 
-  size_t data_size = __hdr.GetDataSize();
+  size_t data_size = _hdr.GetDataSize();
   uchar* unsynced_data = NULL;
-  if (__hdr.GetUnsync())
+  if (_hdr.GetUnsync())
   {
     unsynced_data = new uchar[data_size];
     memcpy(unsynced_data, buffer, data_size);
@@ -162,11 +162,11 @@ size_t ID3_Tag::Parse(const uchar header[ID3_TagHeader::SIZE],
   ID3_ParseFrames(*this, buffer, data_size);
 
   // set the flag which says that the tag hasn't changed
-  __changed = false;
+  _changed = false;
 
   delete [] unsynced_data;
   
-  return hdr_size + __hdr.GetDataSize();
+  return hdr_size + _hdr.GetDataSize();
 }
 
 size_t ParseID3v2(ID3_Tag& tag, fstream& file)
@@ -220,68 +220,68 @@ void ID3_Tag::ParseFile()
   }
 
   size_t bytes = 0;
-  __file_tags.clear();
-  __prepended_bytes = 0;
-  __file_size = ID3_GetFileSize(file);
+  _file_tags.clear();
+  _prepended_bytes = 0;
+  _file_size = ID3_GetFileSize(file);
   do
   {
-    file.seekg(__prepended_bytes, ios::beg);
+    file.seekg(_prepended_bytes, ios::beg);
     bytes = 0;
 
     // Parse tags at the beginning of the file first...
-    if (__tags_to_parse.test(ID3TT_ID3V2))
+    if (_tags_to_parse.test(ID3TT_ID3V2))
     {
       bytes = ParseID3v2(*this, file);
       if (bytes)
       {
         // say we have v2 tags
-        __file_tags.add(ID3TT_ID3V2);
+        _file_tags.add(ID3TT_ID3V2);
       }
     }
-    __prepended_bytes += bytes;
+    _prepended_bytes += bytes;
   } while (bytes);
   
-  __appended_bytes = 0;
+  _appended_bytes = 0;
   do
   {
     bytes = 0;
     // ...then the tags at the end
-    if (!bytes && __tags_to_parse.test(ID3TT_MUSICMATCH))
+    if (!bytes && _tags_to_parse.test(ID3TT_MUSICMATCH))
     {
-      file.seekg(- static_cast<long>(__appended_bytes), ios::end);
+      file.seekg(- static_cast<long>(_appended_bytes), ios::end);
       bytes = ParseMusicMatch(*this, file);
       if (bytes)
       {
-        __file_tags.add(ID3TT_MUSICMATCH);
+        _file_tags.add(ID3TT_MUSICMATCH);
       }
     }
-    if (!bytes && __tags_to_parse.test(ID3TT_LYRICS3))
+    if (!bytes && _tags_to_parse.test(ID3TT_LYRICS3))
     {
-      file.seekg(- static_cast<long>(__appended_bytes), ios::end);
+      file.seekg(- static_cast<long>(_appended_bytes), ios::end);
       bytes = ParseLyrics3(*this, file);
       if (bytes)
       {
-        __file_tags.add(ID3TT_LYRICS3);
+        _file_tags.add(ID3TT_LYRICS3);
       }
     }
-    if (!bytes && __tags_to_parse.test(ID3TT_LYRICS3V2))
+    if (!bytes && _tags_to_parse.test(ID3TT_LYRICS3V2))
     {
-      file.seekg(- static_cast<long>(__appended_bytes), ios::end);
+      file.seekg(- static_cast<long>(_appended_bytes), ios::end);
       bytes = ParseLyrics3v2(*this, file);
       if (bytes)
       {
-        __file_tags.add(ID3TT_LYRICS3V2);
+        _file_tags.add(ID3TT_LYRICS3V2);
       }
     }
-    if (!bytes && __tags_to_parse.test(ID3TT_ID3V1))
+    if (!bytes && _tags_to_parse.test(ID3TT_ID3V1))
     {
-      file.seekg(- static_cast<long>(__appended_bytes), ios::end);
+      file.seekg(- static_cast<long>(_appended_bytes), ios::end);
       bytes = ParseID3v1(*this, file);
       if (bytes)
       {
-        __file_tags.add(ID3TT_ID3V1);
+        _file_tags.add(ID3TT_ID3V1);
       }
     }
-    __appended_bytes += bytes;
+    _appended_bytes += bytes;
   } while (bytes);
 }

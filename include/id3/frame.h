@@ -1,4 +1,4 @@
-// $Id: frame.h,v 1.28 2000/06/14 16:14:18 eldamitri Exp $
+// $Id: frame.h,v 1.29 2000/09/11 07:46:31 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,8 +24,8 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#ifndef __ID3LIB_FRAME_H__
-#define __ID3LIB_FRAME_H__
+#ifndef _ID3LIB_FRAME_H_
+#define _ID3LIB_FRAME_H_
 
 #include "spec.h"
 #include "header_frame.h"
@@ -46,14 +46,14 @@ public:
   void        Clear();
 
   bool        SetID(ID3_FrameID id);
-  ID3_FrameID GetID() const { return __hdr.GetFrameID(); }
+  ID3_FrameID GetID() const { return _hdr.GetFrameID(); }
   
   ID3_Field  &Field(ID3_FieldID name) const;
   
   const char* GetDescription() const;
   static const char* GetDescription(ID3_FrameID);
 
-  const char* GetTextID() const { return __hdr.GetTextID(); }
+  const char* GetTextID() const { return _hdr.GetTextID(); }
 
   ID3_Frame  &operator=(const ID3_Frame &);
   bool        HasChanged() const;
@@ -61,7 +61,7 @@ public:
   size_t      Size();
   size_t      Render(uchar *buffer) const;
   bool        Contains(ID3_FieldID fld) const
-  { return BS_ISSET(__field_bitset, fld) > 0; }
+  { return BS_ISSET(_field_bitset, fld) > 0; }
   bool        SetSpec(ID3_V2Spec);
   ID3_V2Spec  GetSpec() const;
 
@@ -70,7 +70,7 @@ public:
    ** actually be compressed after it is rendered if the "compressed" data is
    ** no smaller than the "uncompressed" data.
    **/
-  bool        SetCompression(bool b)  { return __hdr.SetCompression(b); }
+  bool        SetCompression(bool b)  { return _hdr.SetCompression(b); }
   /** Returns whether or not the compression flag is set.  After parsing a tag,
    ** this will indicate whether or not the frame was compressed.  After
    ** rendering a tag, however, it does not actually indicate if the frame is
@@ -79,9 +79,9 @@ public:
    ** flag is set, if the "compressed" data is no smaller than the
    ** "uncompressed" data.
    **/
-  bool        GetCompression() const  { return __hdr.GetCompression(); }
-  bool        BadParse() const { return __bad_parse; }
-  size_t      GetDataSize() const { return __hdr.GetDataSize(); }
+  bool        GetCompression() const  { return _hdr.GetCompression(); }
+  bool        BadParse() const { return _bad_parse; }
+  size_t      GetDataSize() const { return _hdr.GetDataSize(); }
 
 protected:
   bool        _SetID(ID3_FrameID);
@@ -92,33 +92,33 @@ protected:
 
   bool _SetEncryptionID(uchar id)
   {
-    bool changed = id != __encryption_id;
-    __encryption_id = id;
-    __changed = __changed || changed;
-    __hdr.SetEncryption(true);
+    bool changed = id != _encryption_id;
+    _encryption_id = id;
+    _changed = _changed || changed;
+    _hdr.SetEncryption(true);
     return changed;
   }
-  uchar _GetEncryptionID() const { return __encryption_id; }
+  uchar _GetEncryptionID() const { return _encryption_id; }
   bool _SetGroupingID(uchar id)
   {
-    bool changed = id != __grouping_id;
-    __grouping_id = id;
-    __changed = __changed || changed;
-    __hdr.SetGrouping(true);
+    bool changed = id != _grouping_id;
+    _grouping_id = id;
+    _changed = _changed || changed;
+    _hdr.SetGrouping(true);
     return changed;
   }
-  uchar _GetGroupingID() const { return __grouping_id; }
+  uchar _GetGroupingID() const { return _grouping_id; }
 
 private:
-  mutable bool        __changed;    // frame changed since last parse/render?
-  bitset      __field_bitset;       // which fields are present?
-  size_t      __num_fields;         // how many fields are in this frame?
-  ID3_Field **__fields;             // an array of field object pointers
-  ID3_FrameHeader __hdr;            // 
-  uchar       __encryption_id;      // encryption id
-  uchar       __grouping_id;        // grouping id
-  bool        __bad_parse;          //
+  mutable bool        _changed;    // frame changed since last parse/render?
+  bitset      _field_bitset;       // which fields are present?
+  size_t      _num_fields;         // how many fields are in this frame?
+  ID3_Field **_fields;             // an array of field object pointers
+  ID3_FrameHeader _hdr;            // 
+  uchar       _encryption_id;      // encryption id
+  uchar       _grouping_id;        // grouping id
+  bool        _bad_parse;          //
 }
 ;
 
-#endif /* __ID3LIB_FRAME_H__ */
+#endif /* _ID3LIB_FRAME_H_ */

@@ -1,4 +1,4 @@
-// $Id: frame_parse.cpp,v 1.16 2000/06/14 16:39:11 eldamitri Exp $
+// $Id: frame_parse.cpp,v 1.17 2000/09/11 07:46:32 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -34,8 +34,8 @@
 
 size_t ID3_Frame::Parse(const uchar * const buffer, size_t size) 
 { 
-  __bad_parse = false;  
-  const size_t hdr_size = __hdr.Parse(buffer, size);  
+  _bad_parse = false;  
+  const size_t hdr_size = _hdr.Parse(buffer, size);  
 
   if (!hdr_size)  
   {  
@@ -44,24 +44,24 @@ size_t ID3_Frame::Parse(const uchar * const buffer, size_t size)
 
   // data is the part of the frame buffer that appears after the header  
   const uchar* data = &buffer[hdr_size]; 
-  const size_t data_size = __hdr.GetDataSize();
+  const size_t data_size = _hdr.GetDataSize();
   size_t extras = 0;
   // how many bytes remain to be parsed 
   size_t remainder = data_size - MIN(extras, data_size);
   
   unsigned long expanded_size = 0;
-  if (__hdr.GetCompression())
+  if (_hdr.GetCompression())
   {
     expanded_size = ParseNumber(&data[extras]);
     extras += sizeof(uint32);
   }
 
-  if (__hdr.GetEncryption())
+  if (_hdr.GetEncryption())
   {
     this->_SetEncryptionID(data[extras++]);
   }
 
-  if (__hdr.GetGrouping())
+  if (_hdr.GetGrouping())
   {
     this->_SetGroupingID(data[extras++]);
   }
@@ -70,7 +70,7 @@ size_t ID3_Frame::Parse(const uchar * const buffer, size_t size)
 
   // expand out the data if it's compressed 
   uchar* expanded_data = NULL;
-  if (__hdr.GetCompression())
+  if (_hdr.GetCompression())
   {  
     expanded_data = new uchar[expanded_size];  
         
@@ -87,7 +87,7 @@ size_t ID3_Frame::Parse(const uchar * const buffer, size_t size)
     ID3_TextEnc enc = ID3TE_ASCII;  // set the default encoding 
     ID3_V2Spec spec = this->GetSpec(); 
     // parse the frame's fields  
-    for (ID3_Field** fi = __fields; fi != __fields + __num_fields; fi++)
+    for (ID3_Field** fi = _fields; fi != _fields + _num_fields; fi++)
     {
       if (!*fi)
       {
@@ -97,7 +97,7 @@ size_t ID3_Frame::Parse(const uchar * const buffer, size_t size)
       if (remainder == 0) 
       { 
         // there's no remaining data to parse! 
-        __bad_parse = true; 
+        _bad_parse = true; 
         break; 
       } 
  
@@ -125,7 +125,7 @@ size_t ID3_Frame::Parse(const uchar * const buffer, size_t size)
       if (0 == frame_size) 
       { 
         // nothing to parse!  ack!  parse error... 
-        __bad_parse = true; 
+        _bad_parse = true; 
         break; 
       } 
  
@@ -143,10 +143,10 @@ size_t ID3_Frame::Parse(const uchar * const buffer, size_t size)
     // TODO: log this!
     //cerr << "*** parsing error!" << endl;  
     // There's been an error in the parsing of the frame.  
-    __bad_parse = true;  
+    _bad_parse = true;  
   }  
       
-  __changed = false;
+  _changed = false;
 
   delete [] expanded_data;
  

@@ -1,4 +1,4 @@
-// $Id: utils.h,v 1.8 2000/07/11 04:02:59 eldamitri Exp $
+// $Id: utils.h,v 1.9 2000/09/11 07:46:32 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,8 +24,8 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#ifndef __ID3LIB_UTILS_H__
-#define __ID3LIB_UTILS_H__
+#ifndef _ID3LIB_UTILS_H_
+#define _ID3LIB_UTILS_H_
 
 #if defined HAVE_CONFIG_H
 #  include <config.h>
@@ -80,4 +80,4 @@ namespace id3
 #endif  /* ID3_UNDEFINED */
   
   
-#endif /* __ID3LIB_UTILS_H__ */
+#endif /* _ID3LIB_UTILS_H_ */
