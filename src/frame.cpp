@@ -1,4 +1,4 @@
-// $Id: frame.cpp,v 1.5 2000/04/26 15:51:29 eldamitri Exp $
+// $Id: frame.cpp,v 1.6 2000/04/28 16:22:15 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -54,8 +54,8 @@ ID3_Frame::ID3_Frame(const ID3_FrameHeader &hdr)
   __sEncryptionID[0] = '\0';
   __sGroupingID[0]   = '\0';
   
-  InitFieldBits();
-  InitFields(__FrmHdr.GetFrameDef());
+  this->InitFieldBits();
+  this->InitFields();
 }
 
 ID3_Frame::ID3_Frame(const ID3_Frame& frame)
@@ -129,8 +129,9 @@ void ID3_Frame::Clear(void)
   __apFields         = NULL;
 }
 
-void ID3_Frame::InitFields(const ID3_FrameDef *info)
+void ID3_Frame::InitFields()
 {
+  const ID3_FrameDef* info = __FrmHdr.GetFrameDef();
   if (NULL == info)
   {
     ID3_THROW(ID3E_InvalidFrameID);
@@ -178,7 +179,7 @@ void ID3_Frame::SetID(ID3_FrameID id)
   if (id != ID3FID_NOFRAME)
   {
     __FrmHdr.SetFrameID(id);
-    InitFields(__FrmHdr.GetFrameDef());
+    this->InitFields();
   }
 }
 
@@ -355,6 +356,9 @@ ID3_Frame::operator=( const ID3_Frame &rFrame )
 }
 
 // $Log: frame.cpp,v $
+// Revision 1.6  2000/04/28 16:22:15  eldamitri
+// InitFields method no longer accepts a parameter.
+//
 // Revision 1.5  2000/04/26 15:51:29  eldamitri
 // (SetSpec): Parameter now const
 // (GetSpec): Added implementation
