@@ -1,4 +1,4 @@
-// $Id: test_io.cpp,v 1.3 2000/10/29 01:37:28 eldamitri Exp $
+// $Id: test_io.cpp,v 1.4 2000/10/29 08:14:34 eldamitri Exp $
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -9,6 +9,7 @@
 #include <id3/io_decorators.h>
 #include <id3/io_helpers.h>
 #include <id3/io_strings.h>
+#include <id3/utils.h>
 
 using namespace dami;
 
@@ -172,6 +173,29 @@ main(size_t argc, const char** argv)
       cout << "orig != uncompressed" << endl;
     }
   }
+
+  String ascii;
+  ascii.reserve(8192);
+
+  for (size_t i = 0; i < 8192; ++i)
+  {
+    ascii += 'a' + (i % 26);
+  }
+
+  cout << endl;
+  cout << "ascii.size() = " << ascii.size() << endl;
+  String unicode = dami::convert(ascii, ID3TE_ASCII, ID3TE_UTF16BE);
+  cout << "uncicode.size() = " << unicode.size() << endl;
+  String ascii_2 = dami::convert(unicode, ID3TE_UTF16BE, ID3TE_ASCII);
+  if (ascii != ascii_2)
+  {
+    cout << "ascii != ascii_2" << endl;
+  }
+  else
+  {
+    cout << "ascii == ascii_2" << endl;
+  }
+
 
 
   return 0;
