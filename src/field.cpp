@@ -1,4 +1,4 @@
-// $Id: field.cpp,v 1.41 2001/08/07 11:58:23 shadrack Exp $
+// $Id: field.cpp,v 1.42 2001/09/08 21:33:18 shadrack Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -766,10 +766,10 @@ static  ID3_FrameDef ID3_FrameDefs[] =
   {ID3FID_CDID,              "MCI", "MCDI", false, false, ID3FD_Unimplemented, "Music CD identifier"},
   {ID3FID_MPEGLOOKUP,        "MLL", "MLLT", false, true,  ID3FD_Unimplemented, "MPEG location lookup table"},
   {ID3FID_OWNERSHIP,         ""   , "OWNE", false, false, ID3FD_Unimplemented, "Ownership frame"},
+  {ID3FID_PRIVATE,           ""   , "PRIV", false, false, ID3FD_Private,       "Private frame"},
   {ID3FID_PLAYCOUNTER,       "CNT", "PCNT", false, false, ID3FD_PlayCounter,   "Play counter"},
   {ID3FID_POPULARIMETER,     "POP", "POPM", false, false, ID3FD_Popularimeter, "Popularimeter"},
   {ID3FID_POSITIONSYNC,      ""   , "POSS", false, true,  ID3FD_Unimplemented, "Position synchronisation frame"},
-  {ID3FID_PRIVATE,           ""   , "PRIV", false, false, ID3FD_Private,       "Private frame"},
   {ID3FID_BUFFERSIZE,        "BUF", "RBUF", false, false, ID3FD_Unimplemented, "Recommended buffer size"},
   {ID3FID_VOLUMEADJ,         "RVA", "RVAD", false, true,  ID3FD_Unimplemented, "Relative volume adjustment"},
   {ID3FID_REVERB,            "REV", "RVRB", false, false, ID3FD_Unimplemented, "Reverb"},
@@ -785,11 +785,11 @@ static  ID3_FrameDef ID3_FrameDefs[] =
   {ID3FID_ENCODEDBY,         "TEN", "TENC", false, true,  ID3FD_Text,          "Encoded by"},
   {ID3FID_LYRICIST,          "TXT", "TEXT", false, false, ID3FD_Text,          "Lyricist/Text writer"},
   {ID3FID_FILETYPE,          "TFT", "TFLT", false, false, ID3FD_Text,          "File type"},
-  {ID3FID_INITIALKEY,        "TKE", "TKEY", false, false, ID3FD_Text,          "Initial key"},
   {ID3FID_TIME,              "TIM", "TIME", false, false, ID3FD_Text,          "Time"},
   {ID3FID_CONTENTGROUP,      "TT1", "TIT1", false, false, ID3FD_Text,          "Content group description"},
   {ID3FID_TITLE,             "TT2", "TIT2", false, false, ID3FD_Text,          "Title/songname/content description"},
   {ID3FID_SUBTITLE,          "TT3", "TIT3", false, false, ID3FD_Text,          "Subtitle/Description refinement"},
+  {ID3FID_INITIALKEY,        "TKE", "TKEY", false, false, ID3FD_Text,          "Initial key"},
   {ID3FID_LANGUAGE,          "TLA", "TLAN", false, false, ID3FD_Text,          "Language(s)"},
   {ID3FID_SONGLEN,           "TLE", "TLEN", false, true,  ID3FD_Text,          "Length"},
   {ID3FID_MEDIATYPE,         "TMT", "TMED", false, false, ID3FD_Text,          "Media type"},
@@ -882,7 +882,7 @@ static  ID3_FrameDef ID3_FrameDefs[] =
  ** if you only plan to generate 3.0 tags.
  ** 
  ** @author Dirk Mahoney
- ** @version $Id: field.cpp,v 1.41 2001/08/07 11:58:23 shadrack Exp $
+ ** @version $Id: field.cpp,v 1.42 2001/09/08 21:33:18 shadrack Exp $
  ** \sa ID3_Tag
  ** \sa ID3_Frame
  ** \sa ID3_Err 
@@ -1239,13 +1239,13 @@ bool ID3_FieldImpl::SetEncoding(ID3_TextEnc enc)
  ** \endcode
  **
  ** @author Cedric Tefft
- ** @version $Id: field.cpp,v 1.41 2001/08/07 11:58:23 shadrack Exp $
+ ** @version $Id: field.cpp,v 1.42 2001/09/08 21:33:18 shadrack Exp $
  **/
 
 
 char *ID3_FrameInfo::ShortName(ID3_FrameID frameid) {
 	if(frameid < ID3FID_LASTFRAMEID) {
-		return ID3_FrameDefs[frameid].sShortTextID;
+		return ID3_FrameDefs[frameid-1].sShortTextID;
 	} else {
 		return NULL;
 	}
@@ -1253,7 +1253,7 @@ char *ID3_FrameInfo::ShortName(ID3_FrameID frameid) {
 
 char *ID3_FrameInfo::LongName(ID3_FrameID frameid) {
 	if(frameid < ID3FID_LASTFRAMEID) {
-		return ID3_FrameDefs[frameid].sLongTextID;
+		return ID3_FrameDefs[frameid-1].sLongTextID;
 	} else {
 		return NULL;
 	}
@@ -1261,7 +1261,7 @@ char *ID3_FrameInfo::LongName(ID3_FrameID frameid) {
 
 const char *ID3_FrameInfo::Description(ID3_FrameID frameid) {
 	if(frameid < ID3FID_LASTFRAMEID) {
-		return ID3_FrameDefs[frameid].sDescription;
+		return ID3_FrameDefs[frameid-1].sDescription;
 	} else {
 		return NULL;
 	}
@@ -1274,7 +1274,7 @@ int ID3_FrameInfo::MaxFrameID() {
 int ID3_FrameInfo::NumFields(ID3_FrameID frameid) {
 	int fieldnum=0;
 
-	while (ID3_FrameDefs[frameid].aeFieldDefs[fieldnum]._id !=
+	while (ID3_FrameDefs[frameid-1].aeFieldDefs[fieldnum]._id !=
 	       ID3FN_NOFIELD) {
 		fieldnum++;
 	}
@@ -1282,14 +1282,14 @@ int ID3_FrameInfo::NumFields(ID3_FrameID frameid) {
 }
 
 ID3_FieldType ID3_FrameInfo::FieldType(ID3_FrameID frameid, int fieldnum) {
-	return (ID3_FrameDefs[frameid].aeFieldDefs[fieldnum]._type);
+	return (ID3_FrameDefs[frameid-1].aeFieldDefs[fieldnum]._type);
 }
 
 size_t ID3_FrameInfo::FieldSize(ID3_FrameID frameid, int fieldnum) {
-	return (ID3_FrameDefs[frameid].aeFieldDefs[fieldnum]._fixed_size);
+	return (ID3_FrameDefs[frameid-1].aeFieldDefs[fieldnum]._fixed_size);
 }
 
 flags_t ID3_FrameInfo::FieldFlags(ID3_FrameID frameid, int fieldnum) {
-	return (ID3_FrameDefs[frameid].aeFieldDefs[fieldnum]._flags);
+	return (ID3_FrameDefs[frameid-1].aeFieldDefs[fieldnum]._flags);
 }
 
