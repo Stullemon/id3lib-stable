@@ -1,4 +1,4 @@
-// $Id: tag_parse.cpp,v 1.43 2002/07/31 13:20:49 t1mpy Exp $
+// $Id: tag_parse.cpp,v 1.44 2002/07/31 16:41:11 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -242,65 +242,71 @@ void ID3_TagImpl::ParseFile()
   _prepended_bytes = cur - beg;
 
   cur = wr.setCur(end);
-  do
+  if (_file_size > _prepended_bytes)
   {
-    last = cur;
-    ID3D_NOTICE( "ID3_TagImpl::ParseFile(): beg = " << wr.getBeg() );
-    ID3D_NOTICE( "ID3_TagImpl::ParseFile(): cur = " << wr.getCur() );
-    ID3D_NOTICE( "ID3_TagImpl::ParseFile(): end = " << wr.getEnd() );
-    // ...then the tags at the end
-    ID3D_NOTICE( "ID3_TagImpl::ParseFile(): musicmatch? cur = " << wr.getCur() );
-    if (_tags_to_parse.test(ID3TT_MUSICMATCH) && mm::parse(*this, wr))
+    do
     {
-      ID3D_NOTICE( "ID3_TagImpl::ParseFile(): musicmatch! cur = " << wr.getCur() );
-      _file_tags.add(ID3TT_MUSICMATCH);
-      wr.setEnd(wr.getCur());
-    }
-    ID3D_NOTICE( "ID3_TagImpl::ParseFile(): lyr3v1? cur = " << wr.getCur() );
-    if (_tags_to_parse.test(ID3TT_LYRICS3) && lyr3::v1::parse(*this, wr))
-    {
-      ID3D_NOTICE( "ID3_TagImpl::ParseFile(): lyr3v1! cur = " << wr.getCur() );
-      _file_tags.add(ID3TT_LYRICS3);
-      wr.setEnd(wr.getCur());
-    }
-    ID3D_NOTICE( "ID3_TagImpl::ParseFile(): lyr3v2? cur = " << wr.getCur() );
-    if (_tags_to_parse.test(ID3TT_LYRICS3V2) && lyr3::v2::parse(*this, wr))
-    {
-      ID3D_NOTICE( "ID3_TagImpl::ParseFile(): lyr3v2! cur = " << wr.getCur() );
-      _file_tags.add(ID3TT_ID3V1);
-      wr.setEnd(wr.getCur());
-    }
-    ID3D_NOTICE( "ID3_TagImpl::ParseFile(): id3v1? cur = " << wr.getCur() );
-    if (_tags_to_parse.test(ID3TT_ID3V1) && id3::v1::parse(*this, wr))
-    {
-      ID3D_NOTICE( "ID3_TagImpl::ParseFile(): id3v1! cur = " << wr.getCur() );
-      wr.setEnd(wr.getCur());
-      _file_tags.add(ID3TT_ID3V1);
-    }
-    cur = wr.getCur();
-  } while (cur != last);
-  _appended_bytes = end - cur;
-// Now get the mp3 header
-  mp3_core_size = (_file_size - _appended_bytes) - _prepended_bytes;
-  if (mp3_core_size >= 4)
-  { //it has at least the size for a mp3 header (a mp3 header is 4 bytes)
-    wr.setBeg(_prepended_bytes);
-    wr.setCur(_prepended_bytes);
-    wr.setEnd(_file_size - _appended_bytes);
+      last = cur;
+      ID3D_NOTICE( "ID3_TagImpl::ParseFile(): beg = " << wr.getBeg() );
+      ID3D_NOTICE( "ID3_TagImpl::ParseFile(): cur = " << wr.getCur() );
+      ID3D_NOTICE( "ID3_TagImpl::ParseFile(): end = " << wr.getEnd() );
+      // ...then the tags at the end
+      ID3D_NOTICE( "ID3_TagImpl::ParseFile(): musicmatch? cur = " << wr.getCur() );
+      if (_tags_to_parse.test(ID3TT_MUSICMATCH) && mm::parse(*this, wr))
+      {
+        ID3D_NOTICE( "ID3_TagImpl::ParseFile(): musicmatch! cur = " << wr.getCur() );
+        _file_tags.add(ID3TT_MUSICMATCH);
+        wr.setEnd(wr.getCur());
+      }
+      ID3D_NOTICE( "ID3_TagImpl::ParseFile(): lyr3v1? cur = " << wr.getCur() );
+      if (_tags_to_parse.test(ID3TT_LYRICS3) && lyr3::v1::parse(*this, wr))
+      {
+        ID3D_NOTICE( "ID3_TagImpl::ParseFile(): lyr3v1! cur = " << wr.getCur() );
+        _file_tags.add(ID3TT_LYRICS3);
+        wr.setEnd(wr.getCur());
+      }
+      ID3D_NOTICE( "ID3_TagImpl::ParseFile(): lyr3v2? cur = " << wr.getCur() );
+      if (_tags_to_parse.test(ID3TT_LYRICS3V2) && lyr3::v2::parse(*this, wr))
+      {
+        ID3D_NOTICE( "ID3_TagImpl::ParseFile(): lyr3v2! cur = " << wr.getCur() );
+        _file_tags.add(ID3TT_ID3V1);
+        wr.setEnd(wr.getCur());
+      }
+      ID3D_NOTICE( "ID3_TagImpl::ParseFile(): id3v1? cur = " << wr.getCur() );
+      if (_tags_to_parse.test(ID3TT_ID3V1) && id3::v1::parse(*this, wr))
+      {
+        ID3D_NOTICE( "ID3_TagImpl::ParseFile(): id3v1! cur = " << wr.getCur() );
+        wr.setEnd(wr.getCur());
+        _file_tags.add(ID3TT_ID3V1);
+      }
+      cur = wr.getCur();
+    } while (cur != last);
+    _appended_bytes = end - cur;
 
-    _mp3_info = new Mp3Info;
-    ID3D_NOTICE( "ID3_TagImpl::ParseFile(): mp3header? cur = " << wr.getCur() );
+    // Now get the mp3 header
+    mp3_core_size = (_file_size - _appended_bytes) - _prepended_bytes;
+    if (mp3_core_size >= 4)
+    { //it has at least the size for a mp3 header (a mp3 header is 4 bytes)
+      wr.setBeg(_prepended_bytes);
+      wr.setCur(_prepended_bytes);
+      wr.setEnd(_file_size - _appended_bytes);
 
-    if (_mp3_info->Parse(wr, mp3_core_size))
-    {
-      ID3D_NOTICE( "ID3_TagImpl::ParseFile(): mp3header! cur = " << wr.getCur() );
-    }
-    else
-    {
-      delete _mp3_info;
-      _mp3_info = NULL;
+      _mp3_info = new Mp3Info;
+      ID3D_NOTICE( "ID3_TagImpl::ParseFile(): mp3header? cur = " << wr.getCur() );
+
+      if (_mp3_info->Parse(wr, mp3_core_size))
+      {
+        ID3D_NOTICE( "ID3_TagImpl::ParseFile(): mp3header! cur = " << wr.getCur() );
+      }
+      else
+      {
+        delete _mp3_info;
+        _mp3_info = NULL;
+      }
     }
   }
+  else
+    this->SetPadding(false); //no need to pad an empty file
   file.close();
 }
 
