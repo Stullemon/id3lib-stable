@@ -1,4 +1,4 @@
-// $Id: tag.cpp,v 1.46 2002/06/29 17:36:47 t1mpy Exp $
+// $Id: tag.cpp,v 1.47 2002/07/02 22:14:25 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,16 +24,9 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#if defined HAVE_CONFIG_H
-#include <config.h>
-#endif
-
-#include "tag.h"
 #include "readers.h"
 #include "writers.h"
-#include "tag_impl.h"
-#include "id3/id3lib_strings.h"
-#include "utils.h"
+#include "tag_impl.h" //has <stdio.h> "tag.h" "header_tag.h" "frame.h" "field.h" "spec.h" "id3lib_strings.h" "utils.h"
 
 using namespace dami;
 
@@ -277,7 +270,7 @@ using namespace dami;
  ** formatted 'CDM' frames from the unreleased ID3v2 2.01 draft specification.
  **
  ** \author Dirk Mahoney
- ** \version $Id: tag.cpp,v 1.46 2002/06/29 17:36:47 t1mpy Exp $
+ ** \version $Id: tag.cpp,v 1.47 2002/07/02 22:14:25 t1mpy Exp $
  ** \sa ID3_Frame
  ** \sa ID3_Field
  ** \sa ID3_Err

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: spec.h,v 1.1 2000/10/24 16:15:10 eldamitri Exp $
+// $Id: spec.h,v 1.2 2002/07/02 22:14:16 t1mpy Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,7 +28,7 @@
 #ifndef _ID3LIB_SPEC_H_
 #define _ID3LIB_SPEC_H_
 
-#include "globals.h"
+#include "id3/globals.h" //has <stdlib.h> "id3/sized_types.h"
 
 ID3_V2Spec ID3_VerRevToV2Spec(uchar ver, uchar rev);
 uchar      ID3_V2SpecToVer(ID3_V2Spec spec);

@@ -1,4 +1,4 @@
-// $Id: tag_parse_lyrics3.cpp,v 1.30 2002/06/29 17:37:06 t1mpy Exp $
+// $Id: tag_parse_lyrics3.cpp,v 1.31 2002/07/02 22:15:11 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,20 +24,11 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#if defined HAVE_CONFIG_H
-#include <config.h>
-#endif
-
-
-
-#include <stdlib.h>
 #include <ctype.h>
 #include <memory.h>
-#include "tag_impl.h"
-#include "utils.h"
+#include "tag_impl.h" //has <stdio.h> "tag.h" "header_tag.h" "frame.h" "field.h" "spec.h" "id3lib_strings.h" "utils.h"
 #include "helpers.h"
-#include "io_decorators.h"
-#include "io_helpers.h"
+#include "id3/io_decorators.h" //has "readers.h" "io_helpers.h" "utils.h"
 #include "io_strings.h"
 
 using namespace dami;

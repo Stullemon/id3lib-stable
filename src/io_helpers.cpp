@@ -1,4 +1,4 @@
-// $Id: io_helpers.cpp,v 1.12 2002/06/29 17:36:34 t1mpy Exp $
+// $Id: io_helpers.cpp,v 1.13 2002/07/02 22:13:56 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,11 +28,7 @@
 #include <config.h>
 #endif
 
-
-
-#include "io_decorators.h"
-#include "io_helpers.h"
-#include "utils.h"
+#include "id3/io_decorators.h" //has "readers.h" "io_helpers.h" "utils.h"
 
 using namespace dami;
 

@@ -1,4 +1,4 @@
-/* $Id: id3.h,v 1.18 2002/06/29 14:41:38 t1mpy Exp $
+/* $Id: id3.h,v 1.19 2002/07/02 22:11:23 t1mpy Exp $
  * 
  * id3lib: a software library for creating and manipulating id3v1/v2 tags
  * Copyright 1999, 2000  Scott Thomas Haug
@@ -28,7 +28,7 @@
 #ifndef _ID3LIB_ID3_H_
 #define _ID3LIB_ID3_H_
 
-#include <id3/globals.h>
+#include "id3/globals.h" //has <stdlib.h> "id3/sized_types.h"
 
 #ifdef __cplusplus
 extern "C"

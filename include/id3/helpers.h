@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: helpers.h,v 1.8 2002/06/29 17:43:01 t1mpy Exp $
+// $Id: helpers.h,v 1.9 2002/07/02 22:10:45 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -29,7 +29,7 @@
 #define _ID3LIB_HELPERS_H_
 
 #include "id3/id3lib_strings.h"
-#include "globals.h"
+#include "id3/globals.h" //has <stdlib.h> "id3/sized_types.h"
 
 class ID3_TagImpl;
 class ID3_Frame;

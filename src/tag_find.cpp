@@ -1,4 +1,4 @@
-// $Id: tag_find.cpp,v 1.26 2000/10/29 01:37:29 eldamitri Exp $
+// $Id: tag_find.cpp,v 1.27 2002/07/02 22:14:42 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,17 +24,7 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#if defined HAVE_CONFIG_H
-#include <config.h>
-#endif
-
-
-
-#include <string.h>
-
-#include "tag_impl.h"
-#include "field.h"
-#include "utils.h"
+#include "tag_impl.h" //has <stdio.h> "tag.h" "header_tag.h" "frame.h" "field.h" "spec.h" "id3lib_strings.h" "utils.h"
 
 using namespace dami;
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: io_decorators.h,v 1.4 2002/06/29 17:43:13 t1mpy Exp $
+// $Id: io_decorators.h,v 1.5 2002/07/02 22:10:51 t1mpy Exp $
 
 // id3lib: a software library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,10 +28,9 @@
 #ifndef _ID3LIB_READER_DECORATORS_H_
 #define _ID3LIB_READER_DECORATORS_H_
 
-#include "id3/id3lib_strings.h"
 #include "readers.h"
 #include "io_helpers.h"
-#include "utils.h"
+#include "id3/utils.h" // has <config.h> "id3/id3lib_streams.h" "id3/globals.h" "id3/id3lib_strings.h"
 
 namespace dami
 {

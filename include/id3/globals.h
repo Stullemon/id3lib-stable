@@ -1,5 +1,5 @@
 // -*- C++ -*-
-/* $Id: globals.h,v 1.47 2002/06/30 17:37:45 t1mpy Exp $
+/* $Id: globals.h,v 1.48 2002/07/02 22:10:38 t1mpy Exp $
 
  * id3lib: a C++ library for creating and manipulating id3v1/v2 tags Copyright
  * 1999, 2000 Scott Thomas Haug
@@ -34,7 +34,7 @@
 #define _ID3LIB_GLOBALS_H_
 
 #include <stdlib.h>
-#include <id3/sized_types.h>
+#include "id3/sized_types.h"
 
 /* id3lib version.
  * we prefix variable declarations so they can

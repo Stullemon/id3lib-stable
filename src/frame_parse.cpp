@@ -1,4 +1,4 @@
-// $Id: frame_parse.cpp,v 1.32 2002/06/29 17:35:45 t1mpy Exp $
+// $Id: frame_parse.cpp,v 1.33 2002/07/02 22:12:45 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,11 +28,8 @@
 #include <config.h>
 #endif
 
-
-
 #include "frame_impl.h"
-#include "utils.h"
-#include "io_decorators.h"
+#include "id3/io_decorators.h" //has "readers.h" "io_helpers.h" "utils.h"
 
 using namespace dami;
 

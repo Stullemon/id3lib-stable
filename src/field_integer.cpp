@@ -1,4 +1,4 @@
-// $Id: field_integer.cpp,v 1.20 2002/06/29 17:35:33 t1mpy Exp $
+// $Id: field_integer.cpp,v 1.21 2002/07/02 22:12:13 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -24,13 +24,8 @@
 // id3lib.  These files are distributed with id3lib at
 // http://download.sourceforge.net/id3lib/
 
-#if defined HAVE_CONFIG_H
-#include <config.h>
-#endif
-
-
 #include "field_impl.h"
-#include "utils.h"
+#include "id3/utils.h" // has <config.h> "id3/id3lib_streams.h" "id3/globals.h" "id3/id3lib_strings.h"
 #include "io_helpers.h"
 
 using namespace dami;

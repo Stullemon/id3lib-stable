@@ -1,4 +1,4 @@
-// $Id: frame_render.cpp,v 1.23 2002/06/29 17:35:51 t1mpy Exp $
+// $Id: frame_render.cpp,v 1.24 2002/07/02 22:12:51 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -30,14 +30,13 @@
 
 
 
-#include <string.h>
+//#include <string.h>
 #include <memory.h>
 #include <zlib.h>
 
 #include "tag.h"
-#include "utils.h"
 #include "frame_impl.h"
-#include "io_decorators.h"
+#include "id3/io_decorators.h" //has "readers.h" "io_helpers.h" "utils.h"
 #include "io_strings.h"
 #include "io_helpers.h"
 

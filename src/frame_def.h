@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: frame_def.h,v 1.1 2000/10/24 16:12:58 eldamitri Exp $
+// $Id: frame_def.h,v 1.2 2002/07/02 22:12:32 t1mpy Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -28,7 +28,7 @@
 #ifndef _ID3LIB_FRAME_DEF_H_
 #define _ID3LIB_FRAME_DEF_H_
 
-#include "globals.h"
+#include "id3/globals.h" //has <stdlib.h> "id3/sized_types.h"
 
 struct ID3_FieldDef;
 
