@@ -1,5 +1,32 @@
 2000-05-03  Scott Haug  <scott@id3.org>
 
+	* include/id3/frame.h
+	(Contains): Added comparison to ensure boolean output
+
+	* include/id3/header.h
+	(Clear): Updated to return boolean if the header actually changed
+
+	* include/id3/header_tag.h 
+	(class ID3_TagHeader): Replaced definition of ID3_TagHeader with just a
+	declaration (windows didn't like having it defined in the header)
+
+	* include/id3/uint28.h: 
+	Replaced #include iostream with #include iostream.h.  Removed #include
+	algorithm (not needed)
+
+	* src/header_tag.cpp: 
+	Added static definition of ID3_TagHeader::ID
+
+	* src/uint28.cpp
+	(operator=): Returns *this
+	(operator>>): Removed std:: (will put this in later when make the move
+	to STL/STC)
+
+	* prj/id3lib.dsp 
+	* libprj/id3lib.dsp 
+	* id3com/id3com.dsp: 
+	Updated to compile with new changes to the library
+
 	* src/frame.cpp 
 	(GetDescription): Now returns NULL rather than "Unknown" for unknown
 	frames.
