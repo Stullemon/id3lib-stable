@@ -1,5 +1,5 @@
 // -*- C++ -*- 
-// $Id: field_impl.h,v 1.9 2000/10/15 06:39:26 eldamitri Exp $
+// $Id: field_impl.h,v 1.10 2000/10/21 06:14:20 eldamitri Exp $
 
 // id3lib: a C++ library for creating and manipulating id3v1/v2 tags
 // Copyright 1999, 2000  Scott Thomas Haug
@@ -30,6 +30,7 @@
 
 #include <stdlib.h>
 #include "field.h"
+#include "strings.h"
 
 struct ID3_FieldDef;
 struct ID3_FrameDef;
@@ -51,44 +52,48 @@ public:
   // integer field functions
   ID3_Field&    operator= (uint32 val) { this->Set(val); return *this; }
   void          Set(uint32);
-  uint32        Get() const 
-  { 
-    if (this->GetType() == ID3FTY_INTEGER)
-    {
-      return _integer; 
-    }
-    return 0;
-  }
+  uint32        Get() const;
+
+  void          SetInteger(uint32);
+  uint32        GetInteger() const;
 
   // ASCII string field functions
   ID3_Field&    operator= (const char* s) { this->Set(s); return *this; }
-  size_t        Set(const char*);
+  size_t        Set(const char* data);
   size_t        Get(char*, size_t) const;
   size_t        Get(char*, size_t, index_t) const;
-  const char*   GetText() const;
-  const char*   GetTextItem(index_t) const;
-  size_t        Add(const char*);
+  const char*   GetRawText() const;
+  const char*   GetRawTextItem(index_t) const;
+  size_t        Add(const char* data);
+
+  dami::String  GetText() const;
+  dami::String  GetTextItem(index_t) const;
+  size_t        SetText(dami::String);
+  size_t        AddText(dami::String);
 
   // Unicode string field functions
   ID3_Field&    operator= (const unicode_t* s) { this->Set(s); return *this; }
   size_t        Set(const unicode_t*);
   size_t        Get(unicode_t *buffer, size_t) const;
   size_t        Get(unicode_t *buffer, size_t, index_t) const;
-  const unicode_t* GetUnicodeText() const;
-  const unicode_t* GetUnicodeTextItem(index_t) const;
   size_t        Add(const unicode_t*);
+  const unicode_t* GetRawUnicodeText() const;
+  const unicode_t* GetRawUnicodeTextItem(index_t) const;
 
   // binary field functions
-  size_t        Set(const uchar*, size_t);
+  size_t        Set(const uchar* buf, size_t size);
   size_t        Set(const char* buf, size_t size)
-  { 
+  {
     return this->Set(reinterpret_cast<const uchar *>(buf), size);
   }
   size_t        Get(uchar*, size_t) const;
-  const uchar*  GetBinary() const { return _binary; }
+  const uchar*  GetRawBinary() const;
   void          FromFile(const char*);
   void          ToFile(const char *sInfo) const;
   
+  size_t        SetBinary(dami::BString);
+  dami::BString GetBinary() const;
+
   // miscelaneous functions
   ID3_Field&    operator=( const ID3_Field & );
   bool          InScope(ID3_V2Spec spec) const
@@ -106,11 +111,8 @@ public:
   bool          HasChanged() const;
 
 private:
-  //void          SetSpec(ID3_V2Spec);
-  size_t        Set_i(const char*, size_t);
-  size_t        Set_i(const unicode_t*, size_t);
-  size_t        Add_i(const char*, size_t);
-  size_t        Add_i(const unicode_t*, size_t);
+  size_t        SetText_i(dami::String);
+  size_t        AddText_i(dami::String);
 
 private:
   // To prevent public instantiation, the constructor is made private
@@ -123,29 +125,21 @@ private:
   const ID3_V2Spec    _spec_end;    // spec begin
   const flags_t       _flags;       // special field flags
   mutable bool        _changed;     // field changed since last parse/render?
-  union                             // anonymous union; contents in class scope
-  {
-    uchar*            _binary;      // for binary strings
-    char*             _ascii;       // for ascii strings
-    unicode_t*        _unicode;     // for unicode strings
-    uint32            _integer;     // for numbers
-  };
-  const size_t        _fixed_length;// for fixed length fields (0 if not)
-  union
-  {
-    size_t            _bytes;       // the size of the field in bytes
-    size_t            _chars;       // the number of characters in the field
-  };
+
+  dami::BString       _binary;      // for binary strings
+  dami::String        _text;        // for ascii strings
+  uint32              _integer;     // for numbers
+
+  const size_t        _fixed_size;  // for fixed length fields (0 if not)
   size_t              _num_items;   // the number of items in the text string
   ID3_TextEnc         _enc;         // encoding for text fields
 protected:
   void RenderInteger(ID3_Writer&) const;
-  void RenderString(ID3_Writer&) const;
+  void RenderText(ID3_Writer&) const;
   void RenderBinary(ID3_Writer&) const;
   
   bool ParseInteger(ID3_Reader&);
-  bool ParseASCIIString(ID3_Reader&);
-  bool ParseUnicodeString(ID3_Reader&);
+  bool ParseText(ID3_Reader&);
   bool ParseBinary(ID3_Reader&);
   
 };
